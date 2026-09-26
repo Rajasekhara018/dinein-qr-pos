@@ -57,7 +57,8 @@ public class PaymentCallbackController {
     private Long orderIdFor(String provider, Map<String, String> params) {
         String providerOrderId = params.getOrDefault("txnid", params.get("order_id"));
         if (providerOrderId == null) {
-            return null;
+            String ours = params.get("dinein_order");
+            return ours != null && ours.matches("\\d{1,18}") ? Long.valueOf(ours) : null;
         }
         return paymentRepository.findByProviderAndProviderOrderId(provider, providerOrderId)
                 .map(p -> p.getOrderId()).orElse(null);

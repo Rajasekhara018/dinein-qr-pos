@@ -121,6 +121,60 @@ class AuthFlowIT extends AbstractIntegrationTest {
     }
 
     @Test
+    void waiterSignsInWithPasswordOrPinAndReachesOnlyTheWaiterApi() throws Exception {
+        String username = createUser(StaffRole.WAITER, false);
+
+        MvcResult byPin = mvc.perform(post("/api/auth/login").contentType(MediaType.APPLICATION_JSON)
+                .content("{\"username\":\"%s\",\"pin\":\"4321\"}".formatted(username))).andReturn();
+        assertThat(byPin.getResponse().getStatus()).isEqualTo(200);
+        assertThat(body(byPin).get("user").get("role").asText()).isEqualTo("WAITER");
+        assertThat(byPin.getResponse().getCookie("dinein_rt")).isNotNull();
+        String token = body(byPin).get("accessToken").asText();
+
+        mvc.perform(get("/api/waiter/tables").header("Authorization", "Bearer " + token)).andExpect(status().isOk());
+        mvc.perform(get("/api/admin/categories").header("Authorization", "Bearer " + token)).andExpect(status().isForbidden());
+        mvc.perform(get("/api/kitchen/orders").header("Authorization", "Bearer " + token)).andExpect(status().isForbidden());
+        assertThat(login(username, "Secret123").getResponse().getStatus()).isEqualTo(200);
+
+        mvc.perform(post("/api/auth/login").contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"username\":\"%s\",\"pin\":\"9999\"}".formatted(username)))
+                .andExpect(status().isUnauthorized());
+        mvc.perform(post("/api/auth/login").contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"username\":\"%s\"}".formatted(username)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value("CREDENTIALS_REQUIRED"));
+    }
+
+    @Test
+    void pinSignInIsOnlyForWaiters() throws Exception {
+        String manager = createUser(StaffRole.MANAGER, false);
+        mvc.perform(post("/api/auth/login").contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"username\":\"%s\",\"pin\":\"4321\"}".formatted(manager)))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.code").value("PIN_LOGIN_NOT_ALLOWED"));
+    }
+
+    @Test
+    void ownerCreatesWaiterAccounts() throws Exception {
+        String owner = body(login(createUser(StaffRole.OWNER, false), "Secret123")).get("accessToken").asText();
+        String username = "waiter" + UUID.randomUUID().toString().substring(0, 6);
+
+        mvc.perform(post("/api/admin/staff").header("Authorization", "Bearer " + owner)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {"username":"%s","displayName":"Ravi","role":"WAITER","password":"Waiter@123","pin":"1357"}"""
+                                .formatted(username)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.role").value("WAITER"))
+                .andExpect(jsonPath("$.hasPin").value(true))
+                .andExpect(jsonPath("$.mustChangePassword").value(false));
+
+        mvc.perform(post("/api/auth/login").contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"username\":\"%s\",\"pin\":\"1357\"}".formatted(username)))
+                .andExpect(status().isOk());
+    }
+
+    @Test
     void kitchenDeviceTokenViaPinReachesKitchenButNotAdmin() throws Exception {
         String username = createUser(StaffRole.KITCHEN, false);
         MvcResult device = mvc.perform(post("/api/auth/kitchen-device").contentType(MediaType.APPLICATION_JSON)

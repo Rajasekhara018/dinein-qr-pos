@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -157,8 +158,13 @@ public class PaymentService {
     public Long verifyCallback(String provider, Map<String, String> params, GuestSession guest) {
         PaymentGateway gateway = gateways.get(provider);
         ClientVerification verified = gateway.verifyClientCallback(params);
-        PaymentEntity payment = paymentRepository.findByProviderAndProviderOrderId(gateway.code(), verified.providerOrderId())
+        PaymentEntity payment = (verified.providerOrderId() != null
+                ? paymentRepository.findByProviderAndProviderOrderId(gateway.code(), verified.providerOrderId())
+                : latestPaymentFor(verified.internalOrderId(), gateway.code()))
                 .orElseThrow(() -> ApiException.notFound("Payment"));
+        if (verified.providerOrderId() == null) {
+            verified = new ClientVerification(payment.getProviderOrderId(), null);
+        }
         OrderEntity order = orderRepository.findById(payment.getOrderId())
                 .filter(o -> guest == null || o.belongsToGuest(guest.sessionId()))
                 .orElseThrow(() -> ApiException.notFound("Order"));
@@ -170,6 +176,19 @@ public class PaymentService {
         }
         paymentStateService.apply(gateway.code(), authoritative, guest == null ? "redirect" : "client-verify");
         return order.getId();
+    }
+
+    private Optional<PaymentEntity> latestPaymentFor(Long orderId, String provider) {
+        if (orderId == null) {
+            return Optional.empty();
+        }
+        List<PaymentEntity> payments = paymentRepository.findByOrderIdOrderByIdAsc(orderId);
+        for (int i = payments.size() - 1; i >= 0; i--) {
+            if (provider.equals(payments.get(i).getProvider())) {
+                return Optional.of(payments.get(i));
+            }
+        }
+        return Optional.empty();
     }
 
     /** Guard used by public endpoints: the order must belong to the caller's guest session. */
