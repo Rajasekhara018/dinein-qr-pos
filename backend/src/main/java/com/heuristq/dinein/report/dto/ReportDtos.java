@@ -15,6 +15,17 @@ public final class ReportDtos {
     public record MethodSplit(String method, long count, BigDecimal amount) {
     }
 
+    /** Paid orders per order type (DINE_IN, TAKEAWAY); every type is listed, with zeros when unused. */
+    public record OrderTypeSplit(String orderType, long count, BigDecimal amount) {
+    }
+
+    /**
+     * Paid orders per payment channel: ONLINE (any gateway) or the offline method (CASH, UPI_AT_COUNTER,
+     * CARD_AT_COUNTER). Every channel is listed, with zeros when unused; CASH is the cash the counter should hold.
+     */
+    public record PaymentChannelSplit(String channel, long count, BigDecimal amount) {
+    }
+
     public record TopItem(String name, long quantity, BigDecimal revenue) {
     }
 
@@ -23,12 +34,14 @@ public final class ReportDtos {
 
     /**
      * Sales for paid orders (CONFIRMED, PREPARING, READY, COMPLETED) placed in [from, to] (IST dates, inclusive).
-     * {@code net} is revenue excluding GST.
+     * {@code net} is revenue excluding GST. {@code refundedAmount} is gateway refunds completed;
+     * {@code manualRefundAmount} is offline money of cancelled orders that staff had to hand back.
      */
     public record SalesSummary(LocalDate from, LocalDate to, long ordersCount, BigDecimal gross, BigDecimal tax,
                                BigDecimal cgst, BigDecimal sgst, BigDecimal net, BigDecimal averageOrderValue,
-                               long cancelledCount, BigDecimal refundedAmount, List<MethodSplit> paymentMethods,
-                               List<TopItem> topItems, List<DailyPoint> daily) {
+                               long cancelledCount, BigDecimal refundedAmount, BigDecimal manualRefundAmount,
+                               List<MethodSplit> paymentMethods, List<PaymentChannelSplit> paymentChannels,
+                               List<OrderTypeSplit> orderTypes, List<TopItem> topItems, List<DailyPoint> daily) {
     }
 
     public record Dashboard(LocalDate date, long ordersToday, BigDecimal revenueToday, BigDecimal averageOrderValue,

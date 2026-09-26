@@ -53,6 +53,14 @@ class NotificationTemplatesTest {
     }
 
     @Test
+    void readyInAppIsAddressedToWaiters() {
+        Message m = templates.render(NotificationEvent.ORDER_READY, NotificationChannel.IN_APP, DATA, "Spice Garden");
+
+        assertThat(m.subject()).isEqualTo("Order #17 is ready, table T3");
+        assertThat(m.link()).isEqualTo("/waiter");
+    }
+
+    @Test
     void flaggedEmailHasReasonAndAbsoluteLink() {
         Message m = templates.render(NotificationEvent.PAYMENT_FLAGGED, NotificationChannel.EMAIL, DATA, "Spice Garden");
 

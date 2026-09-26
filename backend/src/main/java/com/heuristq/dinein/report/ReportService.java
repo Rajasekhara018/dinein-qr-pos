@@ -4,7 +4,11 @@ import com.heuristq.dinein.order.OrderQueryService;
 import com.heuristq.dinein.order.PricingService;
 import com.heuristq.dinein.report.dto.ReportDtos.DailyPoint;
 import com.heuristq.dinein.report.dto.ReportDtos.Dashboard;
+import com.heuristq.dinein.order.domain.OrderType;
+import com.heuristq.dinein.payment.domain.OfflinePaymentMethod;
 import com.heuristq.dinein.report.dto.ReportDtos.MethodSplit;
+import com.heuristq.dinein.report.dto.ReportDtos.OrderTypeSplit;
+import com.heuristq.dinein.report.dto.ReportDtos.PaymentChannelSplit;
 import com.heuristq.dinein.report.dto.ReportDtos.SalesSummary;
 import com.heuristq.dinein.report.dto.ReportDtos.TopItem;
 import com.heuristq.dinein.shared.exception.ApiException;
@@ -34,6 +38,8 @@ public class ReportService {
 
     private static final String PAID = "('CONFIRMED','PREPARING','READY','COMPLETED')";
     private static final int MAX_RANGE_DAYS = 366;
+    private static final String ONLINE_CHANNEL = "ONLINE";
+    private static final BigDecimal ZERO = BigDecimal.ZERO.setScale(2);
 
     private final NamedParameterJdbcTemplate jdbc;
     private final OrderQueryService orderQueryService;
@@ -69,6 +75,34 @@ public class ReportService {
                         + "GROUP BY 1 ORDER BY amount DESC", p,
                 (rs, i) -> new MethodSplit(rs.getString("method"), rs.getLong("cnt"), Money.round(rs.getBigDecimal("amount"))));
 
+        // ONLINE vs each offline method: how much of the takings is cash in the drawer.
+        Map<String, PaymentChannelSplit> channels = new LinkedHashMap<>();
+        channels.put(ONLINE_CHANNEL, new PaymentChannelSplit(ONLINE_CHANNEL, 0, ZERO));
+        for (OfflinePaymentMethod m : OfflinePaymentMethod.values()) {
+            channels.put(m.name(), new PaymentChannelSplit(m.name(), 0, ZERO));
+        }
+        jdbc.query("SELECT CASE WHEN pm.provider = 'OFFLINE' THEN coalesce(pm.method, 'CASH') ELSE '" + ONLINE_CHANNEL
+                + "' END AS channel, count(*) AS cnt, coalesce(sum(o.grand_total),0) AS amount FROM orders o "
+                + "JOIN payment pm ON pm.order_id = o.id AND pm.status IN ('CAPTURED','REFUNDED') "
+                + "WHERE o.status IN " + PAID + " AND o.placed_at >= :start AND o.placed_at < :end GROUP BY 1", p, rs -> {
+            String channel = rs.getString("channel");
+            channels.put(channel, new PaymentChannelSplit(channel, rs.getLong("cnt"), Money.round(rs.getBigDecimal("amount"))));
+        });
+
+        Map<String, OrderTypeSplit> types = new LinkedHashMap<>();
+        for (OrderType t : OrderType.values()) {
+            types.put(t.name(), new OrderTypeSplit(t.name(), 0, ZERO));
+        }
+        jdbc.query("SELECT order_type, count(*) AS cnt, coalesce(sum(grand_total),0) AS amount FROM orders "
+                + "WHERE status IN " + PAID + " AND placed_at >= :start AND placed_at < :end GROUP BY order_type", p, rs -> {
+            String type = rs.getString("order_type");
+            types.put(type, new OrderTypeSplit(type, rs.getLong("cnt"), Money.round(rs.getBigDecimal("amount"))));
+        });
+
+        BigDecimal manualRefunds = jdbc.queryForObject("SELECT coalesce(sum(coalesce(pm.captured_amount_paise, pm.amount_paise)),0) "
+                + "FROM payment pm JOIN orders o ON o.id = pm.order_id WHERE pm.refund_status = 'MANUAL' "
+                + "AND o.placed_at >= :start AND o.placed_at < :end", p, BigDecimal.class);
+
         List<TopItem> topItems = jdbc.query("SELECT oi.item_name AS name, sum(oi.quantity) AS qty, "
                         + "coalesce(sum(oi.line_total),0) AS revenue FROM order_item oi JOIN orders o ON o.id = oi.order_id "
                         + "WHERE o.status IN " + PAID + " AND o.placed_at >= :start AND o.placed_at < :end "
@@ -83,7 +117,8 @@ public class ReportService {
         BigDecimal avg = count == 0 ? BigDecimal.ZERO.setScale(2) : gross.divide(BigDecimal.valueOf(count), 2, RoundingMode.HALF_UP);
         return new SalesSummary(from, to, count, gross, tax, split[0], split[1], Money.round(gross.subtract(tax)), avg,
                 ((Number) cancelled.get("cnt")).longValue(), Money.fromPaise(refunded == null ? 0 : refunded.longValue()),
-                methods, topItems, daily);
+                Money.fromPaise(manualRefunds == null ? 0 : manualRefunds.longValue()), methods,
+                List.copyOf(channels.values()), List.copyOf(types.values()), topItems, daily);
     }
 
     @Transactional(readOnly = true)
@@ -113,11 +148,13 @@ public class ReportService {
     public void writeOrdersCsv(LocalDate from, LocalDate to, Writer out) throws IOException {
         MapSqlParameterSource p = range(from, to);
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        out.write("order_number,token,placed_at_ist,status,table,customer_name,subtotal,tax_total,grand_total,"
-                + "payment_provider,payment_method,payment_id\n");
-        jdbc.query("SELECT o.order_number, o.display_token, o.placed_at, o.status, t.label, o.customer_name, o.subtotal, "
-                + "o.tax_total, o.grand_total, pm.provider, pm.method, pm.provider_payment_id FROM orders o "
+        out.write("order_number,token,placed_at_ist,status,order_type,table,customer_name,subtotal,tax_total,grand_total,"
+                + "payment_provider,payment_method,payment_id,refund_status,placed_by\n");
+        jdbc.query("SELECT o.order_number, o.display_token, o.placed_at, o.status, o.order_type, t.label, o.customer_name, "
+                + "o.subtotal, o.tax_total, o.grand_total, pm.provider, pm.method, pm.provider_payment_id, pm.refund_status, "
+                + "su.username AS placed_by FROM orders o "
                 + "LEFT JOIN dining_table t ON t.id = o.table_id "
+                + "LEFT JOIN staff_user su ON su.id = o.placed_by_staff_id "
                 + "LEFT JOIN LATERAL (SELECT * FROM payment x WHERE x.order_id = o.id ORDER BY (x.status = 'CAPTURED') DESC, x.id DESC LIMIT 1) pm ON true "
                 + "WHERE o.placed_at >= :start AND o.placed_at < :end ORDER BY o.placed_at", p, rs -> {
             try {
@@ -125,10 +162,11 @@ public class ReportService {
                 out.write(String.join(",",
                         csv(rs.getString("order_number")), String.valueOf(rs.getInt("display_token")),
                         csv(placed.toInstant().atZone(BusinessTime.ZONE).format(fmt)), csv(rs.getString("status")),
-                        csv(rs.getString("label")), csv(rs.getString("customer_name")),
+                        csv(rs.getString("order_type")), csv(rs.getString("label")), csv(rs.getString("customer_name")),
                         rs.getBigDecimal("subtotal").toPlainString(), rs.getBigDecimal("tax_total").toPlainString(),
                         rs.getBigDecimal("grand_total").toPlainString(), csv(rs.getString("provider")),
-                        csv(rs.getString("method")), csv(rs.getString("provider_payment_id"))));
+                        csv(rs.getString("method")), csv(rs.getString("provider_payment_id")),
+                        csv(rs.getString("refund_status")), csv(rs.getString("placed_by"))));
                 out.write("\n");
             } catch (IOException e) {
                 throw new java.io.UncheckedIOException(e);
