@@ -22,7 +22,7 @@ public class RefreshTokenEntity extends BaseEntity {
     @Column(name = "staff_user_id", nullable = false)
     private Long staffUserId;
 
-    @Column(name = "token_hash", nullable = false, unique = true, length = 64)
+    @Column(name = "token_hash", nullable = false, unique = true, length = 64, columnDefinition = "bpchar(64)")
     private String tokenHash;
 
     @Column(name = "family_id", nullable = false, length = 36)

@@ -26,7 +26,8 @@ import java.util.regex.Pattern;
  *   <li>Guests: the signed guest-session cookie captured at handshake time.</li>
  * </ul>
  * Topic rules: {@code /topic/kitchen/**} staff only; {@code /topic/orders/{id}} the owning guest (or owner/manager);
- * {@code /topic/menu} anyone. Clients may not SEND; the server is the only publisher.
+ * {@code /topic/staff/notifications} owner/manager users (not kitchen devices); {@code /topic/menu} anyone.
+ * Clients may not SEND; the server is the only publisher.
  */
 @Slf4j
 @Component
@@ -93,6 +94,12 @@ public class StompAuthChannelInterceptor implements ChannelInterceptor {
         StaffPrincipal staff = staffOf(user);
         if (destination.equals(RealtimePublisher.KITCHEN_TOPIC)) {
             if (staff != null) {
+                return;
+            }
+            throw denied(destination);
+        }
+        if (destination.equals(RealtimePublisher.STAFF_NOTIFICATIONS_TOPIC)) {
+            if (staff != null && !staff.isDevice() && staff.role() != StaffRole.KITCHEN) {
                 return;
             }
             throw denied(destination);

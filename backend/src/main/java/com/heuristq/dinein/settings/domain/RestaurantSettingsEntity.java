@@ -54,7 +54,7 @@ public class RestaurantSettingsEntity {
     @Column(name = "closing_time")
     private LocalTime closingTime;
 
-    @Column(nullable = false, length = 3)
+    @Column(nullable = false, length = 3, columnDefinition = "bpchar(3)")
     private String currency = "INR";
 
     @Column(name = "brand_color", nullable = false, length = 7)
