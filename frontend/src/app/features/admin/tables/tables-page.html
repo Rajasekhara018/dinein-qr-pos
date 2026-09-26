@@ -44,10 +44,10 @@
               <input type="checkbox" class="size-5 accent-[var(--brand)]" [checked]="allSelected()" [indeterminate]="someSelected()" (change)="toggleAll($any($event.target).checked)" />
             </label>
           </th>
-          <th scope="col" class="w-32 px-4 py-3 font-semibold">Table</th>
+          <th scope="col" class="px-4 py-3 font-semibold">Table</th>
           <th scope="col" class="w-28 px-4 py-3 font-semibold">Active</th>
-          <th scope="col" class="px-4 py-3 font-semibold">Menu link</th>
-          <th scope="col" class="w-[23rem] px-4 py-3 text-right font-semibold xl:w-[26rem]"><span class="sr-only">Actions</span></th>
+          <th scope="col" class="hidden px-4 py-3 font-semibold xl:table-cell">Menu link</th>
+          <th scope="col" class="w-[22rem] px-4 py-3 text-right font-semibold xl:w-[26rem]"><span class="sr-only">Actions</span></th>
         </tr>
       </thead>
       <tbody class="divide-y divide-line">
@@ -63,7 +63,7 @@
             <td class="px-4 py-2">
               <app-toggle-switch [checked]="t.active" [label]="'Active: table ' + t.label" [busy]="busyIds().has(t.id)" (checkedChange)="setActive(t, $event)" />
             </td>
-            <td class="truncate px-4 py-3 font-mono text-xs text-ink-muted" [attr.title]="t.qrUrl">{{ t.qrUrl }}</td>
+            <td class="hidden truncate px-4 py-3 font-mono text-xs text-ink-muted xl:table-cell" [attr.title]="t.qrUrl">{{ t.qrUrl }}</td>
             <td class="px-2 py-2">
               <ng-container *ngTemplateOutlet="actions; context: { $implicit: t }" />
             </td>

@@ -40,9 +40,9 @@
         <thead class="bg-surface-muted text-xs uppercase tracking-wide text-ink-muted">
           <tr>
             <th scope="col" class="px-4 py-3 font-semibold">User</th>
-            <th scope="col" class="w-72 px-4 py-3 font-semibold">Status</th>
-            <th scope="col" class="hidden w-48 px-4 py-3 font-semibold lg:table-cell">Contact</th>
-            <th scope="col" class="w-40 px-4 py-3 font-semibold">Last sign-in</th>
+            <th scope="col" class="w-56 px-4 py-3 font-semibold">Status</th>
+            <th scope="col" class="hidden w-48 px-4 py-3 font-semibold xl:table-cell">Contact</th>
+            <th scope="col" class="w-36 px-4 py-3 font-semibold">Last sign-in</th>
             <th scope="col" class="w-20 px-2 py-3"><span class="sr-only">Actions</span></th>
           </tr>
         </thead>
@@ -54,7 +54,7 @@
                 <p class="truncate text-ink-muted">{{ u.username }}</p>
               </td>
               <td class="px-4 py-3"><ng-container *ngTemplateOutlet="badges; context: { $implicit: u }" /></td>
-              <td class="hidden truncate px-4 py-3 text-ink-muted lg:table-cell">
+              <td class="hidden truncate px-4 py-3 text-ink-muted xl:table-cell">
                 {{ u.email || '—' }}
                 @if (u.phone) {
                   <span class="block">{{ u.phone }}</span>

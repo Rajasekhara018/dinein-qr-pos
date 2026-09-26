@@ -5,9 +5,9 @@
   </a>
 </app-page-header>
 
-<div class="lg:grid lg:grid-cols-[14rem_minmax(0,1fr)] lg:gap-6">
+<div class="xl:grid xl:grid-cols-[14rem_minmax(0,1fr)] xl:gap-6">
   <!-- Category filter: sidebar on desktop -->
-  <nav class="hidden lg:block" aria-label="Filter by category">
+  <nav class="hidden xl:block" aria-label="Filter by category">
     <h2 class="mb-2 text-xs font-semibold uppercase tracking-wide text-ink-muted">Categories</h2>
     <ul class="flex flex-col gap-1" role="list">
       <li>
@@ -54,8 +54,8 @@
   <section class="min-w-0" aria-labelledby="items-results-heading">
     <h2 id="items-results-heading" class="sr-only">Items</h2>
     <!-- Filters -->
-    <div class="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-[minmax(0,1fr)_12rem] lg:grid-cols-[minmax(0,1fr)_12rem]">
-      <div class="lg:hidden sm:col-span-2">
+    <div class="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-[minmax(0,1fr)_12rem]">
+      <div class="sm:col-span-2 xl:hidden">
         <label for="items-category" class="block text-sm font-medium text-ink">Category</label>
         <select id="items-category" appInput class="mt-1" [formControl]="categoryControl">
           <option [ngValue]="null">All categories</option>
@@ -127,17 +127,17 @@
           <caption class="sr-only">Menu items</caption>
           <thead class="bg-surface-muted text-xs uppercase tracking-wide text-ink-muted">
             <tr>
-              <th scope="col" class="w-20 px-4 py-3"><span class="sr-only">Photo</span></th>
+              <th scope="col" class="w-16 py-3 pl-4"><span class="sr-only">Photo</span></th>
               <th scope="col" class="px-4 py-3 font-semibold">Item</th>
-              <th scope="col" class="w-48 px-4 py-3 font-semibold">Price</th>
-              <th scope="col" class="w-32 px-4 py-3 font-semibold">Available</th>
-              <th scope="col" class="w-28 px-4 py-3 text-right font-semibold"><span class="sr-only">Actions</span></th>
+              <th scope="col" class="w-44 px-4 py-3 font-semibold">Price</th>
+              <th scope="col" class="w-28 px-4 py-3 font-semibold">Available</th>
+              <th scope="col" class="w-28 px-2 py-3 text-right font-semibold"><span class="sr-only">Actions</span></th>
             </tr>
           </thead>
           <tbody class="divide-y divide-line">
             @for (item of store.items(); track item.id) {
               <tr [attr.data-testid]="'item-row-' + item.id">
-                <td class="px-4 py-3 align-top">
+                <td class="py-3 pl-4 align-top">
                   <app-image-box [src]="item.thumbUrl" [alt]="''" sizes="48px" class="size-12 rounded-control" />
                 </td>
                 <td class="min-w-0 px-4 py-3 align-top">

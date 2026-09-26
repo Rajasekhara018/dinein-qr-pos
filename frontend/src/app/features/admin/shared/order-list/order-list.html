@@ -6,11 +6,11 @@
       <tr>
         <th scope="col" class="w-20 px-4 py-3 font-semibold">Token</th>
         <th scope="col" class="px-4 py-3 font-semibold">Order</th>
-        <th scope="col" class="w-24 px-4 py-3 font-semibold">Table</th>
-        <th scope="col" class="w-36 px-4 py-3 font-semibold">Status</th>
-        <th scope="col" class="hidden w-28 px-4 py-3 font-semibold lg:table-cell">Payment</th>
+        <th scope="col" class="w-20 px-4 py-3 font-semibold">Table</th>
+        <th scope="col" class="w-32 px-4 py-3 font-semibold">Status</th>
+        <th scope="col" class="hidden w-28 px-4 py-3 font-semibold xl:table-cell">Payment</th>
         <th scope="col" class="w-28 px-4 py-3 text-right font-semibold">Total</th>
-        <th scope="col" class="w-32 px-4 py-3 font-semibold">Time</th>
+        <th scope="col" class="w-28 px-4 py-3 font-semibold">Time</th>
       </tr>
     </thead>
     <tbody class="divide-y divide-line">
@@ -40,7 +40,7 @@
               }
             </span>
           </td>
-          <td class="hidden truncate px-4 py-3 uppercase text-ink-muted lg:table-cell">
+          <td class="hidden truncate px-4 py-3 uppercase text-ink-muted xl:table-cell">
             {{ order.paymentMethod ?? '—' }}
           </td>
           <td class="px-4 py-3 text-right font-semibold tabular-nums">{{ order.grandTotal | inr }}</td>
