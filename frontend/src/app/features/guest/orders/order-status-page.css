@@ -1,0 +1,11 @@
+/* Soft highlight over the brand-coloured token card. */
+.token-card {
+  background-image: radial-gradient(circle at 20% 0%, rgb(255 255 255 / 0.18), transparent 60%);
+}
+
+@media print {
+  :host main {
+    max-width: none;
+    padding: 0;
+  }
+}

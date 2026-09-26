@@ -10,24 +10,7 @@ import { ApiError } from '../../core/api/api-error';
   standalone: false,
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: 'flex flex-col items-center px-4 py-10 text-center sm:py-16', role: 'alert' },
-  template: `
-    <div class="mb-4 flex size-16 items-center justify-center rounded-full bg-red-50 text-danger dark:bg-red-950" aria-hidden="true">
-      <svg viewBox="0 0 24 24" class="size-8" fill="none" stroke="currentColor" stroke-width="1.8">
-        <path d="M12 9v4m0 4h.01M10.3 3.9 2.4 17.5A2 2 0 0 0 4.1 20.5h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z" />
-      </svg>
-    </div>
-    <h2 class="font-display text-lg font-semibold text-ink sm:text-xl">{{ title() }}</h2>
-    <p class="mt-1 max-w-sm text-sm text-ink-muted sm:text-base">{{ message() }}</p>
-    <div class="mt-6 flex flex-wrap items-center justify-center gap-3">
-      @if (retryable()) {
-        <button appButton type="button" (click)="retry.emit()">Try again</button>
-      }
-      <ng-content />
-    </div>
-    @if (traceId()) {
-      <p class="mt-4 font-mono text-xs text-ink-subtle">Ref: {{ traceId() }}</p>
-    }
-  `,
+  templateUrl: './error-state.html',
 })
 export class ErrorState {
   readonly title = input('Something went wrong');

@@ -21,23 +21,7 @@ const LABELS: Record<FoodType, string> = {
     '[attr.aria-label]': 'label()',
     '[attr.title]': 'label()',
   },
-  template: `
-    <svg [attr.width]="size()" [attr.height]="size()" viewBox="0 0 16 16" aria-hidden="true" [class]="colorClass()">
-      <rect x="1" y="1" width="14" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="1.6" />
-      @switch (type()) {
-        @case ('NON_VEG') {
-          <path d="M8 4 L12.2 11.5 H3.8 Z" fill="currentColor" />
-        }
-        @case ('EGG') {
-          <circle cx="8" cy="8" r="3.9" fill="none" stroke="currentColor" stroke-width="1.4" />
-          <circle cx="8" cy="8" r="2" fill="currentColor" />
-        }
-        @default {
-          <circle cx="8" cy="8" r="3.4" fill="currentColor" />
-        }
-      }
-    </svg>
-  `,
+  templateUrl: './veg-marker.html',
 })
 export class VegMarker {
   readonly type = input.required<FoodType>();

@@ -1,0 +1,49 @@
+<ul role="list" class="divide-y divide-line">
+  @for (line of lines(); track line.key) {
+    <li
+      class="py-3 first:pt-0 last:pb-0"
+      [class.opacity-90]="!!line.issue"
+      [attr.data-testid]="'cart-line-' + line.itemId"
+    >
+      <div class="flex min-w-0 items-start gap-3" [ngClass]="line.issue ? 'rounded-control bg-red-50 p-2 ring-1 ring-red-200 dark:bg-red-950 dark:ring-red-800' : ''">
+        <app-veg-marker [type]="line.foodType" class="mt-1" [size]="14" />
+        <div class="min-w-0 flex-1">
+          <p class="font-medium leading-snug" [class.line-through]="!!line.issue">{{ line.name }}</p>
+          @if (line.variantName || line.addonNames.length) {
+            <p class="text-xs text-ink-muted">
+              {{ line.variantName }}@if (line.variantName && line.addonNames.length) {<span>, </span>}{{ line.addonNames.join(', ') }}
+            </p>
+          }
+          @if (line.notes) {
+            <p class="text-xs italic text-ink-subtle">“{{ line.notes }}”</p>
+          }
+          @if (line.issue) {
+            <p class="mt-1 text-sm font-semibold text-danger" role="alert">{{ line.issue.message }}</p>
+          } @else if (!compact()) {
+            <p class="mt-0.5 text-xs text-ink-subtle tabular-nums">{{ line.unitPrice | inr }} each</p>
+          }
+          <div class="mt-1 flex flex-wrap gap-x-1">
+            @if (editable() && !line.issue) {
+              <button type="button" class="min-h-touch -ml-2 rounded-control px-2 text-sm font-semibold text-brand-ink hover:underline" (click)="edit.emit(line)">
+                Edit<span class="sr-only"> {{ line.name }}</span>
+              </button>
+            }
+            <button type="button" class="min-h-touch rounded-control px-2 text-sm font-semibold text-ink-muted hover:text-danger hover:underline" [class.-ml-2]="!editable() || !!line.issue" (click)="remove.emit(line)">
+              Remove<span class="sr-only"> {{ line.name }}</span>
+            </button>
+          </div>
+        </div>
+        <div class="flex shrink-0 flex-col items-end gap-2">
+          @if (!line.issue) {
+            <app-quantity-stepper
+              [quantity]="line.quantity"
+              (quantityChange)="quantityChange.emit({ line, quantity: $event })"
+              [itemName]="line.name"
+            />
+          }
+          <span class="font-semibold tabular-nums">{{ lineTotal(line) | inr: 'paise' }}</span>
+        </div>
+      </div>
+    </li>
+  }
+</ul>

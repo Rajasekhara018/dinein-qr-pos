@@ -1,0 +1,30 @@
+<dl class="space-y-1.5 text-sm">
+  <div class="flex justify-between gap-4">
+    <dt class="text-ink-muted">Subtotal</dt>
+    <dd class="tabular-nums" data-testid="bill-subtotal">{{ bill().subtotal | inr: 'paise' }}</dd>
+  </div>
+  <div class="flex justify-between gap-4">
+    <dt class="text-ink-muted">CGST</dt>
+    <dd class="tabular-nums" data-testid="bill-cgst">{{ bill().cgst | inr: 'paise' }}</dd>
+  </div>
+  <div class="flex justify-between gap-4">
+    <dt class="text-ink-muted">SGST</dt>
+    <dd class="tabular-nums" data-testid="bill-sgst">{{ bill().sgst | inr: 'paise' }}</dd>
+  </div>
+  <div class="flex items-baseline justify-between gap-4 border-t border-line pt-2 text-base font-bold">
+    <dt>
+      {{ estimated() ? 'Estimated total' : 'Total' }}
+    </dt>
+    <dd class="tabular-nums" data-testid="bill-total">{{ bill().grandTotal | inr: 'paise' }}</dd>
+  </div>
+</dl>
+<p class="mt-2 text-xs text-ink-subtle">
+  @if (pricesIncludeGst()) {
+    Prices include GST.
+  } @else {
+    GST is added to menu prices.
+  }
+  @if (estimated()) {
+    Final amount is confirmed when you pay.
+  }
+</p>

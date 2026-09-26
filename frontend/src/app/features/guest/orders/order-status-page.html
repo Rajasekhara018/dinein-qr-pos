@@ -1,0 +1,124 @@
+<main class="mx-auto w-full max-w-3xl px-4 pb-10 pt-4 lg:px-6">
+  @if (order(); as o) {
+    <div class="flex items-center gap-2 print:hidden">
+      <a appIconButton routerLink="/menu/orders" aria-label="My orders" class="-ml-2">
+        <svg viewBox="0 0 20 20" class="size-5 fill-current" aria-hidden="true"><path d="M12.7 4.3 7 10l5.7 5.7 1.4-1.4L9.8 10l4.3-4.3-1.4-1.4Z"/></svg>
+      </a>
+      <h1 class="min-w-0 truncate font-display text-xl font-semibold">Order {{ o.orderNumber }}</h1>
+      <app-order-status-badge class="ml-auto" [status]="o.status" />
+    </div>
+
+    <!-- Token -->
+    <section class="token-card mt-4 rounded-sheet bg-brand p-6 text-center text-brand-contrast shadow-raised print:hidden" aria-labelledby="token-label">
+      <p id="token-label" class="text-sm font-semibold uppercase tracking-widest opacity-90">Your token</p>
+      <p class="mt-1 font-display text-[clamp(4rem,22vw,7.5rem)] font-bold leading-none tabular-nums" data-testid="order-token">
+        {{ o.displayToken }}
+      </p>
+      @if (o.tableLabel) {
+        <p class="mt-2 text-base opacity-90">Table <strong>{{ o.tableLabel }}</strong></p>
+      }
+    </section>
+
+    <!-- Status -->
+    <section class="mt-4 print:hidden" aria-live="polite">
+      @switch (o.status) {
+        @case ('PENDING_PAYMENT') {
+          @if (showPaymentFailed()) {
+            <app-card class="border-amber-300 bg-amber-50 text-amber-950 dark:border-amber-700 dark:bg-amber-950 dark:text-amber-50">
+              <h2 class="font-display text-lg font-semibold" role="alert">Payment not completed</h2>
+              <p class="mt-1 text-sm">{{ paymentMessage() ?? 'Your payment did not go through. You can try again — your order is saved.' }}</p>
+              <div class="mt-3 flex flex-wrap gap-2">
+                @if (o.canRetryPayment) {
+                  <button appButton type="button" [loading]="retrying()" (click)="retryPayment()">Retry payment</button>
+                }
+                <button appButton type="button" variant="outline" (click)="editCart()">Edit cart</button>
+              </div>
+            </app-card>
+          } @else {
+            <app-card>
+              <div class="flex items-start gap-3">
+                <app-spinner [size]="22" class="mt-0.5 text-brand-ink" />
+                <div class="min-w-0">
+                  <h2 class="font-semibold">Waiting for payment confirmation…</h2>
+                  <p class="mt-1 text-sm text-ink-muted">This usually takes a few seconds. Keep this page open.</p>
+                </div>
+              </div>
+              @if (o.canRetryPayment) {
+                <div class="mt-3 flex flex-wrap gap-2">
+                  <button appButton type="button" variant="outline" [loading]="retrying()" (click)="retryPayment()">Retry payment</button>
+                  <button appButton type="button" variant="ghost" (click)="editCart()">Edit cart</button>
+                </div>
+              }
+            </app-card>
+          }
+        }
+        @case ('EXPIRED') {
+          <app-card>
+            <h2 class="font-display text-lg font-semibold">This order expired</h2>
+            <p class="mt-1 text-sm text-ink-muted">Payment wasn't completed in time, so the order was not sent to the kitchen. You have not been charged.</p>
+            <a appButton routerLink="/menu" class="mt-3">Order again</a>
+          </app-card>
+        }
+        @case ('PAYMENT_FAILED') {
+          <app-card>
+            <h2 class="font-display text-lg font-semibold text-danger">Payment failed</h2>
+            <p class="mt-1 text-sm text-ink-muted">
+              {{ o.payment?.failureReason || 'The payment could not be completed, so the order was not sent to the kitchen.' }}
+              If money was deducted, it will be refunded automatically by your bank.
+            </p>
+            <a appButton routerLink="/menu" class="mt-3">Order again</a>
+          </app-card>
+        }
+        @case ('CANCELLED') {
+          <app-card>
+            <h2 class="font-display text-lg font-semibold text-danger">Order cancelled</h2>
+            <p class="mt-1 text-sm text-ink-muted">
+              Sorry — the restaurant cancelled this order.
+              @switch (o.payment?.refundStatus) {
+                @case ('PROCESSED') { Your refund has been processed and should reach your account in 5–7 working days. }
+                @case ('FAILED') { We're having trouble with the refund — please speak to our staff. }
+                @default { A full refund has been initiated to your original payment method. }
+              }
+            </p>
+          </app-card>
+        }
+        @default {
+          <app-order-progress [order]="o" />
+          @if (o.status === 'READY') {
+            <p class="mt-3 rounded-card bg-green-50 p-4 text-center text-lg font-semibold text-green-900 dark:bg-green-950 dark:text-green-100" role="status">
+              Your order is ready! Please collect it or wait for it to be served.
+            </p>
+          }
+        }
+      }
+    </section>
+
+    <div class="mt-4 flex flex-wrap gap-2 print:hidden">
+      <a appButton routerLink="/menu" variant="secondary">
+        <svg viewBox="0 0 20 20" class="size-4 fill-current" aria-hidden="true"><path d="M9 4h2v5h5v2h-5v5H9v-5H4V9h5z"/></svg>
+        Order more
+      </a>
+      <a appButton routerLink="/menu/orders" variant="ghost">My orders</a>
+      <button appButton type="button" variant="ghost" class="ml-auto" (click)="print()">
+        <svg viewBox="0 0 20 20" class="size-4 fill-current" aria-hidden="true"><path d="M5 2h10v4H5V2Zm-2 5h14a2 2 0 0 1 2 2v5h-3v4H4v-4H1V9a2 2 0 0 1 2-2Zm3 7v2h8v-2H6Z"/></svg>
+        Print bill
+      </button>
+    </div>
+
+    @defer (on viewport; prefetch on idle) {
+      <app-order-bill class="mt-6" [order]="o" [restaurant]="restaurant()" />
+    } @placeholder {
+      <app-skeleton shape="block" class="mt-6 h-64" />
+    }
+  } @else if (error()) {
+    <app-error-state title="We couldn't load this order" [error]="error()" (retry)="refetch()">
+      <a appButton variant="outline" routerLink="/menu/orders">My orders</a>
+    </app-error-state>
+  } @else {
+    <div aria-busy="true" aria-label="Loading order">
+      <app-skeleton class="h-7 w-48" />
+      <app-skeleton shape="block" class="mt-4 h-44" />
+      <app-skeleton shape="block" class="mt-4 h-24" />
+    </div>
+  }
+</main>

@@ -1,0 +1,15 @@
+/* When printing, show only the bill: everything else on the page is marked print:hidden. */
+@media print {
+  :host {
+    display: block;
+    margin: 0 !important;
+  }
+
+  .bill {
+    border: none;
+    box-shadow: none;
+    padding: 0;
+    color: #000;
+    background: #fff;
+  }
+}

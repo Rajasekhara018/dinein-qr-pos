@@ -9,7 +9,7 @@ import { ChangeDetectionStrategy, Component, computed, input } from '@angular/co
     '[class]': 'classes()',
     'aria-hidden': 'true',
   },
-  template: '',
+  templateUrl: './skeleton.html',
 })
 export class Skeleton {
   readonly shape = input<'line' | 'block' | 'circle'>('line');

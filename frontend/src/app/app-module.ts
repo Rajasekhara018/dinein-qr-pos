@@ -25,7 +25,6 @@ import { csrfInterceptor, XSRF_COOKIE, XSRF_HEADER } from './core/http/csrf.inte
 import { errorInterceptor } from './core/http/error.interceptor';
 import { AppErrorHandler } from './core/ui/app-error-handler';
 import { IST_OFFSET } from './core/util/time';
-import { SharedModule } from './shared/shared-module';
 import { NotFound } from './pages/not-found/not-found';
 
 registerLocaleData(localeEnIn, 'en-IN');
@@ -36,7 +35,6 @@ registerLocaleData(localeEnIn, 'en-IN');
     BrowserModule,
     AppRoutingModule,
     CoreModule,
-    SharedModule,
     ServiceWorkerModule.register('ngsw-worker.js', {
       enabled: !isDevMode(),
       // Register once the app is stable or after 30 seconds, whichever comes first.

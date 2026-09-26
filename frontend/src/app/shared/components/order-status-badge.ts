@@ -22,7 +22,7 @@ export function orderStatusLabel(status: OrderStatus): string {
   standalone: false,
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { '[class]': 'classes()' },
-  template: '{{ label() }}',
+  templateUrl: './order-status-badge.html',
 })
 export class OrderStatusBadge {
   readonly status = input.required<OrderStatus>();

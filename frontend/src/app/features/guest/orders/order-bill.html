@@ -1,0 +1,88 @@
+<app-card class="bill" padding="lg">
+  <header class="border-b border-dashed border-line-strong pb-3 text-center">
+    <h2 class="font-display text-lg font-semibold">{{ restaurant()?.name ?? 'Bill' }}</h2>
+    @if (restaurant()?.address) {
+      <p class="text-xs text-ink-muted">{{ restaurant()?.address }}</p>
+    }
+    <p class="mt-1 text-xs text-ink-muted">
+      @if (restaurant()?.gstin) {
+        <span>GSTIN {{ restaurant()?.gstin }}</span>
+      }
+      @if (restaurant()?.gstin && restaurant()?.fssaiNo) {
+        <span aria-hidden="true"> · </span>
+      }
+      @if (restaurant()?.fssaiNo) {
+        <span>FSSAI {{ restaurant()?.fssaiNo }}</span>
+      }
+    </p>
+  </header>
+
+  <dl class="grid grid-cols-2 gap-x-4 gap-y-1 border-b border-dashed border-line-strong py-3 text-sm">
+    <dt class="text-ink-muted">Order</dt>
+    <dd class="text-right font-medium">{{ order().orderNumber }}</dd>
+    <dt class="text-ink-muted">Token</dt>
+    <dd class="text-right font-medium">{{ order().displayToken }}</dd>
+    @if (order().tableLabel) {
+      <dt class="text-ink-muted">Table</dt>
+      <dd class="text-right font-medium">{{ order().tableLabel }}</dd>
+    }
+    @if (order().placedAt) {
+      <dt class="text-ink-muted">Date</dt>
+      <dd class="text-right font-medium">{{ order().placedAt | date }}</dd>
+    }
+    @if (order().customerName) {
+      <dt class="text-ink-muted">Name</dt>
+      <dd class="truncate text-right font-medium">{{ order().customerName }}</dd>
+    }
+  </dl>
+
+  <table class="w-full table-fixed border-b border-dashed border-line-strong text-sm">
+    <caption class="sr-only">Items ordered</caption>
+    <thead>
+      <tr class="text-left text-xs text-ink-muted">
+        <th scope="col" class="w-1/2 py-2 font-medium">Item</th>
+        <th scope="col" class="py-2 text-center font-medium">Qty</th>
+        <th scope="col" class="py-2 text-right font-medium">Rate</th>
+        <th scope="col" class="py-2 text-right font-medium">Amount</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (line of order().items; track $index) {
+        <tr class="align-top">
+          <td class="py-1.5 pr-2">
+            <span class="block break-words font-medium">{{ line.name }}</span>
+            @if (line.variantName) {
+              <span class="block text-xs text-ink-muted">{{ line.variantName }}</span>
+            }
+            @for (addon of line.addons; track $index) {
+              <span class="block text-xs text-ink-muted">+ {{ addon.name }} ({{ addon.price | inr }})</span>
+            }
+            @if (line.notes) {
+              <span class="block text-xs italic text-ink-subtle">“{{ line.notes }}”</span>
+            }
+          </td>
+          <td class="py-1.5 text-center tabular-nums">{{ line.quantity }}</td>
+          <td class="py-1.5 text-right tabular-nums">{{ line.unitPrice | inr }}</td>
+          <td class="py-1.5 text-right tabular-nums">{{ line.lineTotal | inr }}</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+
+  <app-bill-summary class="pt-3" [bill]="amounts()" [estimated]="false" [pricesIncludeGst]="order().bill.pricesIncludeGst" />
+  @if (gstRates()) {
+    <p class="mt-1 text-xs text-ink-subtle">GST rate(s): {{ gstRates() }} (CGST and SGST at half each).</p>
+  }
+  @if (order().payment?.method || order().paidAt) {
+    <p class="mt-3 text-xs text-ink-muted">
+      Paid
+      @if (order().payment?.method) {
+        via <span class="uppercase">{{ order().payment?.method }}</span>
+      }
+      @if (order().paidAt) {
+        on {{ order().paidAt | date }}
+      }
+    </p>
+  }
+  <p class="mt-4 text-center text-xs text-ink-subtle">Thank you for dining with us!</p>
+</app-card>

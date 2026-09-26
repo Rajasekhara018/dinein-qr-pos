@@ -15,6 +15,8 @@ brief left a choice open, it is recorded here.
   `*-routing-module.ts`, and a `SharedModule` exporting the UI kit. This overrides the brief's "standalone components
   only". Signals, zoneless change detection, OnPush, built-in control flow, functional guards/interceptors and lazy
   loading are kept.
+- Every component is split into `name.ts` / `name.html` / `name.css` (`templateUrl` + `styleUrl`, no inline templates
+  or styles); `angular.json` schematics are set so `ng generate component` follows the same convention.
 
 ## Payments are provider-agnostic
 - `payment.gateway.PaymentGateway` is an SPI implemented by `RazorpayPaymentGateway` (complete),

@@ -1,0 +1,9 @@
+@if (from()) {
+  <span class="text-xs font-normal text-ink-muted">from</span>
+}
+<span>{{ amount() | inr: (whole() ? 'whole' : 'rupees') }}</span>
+@if (original() !== null && original() !== amount()) {
+  <s class="text-xs font-normal text-ink-subtle">
+    <span class="sr-only">was </span>{{ original() | inr: (whole() ? 'whole' : 'rupees') }}
+  </s>
+}

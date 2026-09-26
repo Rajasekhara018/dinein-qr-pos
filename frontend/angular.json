@@ -13,9 +13,11 @@
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
+          "inlineTemplate": false,
+          "inlineStyle": false,
+          "style": "css",
           "standalone": false,
-          "changeDetection": "OnPush",
-          "style": "none"
+          "changeDetection": "OnPush"
         },
         "@schematics/angular:directive": {
           "standalone": false
@@ -41,6 +43,9 @@
             ],
             "styles": [
               "src/styles.css"
+            ],
+            "allowedCommonJsDependencies": [
+              "@stomp/stompjs"
             ]
           },
           "configurations": {

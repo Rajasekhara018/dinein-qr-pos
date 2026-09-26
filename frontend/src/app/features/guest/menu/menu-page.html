@@ -1,0 +1,138 @@
+<div
+  class="mx-auto w-full max-w-7xl lg:grid lg:grid-cols-[minmax(0,1fr)_22rem] lg:gap-6 lg:px-6 xl:grid-cols-[minmax(0,1fr)_24rem]"
+>
+  <main class="min-w-0 lg:pb-10" [class.pb-28]="cart.itemCount() > 0" [class.pb-8]="cart.itemCount() === 0">
+    <!-- Sticky search + category chips -->
+    <div class="sticky top-0 z-20 border-b border-line bg-bg/95 backdrop-blur supports-[backdrop-filter]:bg-bg/85 lg:-mx-1 lg:px-1">
+      <div class="px-4 pt-3 lg:px-0">
+        <label for="menu-search" class="sr-only">Search the menu</label>
+        <div class="relative">
+          <svg viewBox="0 0 20 20" class="pointer-events-none absolute left-3 top-1/2 size-5 -translate-y-1/2 fill-ink-subtle" aria-hidden="true">
+            <path d="M8.5 2a6.5 6.5 0 0 1 5.2 10.4l4 4-1.4 1.4-4-4A6.5 6.5 0 1 1 8.5 2Zm0 2a4.5 4.5 0 1 0 0 9 4.5 4.5 0 0 0 0-9Z" />
+          </svg>
+          <input
+            id="menu-search"
+            type="search"
+            enterkeyhint="search"
+            autocomplete="off"
+            placeholder="Search dishes"
+            class="block min-h-touch w-full rounded-control border border-line-strong bg-surface pl-10 pr-11 text-base placeholder:text-ink-subtle"
+            [value]="query()"
+            (input)="onSearch($any($event.target).value)"
+          />
+          @if (query()) {
+            <button appIconButton type="button" class="absolute right-0 top-0" aria-label="Clear search" (click)="clearSearch()">
+              <svg viewBox="0 0 20 20" class="size-4 fill-current" aria-hidden="true"><path d="M5.3 4 10 8.6 14.7 4 16 5.3 11.4 10l4.6 4.7-1.3 1.3-4.7-4.6L5.3 16 4 14.7 8.6 10 4 5.3 5.3 4Z"/></svg>
+            </button>
+          }
+        </div>
+      </div>
+
+      <nav aria-label="Menu categories">
+        <ul
+          #chips
+          role="list"
+          class="flex snap-x gap-2 overflow-x-auto px-4 py-2.5 [scrollbar-width:none] lg:px-0 [&::-webkit-scrollbar]:hidden"
+        >
+          @for (category of visibleCategories(); track category.id) {
+            <li class="shrink-0 snap-start">
+              <button
+                type="button"
+                class="min-h-touch whitespace-nowrap rounded-full border px-4 text-sm font-semibold transition-colors"
+                [attr.data-chip]="category.id"
+                [attr.aria-current]="activeCategoryId() === category.id ? 'true' : null"
+                [class]="
+                  activeCategoryId() === category.id
+                    ? 'border-brand bg-brand text-brand-contrast'
+                    : 'border-line-strong bg-surface text-ink hover:bg-surface-muted'
+                "
+                (click)="scrollToCategory(category.id)"
+              >
+                {{ category.name }}
+              </button>
+            </li>
+          }
+        </ul>
+      </nav>
+    </div>
+
+    <p class="sr-only" aria-live="polite">
+      @if (query()) {
+        {{ resultCount() }} dishes match “{{ query() }}”
+      }
+    </p>
+
+    @switch (menu.status()) {
+      @case ('error') {
+        <app-error-state title="We couldn't load the menu" [error]="menu.error()" (retry)="retry()" />
+      }
+      @case ('ready') {
+        @for (category of visibleCategories(); track category.id) {
+          <section
+            #section
+            class="scroll-mt-36 px-4 pt-6 outline-none lg:px-0"
+            tabindex="-1"
+            [id]="'category-' + category.id"
+            [attr.data-category-id]="category.id"
+            [attr.aria-labelledby]="'category-title-' + category.id"
+          >
+            <h2 [id]="'category-title-' + category.id" class="font-display text-xl font-semibold sm:text-2xl">
+              {{ category.name }}
+              <span class="ml-1 text-sm font-normal text-ink-subtle">({{ category.items.length }})</span>
+            </h2>
+            @if (category.description) {
+              <p class="mt-1 text-sm text-ink-muted">{{ category.description }}</p>
+            }
+            <div class="mt-3 grid grid-cols-1 gap-3 md:grid-cols-2 2xl:grid-cols-3">
+              @for (item of category.items; track item.id) {
+                <app-menu-item-card
+                  [item]="item"
+                  [quantity]="quantityOf(item)"
+                  (add)="onAdd(item)"
+                  (quantityChange)="onQuantity(item, $event)"
+                />
+              }
+            </div>
+          </section>
+        } @empty {
+          @if (query()) {
+            <app-empty-state title="No dishes found" [message]="'Nothing matches “' + query() + '”.'">
+              <button appButton variant="outline" type="button" (click)="clearSearch()">Clear search</button>
+            </app-empty-state>
+          } @else {
+            <app-empty-state title="The menu is empty" message="Please check back in a little while." />
+          }
+        }
+      }
+      @default {
+        <div class="px-4 pt-6 lg:px-0" aria-busy="true" aria-label="Loading menu">
+          <app-skeleton class="h-6 w-40" />
+          <div class="mt-3 grid grid-cols-1 gap-3 md:grid-cols-2 2xl:grid-cols-3">
+            @for (i of skeletons; track i) {
+              <div class="flex gap-3 rounded-card border border-line bg-surface p-3">
+                <div class="flex-1 space-y-2">
+                  <app-skeleton class="w-3/4" />
+                  <app-skeleton class="w-1/3" />
+                  <app-skeleton class="h-3 w-full" />
+                </div>
+                <app-skeleton shape="block" class="size-28" />
+              </div>
+            }
+          </div>
+        </div>
+      }
+    }
+  </main>
+
+  <aside class="hidden lg:block" aria-label="Your order">
+    @defer (on idle) {
+      <div class="sticky top-4 pt-4">
+        <app-cart-sidebar />
+      </div>
+    } @placeholder {
+      <div class="pt-4"><app-skeleton shape="block" class="h-64" /></div>
+    }
+  </aside>
+</div>
+
+<app-cart-bar class="lg:hidden" />

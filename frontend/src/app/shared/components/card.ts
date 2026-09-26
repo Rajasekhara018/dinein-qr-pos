@@ -6,7 +6,7 @@ import { ChangeDetectionStrategy, Component, computed, input } from '@angular/co
   standalone: false,
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { '[class]': 'classes()' },
-  template: '<ng-content />',
+  templateUrl: './card.html',
 })
 export class Card {
   readonly padding = input<'none' | 'sm' | 'md' | 'lg'>('md');

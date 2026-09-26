@@ -30,7 +30,7 @@ export class PaymentNotCompletedError extends Error {
     readonly reason: PaymentNotCompletedReason,
     readonly orderId: number,
     message: string,
-    readonly cause?: unknown,
+    override readonly cause?: unknown,
   ) {
     super(message);
   }

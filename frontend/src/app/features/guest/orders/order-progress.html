@@ -1,0 +1,49 @@
+<app-card>
+  <h2 class="sr-only">Order progress</h2>
+  <ol class="grid grid-cols-3 gap-2" role="list">
+    @for (step of steps(); track step.key; let i = $index) {
+      @let state = stateOf(i);
+      <li class="flex min-w-0 flex-col items-center text-center" [attr.aria-current]="state === 'current' ? 'step' : null">
+        <div class="relative flex w-full items-center justify-center">
+          @if (i > 0) {
+            <span
+              class="absolute right-1/2 top-1/2 h-1 w-full -translate-y-1/2 rounded-full"
+              [class]="state === 'upcoming' ? 'bg-line' : 'bg-brand'"
+              aria-hidden="true"
+            ></span>
+          }
+          <span
+            class="relative z-10 flex size-10 items-center justify-center rounded-full border-2 text-sm font-bold"
+            [class]="
+              state === 'done'
+                ? 'border-brand bg-brand text-brand-contrast'
+                : state === 'current'
+                  ? 'border-brand bg-surface text-brand-ink ring-4 ring-brand/20 motion-safe:animate-pulse'
+                  : 'border-line-strong bg-surface text-ink-subtle'
+            "
+            aria-hidden="true"
+          >
+            @if (state === 'done') {
+              <svg viewBox="0 0 20 20" class="size-5 fill-current"><path d="m8 13.2-3.6-3.6L3 11l5 5 9-9-1.4-1.4L8 13.2Z"/></svg>
+            } @else {
+              {{ i + 1 }}
+            }
+          </span>
+        </div>
+        <p class="mt-2 text-sm font-semibold" [class.text-ink-subtle]="state === 'upcoming'">
+          {{ step.label }}
+          <span class="sr-only">— {{ state === 'done' ? 'done' : state === 'current' ? 'in progress' : 'not started' }}</span>
+        </p>
+        @if (step.at) {
+          <p class="text-xs text-ink-subtle tabular-nums">{{ step.at | date: 'h:mm a' }}</p>
+        }
+        @if (state === 'current') {
+          <p class="mt-1 hidden text-xs text-ink-muted sm:block">{{ step.hint }}</p>
+        }
+      </li>
+    }
+  </ol>
+  @if (current() >= 0) {
+    <p class="mt-4 text-center text-sm text-ink-muted sm:hidden">{{ steps()[current() === 3 ? 2 : current()].hint }}</p>
+  }
+</app-card>
