@@ -7,12 +7,10 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { CheckoutResponse } from '../../../core/api/models';
 import { CheckoutService } from '../../../core/payments/checkout.service';
 import { PaymentNotCompletedError } from '../../../core/payments/checkout.types';
-import { SharedModule } from '../../../shared/shared-module';
+import { GuestModule } from '../guest-module';
 import { CartStore } from '../data/cart.store';
 import { GuestSessionStore } from '../data/guest-session.store';
 import { biryani, dosa } from '../data/test-fixtures';
-import { BillSummary } from './bill-summary';
-import { CartLines } from './cart-lines';
 import { CartPage } from './cart-page';
 
 const checkoutResponse: CheckoutResponse = {
@@ -39,8 +37,8 @@ describe('CartPage', () => {
     canOrder.set(true);
     checkout = { pay: vi.fn() };
     TestBed.configureTestingModule({
-      declarations: [CartPage, CartLines, BillSummary],
-      imports: [SharedModule],
+      // Import the declaring NgModule (AOT keeps its compilation scope); don't re-declare the component.
+      imports: [GuestModule],
       providers: [
         provideRouter([]),
         provideHttpClient(),

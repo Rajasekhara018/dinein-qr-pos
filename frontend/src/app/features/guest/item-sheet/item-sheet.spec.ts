@@ -1,7 +1,8 @@
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { SharedModule } from '../../../shared/shared-module';
+import { provideRouter } from '@angular/router';
+import { GuestModule } from '../guest-module';
 import { biryani, dosa } from '../data/test-fixtures';
 import { ItemSheet, ItemSheetData } from './item-sheet';
 import { MenuItem } from '../../../core/api/models';
@@ -14,9 +15,11 @@ describe('ItemSheet', () => {
   function create(item: MenuItem, line?: CartLine): HTMLElement {
     ref = { close: vi.fn() };
     TestBed.configureTestingModule({
-      declarations: [ItemSheet],
-      imports: [SharedModule],
+      // AOT test build: the component keeps the compilation scope of the module that declares it, so import
+      // that module instead of re-declaring the component (re-declaring would reset its scope).
+      imports: [GuestModule],
       providers: [
+        provideRouter([]),
         { provide: DialogRef, useValue: ref },
         { provide: DIALOG_DATA, useValue: { item, line } satisfies ItemSheetData },
       ],
