@@ -1,9 +1,13 @@
 {
-  "name": "dinein",
-  "short_name": "dinein",
+  "name": "DineIn",
+  "short_name": "DineIn",
+  "description": "Order and pay from your table",
+  "theme_color": "#c2410c",
+  "background_color": "#fafaf9",
   "display": "standalone",
+  "orientation": "any",
   "scope": "./",
-  "start_url": "./",
+  "start_url": "./menu",
   "icons": [
     {
       "src": "icons/icon-72x72.png",

@@ -1,0 +1,77 @@
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { Toast, ToastService } from './toast.service';
+
+/** Renders app-wide toasts. Place exactly once, in the root component template. */
+@Component({
+  selector: 'app-toast-host',
+  standalone: false,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  template: `
+    <div
+      class="pointer-events-none fixed inset-x-0 bottom-0 z-[1100] flex flex-col items-center gap-2 px-4 pb-[calc(1rem+env(safe-area-inset-bottom))] sm:bottom-auto sm:top-4 sm:items-end sm:pb-0 print:hidden"
+      aria-live="polite"
+      aria-atomic="false"
+    >
+      @for (toast of toasts.toasts(); track toast.id) {
+        <div
+          class="pointer-events-auto flex w-full max-w-md min-w-0 animate-pop items-start gap-3 rounded-card px-4 py-3 text-sm shadow-raised ring-1"
+          [class]="kindClasses(toast)"
+          [attr.role]="toast.kind === 'error' ? 'alert' : 'status'"
+        >
+          <span class="mt-0.5 shrink-0" aria-hidden="true">
+            @switch (toast.kind) {
+              @case ('success') {
+                <svg viewBox="0 0 20 20" class="size-5 fill-current"><path d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.7-9.3-4 4a1 1 0 0 1-1.4 0l-2-2 1.4-1.4L9 10.6l3.3-3.3 1.4 1.4Z"/></svg>
+              }
+              @case ('error') {
+                <svg viewBox="0 0 20 20" class="size-5 fill-current"><path d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16ZM9 5h2v6H9V5Zm0 8h2v2H9v-2Z"/></svg>
+              }
+              @default {
+                <svg viewBox="0 0 20 20" class="size-5 fill-current"><path d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16ZM9 9h2v6H9V9Zm0-4h2v2H9V5Z"/></svg>
+              }
+            }
+          </span>
+          <p class="min-w-0 flex-1 break-words leading-5">{{ toast.message }}</p>
+          @if (toast.action; as action) {
+            <button
+              type="button"
+              class="-my-2 min-h-touch shrink-0 rounded-control px-2 font-semibold underline underline-offset-2"
+              (click)="runAction(toast)"
+            >
+              {{ action.label }}
+            </button>
+          }
+          <button
+            type="button"
+            class="-my-2 -mr-2 inline-flex size-touch shrink-0 items-center justify-center rounded-control opacity-80 hover:opacity-100"
+            aria-label="Dismiss notification"
+            (click)="toasts.dismiss(toast.id)"
+          >
+            <svg viewBox="0 0 20 20" class="size-4 fill-current" aria-hidden="true"><path d="M5.3 4 10 8.6 14.7 4 16 5.3 11.4 10l4.6 4.7-1.3 1.3-4.7-4.6L5.3 16 4 14.7 8.6 10 4 5.3 5.3 4Z"/></svg>
+          </button>
+        </div>
+      }
+    </div>
+  `,
+})
+export class ToastHost {
+  protected readonly toasts = inject(ToastService);
+
+  protected kindClasses(toast: Toast): string {
+    switch (toast.kind) {
+      case 'success':
+        return 'bg-green-50 text-green-900 ring-green-200 dark:bg-green-950 dark:text-green-100 dark:ring-green-800';
+      case 'error':
+        return 'bg-red-50 text-red-900 ring-red-200 dark:bg-red-950 dark:text-red-100 dark:ring-red-800';
+      case 'warning':
+        return 'bg-amber-50 text-amber-950 ring-amber-200 dark:bg-amber-950 dark:text-amber-100 dark:ring-amber-800';
+      default:
+        return 'bg-surface text-ink ring-line';
+    }
+  }
+
+  protected runAction(toast: Toast): void {
+    toast.action?.run();
+    this.toasts.dismiss(toast.id);
+  }
+}

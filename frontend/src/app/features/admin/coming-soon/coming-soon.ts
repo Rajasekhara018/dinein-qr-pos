@@ -1,0 +1,15 @@
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+
+/** Placeholder until the admin app is implemented. */
+@Component({
+  selector: 'app-admin-coming-soon',
+  standalone: false,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  template: `
+    <main class="mx-auto flex min-h-dvh max-w-lg flex-col items-center justify-center px-4 text-center">
+      <h1 class="font-display text-2xl font-semibold">Admin — coming soon</h1>
+      <p class="mt-2 text-ink-muted">This part of DineIn is under construction.</p>
+    </main>
+  `,
+})
+export class AdminComingSoon {}

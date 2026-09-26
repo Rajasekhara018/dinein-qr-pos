@@ -1,0 +1,33 @@
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+
+/**
+ * Friendly empty/info state. Project an icon with `[emptyIcon]` and actions as default content:
+ * `<app-empty-state title="Your cart is empty"><a appButton routerLink="/menu">Browse menu</a></app-empty-state>`
+ */
+@Component({
+  selector: 'app-empty-state',
+  standalone: false,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  host: { class: 'flex flex-col items-center px-4 py-10 text-center sm:py-16' },
+  template: `
+    <div class="mb-4 flex size-16 items-center justify-center rounded-full bg-surface-muted text-ink-subtle" aria-hidden="true">
+      <ng-content select="[emptyIcon]">
+        <svg viewBox="0 0 24 24" class="size-8" fill="none" stroke="currentColor" stroke-width="1.6">
+          <path d="M4 7h16l-1.5 11.2a2 2 0 0 1-2 1.8H7.5a2 2 0 0 1-2-1.8L4 7Z" />
+          <path d="M9 7V5a3 3 0 0 1 6 0v2" />
+        </svg>
+      </ng-content>
+    </div>
+    <h2 class="font-display text-lg font-semibold text-ink sm:text-xl">{{ title() }}</h2>
+    @if (message()) {
+      <p class="mt-1 max-w-sm text-sm text-ink-muted sm:text-base">{{ message() }}</p>
+    }
+    <div class="mt-6 flex flex-wrap items-center justify-center gap-3">
+      <ng-content />
+    </div>
+  `,
+})
+export class EmptyState {
+  readonly title = input.required<string>();
+  readonly message = input('');
+}

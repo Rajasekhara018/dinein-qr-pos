@@ -79,7 +79,8 @@ public class AuthService {
         return toInfo(staffUserRepository.findById(userId).orElseThrow(() -> ApiException.notFound("User")));
     }
 
-    @Transactional
+    /** Reuse detection revokes the whole family and then throws, so ApiException must not roll that back. */
+    @Transactional(noRollbackFor = ApiException.class)
     public Session refresh(String rawRefreshToken) {
         if (rawRefreshToken == null || rawRefreshToken.isBlank()) {
             throw unauthorized();

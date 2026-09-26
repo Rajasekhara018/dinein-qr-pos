@@ -88,6 +88,8 @@ public class OrderPlacementService {
         if (replay.isPresent()) {
             return replay(replay.get(), guest);
         }
+        // Fail before creating an order that could never be paid (e.g. gateway credentials missing).
+        paymentService.activeProvider();
         Long orderId;
         try {
             orderId = tx.execute(status -> createOrder(guest, idempotencyKey, request));

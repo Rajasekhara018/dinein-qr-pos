@@ -1,3 +1,195 @@
-/* You can add global styles to this file, and also import other style files */
-
+/*
+ * Global styles and design tokens. Tokens are defined ONCE here; components use the generated Tailwind utilities
+ * (bg-surface, text-ink, bg-brand, text-brand-contrast, rounded-card, shadow-card, font-display…).
+ *
+ * - Brand colour: the guest app writes `--brand`, `--brand-contrast` and `--brand-ink` on <html> from
+ *   `restaurant.brandColor` (see core/util/color.ts). Everything brand-coloured derives from those variables.
+ * - Dark mode is class based (`.dark` on any ancestor, typically <html>) — the kitchen display defaults to dark.
+ */
 @import 'tailwindcss';
+@import '@angular/cdk/overlay-prebuilt.css';
+@import '@angular/cdk/a11y-prebuilt.css';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  /* Brand (overridden at runtime). #c2410c on white = 5.2:1 (WCAG AA). */
+  --brand: #c2410c;
+  --brand-contrast: #ffffff;
+  --brand-ink: #c2410c;
+
+  /* Neutral semantic palette (light). */
+  --app-bg: #fafaf9;
+  --app-surface: #ffffff;
+  --app-surface-muted: #f5f5f4;
+  --app-surface-sunken: #e7e5e4;
+  --app-line: #e7e5e4;
+  --app-line-strong: #d6d3d1;
+  --app-ink: #1c1917;
+  --app-ink-muted: #57534e; /* 7.4:1 on white */
+  --app-ink-subtle: #78716c; /* 4.8:1 on white */
+  --app-focus: #2563eb;
+
+  color-scheme: light;
+}
+
+.dark {
+  --app-bg: #0c0a09;
+  --app-surface: #1c1917;
+  --app-surface-muted: #292524;
+  --app-surface-sunken: #0c0a09;
+  --app-line: #292524;
+  --app-line-strong: #44403c;
+  --app-ink: #fafaf9;
+  --app-ink-muted: #d6d3d1;
+  --app-ink-subtle: #a8a29e;
+  --app-focus: #60a5fa;
+
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-brand: var(--brand);
+  --color-brand-contrast: var(--brand-contrast);
+  --color-brand-ink: var(--brand-ink);
+  --color-brand-strong: color-mix(in oklab, var(--brand) 82%, black);
+  --color-brand-soft: color-mix(in oklab, var(--brand) 12%, var(--app-surface));
+
+  --color-bg: var(--app-bg);
+  --color-surface: var(--app-surface);
+  --color-surface-muted: var(--app-surface-muted);
+  --color-surface-sunken: var(--app-surface-sunken);
+  --color-line: var(--app-line);
+  --color-line-strong: var(--app-line-strong);
+  --color-ink: var(--app-ink);
+  --color-ink-muted: var(--app-ink-muted);
+  --color-ink-subtle: var(--app-ink-subtle);
+  --color-focus: var(--app-focus);
+}
+
+@theme {
+  --font-sans:
+    ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Noto Sans', 'Helvetica Neue', Arial,
+    sans-serif;
+  --font-display:
+    ui-rounded, 'SF Pro Rounded', system-ui, -apple-system, 'Segoe UI', Roboto, 'Noto Sans', sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', 'Cascadia Mono', Consolas, monospace;
+
+  /* Food-type markers (FSSAI convention) — always paired with a shape. */
+  --color-veg: #15803d;
+  --color-nonveg: #9a3412;
+  --color-egg: #a16207;
+
+  --color-success: #15803d;
+  --color-warning: #b45309;
+  --color-danger: #b91c1c;
+  --color-info: #1d4ed8;
+
+  --radius-control: 0.75rem;
+  --radius-card: 1rem;
+  --radius-sheet: 1.25rem;
+
+  --shadow-card: 0 1px 2px rgb(28 25 23 / 0.06), 0 1px 3px rgb(28 25 23 / 0.08);
+  --shadow-raised: 0 8px 24px rgb(28 25 23 / 0.14);
+
+  --spacing-touch: 2.75rem; /* 44px minimum touch target: min-h-touch / min-w-touch / size-touch */
+
+  --animate-sheet-up: sheet-up 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  --animate-fade-in: fade-in 160ms ease-out;
+  --animate-pop: pop 260ms ease-out;
+
+  @keyframes sheet-up {
+    from {
+      transform: translateY(100%);
+    }
+    to {
+      transform: translateY(0);
+    }
+  }
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  @keyframes pop {
+    0% {
+      transform: scale(0.96);
+      opacity: 0;
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    min-height: 100dvh;
+    background-color: var(--app-bg);
+    color: var(--app-ink);
+    font-family: var(--font-sans);
+    overflow-x: clip;
+  }
+
+  /* Visible, consistent focus ring for keyboard users. */
+  :focus-visible {
+    outline: 3px solid var(--app-focus);
+    outline-offset: 2px;
+  }
+
+  /* Inputs >= 16px so iOS Safari does not zoom on focus. */
+  input,
+  select,
+  textarea {
+    font-size: max(1rem, 16px);
+  }
+
+  button:not(:disabled),
+  [role='button']:not([aria-disabled='true']) {
+    cursor: pointer;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 1ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 1ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer components {
+  /* CDK dialog panes opened by SheetService. */
+  .app-sheet-pane {
+    max-width: 100vw;
+  }
+
+  .app-sheet-pane .cdk-dialog-container {
+    width: 100%;
+    outline: none;
+  }
+
+  .app-dialog-backdrop {
+    background: rgb(12 10 9 / 0.5);
+  }
+}
+
+@media print {
+  body {
+    background: #fff;
+    color: #000;
+  }
+}
