@@ -29,6 +29,12 @@ public class StaffUserEntity extends BaseEntity {
     @Column(name = "display_name", length = 80)
     private String displayName;
 
+    @Column(length = 120)
+    private String email;
+
+    @Column(length = 15)
+    private String phone;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     private StaffRole role;

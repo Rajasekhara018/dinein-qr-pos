@@ -1,0 +1,46 @@
+# One-command stack: `cp .env.example .env` (edit secrets) then `docker compose up -d --build`.
+# The SPA and API share one origin through Nginx at http://localhost:8081.
+name: dinein
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-dinein}
+      POSTGRES_USER: ${POSTGRES_USER:-dinein}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build: ./backend
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    env_file: .env
+    environment:
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-prod}
+      DB_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-dinein}
+      DB_USERNAME: ${POSTGRES_USER:-dinein}
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+    expose:
+      - "8080"
+
+  frontend:
+    build: ./frontend
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_healthy
+    ports:
+      - "8081:80"
+
+volumes:
+  pgdata:

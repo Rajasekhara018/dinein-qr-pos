@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Clock;
 import java.util.List;
+import java.util.Locale;
 
 @Slf4j
 @Service
@@ -52,6 +53,8 @@ public class StaffService {
         StaffUserEntity user = new StaffUserEntity();
         user.setUsername(username);
         user.setDisplayName(trimToNull(request.displayName()));
+        user.setEmail(normalizeEmail(request.email()));
+        user.setPhone(trimToNull(request.phone()));
         user.setRole(request.role());
         user.setPasswordHash(passwordEncoder.encode(request.password()));
         if (request.pin() != null && !request.pin().isBlank()) {
@@ -72,6 +75,8 @@ public class StaffService {
             throw ApiException.badRequest("SELF_LOCKOUT", "You cannot deactivate yourself or change your own role");
         }
         user.setDisplayName(trimToNull(request.displayName()));
+        user.setEmail(normalizeEmail(request.email()));
+        user.setPhone(trimToNull(request.phone()));
         user.setRole(request.role());
         boolean deactivated = user.isActive() && !request.active();
         user.setActive(request.active());
@@ -101,5 +106,10 @@ public class StaffService {
 
     private static String trimToNull(String value) {
         return value == null || value.isBlank() ? null : value.trim();
+    }
+
+    private static String normalizeEmail(String value) {
+        String email = trimToNull(value);
+        return email == null ? null : email.toLowerCase(Locale.ROOT);
     }
 }

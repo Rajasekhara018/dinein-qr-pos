@@ -1,6 +1,7 @@
 package com.heuristq.dinein.staff.dto;
 
 import com.heuristq.dinein.staff.domain.StaffRole;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -17,7 +18,9 @@ public final class StaffRequests {
             @Size(max = 80) String displayName,
             @NotNull StaffRole role,
             @NotBlank @Size(min = 8, max = 72) String password,
-            @Pattern(regexp = "^\\d{4,6}$", message = "PIN must be 4-6 digits") String pin) {
+            @Pattern(regexp = "^\\d{4,6}$", message = "PIN must be 4-6 digits") String pin,
+            @Email @Size(max = 120) String email,
+            @Pattern(regexp = "^(\\d{10})?$", message = "Phone must be 10 digits") String phone) {
     }
 
     public record UpdateStaff(
@@ -26,6 +29,8 @@ public final class StaffRequests {
             boolean active,
             @Size(min = 8, max = 72) String newPassword,
             @Pattern(regexp = "^\\d{4,6}$", message = "PIN must be 4-6 digits") String pin,
-            boolean clearPin) {
+            boolean clearPin,
+            @Email @Size(max = 120) String email,
+            @Pattern(regexp = "^(\\d{10})?$", message = "Phone must be 10 digits") String phone) {
     }
 }

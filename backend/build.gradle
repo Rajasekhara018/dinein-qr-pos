@@ -36,6 +36,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
 
     runtimeOnly 'org.postgresql:postgresql'
     implementation 'org.flywaydb:flyway-core'
@@ -54,6 +55,9 @@ dependencies {
     implementation "com.google.zxing:core:${zxingVersion}"
     implementation "com.google.zxing:javase:${zxingVersion}"
     implementation 'org.apache.pdfbox:pdfbox:3.0.8'
+
+    // FCM HTTP v1 push: OAuth access tokens from a service-account JSON.
+    implementation 'com.google.auth:google-auth-library-oauth2-http:1.53.0'
 
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.17'
 
