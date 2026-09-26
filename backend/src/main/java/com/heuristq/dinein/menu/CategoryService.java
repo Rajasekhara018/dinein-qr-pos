@@ -1,0 +1,142 @@
+package com.heuristq.dinein.menu;
+
+import com.heuristq.dinein.image.ImageService;
+import com.heuristq.dinein.image.ImageUrls;
+import com.heuristq.dinein.menu.domain.CategoryEntity;
+import com.heuristq.dinein.menu.domain.CategoryRepository;
+import com.heuristq.dinein.menu.domain.ItemRepository;
+import com.heuristq.dinein.menu.dto.MenuAdminDtos.CategoryRequest;
+import com.heuristq.dinein.menu.dto.MenuAdminDtos.CategoryResponse;
+import com.heuristq.dinein.shared.exception.ApiException;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+@Slf4j
+@Service
+public class CategoryService {
+
+    private final CategoryRepository categoryRepository;
+    private final ItemRepository itemRepository;
+    private final ImageService imageService;
+    private final ApplicationEventPublisher events;
+
+    public CategoryService(CategoryRepository categoryRepository, ItemRepository itemRepository,
+                           ImageService imageService, ApplicationEventPublisher events) {
+        this.categoryRepository = categoryRepository;
+        this.itemRepository = itemRepository;
+        this.imageService = imageService;
+        this.events = events;
+    }
+
+    @Transactional(readOnly = true)
+    public List<CategoryResponse> list() {
+        Map<Long, Long> counts = itemRepository.countActiveByCategory().stream()
+                .collect(Collectors.toMap(ItemRepository.CategoryCount::getCategoryId, ItemRepository.CategoryCount::getCount));
+        return categoryRepository.findAllByOrderByDisplayOrderAscNameAsc().stream()
+                .map(c -> toResponse(c, counts.getOrDefault(c.getId(), 0L)))
+                .toList();
+    }
+
+    @Transactional
+    public CategoryResponse create(CategoryRequest request) {
+        String name = request.name().trim();
+        if (categoryRepository.existsByNameIgnoreCase(name)) {
+            throw ApiException.conflict("DUPLICATE_NAME", "A category with this name already exists");
+        }
+        imageService.requireExists(request.imageId());
+        CategoryEntity category = new CategoryEntity();
+        category.setName(name);
+        category.setDescription(blankToNull(request.description()));
+        category.setImageId(request.imageId());
+        category.setActive(request.active() == null || request.active());
+        category.setDisplayOrder(categoryRepository.maxDisplayOrder() + 1);
+        categoryRepository.save(category);
+        log.info("category.created id={}", category.getId());
+        events.publishEvent(new MenuChangedEvent("category.created"));
+        return toResponse(category, 0);
+    }
+
+    @Transactional
+    public CategoryResponse update(Long id, CategoryRequest request) {
+        CategoryEntity category = find(id);
+        String name = request.name().trim();
+        if (categoryRepository.existsByNameIgnoreCaseAndIdNot(name, id)) {
+            throw ApiException.conflict("DUPLICATE_NAME", "A category with this name already exists");
+        }
+        imageService.requireExists(request.imageId());
+        category.setName(name);
+        category.setDescription(blankToNull(request.description()));
+        category.setImageId(request.imageId());
+        if (request.active() != null) {
+            category.setActive(request.active());
+        }
+        events.publishEvent(new MenuChangedEvent("category.updated"));
+        return toResponse(category, countItems(id));
+    }
+
+    @Transactional
+    public CategoryResponse setActive(Long id, boolean active) {
+        CategoryEntity category = find(id);
+        category.setActive(active);
+        log.info("category.status id={} active={}", id, active);
+        events.publishEvent(new MenuChangedEvent("category.status"));
+        return toResponse(category, countItems(id));
+    }
+
+    /** Applies the given order; ids not listed keep their relative order after the listed ones. */
+    @Transactional
+    public List<CategoryResponse> reorder(List<Long> orderedIds) {
+        Set<Long> seen = new HashSet<>();
+        for (Long id : orderedIds) {
+            if (!seen.add(id)) {
+                throw ApiException.badRequest("DUPLICATE_ID", "Category " + id + " is listed twice");
+            }
+        }
+        Map<Long, CategoryEntity> byId = categoryRepository.findAllByOrderByDisplayOrderAscNameAsc().stream()
+                .collect(Collectors.toMap(CategoryEntity::getId, Function.identity(), (a, b) -> a,
+                        java.util.LinkedHashMap::new));
+        int order = 1;
+        for (Long id : orderedIds) {
+            CategoryEntity category = byId.remove(id);
+            if (category == null) {
+                throw ApiException.badRequest("UNKNOWN_CATEGORY", "Category " + id + " not found");
+            }
+            category.setDisplayOrder(order++);
+        }
+        for (CategoryEntity rest : byId.values()) {
+            rest.setDisplayOrder(order++);
+        }
+        events.publishEvent(new MenuChangedEvent("category.reordered"));
+        return list();
+    }
+
+    CategoryEntity find(Long id) {
+        return categoryRepository.findById(id).orElseThrow(() -> ApiException.notFound("Category"));
+    }
+
+    private long countItems(Long categoryId) {
+        return itemRepository.countActiveByCategory().stream()
+                .filter(c -> c.getCategoryId().equals(categoryId))
+                .mapToLong(ItemRepository.CategoryCount::getCount)
+                .findFirst().orElse(0);
+    }
+
+    private CategoryResponse toResponse(CategoryEntity c, long itemCount) {
+        return new CategoryResponse(c.getId(), c.getName(), c.getDescription(), c.getImageId(),
+                ImageUrls.full(c.getImageId()), ImageUrls.thumb(c.getImageId()), c.getDisplayOrder(), c.isActive(),
+                itemCount);
+    }
+
+    private static String blankToNull(String v) {
+        return v == null || v.isBlank() ? null : v.trim();
+    }
+}
