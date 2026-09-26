@@ -1,0 +1,111 @@
+<app-bottom-sheet [title]="item.name" (closed)="close()">
+  <div sheetHeader class="mt-1 flex items-center gap-2">
+    <app-veg-marker [type]="item.foodType" />
+    @if (!item.available) {
+      <span class="text-sm font-semibold text-danger">Out of stock</span>
+    }
+  </div>
+
+  @if (item.imageUrl) {
+    <app-image-box
+      [src]="item.imageUrl"
+      [alt]="item.name"
+      ratio="16/9"
+      sizes="(min-width: 768px) 32rem, 100vw"
+      class="-mx-4 -mt-4 mb-4 sm:mx-0 sm:mt-0 sm:rounded-card"
+    />
+  }
+
+  @if (item.description) {
+    <p class="mb-4 text-sm text-ink-muted">{{ item.description }}</p>
+  }
+
+  <form class="space-y-6" (submit)="$event.preventDefault(); confirm()">
+    @if (item.variants.length > 0) {
+      <fieldset>
+        <legend class="mb-2 flex w-full items-center justify-between font-semibold">
+          <span>Choose a size</span>
+          <span class="rounded-full bg-surface-muted px-2 py-0.5 text-xs font-medium text-ink-muted">Required</span>
+        </legend>
+        <div class="divide-y divide-line rounded-card border border-line">
+          @for (variant of item.variants; track variant.id) {
+            <label class="flex min-h-touch cursor-pointer items-center gap-3 px-3 py-2">
+              <input
+                type="radio"
+                name="variant"
+                class="size-5 accent-[var(--brand)]"
+                [value]="variant.id"
+                [checked]="variantId() === variant.id"
+                (change)="variantId.set(variant.id)"
+              />
+              <span class="min-w-0 flex-1">{{ variant.name }}</span>
+              <span class="tabular-nums">{{ variant.price | inr }}</span>
+            </label>
+          }
+        </div>
+      </fieldset>
+    }
+
+    @if (item.addons.length > 0) {
+      <fieldset>
+        <legend class="mb-2 flex w-full items-center justify-between font-semibold">
+          <span>Add-ons</span>
+          <span class="rounded-full bg-surface-muted px-2 py-0.5 text-xs font-medium text-ink-muted">Optional</span>
+        </legend>
+        <div class="divide-y divide-line rounded-card border border-line">
+          @for (addon of item.addons; track addon.id) {
+            <label class="flex min-h-touch cursor-pointer items-center gap-3 px-3 py-2">
+              <input
+                type="checkbox"
+                class="size-5 rounded accent-[var(--brand)]"
+                [checked]="addonIds().has(addon.id)"
+                (change)="toggleAddon(addon.id, $any($event.target).checked)"
+              />
+              <span class="min-w-0 flex-1">{{ addon.name }}</span>
+              <span class="tabular-nums">+ {{ addon.price | inr }}</span>
+            </label>
+          }
+        </div>
+      </fieldset>
+    }
+
+    <div>
+      <label [for]="titleId + '-notes'" class="mb-2 block font-semibold">
+        Cooking instructions <span class="font-normal text-ink-muted">(optional)</span>
+      </label>
+      <textarea
+        [id]="titleId + '-notes'"
+        rows="2"
+        class="block w-full resize-none rounded-control border border-line-strong bg-surface px-3 py-2 text-base placeholder:text-ink-subtle"
+        placeholder="e.g. less spicy, no onions"
+        [maxLength]="maxNotes"
+        [value]="notes()"
+        (input)="onNotes($any($event.target).value)"
+      ></textarea>
+      <p class="mt-1 text-right text-xs text-ink-subtle">{{ notes().length }}/{{ maxNotes }}</p>
+    </div>
+  </form>
+
+  <div sheetFooter class="flex items-center gap-3">
+    <app-quantity-stepper
+      [quantity]="quantity()"
+      (quantityChange)="quantity.set($event)"
+      [min]="1"
+      [max]="maxQuantity"
+      [itemName]="item.name"
+    />
+    <button
+      appButton
+      type="button"
+      size="lg"
+      class="flex-1"
+      [disabled]="needsVariant() || !item.available"
+      (click)="confirm()"
+      data-testid="item-sheet-confirm"
+    >
+      <span class="truncate">{{ editing ? 'Update' : 'Add' }}</span>
+      <span aria-hidden="true">·</span>
+      <span class="tabular-nums" data-testid="item-sheet-total">{{ totalLabel() }}</span>
+    </button>
+  </div>
+</app-bottom-sheet>
