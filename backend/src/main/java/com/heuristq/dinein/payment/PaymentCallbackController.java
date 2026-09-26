@@ -19,7 +19,8 @@ import java.util.Map;
 
 /**
  * Landing endpoint for redirect-based gateways (PayU surl/furl, Pine Labs callback). The provider's hash/signature
- * authenticates the request; the browser is then sent to the guest's order page, which shows the final status.
+ * authenticates the request; the browser is then sent to the guest's order page (or, for staff-assisted orders, the
+ * waiter's order page), which shows the final status.
  */
 @Slf4j
 @RestController
@@ -43,11 +44,12 @@ public class PaymentCallbackController {
         String code = provider.toUpperCase(Locale.ROOT);
         try {
             Long orderId = paymentService.verifyCallback(code, params, null);
-            return redirect("/menu/orders/" + orderId + "?payment=return");
+            return redirect(paymentService.orderPagePath(orderId) + "?payment=return");
         } catch (ApiException e) {
             log.warn("payment.callback.rejected provider={} code={}", code, e.getCode());
             Long orderId = orderIdFor(code, params);
-            return redirect(orderId == null ? "/menu?payment=error" : "/menu/orders/" + orderId + "?payment=failed");
+            return redirect(orderId == null ? "/menu?payment=error"
+                    : paymentService.orderPagePath(orderId) + "?payment=failed");
         }
     }
 

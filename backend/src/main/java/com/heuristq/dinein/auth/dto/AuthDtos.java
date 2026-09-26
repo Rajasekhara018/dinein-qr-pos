@@ -11,8 +11,10 @@ public final class AuthDtos {
     private AuthDtos() {
     }
 
+    /** Either {@code password} or {@code pin} must be provided; PIN sign-in is accepted for WAITER accounts only. */
     public record LoginRequest(@NotBlank @Size(max = 50) String username,
-                               @NotBlank @Size(max = 72) String password) {
+                               @Size(max = 72) String password,
+                               @Size(max = 6) String pin) {
     }
 
     public record ChangePasswordRequest(@NotBlank @Size(max = 72) String currentPassword,

@@ -23,7 +23,8 @@ import java.util.Set;
 
 /**
  * Admin cancellation with a full refund through the gateway that took the payment. Cancelling is committed first;
- * the refund call follows. If the provider call fails, calling cancel again retries only the refund.
+ * the refund call follows. If the provider call fails, calling cancel again retries only the refund. Offline payments
+ * (provider OFFLINE) are never sent to a gateway: their refund is marked {@link RefundStatus#MANUAL} (cash back).
  */
 @Slf4j
 @Service
@@ -65,12 +66,18 @@ public class RefundService {
                     .filter(p -> p.getRefundStatus() == null || p.getRefundStatus() == RefundStatus.FAILED)
                     .findFirst().orElse(null);
             if (captured != null) {
-                captured.setRefundStatus(RefundStatus.PENDING);
+                // Offline (counter) money is handed back by staff: record that, never call a gateway.
+                captured.setRefundStatus(captured.isOffline() ? RefundStatus.MANUAL : RefundStatus.PENDING);
             }
             return captured;
         });
         if (toRefund == null) {
             log.info("order.cancel.no_refund_needed orderId={}", orderId);
+            return;
+        }
+        if (toRefund.isOffline()) {
+            log.info("order.refund.manual orderId={} method={} amountPaise={}", orderId, toRefund.getMethod(),
+                    toRefund.getAmountPaise());
             return;
         }
         try {

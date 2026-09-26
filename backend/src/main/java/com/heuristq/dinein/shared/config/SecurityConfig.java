@@ -79,6 +79,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/**").authenticated()
                         .requestMatchers("/api/admin/**").hasAnyRole("OWNER", "MANAGER")
                         .requestMatchers("/api/kitchen/**").hasAnyRole("KITCHEN", "OWNER", "MANAGER")
+                        .requestMatchers("/api/waiter/**").hasAnyRole("WAITER", "OWNER", "MANAGER")
                         .anyRequest().denyAll())
                 .addFilterBefore(new TokenAuthenticationFilter(tokenAuthenticator), UsernamePasswordAuthenticationFilter.class)
                 .addFilterAfter(new RateLimitFilter(rateLimitService, rateLimitProperties, errorHandlers),

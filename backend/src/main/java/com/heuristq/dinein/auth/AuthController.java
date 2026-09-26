@@ -39,7 +39,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<TokenResponse> login(@Valid @RequestBody LoginRequest request) {
-        return withSession(authService.login(request.username(), request.password()));
+        return withSession(authService.login(request.username(), request.password(), request.pin()));
     }
 
     @PostMapping("/refresh")

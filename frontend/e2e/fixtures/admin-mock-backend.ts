@@ -102,6 +102,92 @@ const dashboard = {
   recentOrders,
 };
 
+const PNG_1PX =
+  'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=';
+
+export const orderDetail = {
+  id: 39,
+  orderNumber: '260927-039',
+  displayToken: 39,
+  status: 'CANCELLED',
+  tableLabel: 'T4',
+  customerName: 'Ravi Kumar',
+  customerPhone: '9876543210',
+  notes: 'Less spicy please',
+  items: [
+    { itemId: 2, variantId: 22, name: 'Chicken Biryani', variantName: 'Full', foodType: 'NON_VEG', addons: [{ name: 'Extra raita', price: 30 }], unitPrice: 350, quantity: 1, gstPercent: 5, lineTotal: 350, taxAmount: 17.5, notes: 'No onion' },
+    { itemId: 1, name: 'Masala Dosa', foodType: 'VEG', addons: [], unitPrice: 120, quantity: 2, gstPercent: 5, lineTotal: 240, taxAmount: 12 },
+  ],
+  bill: { subtotal: 590, taxTotal: 29.5, cgst: 14.75, sgst: 14.75, grandTotal: 619.5, pricesIncludeGst: false },
+  payments: [
+    { provider: 'RAZORPAY', status: 'CAPTURED', method: 'upi', providerPaymentId: 'pay_TEST123456789', providerOrderId: 'order_TEST987654321', amountPaise: 61950, refundStatus: 'FAILED' },
+  ],
+  paymentFlagged: true,
+  flagReason: 'Captured amount 600.00 does not match order total 619.50',
+  cancelReason: 'Guest left',
+  placedAt: '2026-09-27T06:30:00Z',
+  paidAt: '2026-09-27T06:31:00Z',
+  cancelledAt: '2026-09-27T06:50:00Z',
+};
+
+const tables = [1, 2, 3, 12].map((n) => ({
+  id: n,
+  label: n === 12 ? 'COUNTER' : `T${n}`,
+  active: n !== 3,
+  qrUrl: `http://localhost:4200/menu?t=token-${n}-abcdefghijklmnopqrstuvwxyz`,
+  qrImageUrl: `/api/admin/tables/${n}/qr.png`,
+  createdAt: '2026-09-01T00:00:00Z',
+  updatedAt: '2026-09-01T00:00:00Z',
+}));
+
+const salesSummary = {
+  from: '2026-09-21',
+  to: '2026-09-27',
+  ordersCount: 212,
+  gross: 93210.5,
+  tax: 4438.6,
+  cgst: 2219.3,
+  sgst: 2219.3,
+  net: 88771.9,
+  averageOrderValue: 439.67,
+  cancelledCount: 4,
+  refundedAmount: 1650,
+  paymentMethods: [
+    { method: 'upi', count: 160, amount: 70010.5 },
+    { method: 'card', count: 40, amount: 18200 },
+    { method: 'netbanking', count: 12, amount: 5000 },
+  ],
+  topItems: Array.from({ length: 10 }, (_, i) => ({ name: `Dish number ${i + 1}`, quantity: 90 - i * 7, revenue: 12000 - i * 900 })),
+  daily: [21, 22, 23, 24, 25, 26, 27].map((d, i) => ({ date: `2026-09-${d}`, orders: 20 + i * 3, gross: 9000 + ((i * 3517) % 7000) })),
+};
+
+const settings = {
+  name: 'Spice Route',
+  address: '12 MG Road, Bengaluru',
+  phone: '080 1234 5678',
+  gstin: '29ABCDE1234F1Z5',
+  fssaiNo: '12345678901234',
+  acceptingOrders: true,
+  pricesIncludeGst: false,
+  openingTime: '11:00:00',
+  closingTime: '23:00:00',
+  currency: 'INR',
+  brandColor: '#b45309',
+  kitchenWarnMinutes: 10,
+  kitchenAlertMinutes: 20,
+  readyAutoHideMinutes: 10,
+};
+
+const staff = [
+  { id: 1, username: 'owner', displayName: 'Asha Owner', role: 'OWNER', active: true, mustChangePassword: false, hasPin: false, lastLoginAt: '2026-09-27T05:00:00Z', createdAt: '2026-09-01T00:00:00Z', email: 'asha@example.com' },
+  { id: 2, username: 'manager.ravi', displayName: 'Ravi', role: 'MANAGER', active: true, mustChangePassword: true, hasPin: false, createdAt: '2026-09-02T00:00:00Z', phone: '9876543210' },
+  { id: 3, username: 'kitchen1', role: 'KITCHEN', active: true, mustChangePassword: false, hasPin: true, lockedUntil: '2099-01-01T00:00:00Z', createdAt: '2026-09-02T00:00:00Z' },
+];
+
+const devices = [
+  { id: 5, deviceName: 'Kitchen tablet', username: 'kitchen1', createdAt: '2026-09-10T00:00:00Z', lastSeenAt: '2026-09-27T06:59:00Z', expiresAt: '2026-10-10T00:00:00Z', active: true },
+];
+
 const json = (route: Route, body: unknown, status = 200) =>
   route.fulfill({ status, contentType: 'application/json', body: JSON.stringify(body) });
 
@@ -239,6 +325,17 @@ export async function mockAdminBackend(
       const content = [...recentOrders, ...Array.from({ length: 8 }, (_, i) => orderSummary(30 - i, 'COMPLETED'))];
       return json(route, { content, page: 0, size: 25, totalElements: content.length, totalPages: 1 });
     }
+
+    const orderMatch = /^\/api\/admin\/orders\/(\d+)$/.exec(path);
+    if (orderMatch) return json(route, { ...orderDetail, id: Number(orderMatch[1]) });
+    if (path === '/api/admin/tables') return json(route, tables);
+    if (/^\/api\/admin\/tables\/\d+\/qr\.png$/.test(path)) {
+      return route.fulfill({ status: 200, contentType: 'image/png', body: Buffer.from(PNG_1PX, 'base64') });
+    }
+    if (path === '/api/admin/reports/summary') return json(route, salesSummary);
+    if (path === '/api/admin/settings') return json(route, settings);
+    if (path === '/api/admin/staff') return json(route, staff);
+    if (path === '/api/admin/devices') return json(route, devices);
 
     if (path.startsWith('/api/images/')) return route.fulfill({ status: 404 });
     return json(route, { code: 'NOT_FOUND', message: `Unmocked ${method} ${path}` }, 404);

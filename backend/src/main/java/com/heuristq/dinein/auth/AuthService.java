@@ -52,12 +52,23 @@ public class AuthService {
         this.dummyHash = passwordEncoder.encode(SecureTokens.randomUrlSafe(16));
     }
 
-    /** Admin login (OWNER/MANAGER). Failed-attempt counters must persist, so ApiException does not roll back. */
+    /**
+     * Staff login for the admin panel (OWNER/MANAGER) and the waiter screen (WAITER). Waiters may use their PIN
+     * instead of the password, like kitchen accounts do on the kitchen screen. Failed-attempt counters must persist,
+     * so ApiException does not roll back.
+     */
     @Transactional(noRollbackFor = ApiException.class)
-    public Session login(String username, String password) {
-        StaffUserEntity user = verifyCredentials(username, password, false);
+    public Session login(String username, String password, String pin) {
+        boolean usePin = (password == null || password.isBlank()) && pin != null && !pin.isBlank();
+        if (!usePin && (password == null || password.isBlank())) {
+            throw ApiException.badRequest("CREDENTIALS_REQUIRED", "Enter your password or PIN");
+        }
+        StaffUserEntity user = verifyCredentials(username, usePin ? pin : password, usePin);
         if (user.getRole() == StaffRole.KITCHEN) {
             throw new ApiException(HttpStatus.FORBIDDEN, "KITCHEN_ACCOUNT", "Kitchen accounts sign in on the kitchen screen");
+        }
+        if (usePin && user.getRole() != StaffRole.WAITER) {
+            throw new ApiException(HttpStatus.FORBIDDEN, "PIN_LOGIN_NOT_ALLOWED", "Sign in with your password");
         }
         return startSession(user);
     }

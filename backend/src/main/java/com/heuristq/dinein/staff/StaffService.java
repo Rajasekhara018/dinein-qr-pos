@@ -60,8 +60,9 @@ public class StaffService {
         if (request.pin() != null && !request.pin().isBlank()) {
             user.setPinHash(passwordEncoder.encode(request.pin()));
         }
-        // Admin-set passwords are temporary: the person must choose their own on first login.
-        user.setMustChangePassword(request.role() != StaffRole.KITCHEN);
+        // Admin-set passwords are temporary: the person must choose their own on first login. Kitchen and waiter
+        // accounts are exempt: they usually sign in with a PIN on shared screens.
+        user.setMustChangePassword(!usesPinSignIn(request.role()));
         staffUserRepository.save(user);
         log.info("staff.created userId={} role={}", user.getId(), user.getRole());
         return StaffResponse.from(user);
@@ -83,7 +84,7 @@ public class StaffService {
         if (request.newPassword() != null && !request.newPassword().isBlank()) {
             PasswordPolicy.validate(request.newPassword());
             user.setPasswordHash(passwordEncoder.encode(request.newPassword()));
-            user.setMustChangePassword(!selfEdit && user.getRole() != StaffRole.KITCHEN);
+            user.setMustChangePassword(!selfEdit && !usesPinSignIn(user.getRole()));
             user.setFailedLoginAttempts(0);
             user.setLockedUntil(null);
             refreshTokenRepository.revokeAllForUser(user.getId(), clock.instant());
@@ -102,6 +103,10 @@ public class StaffService {
         }
         log.info("staff.updated userId={} by={}", user.getId(), actor.userId());
         return StaffResponse.from(user);
+    }
+
+    private static boolean usesPinSignIn(StaffRole role) {
+        return role == StaffRole.KITCHEN || role == StaffRole.WAITER;
     }
 
     private static String trimToNull(String value) {

@@ -105,7 +105,7 @@ public class ReportService {
                 new MapSqlParameterSource(), Long.class);
         BigDecimal avg = count == 0 ? BigDecimal.ZERO.setScale(2) : gross.divide(BigDecimal.valueOf(count), 2, RoundingMode.HALF_UP);
         return new Dashboard(today, count, gross, avg, byStatus, active == null ? 0 : active, flagged == null ? 0 : flagged,
-                orderQueryService.adminOrders(null, null, null, 0, 10).content());
+                orderQueryService.adminOrders(null, null, null, null, 0, 10).content());
     }
 
     /** Streams one CSV row per order in the range (all statuses) for accounting. */

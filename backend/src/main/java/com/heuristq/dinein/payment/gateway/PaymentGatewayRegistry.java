@@ -16,10 +16,16 @@ import java.util.stream.Collectors;
 @Component
 public class PaymentGatewayRegistry {
 
+    /** Same value as {@code PaymentEntity.OFFLINE_PROVIDER}; kept here so the gateway layer has no domain import. */
+    static final String OFFLINE = "OFFLINE";
+
     private final Map<String, PaymentGateway> gateways;
     private final String activeCode;
 
     public PaymentGatewayRegistry(List<PaymentGateway> gateways, PaymentProperties properties) {
+        if (gateways.stream().anyMatch(g -> isOffline(g.code()))) {
+            throw new IllegalStateException("'" + OFFLINE + "' is reserved for counter payments and cannot be a gateway");
+        }
         this.gateways = gateways.stream().collect(Collectors.toMap(g -> g.code().toUpperCase(Locale.ROOT),
                 Function.identity()));
         this.activeCode = properties.provider().trim().toUpperCase(Locale.ROOT);
@@ -39,11 +45,23 @@ public class PaymentGatewayRegistry {
         return gateway;
     }
 
+    /**
+     * @throws ApiException 400 UNKNOWN_PROVIDER for unknown codes and for {@code OFFLINE}: counter payments have no
+     *                      gateway, so callers (refunds, expiry, webhooks, verify) must branch on
+     *                      {@code PaymentEntity#isOffline()} before looking one up.
+     */
     public PaymentGateway get(String code) {
+        if (isOffline(code)) {
+            throw ApiException.badRequest("UNKNOWN_PROVIDER", "Offline payments have no payment gateway");
+        }
         PaymentGateway gateway = code == null ? null : gateways.get(code.toUpperCase(Locale.ROOT));
         if (gateway == null) {
             throw ApiException.badRequest("UNKNOWN_PROVIDER", "Unknown payment provider");
         }
         return gateway;
+    }
+
+    private static boolean isOffline(String code) {
+        return code != null && OFFLINE.equalsIgnoreCase(code.trim());
     }
 }

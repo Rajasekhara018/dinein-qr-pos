@@ -33,8 +33,17 @@ public class OrderEntity extends BaseEntity {
     @Column(name = "table_id")
     private Long tableId;
 
-    @Column(name = "guest_session_id", nullable = false, length = 64)
+    /** Null for staff-assisted orders (see {@link #placedByStaffId}). */
+    @Column(name = "guest_session_id", length = 64)
     private String guestSessionId;
+
+    /** Staff user who placed the order for the guest (waiter / counter); null for QR self-orders. */
+    @Column(name = "placed_by_staff_id")
+    private Long placedByStaffId;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "order_type", nullable = false, length = 10)
+    private OrderType orderType = OrderType.DINE_IN;
 
     @Column(name = "customer_name", length = 60)
     private String customerName;
@@ -97,6 +106,15 @@ public class OrderEntity extends BaseEntity {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     @OrderBy("id ASC")
     private List<OrderItemEntity> items = new ArrayList<>();
+
+    public boolean isPlacedByStaff() {
+        return placedByStaffId != null;
+    }
+
+    /** True when the order was placed from this guest session (null-safe for staff-assisted orders). */
+    public boolean belongsToGuest(String sessionId) {
+        return guestSessionId != null && guestSessionId.equals(sessionId);
+    }
 
     public void addItem(OrderItemEntity item) {
         item.setOrder(this);

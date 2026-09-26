@@ -71,6 +71,7 @@ public class PaymentService {
         }
         RestaurantSettingsEntity settings = settingsService.current();
         Optional<PaymentEntity> open = paymentRepository.findByOrderIdOrderByIdAsc(orderId).stream()
+                .filter(p -> !p.isOffline())
                 .filter(p -> p.getStatus() == PaymentStatus.CREATED || p.getStatus() == PaymentStatus.AUTHORIZED
                         || (p.getStatus() == PaymentStatus.FAILED && gateways.get(p.getProvider()).reusableAfterFailure()))
                 .max(Comparator.comparing(PaymentEntity::getId));
@@ -88,7 +89,46 @@ public class PaymentService {
         return new CheckoutContext(order.getId(), order.getOrderNumber(), Money.toPaise(order.getGrandTotal()), "INR",
                 order.getCustomerName(), order.getCustomerPhone(), settings.getName(), settings.getBrandColor(), null,
                 publicBaseUrl + "/api/public/payments/" + gateway.code().toLowerCase() + "/callback",
-                publicBaseUrl + "/menu/orders/" + order.getId());
+                publicBaseUrl + orderPagePath(order));
+    }
+
+    /**
+     * Frontend page for an order after payment: the guest's order page, or the waiter screen's order page for
+     * staff-assisted orders (those have no guest session, so the guest page could not show them).
+     */
+    public static String orderPagePath(OrderEntity order) {
+        return (order.isPlacedByStaff() ? "/waiter/orders/" : "/menu/orders/") + order.getId();
+    }
+
+    /** {@link #orderPagePath(OrderEntity)} by id; falls back to the guest page when the order is unknown. */
+    @Transactional(readOnly = true)
+    public String orderPagePath(Long orderId) {
+        return orderRepository.findById(orderId).map(PaymentService::orderPagePath).orElse("/menu/orders/" + orderId);
+    }
+
+    /**
+     * Response for an order settled offline: same shape as a checkout, with {@code provider = OFFLINE}, the amount,
+     * and null {@code mode}/{@code checkout} (nothing to pay). Empty when the order has no captured offline payment.
+     */
+    @Transactional(readOnly = true)
+    public Optional<CheckoutResponse> offlineReceipt(Long orderId) {
+        OrderEntity order = orderRepository.findById(orderId).orElseThrow(() -> ApiException.notFound("Order"));
+        return paymentRepository.findByOrderIdOrderByIdAsc(orderId).stream()
+                .filter(p -> p.isOffline() && p.getStatus() == PaymentStatus.CAPTURED)
+                .findFirst()
+                .map(p -> new CheckoutResponse(order.getId(), order.getOrderNumber(), order.getDisplayToken(),
+                        order.getStatus(), PaymentEntity.OFFLINE_PROVIDER, null, null, p.getAmountPaise(),
+                        p.getCurrency(), settingsService.current().getName()));
+    }
+
+    /** Whether online payment can be offered right now (the active gateway is configured). */
+    public boolean onlinePaymentsAvailable() {
+        try {
+            gateways.active();
+            return true;
+        } catch (ApiException e) {
+            return false;
+        }
     }
 
     private PaymentEntity createAttempt(OrderEntity order, PaymentGateway gateway, CheckoutContext context) {
@@ -120,7 +160,7 @@ public class PaymentService {
         PaymentEntity payment = paymentRepository.findByProviderAndProviderOrderId(gateway.code(), verified.providerOrderId())
                 .orElseThrow(() -> ApiException.notFound("Payment"));
         OrderEntity order = orderRepository.findById(payment.getOrderId())
-                .filter(o -> guest == null || o.getGuestSessionId().equals(guest.sessionId()))
+                .filter(o -> guest == null || o.belongsToGuest(guest.sessionId()))
                 .orElseThrow(() -> ApiException.notFound("Order"));
 
         ProviderPayment authoritative = gateway.fetchPayment(verified.providerOrderId(), verified.providerPaymentId());
@@ -136,8 +176,17 @@ public class PaymentService {
     @Transactional(readOnly = true)
     public void assertOwnedBy(Long orderId, GuestSession guest) {
         orderRepository.findById(orderId)
-                .filter(o -> o.getGuestSessionId().equals(guest.sessionId()))
+                .filter(o -> o.belongsToGuest(guest.sessionId()))
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "NOT_FOUND", "Order not found"));
+    }
+
+    /** Guard for staff payment endpoints: only staff-assisted orders are paid from the waiter screen. */
+    @Transactional(readOnly = true)
+    public void assertPlacedByStaff(Long orderId) {
+        OrderEntity order = orderRepository.findById(orderId).orElseThrow(() -> ApiException.notFound("Order"));
+        if (!order.isPlacedByStaff()) {
+            throw ApiException.conflict("NOT_STAFF_ORDER", "This order was placed by the guest; they pay for it on their phone");
+        }
     }
 
     public String activeProvider() {

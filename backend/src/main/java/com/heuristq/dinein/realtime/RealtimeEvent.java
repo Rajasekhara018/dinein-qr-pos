@@ -8,7 +8,7 @@ import java.time.Instant;
  * @param type    ORDER_CONFIRMED, ORDER_STATUS_CHANGED, ORDER_CANCELLED or MENU_UPDATED
  * @param orderId set for order events
  * @param status  new order status for order events
- * @param order   full order payload (kitchen view) for ORDER_CONFIRMED
+ * @param order   full order payload (kitchen view) for ORDER_CONFIRMED and for ORDER_STATUS_CHANGED to READY
  */
 public record RealtimeEvent(String type, Long orderId, String status, Object order, Instant at) {
 

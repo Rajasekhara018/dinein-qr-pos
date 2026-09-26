@@ -13,14 +13,19 @@ import com.heuristq.dinein.order.domain.OrderItemAddonEntity;
 import com.heuristq.dinein.order.domain.OrderItemEntity;
 import com.heuristq.dinein.order.domain.OrderRepository;
 import com.heuristq.dinein.order.domain.OrderStatus;
+import com.heuristq.dinein.order.domain.OrderType;
 import com.heuristq.dinein.order.dto.OrderDtos.CartLine;
 import com.heuristq.dinein.order.dto.OrderDtos.CartProblem;
 import com.heuristq.dinein.order.dto.OrderDtos.PlaceOrderRequest;
+import com.heuristq.dinein.order.dto.OrderDtos.StaffPlaceOrderRequest;
+import com.heuristq.dinein.payment.OfflinePaymentService;
 import com.heuristq.dinein.payment.PaymentService;
+import com.heuristq.dinein.payment.domain.OfflinePaymentMethod;
 import com.heuristq.dinein.payment.dto.PaymentDtos.CheckoutResponse;
 import com.heuristq.dinein.settings.SettingsService;
 import com.heuristq.dinein.settings.domain.RestaurantSettingsEntity;
 import com.heuristq.dinein.shared.exception.ApiException;
+import com.heuristq.dinein.shared.security.StaffPrincipal;
 import com.heuristq.dinein.shared.util.Money;
 import com.heuristq.dinein.shared.util.Text;
 import com.heuristq.dinein.table.domain.DiningTableEntity;
@@ -43,8 +48,12 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
- * Places guest orders. The browser only sends ids and quantities; every price, tax and total is recomputed here from
- * the current menu and copied onto the order lines as a snapshot.
+ * Places orders: guest self-orders from the table QR, and staff-assisted orders taken by a waiter or at the counter.
+ * Both go through the same core ({@link #createOrder}): the browser only sends ids and quantities; every price, tax
+ * and total is recomputed here from the current menu and copied onto the order lines as a snapshot.
+ *
+ * <p>Staff orders are either paid online (same checkout and expiry as guests) or settled offline on the spot, in
+ * which case the order is created and confirmed through {@link OfflinePaymentService} in one transaction.
  */
 @Slf4j
 @Service
@@ -60,6 +69,7 @@ public class OrderPlacementService {
     private final PricingService pricingService;
     private final OrderNumberService orderNumberService;
     private final PaymentService paymentService;
+    private final OfflinePaymentService offlinePaymentService;
     private final TransactionTemplate tx;
     private final Clock clock;
 
@@ -67,7 +77,7 @@ public class OrderPlacementService {
                                  CategoryRepository categoryRepository, DiningTableRepository tableRepository,
                                  SettingsService settingsService, PricingService pricingService,
                                  OrderNumberService orderNumberService, PaymentService paymentService,
-                                 TransactionTemplate tx, Clock clock) {
+                                 OfflinePaymentService offlinePaymentService, TransactionTemplate tx, Clock clock) {
         this.orderRepository = orderRepository;
         this.itemRepository = itemRepository;
         this.categoryRepository = categoryRepository;
@@ -76,23 +86,32 @@ public class OrderPlacementService {
         this.pricingService = pricingService;
         this.orderNumberService = orderNumberService;
         this.paymentService = paymentService;
+        this.offlinePaymentService = offlinePaymentService;
         this.tx = tx;
         this.clock = clock;
     }
 
+    /** What the core needs to create an order, whoever places it. */
+    record NewOrder(Long tableId, String guestSessionId, Long placedByStaffId, OrderType requestedType,
+                    List<CartLine> items, String notes, String customerName, String customerPhone,
+                    String idempotencyKey) {
+    }
+
+    // ----- Guest self-order ------------------------------------------------------------------------
+
     public CheckoutResponse place(GuestSession guest, String idempotencyKey, PlaceOrderRequest request) {
-        if (idempotencyKey == null || !IDEMPOTENCY_KEY.matcher(idempotencyKey).matches()) {
-            throw ApiException.badRequest("INVALID_IDEMPOTENCY_KEY", "Idempotency-Key header must be 8-64 URL-safe characters");
-        }
+        requireIdempotencyKey(idempotencyKey);
         Optional<OrderEntity> replay = orderRepository.findByIdempotencyKey(idempotencyKey);
         if (replay.isPresent()) {
             return replay(replay.get(), guest);
         }
         // Fail before creating an order that could never be paid (e.g. gateway credentials missing).
         paymentService.activeProvider();
+        NewOrder draft = new NewOrder(guest.tableId(), guest.sessionId(), null, request.orderType(), request.items(),
+                request.notes(), request.customerName(), request.customerPhone(), idempotencyKey);
         Long orderId;
         try {
-            orderId = tx.execute(status -> createOrder(guest, idempotencyKey, request));
+            orderId = tx.execute(status -> createOrder(draft));
         } catch (DataIntegrityViolationException e) {
             // Two identical requests raced; the loser returns the winner's order.
             OrderEntity winner = orderRepository.findByIdempotencyKey(idempotencyKey).orElseThrow(() -> e);
@@ -103,21 +122,90 @@ public class OrderPlacementService {
     }
 
     private CheckoutResponse replay(OrderEntity existing, GuestSession guest) {
-        if (!existing.getGuestSessionId().equals(guest.sessionId())) {
+        if (!existing.belongsToGuest(guest.sessionId())) {
             throw ApiException.conflict("IDEMPOTENCY_KEY_REUSED", "This request key was already used");
         }
         log.info("order.place.idempotent_replay orderId={}", existing.getId());
         return paymentService.ensureCheckout(existing.getId(), false);
     }
 
-    private Long createOrder(GuestSession guest, String idempotencyKey, PlaceOrderRequest request) {
+    // ----- Staff-assisted order (waiter / counter) -------------------------------------------------
+
+    /**
+     * Places an order on behalf of a guest. ONLINE returns the same checkout as the guest flow; an offline method
+     * (CASH, UPI_AT_COUNTER, CARD_AT_COUNTER) records the payment and confirms the order immediately, returning
+     * {@code status = CONFIRMED}, {@code provider = OFFLINE} and no checkout. Repeating the idempotency key returns
+     * the same order.
+     */
+    public CheckoutResponse placeForStaff(StaffPrincipal staff, StaffPlaceOrderRequest request) {
+        String idempotencyKey = request.idempotencyKey();
+        requireIdempotencyKey(idempotencyKey);
+        Optional<OrderEntity> replay = orderRepository.findByIdempotencyKey(idempotencyKey);
+        if (replay.isPresent()) {
+            return staffReplay(replay.get());
+        }
+        OfflinePaymentMethod offline = request.paymentMethod().offline();
+        if (offline == null) {
+            paymentService.activeProvider();
+        }
+        String actor = "user:" + staff.userId();
+        NewOrder draft = new NewOrder(request.tableId(), null, staff.userId(), request.orderType(), request.items(),
+                request.note(), request.customerName(), request.customerPhone(), idempotencyKey);
+        Long orderId;
+        try {
+            orderId = tx.execute(status -> {
+                Long id = createOrder(draft);
+                if (offline != null) {
+                    offlinePaymentService.recordAndConfirm(id, offline, staff.userId(), actor);
+                }
+                return id;
+            });
+        } catch (DataIntegrityViolationException e) {
+            OrderEntity winner = orderRepository.findByIdempotencyKey(idempotencyKey).orElseThrow(() -> e);
+            return staffReplay(winner);
+        }
+        log.info("order.placed_by_staff orderId={} staffId={} payment={}", orderId, staff.userId(), request.paymentMethod());
+        return offline == null ? paymentService.ensureCheckout(orderId, false) : offlineResponse(orderId);
+    }
+
+    private CheckoutResponse staffReplay(OrderEntity existing) {
+        if (!existing.isPlacedByStaff()) {
+            throw ApiException.conflict("IDEMPOTENCY_KEY_REUSED", "This request key was already used");
+        }
+        log.info("order.place_by_staff.idempotent_replay orderId={}", existing.getId());
+        return paymentService.offlineReceipt(existing.getId())
+                .orElseGet(() -> paymentService.ensureCheckout(existing.getId(), false));
+    }
+
+    private CheckoutResponse offlineResponse(Long orderId) {
+        return paymentService.offlineReceipt(orderId)
+                .orElseThrow(() -> new IllegalStateException("offline payment missing for order " + orderId));
+    }
+
+    private static void requireIdempotencyKey(String idempotencyKey) {
+        if (idempotencyKey == null || !IDEMPOTENCY_KEY.matcher(idempotencyKey).matches()) {
+            throw ApiException.badRequest("INVALID_IDEMPOTENCY_KEY", "Idempotency-Key header must be 8-64 URL-safe characters");
+        }
+    }
+
+    // ----- Shared core ------------------------------------------------------------------------------
+
+    private Long createOrder(NewOrder draft) {
         RestaurantSettingsEntity settings = settingsService.current();
         settingsService.assertAcceptingOrders(settings);
-        DiningTableEntity table = tableRepository.findById(guest.tableId()).filter(DiningTableEntity::isActive)
-                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "INVALID_TABLE",
-                        "Please scan the QR code on your table"));
+        boolean byStaff = draft.placedByStaffId() != null;
+        OrderType orderType = OrderTypeRules.resolve(draft.requestedType(), settings.isTakeawayEnabled());
+        if (byStaff) {
+            OrderTypeRules.requireTableForDineIn(orderType, draft.tableId());
+        }
+        DiningTableEntity table = null;
+        if (draft.tableId() != null) {
+            table = tableRepository.findById(draft.tableId()).filter(DiningTableEntity::isActive)
+                    .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "INVALID_TABLE",
+                            byStaff ? "This table does not exist or is inactive" : "Please scan the QR code on your table"));
+        }
 
-        List<ResolvedLine> lines = resolveCart(request.items());
+        List<ResolvedLine> lines = resolveCart(draft.items());
         PricingService.Bill bill = pricingService.calculate(
                 lines.stream().map(l -> new LineInput(l.unitPrice(), l.line().quantity(), l.item().getGstPercent())).toList(),
                 settings.isPricesIncludeGst());
@@ -129,17 +217,19 @@ public class OrderPlacementService {
         OrderEntity order = new OrderEntity();
         order.setOrderNumber(number.orderNumber());
         order.setDisplayToken(number.displayToken());
-        order.setTableId(table.getId());
-        order.setGuestSessionId(guest.sessionId());
-        order.setCustomerName(Text.clean(request.customerName(), 60));
-        order.setCustomerPhone(request.customerPhone() == null || request.customerPhone().isBlank() ? null : request.customerPhone());
-        order.setNotes(Text.clean(request.notes(), 300));
+        order.setTableId(table == null ? null : table.getId());
+        order.setGuestSessionId(draft.guestSessionId());
+        order.setPlacedByStaffId(draft.placedByStaffId());
+        order.setOrderType(orderType);
+        order.setCustomerName(Text.clean(draft.customerName(), 60));
+        order.setCustomerPhone(draft.customerPhone() == null || draft.customerPhone().isBlank() ? null : draft.customerPhone());
+        order.setNotes(Text.clean(draft.notes(), 300));
         order.setStatus(OrderStatus.PENDING_PAYMENT);
         order.setSubtotal(bill.subtotal());
         order.setTaxTotal(bill.taxTotal());
         order.setGrandTotal(bill.grandTotal());
         order.setPricesIncludeGst(settings.isPricesIncludeGst());
-        order.setIdempotencyKey(idempotencyKey);
+        order.setIdempotencyKey(draft.idempotencyKey());
         order.setPlacedAt(clock.instant());
 
         for (int i = 0; i < lines.size(); i++) {
@@ -167,8 +257,9 @@ public class OrderPlacementService {
             order.addItem(oi);
         }
         orderRepository.saveAndFlush(order);
-        log.info("order.placed orderId={} orderNumber={} tableId={} lines={} grandTotal={}",
-                order.getId(), order.getOrderNumber(), table.getId(), lines.size(), order.getGrandTotal());
+        log.info("order.placed orderId={} orderNumber={} tableId={} type={} byStaff={} lines={} grandTotal={}",
+                order.getId(), order.getOrderNumber(), order.getTableId(), orderType, draft.placedByStaffId(),
+                lines.size(), order.getGrandTotal());
         return order.getId();
     }
 

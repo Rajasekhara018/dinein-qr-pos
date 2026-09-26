@@ -1,12 +1,18 @@
 package com.heuristq.dinein.order;
 
 import com.heuristq.dinein.order.domain.OrderStatus;
+import com.heuristq.dinein.order.domain.OrderType;
 import com.heuristq.dinein.order.dto.OrderDtos.AdminOrderSummary;
 import com.heuristq.dinein.order.dto.OrderDtos.AdminOrderView;
 import com.heuristq.dinein.order.dto.OrderDtos.CancelRequest;
+import com.heuristq.dinein.order.dto.OrderDtos.MarkPaidOfflineRequest;
+import com.heuristq.dinein.order.dto.OrderDtos.StaffPlaceOrderRequest;
 import com.heuristq.dinein.order.dto.OrderDtos.StatusChangeRequest;
+import com.heuristq.dinein.payment.OfflinePaymentService;
 import com.heuristq.dinein.payment.RefundService;
+import com.heuristq.dinein.payment.dto.PaymentDtos.CheckoutResponse;
 import com.heuristq.dinein.shared.security.CurrentStaff;
+import com.heuristq.dinein.shared.security.StaffPrincipal;
 import com.heuristq.dinein.shared.web.PageResponse;
 import jakarta.validation.Valid;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -34,22 +40,34 @@ public class AdminOrderController {
     private final OrderQueryService queryService;
     private final OrderLifecycleService lifecycle;
     private final RefundService refundService;
+    private final OrderPlacementService placementService;
+    private final OfflinePaymentService offlinePaymentService;
 
     public AdminOrderController(OrderQueryService queryService, OrderLifecycleService lifecycle,
-                                RefundService refundService) {
+                                RefundService refundService, OrderPlacementService placementService,
+                                OfflinePaymentService offlinePaymentService) {
         this.queryService = queryService;
         this.lifecycle = lifecycle;
         this.refundService = refundService;
+        this.placementService = placementService;
+        this.offlinePaymentService = offlinePaymentService;
     }
 
     @GetMapping
     public PageResponse<AdminOrderSummary> list(
             @RequestParam(required = false) List<OrderStatus> status,
+            @RequestParam(required = false) OrderType orderType,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
             @RequestParam(required = false) String q,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "25") int size) {
-        return queryService.adminOrders(status, date, q, page, size);
+        return queryService.adminOrders(status, orderType, date, q, page, size);
+    }
+
+    /** Counter order placed by an owner/manager; same contract as {@code POST /api/waiter/orders}. */
+    @PostMapping
+    public CheckoutResponse place(@Valid @RequestBody StaffPlaceOrderRequest request) {
+        return placementService.placeForStaff(CurrentStaff.require(), request);
     }
 
     @GetMapping("/{id}")
@@ -68,6 +86,17 @@ public class AdminOrderController {
     public AdminOrderView cancel(@PathVariable Long id, @Valid @RequestBody(required = false) CancelRequest request) {
         refundService.cancelAndRefund(id, request == null ? null : request.reason(),
                 "user:" + CurrentStaff.require().userId());
+        return queryService.adminOrder(id);
+    }
+
+    /**
+     * Settles an unpaid order (PENDING_PAYMENT, EXPIRED or PAYMENT_FAILED) at the counter and sends it to the
+     * kitchen. 409 ALREADY_PAID / ORDER_NOT_PAYABLE / PAYMENT_FLAGGED otherwise.
+     */
+    @PostMapping("/{id}/mark-paid-offline")
+    public AdminOrderView markPaidOffline(@PathVariable Long id, @Valid @RequestBody MarkPaidOfflineRequest request) {
+        StaffPrincipal staff = CurrentStaff.require();
+        offlinePaymentService.recordAndConfirm(id, request.method(), staff.userId(), "user:" + staff.userId());
         return queryService.adminOrder(id);
     }
 }

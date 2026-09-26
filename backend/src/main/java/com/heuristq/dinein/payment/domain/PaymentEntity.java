@@ -19,10 +19,13 @@ import lombok.Setter;
 @Table(name = "payment")
 public class PaymentEntity extends BaseEntity {
 
+    /** Provider code of counter / waiter payments. It is never a registered gateway: no provider API is ever called. */
+    public static final String OFFLINE_PROVIDER = "OFFLINE";
+
     @Column(name = "order_id", nullable = false)
     private Long orderId;
 
-    /** Gateway code, e.g. RAZORPAY or PAYU. */
+    /** Gateway code, e.g. RAZORPAY or PAYU, or OFFLINE for counter payments. */
     @Column(nullable = false, length = 20)
     private String provider;
 
@@ -57,4 +60,12 @@ public class PaymentEntity extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "refund_status", length = 20)
     private RefundStatus refundStatus;
+
+    /** Staff user who took an OFFLINE payment. */
+    @Column(name = "recorded_by_staff_id")
+    private Long recordedByStaffId;
+
+    public boolean isOffline() {
+        return OFFLINE_PROVIDER.equalsIgnoreCase(provider);
+    }
 }

@@ -71,8 +71,12 @@ public class SettingsService {
         s.setKitchenWarnMinutes(r.kitchenWarnMinutes());
         s.setKitchenAlertMinutes(r.kitchenAlertMinutes());
         s.setReadyAutoHideMinutes(r.readyAutoHideMinutes());
+        if (r.takeawayEnabled() != null) {
+            s.setTakeawayEnabled(r.takeawayEnabled());
+        }
         repository.save(s);
-        log.info("settings.updated acceptingOrders={} pricesIncludeGst={}", s.isAcceptingOrders(), s.isPricesIncludeGst());
+        log.info("settings.updated acceptingOrders={} pricesIncludeGst={} takeawayEnabled={}", s.isAcceptingOrders(),
+                s.isPricesIncludeGst(), s.isTakeawayEnabled());
         // Pricing mode and open/closed state are part of what guests see.
         events.publishEvent(new MenuChangedEvent("settings"));
         return toResponse(s);
@@ -83,7 +87,7 @@ public class SettingsService {
         RestaurantSettingsEntity s = current();
         return new PublicRestaurantInfo(s.getName(), s.getAddress(), s.getPhone(), s.getGstin(), s.getFssaiNo(),
                 ImageUrls.full(s.getLogoImageId()), s.getBrandColor(), s.isAcceptingOrders(), isOpenNow(s),
-                s.getOpeningTime(), s.getClosingTime(), s.isPricesIncludeGst());
+                s.getOpeningTime(), s.getClosingTime(), s.isPricesIncludeGst(), s.isTakeawayEnabled());
     }
 
     public boolean isOpenNow(RestaurantSettingsEntity s) {
@@ -106,7 +110,8 @@ public class SettingsService {
         return new SettingsResponse(s.getName(), s.getAddress(), s.getPhone(), s.getGstin(), s.getFssaiNo(),
                 s.getLogoImageId(), ImageUrls.full(s.getLogoImageId()), s.isAcceptingOrders(), s.isPricesIncludeGst(),
                 s.getOpeningTime(), s.getClosingTime(), s.getCurrency(), s.getBrandColor(),
-                s.getKitchenWarnMinutes(), s.getKitchenAlertMinutes(), s.getReadyAutoHideMinutes());
+                s.getKitchenWarnMinutes(), s.getKitchenAlertMinutes(), s.getReadyAutoHideMinutes(),
+                s.isTakeawayEnabled());
     }
 
     private static String blankToNull(String v) {

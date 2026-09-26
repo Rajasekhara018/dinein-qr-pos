@@ -58,7 +58,8 @@ public class OrderLifecycleService {
         orderRepository.save(order);
         log.info("order.transition orderId={} orderNumber={} from={} to={} actor={}",
                 order.getId(), order.getOrderNumber(), from, to, actor);
-        KitchenOrderView kitchenView = to == OrderStatus.CONFIRMED
+        // CONFIRMED carries the ticket for the kitchen; READY carries it so waiter screens can alert without a refetch.
+        KitchenOrderView kitchenView = to == OrderStatus.CONFIRMED || to == OrderStatus.READY
                 ? viewMapper.toKitchenView(order, viewMapper.tableLabel(order)) : null;
         events.publishEvent(new OrderStatusChangedEvent(order.getId(), from, to, kitchenView));
     }

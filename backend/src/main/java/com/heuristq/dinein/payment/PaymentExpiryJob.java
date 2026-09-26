@@ -60,6 +60,10 @@ public class PaymentExpiryJob {
         List<PaymentEntity> attempts = paymentRepository.findByOrderIdOrderByIdAsc(orderId);
         boolean anyFailedAttempt = false;
         for (PaymentEntity attempt : attempts) {
+            if (attempt.isOffline()) {
+                // Counter payments have no provider to reconcile with (and are CAPTURED as soon as they exist).
+                continue;
+            }
             List<ProviderPayment> remote = gateways.get(attempt.getProvider()).fetchOrderPayments(attempt.getProviderOrderId());
             Optional<ProviderPayment> captured = remote.stream().filter(ProviderPayment::isCaptured).findFirst();
             if (captured.isPresent()) {

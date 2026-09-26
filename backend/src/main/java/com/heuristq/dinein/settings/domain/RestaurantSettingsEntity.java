@@ -69,6 +69,9 @@ public class RestaurantSettingsEntity {
     @Column(name = "ready_auto_hide_minutes", nullable = false)
     private int readyAutoHideMinutes = 15;
 
+    @Column(name = "takeaway_enabled", nullable = false)
+    private boolean takeawayEnabled = true;
+
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
