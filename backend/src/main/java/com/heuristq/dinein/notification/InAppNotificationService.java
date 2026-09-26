@@ -39,7 +39,10 @@ public class InAppNotificationService {
         this.realtimePublisher = realtimePublisher;
     }
 
-    /** Stores the notification (committed immediately) and then announces it on the staff topic. */
+    /**
+     * Stores the notification (committed immediately) and then announces it: WAITER notifications on
+     * {@code /topic/waiter/notifications}, everything else on {@code /topic/staff/notifications}.
+     */
     public InAppNotificationEntity createForRole(StaffRole role, NotificationEvent event, Message message, Long orderId) {
         InAppNotificationEntity n = new InAppNotificationEntity();
         n.setAudience(InAppAudience.STAFF_ROLE);
@@ -51,8 +54,13 @@ public class InAppNotificationService {
         n.setSeverity(event.severity());
         n.setRelatedOrderId(orderId);
         repository.save(n);
-        realtimePublisher.toStaffNotifications(new StaffNotificationMessage("NOTIFICATION", n.getAudience().name(),
-                n.getRecipient(), view(n, false)));
+        StaffNotificationMessage announcement = new StaffNotificationMessage("NOTIFICATION", n.getAudience().name(),
+                n.getRecipient(), view(n, false));
+        if (role == StaffRole.WAITER) {
+            realtimePublisher.toWaiterNotifications(announcement);
+        } else {
+            realtimePublisher.toStaffNotifications(announcement);
+        }
         return n;
     }
 

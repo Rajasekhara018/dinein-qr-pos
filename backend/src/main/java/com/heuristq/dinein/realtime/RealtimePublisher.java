@@ -14,6 +14,7 @@ public class RealtimePublisher {
     public static final String MENU_TOPIC = "/topic/menu";
     public static final String ORDER_TOPIC_PREFIX = "/topic/orders/";
     public static final String STAFF_NOTIFICATIONS_TOPIC = "/topic/staff/notifications";
+    public static final String WAITER_NOTIFICATIONS_TOPIC = "/topic/waiter/notifications";
 
     private final SimpMessagingTemplate messagingTemplate;
     private final Clock clock;
@@ -42,6 +43,15 @@ public class RealtimePublisher {
             messagingTemplate.convertAndSend(STAFF_NOTIFICATIONS_TOPIC, notification);
         } catch (RuntimeException e) {
             log.warn("realtime.send_failed destination={} type=NOTIFICATION", STAFF_NOTIFICATIONS_TOPIC, e);
+        }
+    }
+
+    /** New in-app notification for waiters (e.g. an order is ready to be served). */
+    public void toWaiterNotifications(Object notification) {
+        try {
+            messagingTemplate.convertAndSend(WAITER_NOTIFICATIONS_TOPIC, notification);
+        } catch (RuntimeException e) {
+            log.warn("realtime.send_failed destination={} type=NOTIFICATION", WAITER_NOTIFICATIONS_TOPIC, e);
         }
     }
 

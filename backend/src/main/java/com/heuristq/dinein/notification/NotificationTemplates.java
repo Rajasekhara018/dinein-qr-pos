@@ -55,10 +55,14 @@ public class NotificationTemplates {
         return switch (event) {
             case ORDER_CONFIRMED -> new Message("New order #" + token + ", table " + table,
                     "Order " + orderNumber + " is paid and has been sent to the kitchen.", adminLink);
-            case ORDER_READY -> channel == NotificationChannel.SMS
-                    ? new Message(null, sms("Your order #" + token + " is ready.", restaurant), null)
-                    : new Message("Your order #" + token + " is ready", restaurant + ": your order is ready.",
-                    guestLink);
+            case ORDER_READY -> switch (channel) {
+                case SMS -> new Message(null, sms("Your order #" + token + " is ready.", restaurant), null);
+                // In-app goes to the waiters' inbox: time to take the food to the table.
+                case IN_APP -> new Message("Order #" + token + " is ready, table " + table,
+                        "Order " + orderNumber + " is ready to be served.", "/waiter");
+                default -> new Message("Your order #" + token + " is ready", restaurant + ": your order is ready.",
+                        guestLink);
+            };
             case ORDER_CANCELLED -> channel == NotificationChannel.SMS
                     ? new Message(null, sms("Your order #" + token + " was cancelled and a refund has been initiated.",
                     restaurant), null)

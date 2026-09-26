@@ -25,8 +25,9 @@ import java.util.regex.Pattern;
  *   <li>Staff: {@code Authorization: Bearer <jwt|device token>} native header on CONNECT.</li>
  *   <li>Guests: the signed guest-session cookie captured at handshake time.</li>
  * </ul>
- * Topic rules: {@code /topic/kitchen/**} staff only; {@code /topic/orders/{id}} the owning guest (or owner/manager);
- * {@code /topic/staff/notifications} owner/manager users (not kitchen devices); {@code /topic/menu} anyone.
+ * Topic rules: {@code /topic/kitchen/orders} any staff (kitchen screens and waiter screens); {@code /topic/orders/{id}}
+ * the owning guest (or owner/manager/waiter); {@code /topic/staff/notifications} owner/manager users (not kitchen
+ * devices); {@code /topic/waiter/notifications} waiter/owner/manager users; {@code /topic/menu} anyone.
  * Clients may not SEND; the server is the only publisher.
  */
 @Slf4j
@@ -99,6 +100,13 @@ public class StompAuthChannelInterceptor implements ChannelInterceptor {
             throw denied(destination);
         }
         if (destination.equals(RealtimePublisher.STAFF_NOTIFICATIONS_TOPIC)) {
+            if (staff != null && !staff.isDevice()
+                    && (staff.role() == StaffRole.OWNER || staff.role() == StaffRole.MANAGER)) {
+                return;
+            }
+            throw denied(destination);
+        }
+        if (destination.equals(RealtimePublisher.WAITER_NOTIFICATIONS_TOPIC)) {
             if (staff != null && !staff.isDevice() && staff.role() != StaffRole.KITCHEN) {
                 return;
             }

@@ -30,7 +30,7 @@ import java.util.Set;
  *
  * <ul>
  *   <li>Order CONFIRMED: IN_APP to owners + managers (and PUSH to their devices).</li>
- *   <li>Order READY: SMS to the guest's phone, PUSH to the guest's devices.</li>
+ *   <li>Order READY: SMS to the guest's phone, PUSH to the guest's devices, IN_APP to waiters.</li>
  *   <li>Order CANCELLED: SMS to the guest's phone.</li>
  *   <li>Payment flagged: IN_APP (HIGH) to owners + managers (and their devices), EMAIL to active owners.</li>
  *   <li>Refund failed: IN_APP (HIGH) to owners (and their devices), EMAIL to active owners.</li>
@@ -42,6 +42,7 @@ public class NotificationTriggers {
 
     private static final Set<StaffRole> OWNER_AND_MANAGER = EnumSet.of(StaffRole.OWNER, StaffRole.MANAGER);
     private static final Set<StaffRole> OWNER = EnumSet.of(StaffRole.OWNER);
+    private static final Set<StaffRole> WAITER = EnumSet.of(StaffRole.WAITER);
 
     private final OrderRepository orderRepository;
     private final DiningTableRepository tableRepository;
@@ -69,8 +70,7 @@ public class NotificationTriggers {
                         new Recipients(OWNER_AND_MANAGER, null, null, staffPush(OWNER_AND_MANAGER)))));
                 case READY -> withOrder(event.orderId(), (order, data) -> dispatcher.dispatch(new NotificationRequest(
                         NotificationEvent.ORDER_READY, order.getId(), data,
-                        new Recipients(null, null, guestPhone(order),
-                                pushSubscriptions.guestTargets(order.getGuestSessionId())))));
+                        new Recipients(WAITER, null, guestPhone(order), guestPush(order)))));
                 case CANCELLED -> withOrder(event.orderId(), (order, data) -> {
                     List<String> phones = guestPhone(order);
                     if (!phones.isEmpty()) {
@@ -130,6 +130,11 @@ public class NotificationTriggers {
         data.put("table", order.getTableId() == null ? "-"
                 : tableRepository.findById(order.getTableId()).map(DiningTableEntity::getLabel).orElse("-"));
         action.run(order, data);
+    }
+
+    private List<PushTarget> guestPush(OrderEntity order) {
+        // Staff-assisted orders have no guest session, hence no guest devices.
+        return order.getGuestSessionId() == null ? List.of() : pushSubscriptions.guestTargets(order.getGuestSessionId());
     }
 
     private static List<String> guestPhone(OrderEntity order) {
