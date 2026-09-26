@@ -1,0 +1,11 @@
+<div class="min-w-0">
+  <h1 class="font-display text-2xl font-semibold leading-tight text-ink sm:text-3xl">
+    {{ title() }}
+  </h1>
+  @if (subtitle()) {
+    <p class="mt-1 text-sm text-ink-muted sm:text-base">{{ subtitle() }}</p>
+  }
+</div>
+<div class="flex flex-wrap items-center gap-2">
+  <ng-content />
+</div>

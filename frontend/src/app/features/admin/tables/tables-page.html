@@ -1,0 +1,101 @@
+<app-page-header title="Tables & QR codes" [subtitle]="tables().length ? activeCount() + ' of ' + tables().length + ' tables active' : ''">
+  <button appButton variant="outline" type="button" [loading]="downloading()" [disabled]="!tables().length" (click)="selected().size ? downloadSelected() : downloadPdf()" data-testid="download-pdf">
+    <svg viewBox="0 0 24 24" class="size-4" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 4v11m0 0-4-4m4 4 4-4M5 20h14" /></svg>
+    {{ selected().size ? 'Download PDF (' + selected().size + ')' : 'Download PDF (all)' }}
+  </button>
+  <button appButton type="button" (click)="open(null)" data-testid="add-table">
+    <svg viewBox="0 0 20 20" class="size-4 fill-current" aria-hidden="true"><path d="M9 4h2v5h5v2h-5v5H9v-5H4V9h5z" /></svg>
+    Add table
+  </button>
+</app-page-header>
+
+@if (loading() && !tables().length) {
+  <div class="flex flex-col gap-2" aria-busy="true">
+    @for (i of [1, 2, 3]; track i) {
+      <app-skeleton shape="block" class="h-16" />
+    }
+  </div>
+} @else if (error() && !tables().length) {
+  <app-error-state title="Could not load tables" [error]="error()" (retry)="load()" />
+} @else if (!tables().length) {
+  <app-empty-state title="No tables yet" message="Add a table to get its QR code.">
+    <button appButton type="button" (click)="open(null)">Add table</button>
+  </app-empty-state>
+} @else {
+  <ng-template #actions let-t>
+    <div class="flex flex-wrap justify-end gap-1">
+      <button appButton variant="ghost" size="sm" type="button" (click)="preview(t)">QR</button>
+      <button appButton variant="ghost" size="sm" type="button" (click)="copyLink(t)">Copy link</button>
+      <button appButton variant="ghost" size="sm" type="button" [disabled]="downloading()" (click)="downloadPdf([t.id])">PDF</button>
+      <button appButton variant="ghost" size="sm" type="button" (click)="open(t)">Rename</button>
+      <button appButton variant="ghost" size="sm" type="button" class="text-danger" [disabled]="busyIds().has(t.id)" (click)="regenerate(t)">Regenerate</button>
+    </div>
+  </ng-template>
+
+  <!-- ≥ 768px: table -->
+  <div class="hidden overflow-hidden rounded-card border border-line bg-surface shadow-card md:block">
+    <table class="w-full table-fixed text-left text-sm">
+      <caption class="sr-only">Tables</caption>
+      <thead class="bg-surface-muted text-xs uppercase tracking-wide text-ink-muted">
+        <tr>
+          <th scope="col" class="w-14 px-4 py-2">
+            <label class="flex size-touch items-center justify-center">
+              <span class="sr-only">Select all tables</span>
+              <input type="checkbox" class="size-5 accent-[var(--brand)]" [checked]="allSelected()" [indeterminate]="someSelected()" (change)="toggleAll($any($event.target).checked)" />
+            </label>
+          </th>
+          <th scope="col" class="w-32 px-4 py-3 font-semibold">Table</th>
+          <th scope="col" class="w-28 px-4 py-3 font-semibold">Active</th>
+          <th scope="col" class="px-4 py-3 font-semibold">Menu link</th>
+          <th scope="col" class="w-[23rem] px-4 py-3 text-right font-semibold xl:w-[26rem]"><span class="sr-only">Actions</span></th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-line">
+        @for (t of tables(); track t.id) {
+          <tr [attr.data-testid]="'table-row-' + t.id">
+            <td class="px-4 py-2">
+              <label class="flex size-touch items-center justify-center">
+                <span class="sr-only">Select {{ t.label }}</span>
+                <input type="checkbox" class="size-5 accent-[var(--brand)]" [checked]="selected().has(t.id)" (change)="toggleSelected(t.id, $any($event.target).checked)" />
+              </label>
+            </td>
+            <td class="truncate px-4 py-3 font-display text-lg font-semibold">{{ t.label }}</td>
+            <td class="px-4 py-2">
+              <app-toggle-switch [checked]="t.active" [label]="'Active: table ' + t.label" [busy]="busyIds().has(t.id)" (checkedChange)="setActive(t, $event)" />
+            </td>
+            <td class="truncate px-4 py-3 font-mono text-xs text-ink-muted" [attr.title]="t.qrUrl">{{ t.qrUrl }}</td>
+            <td class="px-2 py-2">
+              <ng-container *ngTemplateOutlet="actions; context: { $implicit: t }" />
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <!-- < 768px: cards -->
+  <div class="md:hidden">
+    <label class="mb-2 flex min-h-touch items-center gap-3 text-sm font-medium">
+      <input type="checkbox" class="size-5 accent-[var(--brand)]" [checked]="allSelected()" [indeterminate]="someSelected()" (change)="toggleAll($any($event.target).checked)" />
+      Select all
+    </label>
+    <ul class="flex flex-col gap-3" role="list" aria-label="Tables">
+      @for (t of tables(); track t.id) {
+        <li class="rounded-card border border-line bg-surface p-3 shadow-card" [attr.data-testid]="'table-card-' + t.id">
+          <div class="flex items-center gap-3">
+            <label class="flex size-touch shrink-0 items-center justify-center">
+              <span class="sr-only">Select {{ t.label }}</span>
+              <input type="checkbox" class="size-5 accent-[var(--brand)]" [checked]="selected().has(t.id)" (change)="toggleSelected(t.id, $any($event.target).checked)" />
+            </label>
+            <p class="min-w-0 flex-1 truncate font-display text-lg font-semibold">{{ t.label }}</p>
+            <app-toggle-switch [checked]="t.active" [label]="'Active: table ' + t.label" [busy]="busyIds().has(t.id)" (checkedChange)="setActive(t, $event)" />
+          </div>
+          <p class="mt-1 truncate font-mono text-xs text-ink-muted">{{ t.qrUrl }}</p>
+          <div class="mt-2 border-t border-line pt-2">
+            <ng-container *ngTemplateOutlet="actions; context: { $implicit: t }" />
+          </div>
+        </li>
+      }
+    </ul>
+  </div>
+}

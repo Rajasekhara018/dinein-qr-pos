@@ -447,6 +447,10 @@ export interface CreateStaffRequest {
   password: string;
   /** 4–6 digits. */
   pin?: string | null;
+  /** ≤ 120 chars, valid e-mail. */
+  email?: string | null;
+  /** 10 digits or empty. */
+  phone?: string | null;
 }
 
 export interface UpdateStaffRequest {
@@ -456,6 +460,10 @@ export interface UpdateStaffRequest {
   newPassword?: string | null;
   pin?: string | null;
   clearPin: boolean;
+  /** Blank/null clears it. */
+  email?: string | null;
+  /** Blank/null clears it. */
+  phone?: string | null;
 }
 
 export interface StaffResponse {
@@ -469,6 +477,8 @@ export interface StaffResponse {
   lastLoginAt?: IsoInstant;
   lockedUntil?: IsoInstant;
   createdAt: IsoInstant;
+  email?: string;
+  phone?: string;
 }
 
 export interface DeviceResponse {
@@ -787,4 +797,55 @@ export const TOPICS = {
   kitchenOrders: '/topic/kitchen/orders',
   menu: '/topic/menu',
   order: (orderId: number) => `/topic/orders/${orderId}`,
+} as const;
+
+// ─── Admin notifications (`notification.dto.NotificationDtos`) ──────────────────────────────────
+
+/** `NotificationEvent` enum as a string (open for additions). */
+export type NotificationEventCode =
+  | 'ORDER_CONFIRMED'
+  | 'ORDER_READY'
+  | 'ORDER_CANCELLED'
+  | 'PAYMENT_FLAGGED'
+  | 'REFUND_FAILED'
+  | (string & {});
+
+export type NotificationSeverity = 'INFO' | 'HIGH' | (string & {});
+
+/** In-app notification of the staff inbox. `link` is app-relative, e.g. `/admin/orders/42`. */
+export interface NotificationView {
+  id: number;
+  event: NotificationEventCode;
+  title: string;
+  body?: string;
+  link?: string;
+  severity: NotificationSeverity;
+  orderId?: number;
+  read: boolean;
+  createdAt: IsoInstant;
+}
+
+export interface UnreadCount {
+  count: number;
+}
+
+/** `InAppAudience`: every user of a role (`recipient` = role name) or one user (`recipient` = user id). */
+export type NotificationAudience = 'STAFF_ROLE' | 'STAFF_USER' | (string & {});
+
+/** Message on `/topic/staff/notifications` (shared by owners and managers — filter by audience/recipient). */
+export interface StaffNotificationMessage {
+  type: 'NOTIFICATION' | (string & {});
+  audience: NotificationAudience;
+  recipient: string;
+  notification: NotificationView;
+}
+
+export interface NotificationSearchParams {
+  unreadOnly?: boolean;
+  page?: number;
+  size?: number;
+}
+
+export const ADMIN_TOPICS = {
+  staffNotifications: '/topic/staff/notifications',
 } as const;

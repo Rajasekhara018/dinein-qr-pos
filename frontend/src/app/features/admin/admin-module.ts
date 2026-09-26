@@ -1,11 +1,21 @@
 import { NgModule } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 import { SharedModule } from '../../shared/shared-module';
 import { AdminRoutingModule } from './admin-routing-module';
-import { AdminComingSoon } from './coming-soon/coming-soon';
+import { ChangePasswordPage } from './auth/change-password-page';
+import { LoginPage } from './auth/login-page';
+import { DashboardPage } from './dashboard/dashboard-page';
+import { AdminSharedModule } from './shared/admin-shared-module';
+import { AdminShell } from './shell/admin-shell';
+import { NotificationBell } from './shell/notification-bell';
 
-/** Placeholder admin app (replaced in a later phase). */
+/**
+ * Admin app (`/admin/**`), lazily loaded: shell, sign-in pages and dashboard. Sections (menu, orders, tables,
+ * reports, settings, staff) are lazy child modules that import `AdminSharedModule`.
+ */
 @NgModule({
-  declarations: [AdminComingSoon],
-  imports: [SharedModule, AdminRoutingModule],
+  declarations: [AdminShell, NotificationBell, LoginPage, ChangePasswordPage, DashboardPage],
+  imports: [SharedModule, ReactiveFormsModule, DragDropModule, AdminSharedModule, AdminRoutingModule],
 })
 export class AdminModule {}

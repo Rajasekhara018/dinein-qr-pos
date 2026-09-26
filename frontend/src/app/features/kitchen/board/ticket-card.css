@@ -1,0 +1,157 @@
+/* Sizes scale with the viewport so tickets stay readable from ~2 m on a TV. */
+.ticket {
+  border-color: var(--app-line-strong);
+}
+
+.ticket-token {
+  font-size: clamp(2rem, 1.1rem + 2.6vw, 4.25rem);
+}
+
+.ticket-table {
+  font-size: clamp(1rem, 0.75rem + 0.8vw, 1.75rem);
+}
+
+.ticket-elapsed {
+  font-size: clamp(1.05rem, 0.8rem + 0.8vw, 1.9rem);
+}
+
+.ticket-qty {
+  min-width: 2.2em;
+  font-size: clamp(1.4rem, 0.95rem + 1.4vw, 2.6rem);
+  line-height: 1.05;
+}
+
+.ticket-item {
+  font-size: clamp(1.05rem, 0.8rem + 0.75vw, 1.85rem);
+  line-height: 1.2;
+}
+
+.ticket-mod,
+.ticket-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  border-radius: 0.5rem;
+  padding: 0.1rem 0.5rem;
+  font-weight: 700;
+}
+
+.ticket-mod {
+  font-size: clamp(0.9rem, 0.72rem + 0.5vw, 1.35rem);
+}
+
+.ticket-badge {
+  font-size: clamp(0.8rem, 0.7rem + 0.35vw, 1.1rem);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* Variant = indigo chip, add-on = teal chip, notes = yellow callout: all distinct from the age colours. */
+.ticket-mod--variant {
+  background: #e0e7ff;
+  color: #312e81;
+}
+.ticket-mod--addon {
+  background: #ccfbf1;
+  color: #134e4a;
+}
+.ticket-note {
+  border-left: 4px solid #eab308;
+  border-radius: 0.375rem;
+  background: #fef9c3;
+  color: #422006;
+  padding: 0.2rem 0.5rem;
+  font-size: clamp(0.95rem, 0.75rem + 0.55vw, 1.45rem);
+  font-weight: 600;
+}
+
+:host-context(.dark) .ticket-mod--variant {
+  background: #312e81;
+  color: #e0e7ff;
+}
+:host-context(.dark) .ticket-mod--addon {
+  background: #134e4a;
+  color: #ccfbf1;
+}
+:host-context(.dark) .ticket-note {
+  background: #422006;
+  color: #fef9c3;
+}
+
+.ticket-action {
+  font-size: clamp(1.1rem, 0.85rem + 0.8vw, 1.8rem);
+}
+
+/* Age escalation (always paired with the "Late"/"Overdue" badge). */
+.ticket--warn {
+  border-color: #d97706;
+  background: #fffbeb;
+}
+.ticket--warn .ticket-elapsed {
+  color: #92400e;
+}
+.ticket--alert {
+  border-color: #dc2626;
+  background: #fef2f2;
+  border-width: 4px;
+}
+.ticket--alert .ticket-elapsed {
+  color: #991b1b;
+}
+.ticket--ready {
+  border-color: #059669;
+}
+
+:host-context(.dark) .ticket--warn {
+  border-color: #f59e0b;
+  background: #2b1d05;
+}
+:host-context(.dark) .ticket--warn .ticket-elapsed {
+  color: #fcd34d;
+}
+:host-context(.dark) .ticket--alert {
+  border-color: #ef4444;
+  background: #3a0d0d;
+}
+:host-context(.dark) .ticket--alert .ticket-elapsed {
+  color: #fca5a5;
+}
+:host-context(.dark) .ticket--ready {
+  border-color: #10b981;
+}
+
+.ticket-badge--warn {
+  background: #fbbf24;
+  color: #451a03;
+}
+.ticket-badge--alert {
+  background: #dc2626;
+  color: #fff;
+}
+.ticket-badge--new {
+  background: #0284c7;
+  color: #fff;
+}
+
+/* New order: pulse a few times, then keep a static ring while highlighted. */
+.ticket--new {
+  box-shadow: 0 0 0 4px #38bdf8;
+  animation: ticket-flash 0.8s ease-in-out 4;
+}
+
+@keyframes ticket-flash {
+  0%,
+  100% {
+    box-shadow: 0 0 0 4px #38bdf8;
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgb(56 189 248 / 0.35);
+    background-color: rgb(56 189 248 / 0.18);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ticket--new {
+    animation: none;
+  }
+}

@@ -1,0 +1,33 @@
+<h2
+  class="column-title hidden items-center gap-3 px-1 pb-3 font-display text-[clamp(1.25rem,0.9rem+1vw,2.25rem)] font-bold md:flex"
+  [id]="'col-' + column() + '-title'"
+>
+  <span class="h-[0.9em] w-2 shrink-0 rounded-full" [class]="accent()" aria-hidden="true"></span>
+  <span class="min-w-0 truncate">{{ label() }}</span>
+  <span
+    class="ml-auto shrink-0 rounded-full bg-surface-muted px-3 py-0.5 tabular-nums"
+    [attr.data-testid]="'column-count-' + column()"
+    >{{ orders().length }}</span
+  >
+</h2>
+<div
+  class="min-h-0 flex-1 space-y-3 md:overflow-y-auto md:pb-4 md:pr-1"
+  [attr.data-testid]="'column-' + column()"
+>
+  @for (order of orders(); track order.id) {
+    <app-ticket-card
+      [order]="order"
+      [now]="now()"
+      [config]="config()"
+      [pending]="pending().has(order.id)"
+      [highlighted]="highlighted().has(order.id)"
+      (advance)="advance.emit($event)"
+    />
+  } @empty {
+    <p
+      class="rounded-card border-2 border-dashed border-line-strong px-4 py-10 text-center text-[clamp(1rem,0.8rem+0.6vw,1.5rem)] text-ink-subtle"
+    >
+      {{ emptyText() }}
+    </p>
+  }
+</div>

@@ -1,0 +1,11 @@
+<p class="text-sm font-medium text-ink-muted">{{ label() }}</p>
+<p
+  class="mt-1 truncate font-display text-2xl font-semibold tabular-nums text-ink sm:text-3xl"
+  [attr.data-testid]="testId()"
+>
+  {{ value() }}
+</p>
+@if (hint()) {
+  <p class="mt-1 text-sm text-ink-subtle">{{ hint() }}</p>
+}
+<ng-content />

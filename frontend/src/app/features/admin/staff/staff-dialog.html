@@ -1,0 +1,103 @@
+<app-bottom-sheet [title]="title()" (closed)="ref.close()">
+  <form id="staff-form" [formGroup]="form" (ngSubmit)="save()" novalidate class="flex flex-col gap-4">
+    @if (error()) {
+      <p class="rounded-control bg-red-50 px-3 py-2 text-sm font-medium text-red-900" role="alert" data-testid="staff-error">{{ error() }}</p>
+    }
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+      <div>
+        <label for="staff-username" class="block text-sm font-medium text-ink">Username</label>
+        <input id="staff-username" appInput class="mt-1" formControlName="username" autocapitalize="none" spellcheck="false" autocomplete="off" aria-describedby="staff-username-error" />
+        <app-field-error id="staff-username-error" [control]="form.controls.username" [messages]="{ pattern: 'Letters, digits, dot, dash or underscore only.' }" />
+      </div>
+      <div>
+        <label for="staff-name" class="block text-sm font-medium text-ink">Display name</label>
+        <input id="staff-name" appInput class="mt-1" formControlName="displayName" maxlength="80" />
+        <app-field-error [control]="form.controls.displayName" />
+      </div>
+    </div>
+
+    <fieldset>
+      <legend class="text-sm font-medium text-ink">Role</legend>
+      @if (isSelf) {
+        <p class="text-xs text-ink-subtle">You can't change your own role.</p>
+      }
+      <div class="mt-1 grid grid-cols-1 gap-2 sm:grid-cols-3">
+        @for (r of roles; track r.value) {
+          <label class="flex min-h-touch cursor-pointer items-start gap-2 rounded-control border border-line-strong p-3 has-[:checked]:border-brand has-[:checked]:bg-brand-soft has-[:disabled]:cursor-not-allowed has-[:disabled]:opacity-60">
+            <input type="radio" class="mt-1 size-4 accent-[var(--brand)]" formControlName="role" [value]="r.value" />
+            <span class="min-w-0">
+              <span class="block text-sm font-semibold">{{ r.label }}</span>
+              <span class="block text-xs text-ink-muted">{{ r.hint }}</span>
+            </span>
+          </label>
+        }
+      </div>
+    </fieldset>
+
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+      <div>
+        <label for="staff-email" class="block text-sm font-medium text-ink">E-mail <span class="font-normal text-ink-subtle">(optional)</span></label>
+        <input id="staff-email" appInput type="email" class="mt-1" formControlName="email" autocomplete="off" />
+        <app-field-error [control]="form.controls.email" />
+      </div>
+      <div>
+        <label for="staff-phone" class="block text-sm font-medium text-ink">Mobile <span class="font-normal text-ink-subtle">(optional)</span></label>
+        <input id="staff-phone" appInput type="tel" inputmode="numeric" maxlength="10" class="mt-1" formControlName="phone" autocomplete="off" />
+        <app-field-error [control]="form.controls.phone" [messages]="{ pattern: 'Enter a 10-digit mobile number.' }" />
+      </div>
+    </div>
+
+    <div>
+      <label for="staff-password" class="block text-sm font-medium text-ink">
+        {{ isEdit ? 'Reset password' : 'Temporary password' }}
+        @if (isEdit) {
+          <span class="font-normal text-ink-subtle">(leave empty to keep)</span>
+        }
+      </label>
+      <div class="mt-1 flex gap-2">
+        <input id="staff-password" appInput [type]="showPassword() ? 'text' : 'password'" formControlName="password" autocomplete="new-password" aria-describedby="staff-password-hint staff-password-error" />
+        <button appButton variant="outline" type="button" class="shrink-0" (click)="generatePassword()">Generate</button>
+      </div>
+      <p id="staff-password-hint" class="mt-1 text-xs text-ink-subtle">
+        8–72 characters with a letter and a digit. Owners and managers must change it at their next sign-in.
+      </p>
+      <app-field-error id="staff-password-error" [control]="form.controls.password" [messages]="passwordMessages" />
+    </div>
+
+    <fieldset>
+      <legend class="text-sm font-medium text-ink">Kitchen PIN <span class="font-normal text-ink-subtle">(optional, for the kitchen screen)</span></legend>
+      @if (isEdit) {
+        <div class="mt-1 flex flex-wrap gap-x-4">
+          <label class="flex min-h-touch items-center gap-2 text-sm">
+            <input type="radio" class="size-4 accent-[var(--brand)]" formControlName="pinMode" value="keep" />
+            {{ data.staff?.hasPin ? 'Keep current PIN' : 'No PIN' }}
+          </label>
+          <label class="flex min-h-touch items-center gap-2 text-sm">
+            <input type="radio" class="size-4 accent-[var(--brand)]" formControlName="pinMode" value="set" />
+            Set new PIN
+          </label>
+          @if (data.staff?.hasPin) {
+            <label class="flex min-h-touch items-center gap-2 text-sm">
+              <input type="radio" class="size-4 accent-[var(--brand)]" formControlName="pinMode" value="clear" />
+              Remove PIN
+            </label>
+          }
+        </div>
+      }
+      @if (pinMode() === 'set') {
+        <input appInput type="password" inputmode="numeric" maxlength="6" class="mt-1 max-w-40" formControlName="pin" autocomplete="off" aria-label="PIN (4 to 6 digits)" />
+        <app-field-error [control]="form.controls.pin" [messages]="{ pattern: 'PIN must be 4–6 digits.' }" />
+      }
+    </fieldset>
+
+    @if (isEdit) {
+      <app-toggle-switch formControlName="active" label="Active" [hint]="isSelf ? 'You cannot deactivate yourself.' : 'Deactivating signs the user out everywhere and revokes their devices.'" showLabel />
+    }
+  </form>
+  <div sheetFooter class="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+    <button appButton variant="outline" type="button" (click)="ref.close()">Cancel</button>
+    <button appButton type="submit" form="staff-form" [loading]="saving()" data-testid="staff-save">
+      {{ isEdit ? 'Save' : 'Create user' }}
+    </button>
+  </div>
+</app-bottom-sheet>

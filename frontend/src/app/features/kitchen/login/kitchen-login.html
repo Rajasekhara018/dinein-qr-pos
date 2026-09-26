@@ -1,0 +1,154 @@
+<main class="mx-auto flex min-h-dvh w-full max-w-md flex-col justify-center px-4 py-8">
+  <div class="mb-6 flex items-center gap-3">
+    <span
+      class="flex size-12 shrink-0 items-center justify-center rounded-card bg-brand text-brand-contrast"
+      aria-hidden="true"
+    >
+      <svg viewBox="0 0 24 24" class="size-7" fill="none" stroke="currentColor" stroke-width="1.8">
+        <path d="M6 14h12v5a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1v-5Z" />
+        <path d="M6 14a4 4 0 0 1 1.5-7.7A4.5 4.5 0 0 1 16 6a4 4 0 0 1 2 8" />
+      </svg>
+    </span>
+    <div class="min-w-0">
+      <h1 class="font-display text-2xl font-semibold">Kitchen display</h1>
+      <p class="text-sm text-ink-muted">Sign in once — this screen stays signed in for 30 days.</p>
+    </div>
+  </div>
+
+  <form
+    class="rounded-card border border-line bg-surface p-4 shadow-card sm:p-6"
+    [formGroup]="form"
+    (ngSubmit)="submit()"
+    novalidate
+  >
+    <div
+      class="mb-5 grid grid-cols-2 gap-1 rounded-control bg-surface-muted p-1"
+      role="group"
+      aria-label="Sign in with"
+    >
+      <button
+        type="button"
+        class="min-h-touch rounded-control px-3 text-sm font-semibold transition-colors"
+        [class]="
+          mode() === 'pin' ? 'bg-surface text-ink shadow-card' : 'text-ink-muted hover:text-ink'
+        "
+        [attr.aria-pressed]="mode() === 'pin'"
+        (click)="setMode('pin')"
+      >
+        PIN
+      </button>
+      <button
+        type="button"
+        class="min-h-touch rounded-control px-3 text-sm font-semibold transition-colors"
+        [class]="
+          mode() === 'password'
+            ? 'bg-surface text-ink shadow-card'
+            : 'text-ink-muted hover:text-ink'
+        "
+        [attr.aria-pressed]="mode() === 'password'"
+        (click)="setMode('password')"
+      >
+        Password
+      </button>
+    </div>
+
+    <div class="space-y-4">
+      <div>
+        <label for="k-username" class="mb-1 block text-sm font-semibold">Username</label>
+        <input
+          id="k-username"
+          type="text"
+          formControlName="username"
+          autocomplete="username"
+          autocapitalize="none"
+          spellcheck="false"
+          class="block min-h-touch w-full rounded-control border border-line-strong bg-surface px-3 text-ink"
+          [attr.aria-invalid]="showError('username')"
+          [attr.aria-describedby]="showError('username') ? 'k-username-error' : null"
+        />
+        @if (showError('username')) {
+          <p id="k-username-error" class="mt-1 text-sm text-red-700 dark:text-red-300">
+            Enter your username.
+          </p>
+        }
+      </div>
+
+      @if (mode() === 'pin') {
+        <div>
+          <label for="k-pin" class="mb-1 block text-sm font-semibold">PIN (4–6 digits)</label>
+          <input
+            id="k-pin"
+            type="password"
+            formControlName="pin"
+            inputmode="numeric"
+            pattern="[0-9]*"
+            maxlength="6"
+            autocomplete="one-time-code"
+            class="block min-h-touch w-full rounded-control border border-line-strong bg-surface px-3 font-mono tracking-[0.4em] text-ink"
+            [attr.aria-invalid]="showError('pin')"
+            [attr.aria-describedby]="showError('pin') ? 'k-pin-error' : null"
+          />
+          @if (showError('pin')) {
+            <p id="k-pin-error" class="mt-1 text-sm text-red-700 dark:text-red-300">
+              The PIN must be 4 to 6 digits.
+            </p>
+          }
+        </div>
+      } @else {
+        <div>
+          <label for="k-password" class="mb-1 block text-sm font-semibold">Password</label>
+          <input
+            id="k-password"
+            type="password"
+            formControlName="password"
+            autocomplete="current-password"
+            class="block min-h-touch w-full rounded-control border border-line-strong bg-surface px-3 text-ink"
+            [attr.aria-invalid]="showError('password')"
+            [attr.aria-describedby]="showError('password') ? 'k-password-error' : null"
+          />
+          @if (showError('password')) {
+            <p id="k-password-error" class="mt-1 text-sm text-red-700 dark:text-red-300">
+              Enter your password.
+            </p>
+          }
+        </div>
+      }
+
+      <div>
+        <label for="k-device" class="mb-1 block text-sm font-semibold">Device name</label>
+        <input
+          id="k-device"
+          type="text"
+          formControlName="deviceName"
+          maxlength="60"
+          class="block min-h-touch w-full rounded-control border border-line-strong bg-surface px-3 text-ink"
+          aria-describedby="k-device-hint"
+        />
+        <p id="k-device-hint" class="mt-1 text-sm text-ink-muted">
+          Shown to the owner in Staff &amp; devices, so this screen can be revoked.
+        </p>
+      </div>
+    </div>
+
+    <div aria-live="assertive">
+      @if (errorMessage(); as message) {
+        <p
+          class="mt-4 rounded-control border border-red-300 bg-red-50 px-3 py-2 text-sm font-medium text-red-900 dark:border-red-800 dark:bg-red-950 dark:text-red-100"
+          role="alert"
+          data-testid="kitchen-login-error"
+        >
+          {{ message }}
+        </p>
+      }
+    </div>
+
+    <button appButton type="submit" size="lg" block class="mt-6" [loading]="submitting()">
+      @if (submitting()) {
+        <app-spinner [size]="18" />
+        Signing in…
+      } @else {
+        Sign in this screen
+      }
+    </button>
+  </form>
+</main>

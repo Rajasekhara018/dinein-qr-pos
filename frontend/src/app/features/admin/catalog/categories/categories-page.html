@@ -1,0 +1,89 @@
+<app-page-header title="Categories" subtitle="Drag to reorder how categories appear on the guest menu.">
+  @if (saving()) {
+    <app-spinner [size]="18" label="Saving order" />
+  }
+  <button appButton type="button" (click)="open(null)" data-testid="add-category">
+    <svg viewBox="0 0 20 20" class="size-4 fill-current" aria-hidden="true"><path d="M9 4h2v5h5v2h-5v5H9v-5H4V9h5z" /></svg>
+    Add category
+  </button>
+</app-page-header>
+
+@if (loading() && categories().length === 0) {
+  <div class="flex flex-col gap-2" aria-busy="true">
+    @for (i of [1, 2, 3, 4]; track i) {
+      <app-skeleton shape="block" class="h-20" />
+    }
+  </div>
+} @else if (error() && categories().length === 0) {
+  <app-error-state title="Could not load categories" [error]="error()" (retry)="load()" />
+} @else if (categories().length === 0) {
+  <app-empty-state title="No categories yet" message="Create categories like Starters, Mains and Drinks, then add items.">
+    <button appButton type="button" (click)="open(null)">Add category</button>
+  </app-empty-state>
+} @else {
+  <p id="reorder-help" class="sr-only">
+    Use the move up and move down buttons to reorder with the keyboard, or drag with a mouse or finger.
+  </p>
+  <ol
+    class="flex flex-col gap-2"
+    cdkDropList
+    [cdkDropListData]="categories()"
+    [cdkDropListDisabled]="saving()"
+    cdkDropListLockAxis="y"
+    (cdkDropListDropped)="onDrop($event)"
+    aria-describedby="reorder-help"
+    data-testid="category-list"
+  >
+    @for (c of categories(); track c.id; let i = $index; let first = $first; let last = $last) {
+      <li
+        cdkDrag
+        [cdkDragData]="c"
+        class="flex min-w-0 flex-wrap items-center gap-2 rounded-card border border-line bg-surface p-2 shadow-card sm:flex-nowrap sm:gap-3 sm:p-3"
+        [attr.data-testid]="'category-' + c.id"
+      >
+        <button
+          type="button"
+          cdkDragHandle
+          class="inline-flex size-touch shrink-0 cursor-grab touch-none items-center justify-center rounded-control text-ink-subtle hover:bg-surface-muted active:cursor-grabbing"
+          [attr.aria-label]="'Drag to reorder ' + c.name"
+        >
+          <svg viewBox="0 0 20 20" class="size-5 fill-current" aria-hidden="true">
+            <path d="M7 4a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 6a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm-1.5 7.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3ZM16 4a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm-1.5 7.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3ZM16 16a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z" />
+          </svg>
+        </button>
+        <app-image-box [src]="c.thumbUrl" [alt]="''" sizes="56px" class="size-12 shrink-0 rounded-control sm:size-14" />
+        <div class="min-w-0 flex-1">
+          <p class="truncate font-semibold text-ink" [class.text-ink-subtle]="!c.active">{{ c.name }}</p>
+          <p class="truncate text-sm text-ink-muted">
+            <a [routerLink]="['/admin/menu/items']" [queryParams]="{ categoryId: c.id }" class="underline-offset-2 hover:underline">
+              {{ c.itemCount }} {{ c.itemCount === 1 ? 'item' : 'items' }}
+            </a>
+            @if (!c.active) {
+              · Hidden
+            }
+          </p>
+        </div>
+        <app-toggle-switch
+          [checked]="c.active"
+          [label]="'Visible to guests: ' + c.name"
+          [busy]="busyIds().has(c.id)"
+          (checkedChange)="setActive(c, $event)"
+        />
+        <div class="flex w-full shrink-0 justify-end border-t border-line pt-1 sm:w-auto sm:border-0 sm:pt-0">
+          <button appIconButton type="button" [disabled]="first || saving()" [attr.aria-label]="'Move ' + c.name + ' up'" (click)="move(i, -1)">
+            <svg viewBox="0 0 20 20" class="size-5 fill-current" aria-hidden="true"><path d="m10 6 5 5-1.4 1.4L10 8.8l-3.6 3.6L5 11z" /></svg>
+          </button>
+          <button appIconButton type="button" [disabled]="last || saving()" [attr.aria-label]="'Move ' + c.name + ' down'" (click)="move(i, 1)">
+            <svg viewBox="0 0 20 20" class="size-5 fill-current" aria-hidden="true"><path d="m10 14-5-5 1.4-1.4 3.6 3.6 3.6-3.6L15 9z" /></svg>
+          </button>
+          <button appIconButton type="button" [attr.aria-label]="'Edit ' + c.name" (click)="open(c)">
+            <svg viewBox="0 0 24 24" class="size-5" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+              <path d="M4 20h4L19 9l-4-4L4 16v4Zm9-13 4 4" />
+            </svg>
+          </button>
+        </div>
+        <div *cdkDragPlaceholder class="h-16 rounded-card border-2 border-dashed border-brand bg-brand-soft"></div>
+      </li>
+    }
+  </ol>
+}

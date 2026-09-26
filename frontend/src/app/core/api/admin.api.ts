@@ -1,6 +1,7 @@
 import { HttpClient, HttpEvent, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { silentErrors } from '../http/http-context';
 import {
   AdminOrderSearchParams,
   AdminOrderSummary,
@@ -14,6 +15,8 @@ import {
   ItemRequest,
   ItemResponse,
   ItemSearchParams,
+  NotificationSearchParams,
+  NotificationView,
   OrderStatus,
   PageResponse,
   PriceRequest,
@@ -23,6 +26,7 @@ import {
   TableRequest,
   TableResponse,
   UpdateSettingsRequest,
+  UnreadCount,
   UpdateStaffRequest,
   UploadResult,
 } from './models';
@@ -160,11 +164,16 @@ export class AdminOrdersApi {
     return this.http.patch<AdminOrderView>(`/api/admin/orders/${id}/status`, { status });
   }
 
-  /** Cancels a paid order and refunds it in full (calling again retries a failed refund). */
+  /**
+   * Cancels a paid order and refunds it in full (calling again retries a failed refund). Errors are silent (no
+   * global toast): a `REFUND_FAILED` (502) is expected and handled by the caller.
+   */
   cancel(id: number, reason?: string): Observable<AdminOrderView> {
-    return this.http.post<AdminOrderView>(`/api/admin/orders/${id}/cancel`, {
-      reason: reason || null,
-    });
+    return this.http.post<AdminOrderView>(
+      `/api/admin/orders/${id}/cancel`,
+      { reason: reason || null },
+      { context: silentErrors() },
+    );
   }
 }
 
@@ -222,5 +231,32 @@ export class AdminSettingsApi {
 
   revokeDevice(id: number): Observable<void> {
     return this.http.delete<void>(`/api/admin/devices/${id}`);
+  }
+}
+
+/** Staff inbox: `/api/admin/notifications` (owner/manager). */
+@Injectable({ providedIn: 'root' })
+export class AdminNotificationsApi {
+  private readonly http = inject(HttpClient);
+
+  list(search: NotificationSearchParams = {}): Observable<PageResponse<NotificationView>> {
+    return this.http.get<PageResponse<NotificationView>>('/api/admin/notifications', {
+      params: toParams({ ...search }),
+    });
+  }
+
+  /** Background poll/refresh: no global error toast. */
+  unreadCount(): Observable<UnreadCount> {
+    return this.http.get<UnreadCount>('/api/admin/notifications/unread-count', {
+      context: silentErrors(),
+    });
+  }
+
+  markRead(id: number): Observable<void> {
+    return this.http.post<void>(`/api/admin/notifications/${id}/read`, null);
+  }
+
+  markAllRead(): Observable<void> {
+    return this.http.post<void>('/api/admin/notifications/read-all', null);
   }
 }

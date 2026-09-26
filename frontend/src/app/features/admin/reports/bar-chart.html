@@ -1,0 +1,74 @@
+<div class="mb-2 flex justify-end">
+  <button appButton variant="ghost" size="sm" type="button" [attr.aria-pressed]="showTable()" (click)="showTable.set(!showTable())">
+    {{ showTable() ? 'Show chart' : 'Show table' }}
+  </button>
+</div>
+
+@if (!showTable()) {
+  <figure class="m-0 overflow-x-clip pt-8" [attr.aria-label]="summary()">
+    <div class="relative flex h-48 items-end gap-0.5 border-b border-line-strong sm:h-56" role="list">
+      <!-- recessive gridline at the max value -->
+      <div class="pointer-events-none absolute inset-x-0 top-0 border-t border-dashed border-line" aria-hidden="true"></div>
+      <span class="pointer-events-none absolute right-0 top-0 -translate-y-full text-xs text-ink-subtle" aria-hidden="true">
+        {{ formatValue()(max()) }}
+      </span>
+      @for (d of data(); track d.key; let i = $index) {
+        <div
+          class="group relative flex h-full min-w-0 flex-1 items-end justify-center outline-none"
+          role="listitem"
+          [attr.tabindex]="data().length <= 31 ? 0 : null"
+          [attr.aria-label]="d.description"
+          (mouseenter)="active.set(d.key)"
+          (mouseleave)="active.set(null)"
+          (focus)="active.set(d.key)"
+          (blur)="active.set(null)"
+        >
+          <div
+            class="w-full max-w-10 rounded-t-[4px] bg-brand transition-opacity group-focus-visible:outline-3 group-focus-visible:outline-offset-2 group-focus-visible:outline-focus"
+            [class.opacity-70]="active() !== null && active() !== d.key"
+            [style.height.%]="height(d.value)"
+          ></div>
+          @if (active() === d.key) {
+            <div
+              class="pointer-events-none absolute z-10 whitespace-nowrap rounded-control bg-ink px-2 py-1 text-xs font-medium text-surface shadow-raised"
+              [style.bottom.%]="height(d.value) + 2"
+              [class.left-0]="i < data().length / 3"
+              [class.right-0]="i > (data().length * 2) / 3"
+              aria-hidden="true"
+            >
+              {{ d.description }}
+            </div>
+          }
+        </div>
+      }
+    </div>
+    <div class="mt-1 flex gap-0.5" aria-hidden="true">
+      @for (d of data(); track d.key; let i = $index) {
+        <span class="min-w-0 flex-1 overflow-visible whitespace-nowrap text-center text-[0.7rem] text-ink-subtle">
+          {{ i % labelEvery() === 0 ? d.label : '' }}
+        </span>
+      }
+    </div>
+    <figcaption class="sr-only">{{ summary() }}</figcaption>
+  </figure>
+} @else {
+  <div class="max-h-72 overflow-y-auto rounded-control border border-line">
+    <table class="w-full text-left text-sm">
+      <caption class="sr-only">{{ label() }}</caption>
+      <thead class="sticky top-0 bg-surface-muted text-xs uppercase text-ink-muted">
+        <tr>
+          <th scope="col" class="px-3 py-2">Date</th>
+          <th scope="col" class="px-3 py-2 text-right">{{ valueHeader() }}</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-line">
+        @for (d of data(); track d.key) {
+          <tr>
+            <th scope="row" class="px-3 py-2 font-normal">{{ d.description }}</th>
+            <td class="px-3 py-2 text-right tabular-nums">{{ formatValue()(d.value) }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+}

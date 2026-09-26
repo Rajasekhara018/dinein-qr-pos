@@ -1,0 +1,27 @@
+<app-bottom-sheet [title]="data.category ? 'Edit category' : 'New category'" (closed)="ref.close()">
+  <form id="category-form" [formGroup]="form" (ngSubmit)="save()" novalidate class="flex flex-col gap-4">
+    @if (error()) {
+      <p class="rounded-control bg-red-50 px-3 py-2 text-sm font-medium text-red-900" role="alert">{{ error() }}</p>
+    }
+    <div>
+      <label for="category-name" class="block text-sm font-medium text-ink">Name</label>
+      <input id="category-name" appInput class="mt-1" formControlName="name" maxlength="80" aria-describedby="category-name-error" data-testid="category-name" />
+      <app-field-error id="category-name-error" [control]="form.controls.name" />
+    </div>
+    <div>
+      <label for="category-description" class="block text-sm font-medium text-ink">
+        Description <span class="font-normal text-ink-subtle">(optional)</span>
+      </label>
+      <textarea id="category-description" appInput rows="2" class="mt-1" formControlName="description" maxlength="300" aria-describedby="category-description-error"></textarea>
+      <app-field-error id="category-description-error" [control]="form.controls.description" />
+    </div>
+    <app-image-upload formControlName="imageId" label="Category image" [url]="imageUrl()" (uploaded)="onUploaded($event)" />
+    <app-toggle-switch formControlName="active" label="Visible to guests" hint="Hidden categories hide all their items." showLabel />
+  </form>
+  <div sheetFooter class="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+    <button appButton variant="outline" type="button" (click)="ref.close()">Cancel</button>
+    <button appButton type="submit" form="category-form" [loading]="saving()" data-testid="category-save">
+      {{ data.category ? 'Save' : 'Add category' }}
+    </button>
+  </div>
+</app-bottom-sheet>

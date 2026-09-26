@@ -1,0 +1,74 @@
+<app-page-header [title]="greeting()" subtitle="Today's orders at a glance. Updates live.">
+  @if (updatedAt(); as at) {
+    <span class="text-sm text-ink-subtle" aria-live="polite">Updated {{ at | date: 'h:mm:ss a' }}</span>
+  }
+  <button appButton variant="outline" size="sm" type="button" [loading]="refreshing()" (click)="refresh()">
+    Refresh
+  </button>
+</app-page-header>
+
+@if (loading() && !data()) {
+  <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4" aria-busy="true">
+    @for (i of [1, 2, 3, 4]; track i) {
+      <app-skeleton shape="block" class="h-28" />
+    }
+  </div>
+  <app-skeleton shape="block" class="mt-6 h-64" />
+} @else if (error() && !data()) {
+  <app-error-state title="Could not load the dashboard" [error]="error()" (retry)="refresh()" />
+} @else if (data(); as d) {
+  @if (d.flaggedOrders > 0) {
+    <div
+      class="mb-4 flex flex-wrap items-center gap-3 rounded-card border border-red-300 bg-red-50 p-4 text-red-950 dark:border-red-800 dark:bg-red-950 dark:text-red-50"
+      role="alert"
+      data-testid="flagged-alert"
+    >
+      <svg viewBox="0 0 24 24" class="size-6 shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+        <path d="M12 9v4m0 4h.01M10.3 3.9 2.4 17.5A2 2 0 0 0 4.1 20.5h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z" />
+      </svg>
+      <p class="min-w-0 flex-1">
+        <strong class="font-semibold">
+          {{ d.flaggedOrders }} {{ d.flaggedOrders === 1 ? 'payment needs' : 'payments need' }} attention.
+        </strong>
+        Flagged orders are held back from the kitchen until you resolve them.
+      </p>
+      <a appButton variant="outline" size="sm" routerLink="/admin/orders">Review orders</a>
+    </div>
+  }
+
+  <section aria-labelledby="kpi-heading">
+    <h2 id="kpi-heading" class="sr-only">Today's totals</h2>
+    <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
+      <app-stat-card label="Orders today" [value]="d.ordersToday" testId="kpi-orders" />
+      <app-stat-card label="Revenue today" [value]="d.revenueToday | inr" testId="kpi-revenue" />
+      <app-stat-card label="Average order value" [value]="d.averageOrderValue | inr" />
+      <app-stat-card label="In the kitchen" [value]="d.activeKitchenOrders" hint="Paid, preparing or ready" />
+    </div>
+  </section>
+
+  <section class="mt-6" aria-labelledby="status-heading">
+    <h2 id="status-heading" class="mb-3 font-display text-lg font-semibold">Orders by status</h2>
+    <ul class="grid grid-cols-2 gap-2 sm:grid-cols-4 xl:grid-cols-8" role="list">
+      @for (s of statuses(); track s.status) {
+        <li class="flex min-w-0 flex-col rounded-control border border-line bg-surface px-3 py-2 shadow-card">
+          <span class="truncate text-xs font-medium text-ink-muted">{{ s.label }}</span>
+          <span class="font-display text-xl font-semibold tabular-nums">{{ s.count }}</span>
+        </li>
+      }
+    </ul>
+  </section>
+
+  <section class="mt-6" aria-labelledby="recent-heading">
+    <div class="mb-3 flex flex-wrap items-center justify-between gap-2">
+      <h2 id="recent-heading" class="font-display text-lg font-semibold">Recent orders</h2>
+      <a routerLink="/admin/orders" class="inline-flex min-h-touch items-center font-semibold text-brand-ink hover:underline">
+        View all orders
+      </a>
+    </div>
+    @if (d.recentOrders.length === 0) {
+      <app-empty-state title="No orders yet today" message="New paid orders will appear here instantly." />
+    } @else {
+      <app-order-list [orders]="d.recentOrders" caption="Recent orders" />
+    }
+  </section>
+}

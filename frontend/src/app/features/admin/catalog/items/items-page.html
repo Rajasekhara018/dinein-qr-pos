@@ -1,0 +1,251 @@
+<app-page-header title="Items" subtitle="Tap a price to change it. Changes reach the guest menu immediately.">
+  <a appButton routerLink="/admin/menu/items/new" [queryParams]="newItemLink()" data-testid="add-item">
+    <svg viewBox="0 0 20 20" class="size-4 fill-current" aria-hidden="true"><path d="M9 4h2v5h5v2h-5v5H9v-5H4V9h5z" /></svg>
+    Add item
+  </a>
+</app-page-header>
+
+<div class="lg:grid lg:grid-cols-[14rem_minmax(0,1fr)] lg:gap-6">
+  <!-- Category filter: sidebar on desktop -->
+  <nav class="hidden lg:block" aria-label="Filter by category">
+    <h2 class="mb-2 text-xs font-semibold uppercase tracking-wide text-ink-muted">Categories</h2>
+    <ul class="flex flex-col gap-1" role="list">
+      <li>
+        <button
+          type="button"
+          class="flex min-h-touch w-full items-center justify-between gap-2 rounded-control px-3 text-left hover:bg-surface-muted"
+          [class.bg-brand-soft]="store.filters().categoryId === null"
+          [class.font-semibold]="store.filters().categoryId === null"
+          [attr.aria-pressed]="store.filters().categoryId === null"
+          (click)="selectCategory(null)"
+        >
+          <span>All items</span>
+          <span class="text-sm tabular-nums text-ink-muted">{{ totalItemCount() }}</span>
+        </button>
+      </li>
+      @for (c of categories(); track c.id) {
+        <li>
+          <button
+            type="button"
+            class="flex min-h-touch w-full items-center justify-between gap-2 rounded-control px-3 text-left hover:bg-surface-muted"
+            [class.bg-brand-soft]="store.filters().categoryId === c.id"
+            [class.font-semibold]="store.filters().categoryId === c.id"
+            [attr.aria-pressed]="store.filters().categoryId === c.id"
+            (click)="selectCategory(c.id)"
+          >
+            <span class="min-w-0 truncate" [class.text-ink-subtle]="!c.active">
+              {{ c.name }}
+              @if (!c.active) {
+                <span class="sr-only">(hidden)</span>
+              }
+            </span>
+            <span class="text-sm tabular-nums text-ink-muted">{{ c.itemCount }}</span>
+          </button>
+        </li>
+      }
+    </ul>
+    @if (categoriesError()) {
+      <button appButton variant="ghost" size="sm" type="button" class="mt-2" (click)="loadCategories()">
+        Reload categories
+      </button>
+    }
+  </nav>
+
+  <section class="min-w-0" aria-labelledby="items-results-heading">
+    <h2 id="items-results-heading" class="sr-only">Items</h2>
+    <!-- Filters -->
+    <div class="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-[minmax(0,1fr)_12rem] lg:grid-cols-[minmax(0,1fr)_12rem]">
+      <div class="lg:hidden sm:col-span-2">
+        <label for="items-category" class="block text-sm font-medium text-ink">Category</label>
+        <select id="items-category" appInput class="mt-1" [formControl]="categoryControl">
+          <option [ngValue]="null">All categories</option>
+          @for (c of categories(); track c.id) {
+            <option [ngValue]="c.id">{{ c.name }} ({{ c.itemCount }}){{ c.active ? '' : ' · hidden' }}</option>
+          }
+        </select>
+      </div>
+      <div class="min-w-0">
+        <label for="items-search" class="block text-sm font-medium text-ink">Search</label>
+        <input
+          id="items-search"
+          appInput
+          type="search"
+          class="mt-1"
+          placeholder="Item name"
+          autocomplete="off"
+          [formControl]="search"
+          data-testid="items-search"
+        />
+      </div>
+      <div>
+        <label for="items-availability" class="block text-sm font-medium text-ink">Availability</label>
+        <select id="items-availability" appInput class="mt-1" [formControl]="availability">
+          <option value="all">All</option>
+          <option value="available">Available</option>
+          <option value="unavailable">Out of stock</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="mb-2 flex min-h-6 flex-wrap items-center justify-between gap-2 text-sm text-ink-muted" aria-live="polite">
+      <span>
+        @if (store.loaded()) {
+          {{ store.total() }} {{ store.total() === 1 ? 'item' : 'items' }}
+          @if (selectedCategory(); as c) {
+            in {{ c.name }}
+          }
+        }
+      </span>
+      @if (store.loading() && store.loaded()) {
+        <app-spinner [size]="16" label="Loading items" />
+      }
+    </div>
+
+    @if (!store.loaded() && store.loading()) {
+      <div class="flex flex-col gap-3" aria-busy="true">
+        @for (i of [1, 2, 3, 4, 5]; track i) {
+          <app-skeleton shape="block" class="h-20" />
+        }
+      </div>
+    } @else if (store.error() && !store.loaded()) {
+      <app-error-state title="Could not load items" [error]="store.error()" (retry)="store.load()" />
+    } @else if (store.items().length === 0) {
+      <app-empty-state
+        [title]="store.hasFilters() ? 'No matching items' : 'No items yet'"
+        [message]="store.hasFilters() ? 'Try another search or category.' : 'Add your first dish to start taking orders.'"
+      >
+        @if (store.hasFilters()) {
+          <button appButton variant="outline" type="button" (click)="clearFilters()">Clear filters</button>
+        } @else {
+          <a appButton routerLink="/admin/menu/items/new">Add item</a>
+        }
+      </app-empty-state>
+    } @else {
+      <!-- ≥ 768px: table -->
+      <div class="hidden overflow-hidden rounded-card border border-line bg-surface shadow-card md:block">
+        <table class="w-full table-fixed text-left text-sm">
+          <caption class="sr-only">Menu items</caption>
+          <thead class="bg-surface-muted text-xs uppercase tracking-wide text-ink-muted">
+            <tr>
+              <th scope="col" class="w-20 px-4 py-3"><span class="sr-only">Photo</span></th>
+              <th scope="col" class="px-4 py-3 font-semibold">Item</th>
+              <th scope="col" class="w-48 px-4 py-3 font-semibold">Price</th>
+              <th scope="col" class="w-32 px-4 py-3 font-semibold">Available</th>
+              <th scope="col" class="w-28 px-4 py-3 text-right font-semibold"><span class="sr-only">Actions</span></th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-line">
+            @for (item of store.items(); track item.id) {
+              <tr [attr.data-testid]="'item-row-' + item.id">
+                <td class="px-4 py-3 align-top">
+                  <app-image-box [src]="item.thumbUrl" [alt]="''" sizes="48px" class="size-12 rounded-control" />
+                </td>
+                <td class="min-w-0 px-4 py-3 align-top">
+                  <div class="flex items-center gap-2">
+                    <app-veg-marker [type]="item.foodType" />
+                    <a [routerLink]="['/admin/menu/items', item.id]" class="min-w-0 truncate font-semibold text-ink hover:underline">
+                      {{ item.name }}
+                    </a>
+                  </div>
+                  <p class="mt-0.5 truncate text-ink-muted">
+                    {{ item.categoryName }} · GST {{ item.gstPercent }}%
+                    @if (item.addons.length) {
+                      · {{ item.addons.length }} add-on{{ item.addons.length === 1 ? '' : 's' }}
+                    }
+                  </p>
+                  @if (categoryInactive(item)) {
+                    <span class="mt-1 inline-block rounded-full bg-amber-100 px-2 py-0.5 text-xs font-semibold text-amber-950">
+                      Hidden — category inactive
+                    </span>
+                  }
+                </td>
+                <td class="px-4 py-2 align-top">
+                  <app-price-editor [item]="item" [busy]="store.busyIds().has(item.id)" (save)="onPrice(item, $event)" />
+                </td>
+                <td class="px-4 py-2 align-top">
+                  <app-toggle-switch
+                    [checked]="item.available"
+                    [label]="'Available: ' + item.name"
+                    [testId]="'availability-' + item.id"
+                    (checkedChange)="onAvailability(item, $event)"
+                  />
+                </td>
+                <td class="px-2 py-2 text-right align-top">
+                  <a appIconButton [routerLink]="['/admin/menu/items', item.id]" [attr.aria-label]="'Edit ' + item.name">
+                    <svg viewBox="0 0 24 24" class="size-5" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                      <path d="M4 20h4L19 9l-4-4L4 16v4Zm9-13 4 4" />
+                    </svg>
+                  </a>
+                  <button appIconButton type="button" class="text-danger" [attr.aria-label]="'Delete ' + item.name" (click)="remove(item)">
+                    <svg viewBox="0 0 24 24" class="size-5" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                      <path d="M4 7h16M10 11v6m4-6v6M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12M9 7V4h6v3" />
+                    </svg>
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <!-- < 768px: cards -->
+      <ul class="flex flex-col gap-3 md:hidden" role="list" aria-label="Menu items">
+        @for (item of store.items(); track item.id) {
+          <li class="rounded-card border border-line bg-surface p-3 shadow-card" [attr.data-testid]="'item-card-' + item.id">
+            <div class="flex gap-3">
+              <app-image-box [src]="item.thumbUrl" [alt]="''" sizes="64px" class="size-16 shrink-0 rounded-control" />
+              <div class="min-w-0 flex-1">
+                <div class="flex items-center gap-2">
+                  <app-veg-marker [type]="item.foodType" />
+                  <a [routerLink]="['/admin/menu/items', item.id]" class="min-w-0 truncate font-semibold text-ink">{{ item.name }}</a>
+                </div>
+                <p class="truncate text-sm text-ink-muted">{{ item.categoryName }}</p>
+                @if (categoryInactive(item)) {
+                  <span class="mt-1 inline-block rounded-full bg-amber-100 px-2 py-0.5 text-xs font-semibold text-amber-950">
+                    Hidden — category inactive
+                  </span>
+                }
+              </div>
+            </div>
+            <div class="mt-2">
+              <app-price-editor [item]="item" [busy]="store.busyIds().has(item.id)" (save)="onPrice(item, $event)" />
+            </div>
+            <div class="mt-1 flex flex-wrap items-center justify-between gap-2 border-t border-line pt-2">
+              <app-toggle-switch
+                [checked]="item.available"
+                [label]="'Available'"
+                showLabel
+                [testId]="'availability-m-' + item.id"
+                (checkedChange)="onAvailability(item, $event)"
+              />
+              <div class="flex">
+                <a appIconButton [routerLink]="['/admin/menu/items', item.id]" [attr.aria-label]="'Edit ' + item.name">
+                  <svg viewBox="0 0 24 24" class="size-5" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                    <path d="M4 20h4L19 9l-4-4L4 16v4Zm9-13 4 4" />
+                  </svg>
+                </a>
+                <button appIconButton type="button" class="text-danger" [attr.aria-label]="'Delete ' + item.name" (click)="remove(item)">
+                  <svg viewBox="0 0 24 24" class="size-5" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                    <path d="M4 7h16M10 11v6m4-6v6M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12M9 7V4h6v3" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </li>
+        }
+      </ul>
+
+      @if (store.totalPages() > 1) {
+        <nav class="mt-4 flex items-center justify-between gap-2" aria-label="Pagination">
+          <button appButton variant="outline" size="sm" type="button" [disabled]="store.page() === 0" (click)="store.load(store.page() - 1)">
+            Previous
+          </button>
+          <span class="text-sm text-ink-muted">Page {{ store.page() + 1 }} of {{ store.totalPages() }}</span>
+          <button appButton variant="outline" size="sm" type="button" [disabled]="store.page() + 1 >= store.totalPages()" (click)="store.load(store.page() + 1)">
+            Next
+          </button>
+        </nav>
+      }
+    }
+  </section>
+</div>

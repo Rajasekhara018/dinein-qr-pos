@@ -1,0 +1,92 @@
+<app-board-header (signOut)="signOut()" />
+<app-reconnecting-banner />
+
+@if (sound.needsPrompt()) {
+  <div
+    class="flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-sky-300 bg-sky-50 px-3 py-2 text-sky-950 sm:px-4 lg:px-6 dark:border-sky-800 dark:bg-sky-950 dark:text-sky-50"
+    role="region"
+    aria-label="Sound"
+  >
+    <p class="min-w-0 flex-1 text-[clamp(0.95rem,0.8rem+0.4vw,1.35rem)] font-medium">
+      @if (sound.preference() === 'on') {
+        Sound is paused by the browser. Tap to hear a chime for every new order.
+      } @else {
+        Turn on sound to hear a chime for every new order.
+      }
+    </p>
+    <div class="flex flex-wrap gap-2">
+      <button appButton type="button" data-testid="enable-sound" (click)="enableSound()">
+        Enable sound
+      </button>
+      @if (sound.preference() === null) {
+        <button appButton type="button" variant="ghost" (click)="dismissSound()">Not now</button>
+      }
+    </div>
+  </div>
+}
+
+<main class="flex min-h-0 flex-1 flex-col px-3 pb-3 pt-3 sm:px-4 lg:px-6" aria-label="Order board">
+  @if (store.loading() && store.orders().length === 0) {
+    <div class="grid flex-1 gap-4 md:grid-cols-3" aria-busy="true">
+      @for (col of columns; track col) {
+        <div class="space-y-3" [class]="col === 'CONFIRMED' ? 'block' : 'hidden md:block'">
+          <app-skeleton shape="block" class="h-10 w-1/2" />
+          <app-skeleton shape="block" class="h-56" />
+          <app-skeleton shape="block" class="h-44" />
+        </div>
+      }
+    </div>
+  } @else if (store.error(); as error) {
+    <app-error-state title="Couldn't load orders" [error]="error" (retry)="store.refresh()" />
+  } @else {
+    <div
+      class="mb-3 grid grid-cols-3 gap-1 rounded-control bg-surface-muted p-1 md:hidden"
+      role="tablist"
+      aria-label="Order columns"
+    >
+      @for (col of columns; track col; let i = $index) {
+        <button
+          type="button"
+          role="tab"
+          class="flex min-h-14 min-w-0 flex-col items-center justify-center gap-0.5 rounded-control px-1 py-1 text-[0.95rem] font-bold sm:flex-row sm:gap-2 sm:px-2 sm:text-base"
+          [class]="tab() === col ? 'bg-surface text-ink shadow-card' : 'text-ink-muted'"
+          [id]="'tab-' + col"
+          [attr.aria-selected]="tab() === col"
+          [attr.aria-controls]="'panel-' + col"
+          [attr.tabindex]="tab() === col ? 0 : -1"
+          [attr.data-testid]="'tab-' + col"
+          (click)="selectTab(col)"
+          (keydown)="onTabKeydown($event, i)"
+        >
+          <span class="truncate">{{ labels[col] }}</span>
+          <span class="shrink-0 rounded-full bg-bg px-2 text-sm tabular-nums">{{
+            store.counts()[col]
+          }}</span>
+        </button>
+      }
+    </div>
+
+    <div class="min-h-0 flex-1 md:grid md:grid-cols-3 md:gap-4 xl:gap-6">
+      @for (col of columns; track col) {
+        <section
+          class="min-h-0 min-w-0 flex-col md:flex"
+          [class]="tab() === col ? 'flex' : 'hidden'"
+          role="tabpanel"
+          [id]="'panel-' + col"
+          [attr.aria-labelledby]="'tab-' + col"
+        >
+          <app-board-column
+            class="flex-1"
+            [column]="col"
+            [orders]="store.columns()[col]"
+            [now]="clock.now()"
+            [config]="store.config()"
+            [pending]="store.pending()"
+            [highlighted]="store.highlighted()"
+            (advance)="advance($event)"
+          />
+        </section>
+      }
+    </div>
+  }
+</main>

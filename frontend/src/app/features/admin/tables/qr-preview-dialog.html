@@ -1,0 +1,30 @@
+<app-bottom-sheet [title]="'QR code · ' + data.table.label" subtitle="Guests scan this to open the menu for this table." (closed)="ref.close()">
+  <div class="mx-auto aspect-square w-full max-w-72 overflow-hidden rounded-card border border-line bg-white p-2">
+    @if (src(); as url) {
+      <img [src]="url" [alt]="'QR code for table ' + data.table.label" class="size-full object-contain" data-testid="qr-image" />
+    } @else if (error()) {
+      <div class="flex size-full flex-col items-center justify-center gap-2 p-4 text-center" role="alert">
+        <p class="text-sm text-ink-muted">Could not load the QR code.</p>
+        <button appButton variant="outline" size="sm" type="button" (click)="load()">Try again</button>
+      </div>
+    } @else {
+      <app-skeleton shape="block" class="size-full" />
+    }
+  </div>
+  @if (!data.table.active) {
+    <p class="mt-3 rounded-control bg-amber-50 px-3 py-2 text-sm text-amber-950">
+      This table is inactive: scanning shows “Please scan the QR on your table”.
+    </p>
+  }
+  <label for="qr-link" class="mt-4 block text-sm font-medium text-ink">Menu link</label>
+  <div class="mt-1 flex gap-2">
+    <input id="qr-link" appInput readonly [value]="data.table.qrUrl" class="font-mono text-sm" />
+    <button appButton variant="outline" type="button" class="shrink-0" (click)="copy()">Copy</button>
+  </div>
+  <div sheetFooter class="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+    <button appButton variant="outline" type="button" (click)="ref.close()">Close</button>
+    @if (src(); as url) {
+      <a appButton [href]="url" [attr.download]="fileName()">Download PNG</a>
+    }
+  </div>
+</app-bottom-sheet>

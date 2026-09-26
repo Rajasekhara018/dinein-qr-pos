@@ -1,0 +1,198 @@
+<nav class="mb-2" aria-label="Breadcrumb">
+  <a routerLink="/admin/menu/items" class="inline-flex min-h-touch items-center gap-1 text-sm font-medium text-brand-ink hover:underline">
+    <svg viewBox="0 0 20 20" class="size-4 fill-current" aria-hidden="true"><path d="m12.7 4.3 1.4 1.4L9.8 10l4.3 4.3-1.4 1.4L7 10z" /></svg>
+    Items
+  </a>
+</nav>
+<app-page-header [title]="title()" subtitle="Everything here is shown to guests exactly as in the preview.">
+  @if (isEdit() && item()) {
+    <button appButton variant="outline" type="button" class="text-danger" (click)="remove()">Delete</button>
+  }
+</app-page-header>
+
+@if (loading() && !item()) {
+  <app-skeleton shape="block" class="h-96" />
+} @else if (loadError()) {
+  <app-error-state title="Could not load this item" [error]="loadError()" (retry)="load(+id()!)" />
+} @else {
+  <form
+    id="item-form"
+    class="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_22rem] xl:grid-cols-[minmax(0,1fr)_24rem]"
+    [formGroup]="form"
+    (ngSubmit)="save()"
+    novalidate
+  >
+    <div class="flex min-w-0 flex-col gap-6">
+      @if (conflict()) {
+        <div class="rounded-card border border-amber-300 bg-amber-50 p-4 text-amber-950" role="alert">
+          <p class="font-semibold">Someone else changed this item while you were editing.</p>
+          <p class="mt-1 text-sm">Reload to see the latest version, then make your changes again.</p>
+          <button appButton variant="outline" size="sm" type="button" class="mt-2" (click)="reloadAfterConflict()">
+            Reload item
+          </button>
+        </div>
+      }
+      @if (formError()) {
+        <p class="rounded-control bg-red-50 px-3 py-2 text-sm font-medium text-red-900" role="alert">{{ formError() }}</p>
+      }
+
+      <!-- Details -->
+      <fieldset class="rounded-card border border-line bg-surface p-4 shadow-card sm:p-5">
+        <legend class="px-1 font-display text-lg font-semibold">Details</legend>
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div class="sm:col-span-2">
+            <label for="item-name" class="block text-sm font-medium text-ink">Name</label>
+            <input id="item-name" appInput class="mt-1" formControlName="name" maxlength="120" aria-describedby="item-name-error" data-testid="item-name" />
+            <app-field-error id="item-name-error" [control]="form.controls.name" />
+          </div>
+          <div>
+            <label for="item-category" class="block text-sm font-medium text-ink">Category</label>
+            <select id="item-category" appInput class="mt-1" formControlName="categoryId" aria-describedby="item-category-error" data-testid="item-category">
+              <option [ngValue]="null" disabled>Choose a category</option>
+              @for (c of categories(); track c.id) {
+                <option [ngValue]="c.id">{{ c.name }}{{ c.active ? '' : ' (hidden)' }}</option>
+              }
+            </select>
+            <app-field-error id="item-category-error" [control]="form.controls.categoryId" [messages]="{ required: 'Choose a category.' }" />
+          </div>
+          <div>
+            <label for="item-gst" class="block text-sm font-medium text-ink">GST</label>
+            <select id="item-gst" appInput class="mt-1" formControlName="gstPercent" aria-describedby="item-gst-error">
+              @for (slab of gstOptions(); track slab) {
+                <option [ngValue]="slab">{{ slab }}%</option>
+              }
+            </select>
+            <app-field-error id="item-gst-error" [control]="form.controls.gstPercent" />
+          </div>
+          <div class="sm:col-span-2">
+            <label for="item-description" class="block text-sm font-medium text-ink">
+              Description <span class="font-normal text-ink-subtle">(optional)</span>
+            </label>
+            <textarea id="item-description" appInput rows="3" class="mt-1" formControlName="description" maxlength="500" aria-describedby="item-description-error"></textarea>
+            <app-field-error id="item-description-error" [control]="form.controls.description" />
+          </div>
+          <fieldset class="sm:col-span-2">
+            <legend class="text-sm font-medium text-ink">Food type</legend>
+            <div class="mt-1 flex flex-wrap gap-2">
+              @for (type of foodTypes; track type.value) {
+                <label
+                  class="flex min-h-touch cursor-pointer items-center gap-2 rounded-control border border-line-strong px-3 has-[:checked]:border-brand has-[:checked]:bg-brand-soft has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-focus"
+                >
+                  <input type="radio" class="sr-only" formControlName="foodType" [value]="type.value" />
+                  <app-veg-marker [type]="type.value" />
+                  <span class="text-sm font-medium">{{ type.label }}</span>
+                </label>
+              }
+            </div>
+          </fieldset>
+          <div class="sm:col-span-2">
+            <app-toggle-switch formControlName="available" label="Available now" hint="Turn off to show it as out of stock." showLabel />
+          </div>
+        </div>
+      </fieldset>
+
+      <!-- Image -->
+      <fieldset class="rounded-card border border-line bg-surface p-4 shadow-card sm:p-5">
+        <legend class="px-1 font-display text-lg font-semibold">Photo</legend>
+        <app-image-upload formControlName="imageId" label="Item photo" [url]="imageUrl()" (uploaded)="onImageUploaded($event)" />
+      </fieldset>
+
+      <!-- Pricing -->
+      <fieldset class="rounded-card border border-line bg-surface p-4 shadow-card sm:p-5">
+        <legend class="px-1 font-display text-lg font-semibold">Price</legend>
+        <app-toggle-switch formControlName="hasSizes" label="Has sizes" hint="e.g. Half / Full, 330 ml / 630 ml — each with its own price." showLabel testId="has-sizes" />
+
+        @if (!hasSizes()) {
+          <div class="mt-4 max-w-xs">
+            <label for="item-price" class="block text-sm font-medium text-ink">Price (₹)</label>
+            <input id="item-price" appInput type="number" inputmode="decimal" min="0.01" step="0.01" class="mt-1" formControlName="basePrice" aria-describedby="item-price-hint item-price-error" data-testid="item-base-price" />
+            <p id="item-price-hint" class="mt-1 text-xs text-ink-subtle">
+              Before GST unless “prices include GST” is on in settings.
+            </p>
+            <app-field-error id="item-price-error" [control]="form.controls.basePrice" [messages]="{ required: 'Enter a price greater than ₹0.' }" />
+          </div>
+        } @else {
+          <div class="mt-4" formArrayName="variants">
+            <p id="sizes-help" class="text-sm text-ink-muted">Guests pick one size. The default is pre-selected.</p>
+            <ul class="mt-3 flex flex-col gap-3" role="list" aria-describedby="sizes-help">
+              @for (row of form.controls.variants.controls; track row; let i = $index) {
+                <li class="grid grid-cols-[minmax(0,1fr)_7.5rem_auto] items-start gap-2 rounded-control border border-line p-3 sm:grid-cols-[minmax(0,1fr)_9rem_auto_auto]" [formGroupName]="i" [attr.data-testid]="'variant-row-' + i">
+                  <div class="min-w-0">
+                    <label [for]="'variant-name-' + i" class="block text-xs font-medium text-ink-muted">Size name</label>
+                    <input [id]="'variant-name-' + i" appInput class="mt-0.5" formControlName="name" maxlength="50" placeholder="Half" [attr.aria-describedby]="'variant-name-error-' + i" />
+                    <app-field-error [id]="'variant-name-error-' + i" [control]="row.controls.name" />
+                  </div>
+                  <div>
+                    <label [for]="'variant-price-' + i" class="block text-xs font-medium text-ink-muted">Price (₹)</label>
+                    <input [id]="'variant-price-' + i" appInput type="number" inputmode="decimal" min="0.01" step="0.01" class="mt-0.5" formControlName="price" [attr.aria-describedby]="'variant-price-error-' + i" />
+                    <app-field-error [id]="'variant-price-error-' + i" [control]="row.controls.price" [messages]="{ required: 'Required.' }" />
+                  </div>
+                  <label class="col-span-2 row-start-2 flex min-h-touch cursor-pointer items-center gap-2 text-sm sm:col-span-1 sm:row-start-auto sm:mt-5">
+                    <input type="radio" name="default-size" class="size-5 accent-[var(--brand)]" [checked]="row.controls.isDefault.value" (change)="setDefault(i)" />
+                    Default
+                  </label>
+                  <button appIconButton type="button" class="row-start-2 justify-self-end text-danger sm:row-start-auto sm:mt-5" [attr.aria-label]="'Remove size ' + (row.controls.name.value || i + 1)" (click)="removeVariant(i)">
+                    <svg viewBox="0 0 24 24" class="size-5" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                      <path d="M4 7h16M10 11v6m4-6v6M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12M9 7V4h6v3" />
+                    </svg>
+                  </button>
+                </li>
+              }
+            </ul>
+            <app-field-error class="mt-2" [control]="form.controls.variants" [messages]="variantMessages" [force]="attempted()" />
+            <button appButton variant="outline" size="sm" type="button" class="mt-3" [disabled]="form.controls.variants.length >= maxVariants" (click)="addVariant()" data-testid="add-variant">
+              + Add size
+            </button>
+          </div>
+        }
+      </fieldset>
+
+      <!-- Add-ons -->
+      <fieldset class="rounded-card border border-line bg-surface p-4 shadow-card sm:p-5" formArrayName="addons">
+        <legend class="px-1 font-display text-lg font-semibold">Add-ons</legend>
+        <p class="text-sm text-ink-muted">Optional extras guests can tick (₹0 for free extras).</p>
+        @if (form.controls.addons.length) {
+          <ul class="mt-3 flex flex-col gap-3" role="list">
+            @for (row of form.controls.addons.controls; track row; let i = $index) {
+              <li class="grid grid-cols-[minmax(0,1fr)_7.5rem_auto] items-start gap-2 sm:grid-cols-[minmax(0,1fr)_9rem_auto]" [formGroupName]="i">
+                <div class="min-w-0">
+                  <label [for]="'addon-name-' + i" class="block text-xs font-medium text-ink-muted">Add-on</label>
+                  <input [id]="'addon-name-' + i" appInput class="mt-0.5" formControlName="name" maxlength="50" placeholder="Extra cheese" />
+                  <app-field-error [control]="row.controls.name" />
+                </div>
+                <div>
+                  <label [for]="'addon-price-' + i" class="block text-xs font-medium text-ink-muted">Price (₹)</label>
+                  <input [id]="'addon-price-' + i" appInput type="number" inputmode="decimal" min="0" step="0.01" class="mt-0.5" formControlName="price" />
+                  <app-field-error [control]="row.controls.price" />
+                </div>
+                <button appIconButton type="button" class="mt-5 text-danger" [attr.aria-label]="'Remove add-on ' + (row.controls.name.value || i + 1)" (click)="removeAddon(i)">
+                  <svg viewBox="0 0 24 24" class="size-5" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                    <path d="M4 7h16M10 11v6m4-6v6M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12M9 7V4h6v3" />
+                  </svg>
+                </button>
+              </li>
+            }
+          </ul>
+        }
+        <app-field-error class="mt-2" [control]="form.controls.addons" [messages]="addonMessages" [force]="attempted()" />
+        <button appButton variant="outline" size="sm" type="button" class="mt-3" [disabled]="form.controls.addons.length >= maxAddons" (click)="addAddon()">
+          + Add add-on
+        </button>
+      </fieldset>
+
+      <div class="sticky bottom-0 z-10 -mx-4 flex flex-wrap justify-end gap-2 border-t border-line bg-surface/95 px-4 py-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] backdrop-blur sm:mx-0 sm:rounded-card sm:border lg:static lg:border-0 lg:bg-transparent lg:p-0 lg:backdrop-blur-none">
+        <a appButton variant="outline" routerLink="/admin/menu/items">Cancel</a>
+        <button appButton type="submit" [loading]="saving()" data-testid="item-save">
+          {{ isEdit() ? 'Save changes' : 'Add item' }}
+        </button>
+      </div>
+    </div>
+
+    <aside class="min-w-0" aria-labelledby="preview-heading">
+      <div class="lg:sticky lg:top-20">
+        <h2 id="preview-heading" class="mb-2 text-sm font-semibold uppercase tracking-wide text-ink-muted">Guest menu preview</h2>
+        <app-item-preview-card [item]="preview()" />
+      </div>
+    </aside>
+  </form>
+}

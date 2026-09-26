@@ -1,0 +1,83 @@
+<app-page-header title="Orders" subtitle="Updates live as the kitchen works." />
+
+<form class="mb-4 rounded-card border border-line bg-surface p-3 shadow-card sm:p-4" [formGroup]="filters" (ngSubmit)="load()" role="search" aria-label="Filter orders">
+  <div class="grid grid-cols-1 gap-3 sm:grid-cols-[auto_minmax(0,1fr)]">
+    <div>
+      <label for="orders-date" class="block text-sm font-medium text-ink">Date</label>
+      <div class="mt-1 flex items-center gap-1">
+        <button appIconButton variant="outline" type="button" aria-label="Previous day" (click)="shiftDate(-1)">
+          <svg viewBox="0 0 20 20" class="size-4 fill-current" aria-hidden="true"><path d="m12.7 4.3 1.4 1.4L9.8 10l4.3 4.3-1.4 1.4L7 10z" /></svg>
+        </button>
+        <input id="orders-date" appInput type="date" class="w-auto min-w-0 flex-1 sm:w-44" formControlName="date" [max]="today" data-testid="orders-date" />
+        <button appIconButton variant="outline" type="button" aria-label="Next day" [disabled]="filters.controls.date.value >= today" (click)="shiftDate(1)">
+          <svg viewBox="0 0 20 20" class="size-4 fill-current" aria-hidden="true"><path d="m7.3 15.7-1.4-1.4 4.3-4.3-4.3-4.3 1.4-1.4L13 10z" /></svg>
+        </button>
+      </div>
+    </div>
+    <div class="min-w-0">
+      <label for="orders-q" class="block text-sm font-medium text-ink">Search</label>
+      <input id="orders-q" appInput type="search" class="mt-1" formControlName="q" placeholder="Order number, token, table or customer" autocomplete="off" />
+    </div>
+  </div>
+  <fieldset class="mt-3">
+    <legend class="text-sm font-medium text-ink">Status</legend>
+    <div class="mt-1 flex flex-wrap gap-2">
+      <button
+        type="button"
+        class="min-h-touch rounded-full border px-4 text-sm font-medium"
+        [class.border-brand]="!hasFilters()"
+        [class.bg-brand-soft]="!hasFilters()"
+        [class.border-line-strong]="hasFilters()"
+        [attr.aria-pressed]="!hasFilters()"
+        (click)="clearStatuses()"
+      >
+        All
+      </button>
+      @for (option of statusOptions; track option.status) {
+        <button
+          type="button"
+          class="min-h-touch rounded-full border px-4 text-sm font-medium"
+          [class.border-brand]="statuses().has(option.status)"
+          [class.bg-brand-soft]="statuses().has(option.status)"
+          [class.border-line-strong]="!statuses().has(option.status)"
+          [attr.aria-pressed]="statuses().has(option.status)"
+          (click)="toggleStatus(option.status)"
+        >
+          {{ option.label }}
+        </button>
+      }
+    </div>
+  </fieldset>
+</form>
+
+<div class="mb-2 flex min-h-6 items-center justify-between gap-2 text-sm text-ink-muted" aria-live="polite">
+  <span>
+    @if (loaded()) {
+      {{ total() }} {{ total() === 1 ? 'order' : 'orders' }}
+    }
+  </span>
+  @if (loading() && loaded()) {
+    <app-spinner [size]="16" label="Loading orders" />
+  }
+</div>
+
+@if (loading() && !loaded()) {
+  <div class="flex flex-col gap-3" aria-busy="true">
+    @for (i of [1, 2, 3, 4]; track i) {
+      <app-skeleton shape="block" class="h-16" />
+    }
+  </div>
+} @else if (error() && !loaded()) {
+  <app-error-state title="Could not load orders" [error]="error()" (retry)="load()" />
+} @else if (orders().length === 0) {
+  <app-empty-state title="No orders found" message="Try another date or status." />
+} @else {
+  <app-order-list [orders]="orders()" caption="Orders" />
+  @if (totalPages() > 1) {
+    <nav class="mt-4 flex items-center justify-between gap-2" aria-label="Pagination">
+      <button appButton variant="outline" size="sm" type="button" [disabled]="page() === 0" (click)="goToPage(page() - 1)">Previous</button>
+      <span class="text-sm text-ink-muted">Page {{ page() + 1 }} of {{ totalPages() }}</span>
+      <button appButton variant="outline" size="sm" type="button" [disabled]="page() + 1 >= totalPages()" (click)="goToPage(page() + 1)">Next</button>
+    </nav>
+  }
+}

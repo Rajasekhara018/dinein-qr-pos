@@ -1,0 +1,43 @@
+<app-bottom-sheet [title]="data.title" (closed)="ref.close()">
+  <p class="text-base text-ink-muted">{{ data.message }}</p>
+  @if (data.details?.length) {
+    <ul class="mt-3 list-disc space-y-1 pl-5 text-sm text-ink-muted">
+      @for (line of data.details; track $index) {
+        <li>{{ line }}</li>
+      }
+    </ul>
+  }
+  @if (data.reason; as reasonOptions) {
+    <label for="confirm-reason" class="mt-4 block text-sm font-medium text-ink">
+      {{ reasonOptions.label }}
+      @if (!reasonOptions.required) {
+        <span class="font-normal text-ink-subtle">(optional)</span>
+      }
+    </label>
+    <textarea
+      id="confirm-reason"
+      appInput
+      rows="3"
+      class="mt-1"
+      [formControl]="reason"
+      [attr.maxlength]="reasonOptions.maxLength ?? 300"
+      [placeholder]="reasonOptions.placeholder ?? ''"
+      aria-describedby="confirm-reason-error"
+    ></textarea>
+    <app-field-error id="confirm-reason-error" [control]="reason" />
+  }
+  <div sheetFooter class="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+    <button appButton variant="outline" type="button" (click)="ref.close()">
+      {{ data.cancelLabel ?? 'Cancel' }}
+    </button>
+    <button
+      appButton
+      type="button"
+      [variant]="data.tone === 'primary' ? 'primary' : 'danger'"
+      data-testid="confirm-dialog-confirm"
+      (click)="confirm()"
+    >
+      {{ data.confirmLabel ?? 'Confirm' }}
+    </button>
+  </div>
+</app-bottom-sheet>

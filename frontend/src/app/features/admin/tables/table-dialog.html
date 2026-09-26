@@ -1,0 +1,41 @@
+<app-bottom-sheet [title]="data.table ? 'Rename table' : 'New table'" (closed)="ref.close()">
+  <form id="table-form" [formGroup]="form" (ngSubmit)="save()" novalidate class="flex flex-col gap-4">
+    @if (error()) {
+      <p class="rounded-control bg-red-50 px-3 py-2 text-sm font-medium text-red-900" role="alert">{{ error() }}</p>
+    }
+    <div>
+      <label for="table-label" class="block text-sm font-medium text-ink">Label</label>
+      <input
+        id="table-label"
+        appInput
+        class="mt-1"
+        formControlName="label"
+        maxlength="20"
+        placeholder="T1, Patio 2, COUNTER"
+        aria-describedby="table-label-hint table-label-error"
+        data-testid="table-label"
+      />
+      <p id="table-label-hint" class="mt-1 text-xs text-ink-subtle">
+        Up to 20 letters, digits, spaces, dashes or underscores. Printed on the QR card.
+      </p>
+      <app-field-error
+        id="table-label-error"
+        [control]="form.controls.label"
+        [messages]="{ pattern: 'Use 1–20 letters, digits, spaces, dashes or underscores.' }"
+      />
+    </div>
+    @if (!data.table) {
+      <app-toggle-switch formControlName="active" label="Active" hint="Guests can order from this table's QR code." showLabel />
+    } @else {
+      <p class="text-sm text-ink-muted">
+        Renaming keeps the same QR code, so printed cards keep working (reprint them to show the new label).
+      </p>
+    }
+  </form>
+  <div sheetFooter class="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+    <button appButton variant="outline" type="button" (click)="ref.close()">Cancel</button>
+    <button appButton type="submit" form="table-form" [loading]="saving()" data-testid="table-save">
+      {{ data.table ? 'Save' : 'Add table' }}
+    </button>
+  </div>
+</app-bottom-sheet>

@@ -1,0 +1,133 @@
+<app-page-header title="Reports" [subtitle]="'Paid orders · ' + rangeLabel()">
+  <button appButton variant="outline" type="button" [loading]="exporting()" (click)="exportCsv()" data-testid="export-csv">
+    <svg viewBox="0 0 24 24" class="size-4" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 4v11m0 0-4-4m4 4 4-4M5 20h14" /></svg>
+    Export CSV
+  </button>
+</app-page-header>
+
+<section class="mb-6 rounded-card border border-line bg-surface p-3 shadow-card sm:p-4" aria-label="Date range">
+  <div class="flex flex-wrap gap-2" role="group" aria-label="Quick ranges">
+    @for (p of presets; track p.id) {
+      <button
+        type="button"
+        class="min-h-touch rounded-full border px-4 text-sm font-medium"
+        [class.border-brand]="preset() === p.id"
+        [class.bg-brand-soft]="preset() === p.id"
+        [class.border-line-strong]="preset() !== p.id"
+        [attr.aria-pressed]="preset() === p.id"
+        (click)="choosePreset(p.id)"
+      >
+        {{ p.label }}
+      </button>
+    }
+  </div>
+  <form class="mt-3 flex flex-wrap items-end gap-3" [formGroup]="form" (ngSubmit)="applyCustom()" novalidate>
+    <div class="min-w-0 flex-1 basis-36 sm:flex-none">
+      <label for="report-from" class="block text-sm font-medium text-ink">From</label>
+      <input id="report-from" appInput type="date" class="mt-1" formControlName="from" [max]="today" />
+    </div>
+    <div class="min-w-0 flex-1 basis-36 sm:flex-none">
+      <label for="report-to" class="block text-sm font-medium text-ink">To</label>
+      <input id="report-to" appInput type="date" class="mt-1" formControlName="to" [max]="today" />
+    </div>
+    <button appButton variant="outline" type="submit">Apply</button>
+    @if (rangeError()) {
+      <p class="w-full text-sm font-medium text-danger" role="alert">{{ rangeError() }}</p>
+    }
+  </form>
+</section>
+
+@if (loading() && !summary()) {
+  <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4" aria-busy="true">
+    @for (i of [1, 2, 3, 4]; track i) {
+      <app-skeleton shape="block" class="h-28" />
+    }
+  </div>
+} @else if (error()) {
+  <app-error-state title="Could not load the report" [error]="error()" (retry)="load()" />
+} @else if (summary(); as s) {
+  <div [class.opacity-60]="loading()" [attr.aria-busy]="loading()">
+    <section aria-labelledby="totals-heading">
+      <h2 id="totals-heading" class="sr-only">Totals</h2>
+      <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
+        <app-stat-card label="Gross sales" [value]="s.gross | inr" [hint]="s.ordersCount + (s.ordersCount === 1 ? ' order' : ' orders')" testId="report-gross" />
+        <app-stat-card label="Net (excl. GST)" [value]="s.net | inr" />
+        <app-stat-card label="GST collected" [value]="s.tax | inr" [hint]="'CGST ' + (s.cgst | inr) + ' · SGST ' + (s.sgst | inr)" />
+        <app-stat-card label="Average order value" [value]="s.averageOrderValue | inr" />
+      </div>
+      <div class="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
+        <app-stat-card label="Cancelled orders" [value]="s.cancelledCount" />
+        <app-stat-card label="Refunded" [value]="s.refundedAmount | inr" />
+      </div>
+    </section>
+
+    <section class="mt-6 rounded-card border border-line bg-surface p-4 shadow-card" aria-labelledby="daily-heading">
+      <h2 id="daily-heading" class="font-display text-lg font-semibold">Daily sales</h2>
+      <p class="text-sm text-ink-muted">Gross sales per day (IST).</p>
+      <app-bar-chart class="mt-2" [data]="daily()" label="Daily gross sales" valueHeader="Gross" [formatValue]="formatMoney" />
+    </section>
+
+    <div class="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-2">
+      <section class="min-w-0 rounded-card border border-line bg-surface p-4 shadow-card" aria-labelledby="methods-heading">
+        <h2 id="methods-heading" class="font-display text-lg font-semibold">Payment methods</h2>
+        @if (methodRows().length === 0) {
+          <p class="mt-2 text-sm text-ink-muted">No payments in this range.</p>
+        } @else {
+          <table class="mt-2 w-full text-left text-sm">
+            <caption class="sr-only">Payment method split</caption>
+            <thead class="text-xs uppercase text-ink-muted">
+              <tr>
+                <th scope="col" class="py-2">Method</th>
+                <th scope="col" class="py-2 text-right">Orders</th>
+                <th scope="col" class="py-2 text-right">Amount</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-line">
+              @for (m of methodRows(); track m.method) {
+                <tr>
+                  <th scope="row" class="py-2 font-medium">
+                    {{ m.method }}
+                    <span class="mt-1 block h-1.5 overflow-hidden rounded-full bg-surface-sunken" aria-hidden="true">
+                      <span class="block h-full rounded-full bg-brand" [style.width.%]="m.share"></span>
+                    </span>
+                  </th>
+                  <td class="py-2 text-right tabular-nums">{{ m.count }}</td>
+                  <td class="py-2 text-right tabular-nums">{{ m.amount | inr }} <span class="text-ink-subtle">({{ m.share }}%)</span></td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        }
+      </section>
+
+      <section class="min-w-0 rounded-card border border-line bg-surface p-4 shadow-card" aria-labelledby="top-heading">
+        <h2 id="top-heading" class="font-display text-lg font-semibold">Top 10 items</h2>
+        @if (s.topItems.length === 0) {
+          <p class="mt-2 text-sm text-ink-muted">No items sold in this range.</p>
+        } @else {
+          <table class="mt-2 w-full text-left text-sm">
+            <caption class="sr-only">Top items by quantity</caption>
+            <thead class="text-xs uppercase text-ink-muted">
+              <tr>
+                <th scope="col" class="w-8 py-2">#</th>
+                <th scope="col" class="py-2">Item</th>
+                <th scope="col" class="py-2 text-right">Qty</th>
+                <th scope="col" class="py-2 text-right">Revenue</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-line">
+              @for (item of s.topItems.slice(0, 10); track $index; let i = $index) {
+                <tr>
+                  <td class="py-2 text-ink-muted tabular-nums">{{ i + 1 }}</td>
+                  <th scope="row" class="break-words py-2 font-medium">{{ item.name }}</th>
+                  <td class="py-2 text-right tabular-nums">{{ item.quantity }}</td>
+                  <td class="py-2 text-right tabular-nums">{{ item.revenue | inr }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        }
+      </section>
+    </div>
+  </div>
+}

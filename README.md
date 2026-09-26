@@ -76,6 +76,9 @@ docker compose up -d --build
 - To load the sample menu (3 tables, 3 categories, 8 items), set `SPRING_PROFILES_ACTIVE=dev` in `.env` for the
   first start. Switch back to `prod` afterwards: `dev` also turns off secure cookies and enables Swagger.
 
+UAT server deployment (Jenkins pipelines, ports 85 / 9030, credentials, run order): see
+[docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
+
 ## Local development
 
 Prerequisites: JDK 21, Node 22, Docker (for PostgreSQL and the integration tests).

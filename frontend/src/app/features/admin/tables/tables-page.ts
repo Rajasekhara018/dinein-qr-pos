@@ -1,0 +1,163 @@
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { firstValueFrom } from 'rxjs';
+import { AdminTablesApi } from '../../../core/api/admin.api';
+import { TableResponse } from '../../../core/api/models';
+import { SheetService } from '../../../core/ui/sheet.service';
+import { ToastService } from '../../../core/ui/toast.service';
+import { copyText, saveBlob } from '../shared/browser';
+import { ConfirmService } from '../shared/confirm.service';
+import { errorMessage } from '../shared/form-errors';
+import { QrPreviewData, QrPreviewDialog } from './qr-preview-dialog';
+import { TableDialog, TableDialogData } from './table-dialog';
+
+/** Tables & QR codes: add, rename, (de)activate, regenerate, preview, copy link, printable PDF. */
+@Component({
+  selector: 'app-admin-tables-page',
+  standalone: false,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './tables-page.html',
+})
+export class TablesPage {
+  private readonly api = inject(AdminTablesApi);
+  private readonly sheets = inject(SheetService);
+  private readonly toasts = inject(ToastService);
+  private readonly confirmService = inject(ConfirmService);
+
+  protected readonly tables = signal<TableResponse[]>([]);
+  protected readonly loading = signal(true);
+  protected readonly error = signal<unknown>(null);
+  protected readonly selected = signal<ReadonlySet<number>>(new Set());
+  protected readonly busyIds = signal<ReadonlySet<number>>(new Set());
+  protected readonly downloading = signal(false);
+
+  protected readonly allSelected = computed(
+    () => this.tables().length > 0 && this.tables().every((t) => this.selected().has(t.id)),
+  );
+  protected readonly someSelected = computed(() => this.selected().size > 0 && !this.allSelected());
+  protected readonly activeCount = computed(() => this.tables().filter((t) => t.active).length);
+
+  constructor() {
+    void this.load();
+  }
+
+  protected async load(): Promise<void> {
+    this.loading.set(true);
+    try {
+      const tables = await firstValueFrom(this.api.list());
+      this.tables.set([...tables].sort((a, b) => a.label.localeCompare(b.label, 'en', { numeric: true })));
+      this.error.set(null);
+      const ids = new Set(tables.map((t) => t.id));
+      this.selected.update((set) => new Set([...set].filter((id) => ids.has(id))));
+    } catch (error) {
+      this.error.set(error);
+    } finally {
+      this.loading.set(false);
+    }
+  }
+
+  protected toggleSelected(id: number, checked: boolean): void {
+    this.selected.update((set) => {
+      const next = new Set(set);
+      if (checked) next.add(id);
+      else next.delete(id);
+      return next;
+    });
+  }
+
+  protected toggleAll(checked: boolean): void {
+    this.selected.set(checked ? new Set(this.tables().map((t) => t.id)) : new Set());
+  }
+
+  protected open(table: TableResponse | null): void {
+    const ref = this.sheets.open<TableResponse, TableDialogData, TableDialog>(TableDialog, {
+      data: { table },
+      maxWidth: '30rem',
+    });
+    ref.closed.subscribe((saved) => {
+      if (!saved) return;
+      this.toasts.success(table ? `Table ${saved.label} saved.` : `Table ${saved.label} added.`);
+      void this.load();
+    });
+  }
+
+  protected preview(table: TableResponse): void {
+    this.sheets.open<void, QrPreviewData, QrPreviewDialog>(QrPreviewDialog, {
+      data: { table },
+      maxWidth: '26rem',
+    });
+  }
+
+  protected async setActive(table: TableResponse, active: boolean): Promise<void> {
+    this.patch({ ...table, active });
+    this.markBusy(table.id, true);
+    try {
+      this.patch(await firstValueFrom(this.api.update(table.id, { label: table.label, active })));
+      this.toasts.success(active ? `Table ${table.label} is active.` : `Table ${table.label} is deactivated.`, {
+        key: `table-${table.id}`,
+      });
+    } catch (error) {
+      this.patch(table);
+      this.toasts.error(errorMessage(error, 'Could not update the table.'));
+    } finally {
+      this.markBusy(table.id, false);
+    }
+  }
+
+  protected async regenerate(table: TableResponse): Promise<void> {
+    const confirmed = await this.confirmService.confirm({
+      title: `New QR code for ${table.label}?`,
+      message: 'The printed QR code on this table stops working immediately.',
+      details: ['Guests scanning the old code will be asked to scan again.', 'Print and place the new card right away.'],
+      confirmLabel: 'Regenerate QR',
+    });
+    if (!confirmed) return;
+    this.markBusy(table.id, true);
+    try {
+      this.patch(await firstValueFrom(this.api.regenerateQr(table.id)));
+      this.toasts.success(`New QR code created for ${table.label}. Remember to reprint it.`, {
+        action: { label: 'Download PDF', run: () => void this.downloadPdf([table.id]) },
+      });
+    } catch (error) {
+      this.toasts.error(errorMessage(error, 'Could not regenerate the QR code.'));
+    } finally {
+      this.markBusy(table.id, false);
+    }
+  }
+
+  protected async copyLink(table: TableResponse): Promise<void> {
+    const ok = await copyText(table.qrUrl);
+    if (ok) this.toasts.success(`Menu link for ${table.label} copied.`, { key: 'copy-link' });
+    else this.toasts.error('Could not copy the link.');
+  }
+
+  /** Printable A4 PDF for the given ids (all tables when empty). */
+  async downloadPdf(ids: number[] = []): Promise<void> {
+    this.downloading.set(true);
+    try {
+      const blob = await firstValueFrom(this.api.qrPdf(ids));
+      const suffix = ids.length === 1 ? (this.tables().find((t) => t.id === ids[0])?.label ?? 'table') : ids.length ? 'selected' : 'all';
+      saveBlob(blob, `table-qr-codes-${suffix.replace(/[^A-Za-z0-9_-]+/g, '-')}.pdf`);
+    } catch (error) {
+      this.toasts.error(errorMessage(error, 'Could not create the PDF.'));
+    } finally {
+      this.downloading.set(false);
+    }
+  }
+
+  protected downloadSelected(): void {
+    void this.downloadPdf([...this.selected()]);
+  }
+
+  private patch(table: TableResponse): void {
+    this.tables.update((list) => list.map((t) => (t.id === table.id ? table : t)));
+  }
+
+  private markBusy(id: number, busy: boolean): void {
+    this.busyIds.update((set) => {
+      const next = new Set(set);
+      if (busy) next.add(id);
+      else next.delete(id);
+      return next;
+    });
+  }
+}

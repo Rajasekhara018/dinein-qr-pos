@@ -1,0 +1,120 @@
+<app-page-header title="Settings" subtitle="Restaurant details, ordering and kitchen screen." />
+
+@if (loading() && !settings()) {
+  <app-skeleton shape="block" class="h-96" />
+} @else if (loadError() && !settings()) {
+  <app-error-state title="Could not load settings" [error]="loadError()" (retry)="load()" />
+} @else {
+  <form class="flex max-w-3xl flex-col gap-6" [formGroup]="form" (ngSubmit)="save()" novalidate>
+    @if (formError()) {
+      <p class="rounded-control bg-red-50 px-3 py-2 text-sm font-medium text-red-900" role="alert">{{ formError() }}</p>
+    }
+
+    <fieldset class="rounded-card border border-line bg-surface p-4 shadow-card sm:p-5">
+      <legend class="px-1 font-display text-lg font-semibold">Ordering</legend>
+      <div class="flex flex-col gap-3">
+        <app-toggle-switch formControlName="acceptingOrders" label="Accepting orders" hint="Turn off to pause new orders from all tables." showLabel testId="accepting-orders" />
+        <app-toggle-switch formControlName="pricesIncludeGst" label="Prices include GST" hint="Off: GST is added on top of menu prices at checkout." showLabel />
+      </div>
+      <div class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div>
+          <label for="set-open" class="block text-sm font-medium text-ink">Opening time</label>
+          <input id="set-open" appInput type="time" class="mt-1" formControlName="openingTime" />
+        </div>
+        <div>
+          <label for="set-close" class="block text-sm font-medium text-ink">Closing time</label>
+          <input id="set-close" appInput type="time" class="mt-1" formControlName="closingTime" />
+        </div>
+        <p class="text-xs text-ink-subtle sm:col-span-2">IST. Leave both empty to accept orders at any time. Closing after midnight is supported.</p>
+      </div>
+      @if (form.hasError('hours') && (attempted() || form.controls.closingTime.touched)) {
+        <p class="mt-2 text-sm font-medium text-danger">Set both opening and closing time, or neither.</p>
+      }
+    </fieldset>
+
+    <fieldset class="rounded-card border border-line bg-surface p-4 shadow-card sm:p-5">
+      <legend class="px-1 font-display text-lg font-semibold">Restaurant</legend>
+      <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div class="sm:col-span-2">
+          <label for="set-name" class="block text-sm font-medium text-ink">Name</label>
+          <input id="set-name" appInput class="mt-1" formControlName="name" maxlength="100" aria-describedby="set-name-error" />
+          <app-field-error id="set-name-error" [control]="form.controls.name" />
+        </div>
+        <div class="sm:col-span-2">
+          <label for="set-address" class="block text-sm font-medium text-ink">Address</label>
+          <textarea id="set-address" appInput rows="2" class="mt-1" formControlName="address" maxlength="300"></textarea>
+          <app-field-error [control]="form.controls.address" />
+        </div>
+        <div>
+          <label for="set-phone" class="block text-sm font-medium text-ink">Phone</label>
+          <input id="set-phone" appInput type="tel" class="mt-1" formControlName="phone" autocomplete="tel" aria-describedby="set-phone-error" />
+          <app-field-error id="set-phone-error" [control]="form.controls.phone" [messages]="{ pattern: 'Use 6–15 digits (spaces, + and - allowed).' }" />
+        </div>
+        <div>
+          <label for="set-gstin" class="block text-sm font-medium text-ink">GSTIN</label>
+          <input id="set-gstin" appInput class="mt-1 uppercase" formControlName="gstin" maxlength="15" autocapitalize="characters" spellcheck="false" (blur)="uppercaseGstin()" aria-describedby="set-gstin-error" />
+          <app-field-error id="set-gstin-error" [control]="form.controls.gstin" [messages]="{ pattern: 'Enter a valid 15-character GSTIN, e.g. 29ABCDE1234F1Z5.' }" />
+        </div>
+        <div>
+          <label for="set-fssai" class="block text-sm font-medium text-ink">FSSAI licence no.</label>
+          <input id="set-fssai" appInput inputmode="numeric" class="mt-1" formControlName="fssaiNo" maxlength="14" aria-describedby="set-fssai-error" />
+          <app-field-error id="set-fssai-error" [control]="form.controls.fssaiNo" [messages]="{ pattern: 'FSSAI number must be 14 digits.' }" />
+        </div>
+        <div class="sm:col-span-2">
+          <app-image-upload formControlName="logoImageId" label="Logo" keepAlpha [url]="logoUrl()" (uploaded)="onLogoUploaded($event)" />
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset class="rounded-card border border-line bg-surface p-4 shadow-card sm:p-5">
+      <legend class="px-1 font-display text-lg font-semibold">Brand colour</legend>
+      <div class="flex flex-wrap items-end gap-3">
+        <div>
+          <label for="set-color-picker" class="block text-sm font-medium text-ink">Pick</label>
+          <input id="set-color-picker" type="color" class="mt-1 h-11 w-16 cursor-pointer rounded-control border border-line-strong bg-surface p-1" [value]="palette()?.brand ?? '#c2410c'" (input)="onColorPicked($event)" />
+        </div>
+        <div class="min-w-0 flex-1 basis-40">
+          <label for="set-color" class="block text-sm font-medium text-ink">Hex</label>
+          <input id="set-color" appInput class="mt-1 font-mono" formControlName="brandColor" maxlength="7" aria-describedby="set-color-error" />
+          <app-field-error id="set-color-error" [control]="form.controls.brandColor" [messages]="{ pattern: 'Use the #RRGGBB format.' }" />
+        </div>
+        @if (palette(); as p) {
+          <div class="flex items-center gap-2" aria-label="Preview of the guest button">
+            <span class="inline-flex min-h-touch items-center rounded-control px-4 font-semibold" [style.background]="p.brand" [style.color]="p.contrast">Pay ₹540</span>
+            <span class="font-semibold" [style.color]="p.ink">Link text</span>
+          </div>
+        }
+      </div>
+      <p class="mt-2 text-xs text-ink-subtle">Text colours are adjusted automatically to keep them readable (WCAG AA).</p>
+    </fieldset>
+
+    <fieldset class="rounded-card border border-line bg-surface p-4 shadow-card sm:p-5">
+      <legend class="px-1 font-display text-lg font-semibold">Kitchen screen</legend>
+      <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <div>
+          <label for="set-warn" class="block text-sm font-medium text-ink">Amber after (min)</label>
+          <input id="set-warn" appInput type="number" inputmode="numeric" min="1" max="240" class="mt-1" formControlName="kitchenWarnMinutes" />
+          <app-field-error [control]="form.controls.kitchenWarnMinutes" />
+        </div>
+        <div>
+          <label for="set-alert" class="block text-sm font-medium text-ink">Red after (min)</label>
+          <input id="set-alert" appInput type="number" inputmode="numeric" min="1" max="240" class="mt-1" formControlName="kitchenAlertMinutes" />
+          <app-field-error [control]="form.controls.kitchenAlertMinutes" />
+        </div>
+        <div>
+          <label for="set-hide" class="block text-sm font-medium text-ink">Hide ready after (min)</label>
+          <input id="set-hide" appInput type="number" inputmode="numeric" min="1" max="240" class="mt-1" formControlName="readyAutoHideMinutes" />
+          <app-field-error [control]="form.controls.readyAutoHideMinutes" />
+        </div>
+      </div>
+      @if (form.hasError('thresholds') && (attempted() || form.controls.kitchenAlertMinutes.touched || form.controls.kitchenWarnMinutes.touched)) {
+        <p class="mt-2 text-sm font-medium text-danger">The amber threshold must be lower than the red one.</p>
+      }
+    </fieldset>
+
+    <div class="sticky bottom-0 z-10 -mx-4 flex flex-wrap justify-end gap-2 border-t border-line bg-surface/95 px-4 py-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] backdrop-blur sm:mx-0 sm:rounded-card sm:border">
+      <button appButton variant="outline" type="button" [disabled]="form.pristine" (click)="discard()">Discard changes</button>
+      <button appButton type="submit" [loading]="saving()" data-testid="settings-save">Save settings</button>
+    </div>
+  </form>
+}

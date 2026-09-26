@@ -1,0 +1,151 @@
+<app-page-header title="Staff & devices" subtitle="Who can sign in, and which kitchen screens are connected.">
+  <button appButton type="button" (click)="open(null)" data-testid="add-staff">
+    <svg viewBox="0 0 20 20" class="size-4 fill-current" aria-hidden="true"><path d="M9 4h2v5h5v2h-5v5H9v-5H4V9h5z" /></svg>
+    Add staff
+  </button>
+</app-page-header>
+
+@if (loading() && !staff().length) {
+  <app-skeleton shape="block" class="h-64" />
+} @else if (error() && !staff().length) {
+  <app-error-state title="Could not load staff" [error]="error()" (retry)="load()" />
+} @else {
+  <section aria-labelledby="staff-heading">
+    <h2 id="staff-heading" class="mb-3 font-display text-lg font-semibold">Users</h2>
+
+    <ng-template #badges let-u>
+      <span class="flex flex-wrap gap-1">
+        <span class="rounded-full bg-surface-sunken px-2 py-0.5 text-xs font-semibold">{{ roleLabel(u.role) }}</span>
+        @if (!u.active) {
+          <span class="rounded-full bg-stone-200 px-2 py-0.5 text-xs font-semibold text-stone-800">Inactive</span>
+        }
+        @if (isLocked(u)) {
+          <span class="rounded-full bg-red-100 px-2 py-0.5 text-xs font-semibold text-red-900">Locked</span>
+        }
+        @if (u.mustChangePassword) {
+          <span class="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-semibold text-amber-950">Must change password</span>
+        }
+        @if (u.hasPin) {
+          <span class="rounded-full bg-blue-100 px-2 py-0.5 text-xs font-semibold text-blue-900">PIN</span>
+        }
+        @if (u.id === auth.user()?.id) {
+          <span class="rounded-full bg-brand-soft px-2 py-0.5 text-xs font-semibold text-brand-ink">You</span>
+        }
+      </span>
+    </ng-template>
+
+    <div class="hidden overflow-hidden rounded-card border border-line bg-surface shadow-card md:block">
+      <table class="w-full table-fixed text-left text-sm">
+        <caption class="sr-only">Staff users</caption>
+        <thead class="bg-surface-muted text-xs uppercase tracking-wide text-ink-muted">
+          <tr>
+            <th scope="col" class="px-4 py-3 font-semibold">User</th>
+            <th scope="col" class="w-72 px-4 py-3 font-semibold">Status</th>
+            <th scope="col" class="hidden w-48 px-4 py-3 font-semibold lg:table-cell">Contact</th>
+            <th scope="col" class="w-40 px-4 py-3 font-semibold">Last sign-in</th>
+            <th scope="col" class="w-20 px-2 py-3"><span class="sr-only">Actions</span></th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-line">
+          @for (u of staff(); track u.id) {
+            <tr [attr.data-testid]="'staff-row-' + u.id">
+              <td class="min-w-0 px-4 py-3">
+                <p class="truncate font-semibold">{{ u.displayName || u.username }}</p>
+                <p class="truncate text-ink-muted">{{ u.username }}</p>
+              </td>
+              <td class="px-4 py-3"><ng-container *ngTemplateOutlet="badges; context: { $implicit: u }" /></td>
+              <td class="hidden truncate px-4 py-3 text-ink-muted lg:table-cell">
+                {{ u.email || '—' }}
+                @if (u.phone) {
+                  <span class="block">{{ u.phone }}</span>
+                }
+              </td>
+              <td class="px-4 py-3 text-ink-muted">{{ u.lastLoginAt ? (u.lastLoginAt | date: 'd MMM, h:mm a') : 'Never' }}</td>
+              <td class="px-2 py-2 text-right">
+                <button appIconButton type="button" [attr.aria-label]="'Edit ' + u.username" (click)="open(u)">
+                  <svg viewBox="0 0 24 24" class="size-5" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                    <path d="M4 20h4L19 9l-4-4L4 16v4Zm9-13 4 4" />
+                  </svg>
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <ul class="flex flex-col gap-3 md:hidden" role="list" aria-label="Staff users">
+      @for (u of staff(); track u.id) {
+        <li class="rounded-card border border-line bg-surface p-3 shadow-card">
+          <div class="flex items-start gap-2">
+            <div class="min-w-0 flex-1">
+              <p class="truncate font-semibold">{{ u.displayName || u.username }}</p>
+              <p class="truncate text-sm text-ink-muted">{{ u.username }}</p>
+            </div>
+            <button appIconButton type="button" [attr.aria-label]="'Edit ' + u.username" (click)="open(u)">
+              <svg viewBox="0 0 24 24" class="size-5" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                <path d="M4 20h4L19 9l-4-4L4 16v4Zm9-13 4 4" />
+              </svg>
+            </button>
+          </div>
+          <div class="mt-2"><ng-container *ngTemplateOutlet="badges; context: { $implicit: u }" /></div>
+          <p class="mt-2 text-sm text-ink-muted">
+            Last sign-in: {{ u.lastLoginAt ? (u.lastLoginAt | date: 'd MMM, h:mm a') : 'Never' }}
+          </p>
+        </li>
+      }
+    </ul>
+  </section>
+
+  <section class="mt-8" aria-labelledby="devices-heading">
+    <div class="mb-3 flex flex-wrap items-center justify-between gap-2">
+      <h2 id="devices-heading" class="font-display text-lg font-semibold">Kitchen devices</h2>
+      <label class="flex min-h-touch items-center gap-2 text-sm">
+        <input type="checkbox" class="size-5 accent-[var(--brand)]" [checked]="showRevoked()" (change)="showRevoked.set($any($event.target).checked)" />
+        Show revoked & expired
+      </label>
+    </div>
+    @if (devicesError()) {
+      <app-error-state title="Could not load devices" [error]="devicesError()" (retry)="load()" />
+    } @else if (visibleDevices().length === 0) {
+      <p class="rounded-card border border-dashed border-line-strong p-6 text-center text-sm text-ink-muted">
+        No kitchen screens are signed in. Open <strong>/kitchen</strong> on the kitchen tablet to connect one.
+      </p>
+    } @else {
+      <ul class="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3" role="list">
+        @for (d of visibleDevices(); track d.id) {
+          <li class="flex min-w-0 flex-col rounded-card border border-line bg-surface p-4 shadow-card" [attr.data-testid]="'device-' + d.id">
+            <div class="flex items-start justify-between gap-2">
+              <div class="min-w-0">
+                <p class="truncate font-semibold">{{ d.deviceName || 'Kitchen device' }}</p>
+                <p class="truncate text-sm text-ink-muted">Signed in as {{ d.username }}</p>
+              </div>
+              <span
+                class="shrink-0 rounded-full px-2 py-0.5 text-xs font-semibold"
+                [class.bg-green-100]="d.active"
+                [class.text-green-900]="d.active"
+                [class.bg-stone-200]="!d.active"
+                [class.text-stone-800]="!d.active"
+              >
+                {{ deviceState(d) }}
+              </span>
+            </div>
+            <dl class="mt-3 grid grid-cols-[auto_minmax(0,1fr)] gap-x-3 gap-y-0.5 text-sm">
+              <dt class="text-ink-muted">Last seen</dt>
+              <dd>{{ d.lastSeenAt ? (d.lastSeenAt | date: 'd MMM, h:mm a') : '—' }}</dd>
+              <dt class="text-ink-muted">Added</dt>
+              <dd>{{ d.createdAt | date: 'd MMM y' }}</dd>
+              <dt class="text-ink-muted">{{ d.revokedAt ? 'Revoked' : 'Expires' }}</dt>
+              <dd>{{ (d.revokedAt ?? d.expiresAt) | date: 'd MMM y' }}</dd>
+            </dl>
+            @if (d.active) {
+              <button appButton variant="outline" size="sm" type="button" class="mt-3 self-start text-danger" [loading]="revoking() === d.id" (click)="revoke(d)">
+                Revoke
+              </button>
+            }
+          </li>
+        }
+      </ul>
+    }
+  </section>
+}
