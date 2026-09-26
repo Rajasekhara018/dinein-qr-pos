@@ -10,7 +10,8 @@ import { ChangeDetectionStrategy, Component, computed, input, model, output } fr
   standalone: false,
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
-    class: 'inline-flex items-center rounded-control border border-brand/40 bg-surface text-brand-ink',
+    class:
+      'inline-flex items-center rounded-control border border-brand/40 bg-surface text-brand-ink',
     role: 'group',
     '[attr.aria-label]': '"Quantity" + (itemName() ? " of " + itemName() : "")',
   },

@@ -26,7 +26,10 @@ export class PublicApi {
    */
   session(qrToken?: string | null): Observable<SessionResponse> {
     const params = qrToken ? new HttpParams().set('t', qrToken) : undefined;
-    return this.http.get<SessionResponse>('/api/public/session', { params, context: silentErrors() });
+    return this.http.get<SessionResponse>('/api/public/session', {
+      params,
+      context: silentErrors(),
+    });
   }
 
   /**

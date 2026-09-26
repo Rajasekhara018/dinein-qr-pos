@@ -1,4 +1,11 @@
-import { booleanAttribute, ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
+import {
+  booleanAttribute,
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  input,
+  output,
+} from '@angular/core';
 import { MenuItem } from '../../../core/api/models';
 import { isCustomizable, startingPrice } from '../data/cart.models';
 

@@ -8,7 +8,10 @@ import { formatInr, formatPaise } from '../../core/util/money';
  */
 @Pipe({ name: 'inr', standalone: false })
 export class InrPipe implements PipeTransform {
-  transform(value: number | null | undefined, mode: 'rupees' | 'whole' | 'paise' = 'rupees'): string {
+  transform(
+    value: number | null | undefined,
+    mode: 'rupees' | 'whole' | 'paise' = 'rupees',
+  ): string {
     if (value === null || value === undefined || Number.isNaN(value)) return '';
     if (mode === 'paise') return formatPaise(value);
     return formatInr(value, { whole: mode === 'whole' });

@@ -69,7 +69,10 @@ describe('CartStore', () => {
     });
 
     it('decrementLatest removes from the most recently added line of an item', () => {
-      vi.spyOn(Date, 'now').mockReturnValueOnce(1000).mockReturnValueOnce(1000).mockReturnValue(2000);
+      vi.spyOn(Date, 'now')
+        .mockReturnValueOnce(1000)
+        .mockReturnValueOnce(1000)
+        .mockReturnValue(2000);
       cart.add(biryani, { variantId: 21, addonIds: [], notes: '', quantity: 1 });
       cart.add(biryani, { variantId: 22, addonIds: [], notes: '', quantity: 1 });
       cart.decrementLatest(biryani.id);
@@ -92,7 +95,12 @@ describe('CartStore', () => {
 
     it('estimates an inclusive-GST bill', () => {
       cart.setPricesIncludeGst(true);
-      cart.add(menuItem({ id: 5, basePrice: 105 }), { variantId: null, addonIds: [], notes: '', quantity: 1 });
+      cart.add(menuItem({ id: 5, basePrice: 105 }), {
+        variantId: null,
+        addonIds: [],
+        notes: '',
+        quantity: 1,
+      });
       expect(cart.bill()).toMatchObject({ subtotal: 10000, taxTotal: 500, grandTotal: 10500 });
     });
 
@@ -120,12 +128,21 @@ describe('CartStore', () => {
 
     it('re-prices lines from the fresh menu and clears stale issues', () => {
       cart.add(dosa, { variantId: null, addonIds: [], notes: '', quantity: 2 });
-      cart.markProblems([{ lineIndex: 0, itemId: dosa.id, reason: 'ITEM_UNAVAILABLE' }], [cart.lines()[0].key]);
+      cart.markProblems(
+        [{ lineIndex: 0, itemId: dosa.id, reason: 'ITEM_UNAVAILABLE' }],
+        [cart.lines()[0].key],
+      );
       expect(cart.hasIssues()).toBe(true);
-      const result = cart.reconcile(menu([{ ...dosa, basePrice: 130, name: 'Masala Dosa (new)' }], true));
+      const result = cart.reconcile(
+        menu([{ ...dosa, basePrice: 130, name: 'Masala Dosa (new)' }], true),
+      );
       expect(result.repriced).toBe(1);
       expect(cart.hasIssues()).toBe(false);
-      expect(cart.lines()[0]).toMatchObject({ unitPrice: 130, quantity: 2, name: 'Masala Dosa (new)' });
+      expect(cart.lines()[0]).toMatchObject({
+        unitPrice: 130,
+        quantity: 2,
+        name: 'Masala Dosa (new)',
+      });
       expect(cart.pricesIncludeGst()).toBe(true);
     });
   });
@@ -187,7 +204,9 @@ describe('CartStore', () => {
         throw new DOMException('SecurityError');
       });
       expect(() => cart.bindTable(9)).not.toThrow();
-      expect(() => cart.add(dosa, { variantId: null, addonIds: [], notes: '', quantity: 1 })).not.toThrow();
+      expect(() =>
+        cart.add(dosa, { variantId: null, addonIds: [], notes: '', quantity: 1 }),
+      ).not.toThrow();
       expect(cart.itemCount()).toBe(1);
     });
 

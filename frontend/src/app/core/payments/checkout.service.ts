@@ -43,7 +43,10 @@ export class CheckoutService {
       throw new PaymentNotCompletedError(
         'unsupported',
         response.orderId,
-        `Payment method ${response.provider ?? ''} ${response.mode ?? ''} is not supported.`.replace(/\s+/g, ' '),
+        `Payment method ${response.provider ?? ''} ${response.mode ?? ''} is not supported.`.replace(
+          /\s+/g,
+          ' ',
+        ),
       );
     }
     return strategy.start(response);

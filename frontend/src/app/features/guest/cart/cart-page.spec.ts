@@ -146,14 +146,18 @@ describe('CartPage', () => {
 
     const second = fixture.componentInstance.pay();
     const req2 = controller.expectOne('/api/public/orders');
-    expect(req2.request.headers.get('Idempotency-Key')).toBe(req1.request.headers.get('Idempotency-Key'));
+    expect(req2.request.headers.get('Idempotency-Key')).toBe(
+      req1.request.headers.get('Idempotency-Key'),
+    );
     req2.error(new ProgressEvent('error'), { status: 0 });
     await second;
 
     cart.increment(cart.lines()[0].key);
     const third = fixture.componentInstance.pay();
     const req3 = controller.expectOne('/api/public/orders');
-    expect(req3.request.headers.get('Idempotency-Key')).not.toBe(req1.request.headers.get('Idempotency-Key'));
+    expect(req3.request.headers.get('Idempotency-Key')).not.toBe(
+      req1.request.headers.get('Idempotency-Key'),
+    );
     req3.error(new ProgressEvent('error'), { status: 0 });
     await third;
   });
@@ -164,12 +168,22 @@ describe('CartPage', () => {
       {
         code: 'ITEM_UNAVAILABLE',
         message: 'Some items are unavailable',
-        details: [{ lineIndex: 1, itemId: 2, variantId: 22, name: 'Chicken Biryani', reason: 'VARIANT_UNAVAILABLE' }],
+        details: [
+          {
+            lineIndex: 1,
+            itemId: 2,
+            variantId: 22,
+            name: 'Chicken Biryani',
+            reason: 'VARIANT_UNAVAILABLE',
+          },
+        ],
       },
       { status: 409, statusText: 'Conflict' },
     );
     await paying;
-    controller.match('/api/public/menu').forEach((r) => r.flush({ version: 'v', pricesIncludeGst: false, categories: [] }));
+    controller
+      .match('/api/public/menu')
+      .forEach((r) => r.flush({ version: 'v', pricesIncludeGst: false, categories: [] }));
     fixture.detectChanges();
 
     expect(cart.lines()[1].issue?.reason).toBe('VARIANT_UNAVAILABLE');
@@ -179,7 +193,9 @@ describe('CartPage', () => {
   });
 
   it('shows "Payment not completed" with Retry payment and Edit cart when the guest dismisses the modal', async () => {
-    checkout.pay.mockRejectedValue(new PaymentNotCompletedError('dismissed', 42, 'Payment was cancelled.'));
+    checkout.pay.mockRejectedValue(
+      new PaymentNotCompletedError('dismissed', 42, 'Payment was cancelled.'),
+    );
     const paying = fixture.componentInstance.pay();
     controller.expectOne('/api/public/orders').flush(checkoutResponse);
     await paying;
@@ -208,10 +224,12 @@ describe('CartPage', () => {
 
   it('shows a message on ORDERING_CLOSED', async () => {
     const paying = fixture.componentInstance.pay();
-    controller.expectOne('/api/public/orders').flush(
-      { code: 'ORDERING_CLOSED', message: 'We are not accepting orders right now' },
-      { status: 503, statusText: 'Service Unavailable' },
-    );
+    controller
+      .expectOne('/api/public/orders')
+      .flush(
+        { code: 'ORDERING_CLOSED', message: 'We are not accepting orders right now' },
+        { status: 503, statusText: 'Service Unavailable' },
+      );
     await paying;
     fixture.detectChanges();
     expect(text('checkout-error')).toBe('We are not accepting orders right now');

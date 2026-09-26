@@ -76,7 +76,9 @@ export class AuthStore {
   }
 
   async changePassword(currentPassword: string, newPassword: string): Promise<StaffInfo> {
-    const response = await firstValueFrom(this.api.changePassword({ currentPassword, newPassword }));
+    const response = await firstValueFrom(
+      this.api.changePassword({ currentPassword, newPassword }),
+    );
     this.applyTokens(response);
     return response.user;
   }

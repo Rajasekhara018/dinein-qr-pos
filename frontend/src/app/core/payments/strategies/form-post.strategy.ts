@@ -18,7 +18,11 @@ export class FormPostStrategy implements CheckoutStrategy {
   async start(response: CheckoutResponse): Promise<CheckoutOutcome> {
     const payload = response.checkout as FormPostCheckoutPayload | undefined;
     if (!payload?.action || !payload.fields) {
-      throw new PaymentNotCompletedError('unsupported', response.orderId, 'Payment details are missing.');
+      throw new PaymentNotCompletedError(
+        'unsupported',
+        response.orderId,
+        'Payment details are missing.',
+      );
     }
     this.navigator.submitForm(payload.action, payload.fields, payload.method ?? 'POST');
     return { kind: 'navigating' };

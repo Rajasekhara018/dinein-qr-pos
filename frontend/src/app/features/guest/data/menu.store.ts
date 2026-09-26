@@ -26,7 +26,8 @@ export class MenuStore {
   readonly categories = computed(() => this._menu()?.categories ?? []);
   readonly itemsById = computed(() => {
     const map = new Map<number, MenuItem>();
-    for (const category of this.categories()) for (const item of category.items) map.set(item.id, item);
+    for (const category of this.categories())
+      for (const item of category.items) map.set(item.id, item);
     return map;
   });
 

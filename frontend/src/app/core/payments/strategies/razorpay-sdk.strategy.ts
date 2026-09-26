@@ -21,7 +21,11 @@ export class RazorpaySdkStrategy implements CheckoutStrategy {
   async start(response: CheckoutResponse): Promise<CheckoutOutcome> {
     const payload = response.checkout as RazorpayCheckoutPayload | undefined;
     if (!payload?.key || !payload.order_id) {
-      throw new PaymentNotCompletedError('unsupported', response.orderId, 'Payment details are missing.');
+      throw new PaymentNotCompletedError(
+        'unsupported',
+        response.orderId,
+        'Payment details are missing.',
+      );
     }
     const { scriptUrl, ...options } = payload;
 

@@ -37,7 +37,9 @@ describe('guestSessionGuard', () => {
   const routeWith = (params: Record<string, string>) =>
     ({ queryParamMap: convertToParamMap(params) }) as ActivatedRouteSnapshot;
   const run = (params: Record<string, string>, url: string) =>
-    TestBed.runInInjectionContext(() => guestSessionGuard(routeWith(params), { url } as RouterStateSnapshot));
+    TestBed.runInInjectionContext(() =>
+      guestSessionGuard(routeWith(params), { url } as RouterStateSnapshot),
+    );
 
   it('validates the QR token, binds the table cart and strips `t` from the URL', async () => {
     store.start.mockImplementation(async () => {

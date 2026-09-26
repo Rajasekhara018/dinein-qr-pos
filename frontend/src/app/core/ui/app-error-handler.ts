@@ -37,8 +37,9 @@ export class AppErrorHandler implements ErrorHandler {
 function unwrap(error: unknown): unknown {
   let current = error;
   for (let i = 0; i < 5; i++) {
-    const inner = (current as { rejection?: unknown; ngOriginalError?: unknown } | null)?.rejection
-      ?? (current as { ngOriginalError?: unknown } | null)?.ngOriginalError;
+    const inner =
+      (current as { rejection?: unknown; ngOriginalError?: unknown } | null)?.rejection ??
+      (current as { ngOriginalError?: unknown } | null)?.ngOriginalError;
     if (!inner) break;
     current = inner;
   }

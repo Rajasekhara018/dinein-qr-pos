@@ -52,7 +52,10 @@ registerLocaleData(localeEnIn, 'en-IN');
     ),
     { provide: LOCALE_ID, useValue: 'en-IN' },
     // Every DatePipe renders in IST (Asia/Kolkata has no DST, so a fixed offset is exact).
-    { provide: DATE_PIPE_DEFAULT_OPTIONS, useValue: { timezone: IST_OFFSET, dateFormat: 'd MMM y, h:mm a' } },
+    {
+      provide: DATE_PIPE_DEFAULT_OPTIONS,
+      useValue: { timezone: IST_OFFSET, dateFormat: 'd MMM y, h:mm a' },
+    },
     { provide: ErrorHandler, useClass: AppErrorHandler },
   ],
   bootstrap: [App],

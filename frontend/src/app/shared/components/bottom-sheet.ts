@@ -13,8 +13,7 @@ let nextId = 0;
  *   <div sheetFooter>…actions…</div>
  * </app-bottom-sheet>
  * ```
- * Pass `ariaLabelledBy: sheet.titleId` is not needed: the dialog uses `autoFocus: 'first-heading'` and the heading
- * id is exposed as `titleId` for aria wiring.
+ * The heading is focused first (`autoFocus: 'first-heading'`) and labels the sheet via `aria-labelledby`.
  */
 @Component({
   selector: 'app-bottom-sheet',

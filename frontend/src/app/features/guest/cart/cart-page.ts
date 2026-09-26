@@ -15,7 +15,10 @@ import { ApiError } from '../../../core/api/api-error';
 import { CheckoutResponse } from '../../../core/api/models';
 import { PublicApi } from '../../../core/api/public.api';
 import { CheckoutService, orderPagePath } from '../../../core/payments/checkout.service';
-import { PaymentNotCompletedError, PaymentNotCompletedReason } from '../../../core/payments/checkout.types';
+import {
+  PaymentNotCompletedError,
+  PaymentNotCompletedReason,
+} from '../../../core/payments/checkout.types';
 import { ToastService } from '../../../core/ui/toast.service';
 import { IdempotencyKeyHolder } from '../../../core/util/idempotency';
 import { CartLine, INDIAN_MOBILE, MAX_CUSTOMER_NAME, MAX_ORDER_NOTES } from '../data/cart.models';
@@ -254,7 +257,9 @@ export class CartPage {
 
   private focusFirstInvalid(): void {
     queueMicrotask(() =>
-      this.host.nativeElement.querySelector<HTMLElement>('form .ng-invalid[formControlName]')?.focus(),
+      this.host.nativeElement
+        .querySelector<HTMLElement>('form .ng-invalid[formControlName]')
+        ?.focus(),
     );
   }
 }

@@ -48,4 +48,6 @@ export interface CheckoutStrategy {
 }
 
 /** Ordered list of strategies; the first one whose `supports()` returns true wins. */
-export const CHECKOUT_STRATEGIES = new InjectionToken<readonly CheckoutStrategy[]>('CHECKOUT_STRATEGIES');
+export const CHECKOUT_STRATEGIES = new InjectionToken<readonly CheckoutStrategy[]>(
+  'CHECKOUT_STRATEGIES',
+);

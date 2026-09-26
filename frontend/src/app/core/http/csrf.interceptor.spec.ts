@@ -1,4 +1,9 @@
-import { HttpClient, HttpXsrfTokenExtractor, provideHttpClient, withInterceptors } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpXsrfTokenExtractor,
+  provideHttpClient,
+  withInterceptors,
+} from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
@@ -37,7 +42,9 @@ describe('csrfInterceptor', () => {
     expect(requiresCsrf(new HttpRequest('POST', '/api/public/orders', {}))).toBe(true);
     expect(requiresCsrf(new HttpRequest('POST', '/api/auth/refresh', null))).toBe(true);
     expect(requiresCsrf(new HttpRequest('GET', '/api/public/menu'))).toBe(false);
-    expect(requiresCsrf(new HttpRequest('POST', '/api/public/payments/payu/callback', {}))).toBe(false);
+    expect(requiresCsrf(new HttpRequest('POST', '/api/public/payments/payu/callback', {}))).toBe(
+      false,
+    );
     expect(requiresCsrf(new HttpRequest('POST', '/api/admin/items', {}))).toBe(false);
   });
 
@@ -63,7 +70,9 @@ describe('csrfInterceptor', () => {
   it('refetches the token and retries once on 403 CSRF_INVALID', () => {
     extractor.token = 'stale';
     http.post('/api/public/orders', {}).subscribe();
-    controller.expectOne('/api/public/orders').flush({ code: 'CSRF_INVALID' }, { status: 403, statusText: 'Forbidden' });
+    controller
+      .expectOne('/api/public/orders')
+      .flush({ code: 'CSRF_INVALID' }, { status: 403, statusText: 'Forbidden' });
     extractor.token = 'fresh';
     controller.expectOne('/api/auth/csrf').flush(null);
     const retry = controller.expectOne('/api/public/orders');

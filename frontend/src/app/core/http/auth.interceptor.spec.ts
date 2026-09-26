@@ -11,7 +11,11 @@ import { authInterceptor } from './auth.interceptor';
 import { withAuth } from './http-context';
 
 const owner: StaffInfo = { id: 1, username: 'owner', role: 'OWNER', mustChangePassword: false };
-const tokens = (accessToken: string): TokenResponse => ({ accessToken, expiresIn: 900, user: owner });
+const tokens = (accessToken: string): TokenResponse => ({
+  accessToken,
+  expiresIn: 900,
+  user: owner,
+});
 
 describe('authInterceptor', () => {
   let http: HttpClient;
@@ -91,8 +95,12 @@ describe('authInterceptor', () => {
     const a = firstValueFrom(http.get<{ ok: string }>('/api/admin/items'));
     const b = firstValueFrom(http.get<{ ok: string }>('/api/admin/tables'));
 
-    controller.expectOne('/api/admin/items').flush({ code: 'UNAUTHORIZED' }, { status: 401, statusText: 'Unauthorized' });
-    controller.expectOne('/api/admin/tables').flush({ code: 'UNAUTHORIZED' }, { status: 401, statusText: 'Unauthorized' });
+    controller
+      .expectOne('/api/admin/items')
+      .flush({ code: 'UNAUTHORIZED' }, { status: 401, statusText: 'Unauthorized' });
+    controller
+      .expectOne('/api/admin/tables')
+      .flush({ code: 'UNAUTHORIZED' }, { status: 401, statusText: 'Unauthorized' });
 
     const refresh = controller.match('/api/auth/refresh');
     expect(refresh.length).toBe(1);
@@ -117,7 +125,9 @@ describe('authInterceptor', () => {
     await signIn('expired');
     const call = firstValueFrom(http.get('/api/admin/items'));
     controller.expectOne('/api/admin/items').flush({}, { status: 401, statusText: 'Unauthorized' });
-    controller.expectOne('/api/auth/refresh').flush({ code: 'SESSION_EXPIRED' }, { status: 401, statusText: 'Unauthorized' });
+    controller
+      .expectOne('/api/auth/refresh')
+      .flush({ code: 'SESSION_EXPIRED' }, { status: 401, statusText: 'Unauthorized' });
 
     await expect(call).rejects.toBeTruthy();
     expect(auth.isAuthenticated()).toBe(false);
@@ -146,7 +156,9 @@ describe('authInterceptor', () => {
     await register;
 
     const call = firstValueFrom(http.get('/api/kitchen/orders'));
-    controller.expectOne('/api/kitchen/orders').flush({}, { status: 401, statusText: 'Unauthorized' });
+    controller
+      .expectOne('/api/kitchen/orders')
+      .flush({}, { status: 401, statusText: 'Unauthorized' });
     await expect(call).rejects.toBeTruthy();
     expect(devices.isRegistered()).toBe(false);
     expect(router.navigateByUrl).toHaveBeenCalledWith('/kitchen/login');

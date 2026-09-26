@@ -41,7 +41,11 @@ export function lineTotalPaise(unitPrice: number, quantity: number): Paise {
   return toPaise(unitPrice) * quantity;
 }
 
-export function lineTaxPaise(lineTotal: Paise, gstPercent: number, pricesIncludeGst: boolean): Paise {
+export function lineTaxPaise(
+  lineTotal: Paise,
+  gstPercent: number,
+  pricesIncludeGst: boolean,
+): Paise {
   const gstBp = toPaise(gstPercent); // hundredths of a percent
   if (gstBp === 0) return 0;
   return pricesIncludeGst
@@ -55,7 +59,10 @@ export function splitGst(taxTotal: Paise): [Paise, Paise] {
   return [cgst, taxTotal - cgst];
 }
 
-export function estimateBill(lines: readonly BillLineInput[], pricesIncludeGst: boolean): BillEstimate {
+export function estimateBill(
+  lines: readonly BillLineInput[],
+  pricesIncludeGst: boolean,
+): BillEstimate {
   const results: BillLineResult[] = [];
   let gross = 0;
   let taxTotal = 0;

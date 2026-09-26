@@ -34,7 +34,9 @@ export async function unlockAudio(): Promise<boolean> {
 }
 
 /** Plays a short two-tone chime with WebAudio. Resolves false if audio is not permitted/available. */
-export async function playChime(options: { tones?: number[]; durationMs?: number; volume?: number } = {}): Promise<boolean> {
+export async function playChime(
+  options: { tones?: number[]; durationMs?: number; volume?: number } = {},
+): Promise<boolean> {
   const ctx = context();
   if (!ctx) return false;
   try {

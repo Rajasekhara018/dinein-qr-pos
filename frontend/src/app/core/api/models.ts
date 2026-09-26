@@ -28,7 +28,12 @@ export type OrderStatus =
   | 'PAYMENT_FAILED'
   | 'CANCELLED';
 
-export const PAID_STATUSES: readonly OrderStatus[] = ['CONFIRMED', 'PREPARING', 'READY', 'COMPLETED'];
+export const PAID_STATUSES: readonly OrderStatus[] = [
+  'CONFIRMED',
+  'PREPARING',
+  'READY',
+  'COMPLETED',
+];
 export const KITCHEN_STATUSES: readonly OrderStatus[] = ['CONFIRMED', 'PREPARING', 'READY'];
 
 export type StaffRole = 'OWNER' | 'MANAGER' | 'KITCHEN';
@@ -39,7 +44,8 @@ export type CheckoutMode = 'SDK' | 'FORM_POST' | 'REDIRECT';
 export type PaymentProviderCode = 'RAZORPAY' | 'PAYU' | 'PINELABS' | (string & {});
 
 /** `PaymentStatus` enum as a string: CREATED | AUTHORIZED | CAPTURED | FAILED | REFUNDED (open for additions). */
-export type PaymentStatusCode = 'CREATED' | 'AUTHORIZED' | 'CAPTURED' | 'FAILED' | 'REFUNDED' | (string & {});
+export type PaymentStatusCode =
+  'CREATED' | 'AUTHORIZED' | 'CAPTURED' | 'FAILED' | 'REFUNDED' | (string & {});
 
 /** `RefundStatus` enum as a string. */
 export type RefundStatusCode = 'PENDING' | 'PROCESSED' | 'FAILED' | (string & {});
@@ -764,10 +770,7 @@ export interface RazorpaySuccessResponse {
 // ─── Realtime (`realtime.RealtimeEvent`) ─────────────────────────────────────────────────────────
 
 export type RealtimeEventType =
-  | 'ORDER_CONFIRMED'
-  | 'ORDER_STATUS_CHANGED'
-  | 'ORDER_CANCELLED'
-  | 'MENU_UPDATED';
+  'ORDER_CONFIRMED' | 'ORDER_STATUS_CHANGED' | 'ORDER_CANCELLED' | 'MENU_UPDATED';
 
 export interface RealtimeEvent<TOrder = unknown> {
   type: RealtimeEventType;

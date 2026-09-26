@@ -41,7 +41,9 @@ export const csrfInterceptor: HttpInterceptorFn = (req, next) => {
     defer(() => {
       const existing = extractor.getToken();
       if (existing && !force) return of(existing);
-      csrfFetch ??= http.get('/api/auth/csrf').pipe(shareReplay({ bufferSize: 1, refCount: false }));
+      csrfFetch ??= http
+        .get('/api/auth/csrf')
+        .pipe(shareReplay({ bufferSize: 1, refCount: false }));
       return csrfFetch.pipe(
         map(() => {
           csrfFetch = null;

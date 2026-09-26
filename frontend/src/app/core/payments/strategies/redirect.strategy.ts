@@ -15,7 +15,11 @@ export class RedirectStrategy implements CheckoutStrategy {
   async start(response: CheckoutResponse): Promise<CheckoutOutcome> {
     const url = (response.checkout as RedirectCheckoutPayload | undefined)?.url;
     if (!url || !/^https?:\/\//i.test(url)) {
-      throw new PaymentNotCompletedError('unsupported', response.orderId, 'Payment link is missing.');
+      throw new PaymentNotCompletedError(
+        'unsupported',
+        response.orderId,
+        'Payment link is missing.',
+      );
     }
     this.navigator.assign(url);
     return { kind: 'navigating' };

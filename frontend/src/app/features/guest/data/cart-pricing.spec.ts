@@ -4,7 +4,13 @@ describe('cart pricing (mirrors backend PricingService)', () => {
   describe('prices exclusive of GST', () => {
     it('adds GST on top of the subtotal', () => {
       const bill = estimateBill([{ unitPrice: 100, quantity: 2, gstPercent: 5 }], false);
-      expect(bill).toMatchObject({ subtotal: 20000, taxTotal: 1000, cgst: 500, sgst: 500, grandTotal: 21000 });
+      expect(bill).toMatchObject({
+        subtotal: 20000,
+        taxTotal: 1000,
+        cgst: 500,
+        sgst: 500,
+        grandTotal: 21000,
+      });
     });
 
     it('rounds the tax HALF_UP to the paisa per line', () => {
@@ -86,6 +92,12 @@ describe('cart pricing (mirrors backend PricingService)', () => {
   });
 
   it('returns zeros for an empty cart', () => {
-    expect(estimateBill([], false)).toMatchObject({ subtotal: 0, taxTotal: 0, cgst: 0, sgst: 0, grandTotal: 0 });
+    expect(estimateBill([], false)).toMatchObject({
+      subtotal: 0,
+      taxTotal: 0,
+      cgst: 0,
+      sgst: 0,
+      grandTotal: 0,
+    });
   });
 });

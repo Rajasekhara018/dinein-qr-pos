@@ -32,12 +32,18 @@ export class ItemSheet {
   protected readonly maxNotes = MAX_LINE_NOTES;
   protected readonly maxQuantity = MAX_LINE_QUANTITY;
 
-  protected readonly variantId = signal<number | null>(this.data.line?.variantId ?? defaultVariantId(this.item));
-  protected readonly addonIds = signal<ReadonlySet<number>>(new Set(this.data.line?.addonIds ?? []));
+  protected readonly variantId = signal<number | null>(
+    this.data.line?.variantId ?? defaultVariantId(this.item),
+  );
+  protected readonly addonIds = signal<ReadonlySet<number>>(
+    new Set(this.data.line?.addonIds ?? []),
+  );
   protected readonly notes = signal(this.data.line?.notes ?? '');
   protected readonly quantity = signal(this.data.line?.quantity ?? 1);
 
-  protected readonly needsVariant = computed(() => this.item.variants.length > 0 && this.variantId() == null);
+  protected readonly needsVariant = computed(
+    () => this.item.variants.length > 0 && this.variantId() == null,
+  );
 
   /** Unit price in paise: variant (or base) + selected addons. */
   protected readonly unitPaise = computed(() => {

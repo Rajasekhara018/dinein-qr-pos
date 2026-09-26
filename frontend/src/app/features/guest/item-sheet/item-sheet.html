@@ -25,7 +25,9 @@
       <fieldset>
         <legend class="mb-2 flex w-full items-center justify-between font-semibold">
           <span>Choose a size</span>
-          <span class="rounded-full bg-surface-muted px-2 py-0.5 text-xs font-medium text-ink-muted">Required</span>
+          <span class="rounded-full bg-surface-muted px-2 py-0.5 text-xs font-medium text-ink-muted"
+            >Required</span
+          >
         </legend>
         <div class="divide-y divide-line rounded-card border border-line">
           @for (variant of item.variants; track variant.id) {
@@ -50,7 +52,9 @@
       <fieldset>
         <legend class="mb-2 flex w-full items-center justify-between font-semibold">
           <span>Add-ons</span>
-          <span class="rounded-full bg-surface-muted px-2 py-0.5 text-xs font-medium text-ink-muted">Optional</span>
+          <span class="rounded-full bg-surface-muted px-2 py-0.5 text-xs font-medium text-ink-muted"
+            >Optional</span
+          >
         </legend>
         <div class="divide-y divide-line rounded-card border border-line">
           @for (addon of item.addons; track addon.id) {

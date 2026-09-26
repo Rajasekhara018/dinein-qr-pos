@@ -1,6 +1,11 @@
 import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { ActivatedRouteSnapshot, provideRouter, RouterStateSnapshot, UrlTree } from '@angular/router';
+import {
+  ActivatedRouteSnapshot,
+  provideRouter,
+  RouterStateSnapshot,
+  UrlTree,
+} from '@angular/router';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { AuthStore } from './auth.store';
 import { adminAuthGuard, kitchenAuthGuard, ownerGuard, passwordChangeGuard } from './auth.guards';
@@ -50,7 +55,9 @@ describe('auth guards', () => {
   describe('passwordChangeGuard', () => {
     it('forces the change-password page while mustChangePassword is set', () => {
       authMock.mustChangePassword.set(true);
-      expect(asUrl(run(() => passwordChangeGuard(route, state('/admin/items'))))).toBe('/admin/change-password');
+      expect(asUrl(run(() => passwordChangeGuard(route, state('/admin/items'))))).toBe(
+        '/admin/change-password',
+      );
       expect(run(() => passwordChangeGuard(route, state('/admin/change-password')))).toBe(true);
     });
 

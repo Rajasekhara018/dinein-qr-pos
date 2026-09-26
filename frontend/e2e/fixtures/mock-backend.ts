@@ -26,8 +26,29 @@ export const menu = {
       id: 10,
       name: 'Starters',
       items: [
-        { id: 1, name: 'Masala Dosa', description: 'Crispy rice crepe with potato masala', foodType: 'VEG', basePrice: 120, displayPrice: 120, gstPercent: 5, available: true, variants: [], addons: [] },
-        { id: 3, name: 'Egg Bhurji', foodType: 'EGG', basePrice: 90, displayPrice: 90, gstPercent: 5, available: false, variants: [], addons: [] },
+        {
+          id: 1,
+          name: 'Masala Dosa',
+          description: 'Crispy rice crepe with potato masala',
+          foodType: 'VEG',
+          basePrice: 120,
+          displayPrice: 120,
+          gstPercent: 5,
+          available: true,
+          variants: [],
+          addons: [],
+        },
+        {
+          id: 3,
+          name: 'Egg Bhurji',
+          foodType: 'EGG',
+          basePrice: 90,
+          displayPrice: 90,
+          gstPercent: 5,
+          available: false,
+          variants: [],
+          addons: [],
+        },
       ],
     },
     {
@@ -61,10 +82,39 @@ export const paidOrder = {
   tableLabel: 'T3',
   customerName: 'Asha',
   items: [
-    { itemId: 1, name: 'Masala Dosa', foodType: 'VEG', addons: [], unitPrice: 120, quantity: 2, gstPercent: 5, lineTotal: 240, taxAmount: 12 },
-    { itemId: 2, variantId: 22, name: 'Chicken Biryani', variantName: 'Full', foodType: 'NON_VEG', addons: [{ name: 'Extra raita', price: 30 }], unitPrice: 350, quantity: 1, gstPercent: 5, lineTotal: 350, taxAmount: 17.5 },
+    {
+      itemId: 1,
+      name: 'Masala Dosa',
+      foodType: 'VEG',
+      addons: [],
+      unitPrice: 120,
+      quantity: 2,
+      gstPercent: 5,
+      lineTotal: 240,
+      taxAmount: 12,
+    },
+    {
+      itemId: 2,
+      variantId: 22,
+      name: 'Chicken Biryani',
+      variantName: 'Full',
+      foodType: 'NON_VEG',
+      addons: [{ name: 'Extra raita', price: 30 }],
+      unitPrice: 350,
+      quantity: 1,
+      gstPercent: 5,
+      lineTotal: 350,
+      taxAmount: 17.5,
+    },
   ],
-  bill: { subtotal: 590, taxTotal: 29.5, cgst: 14.75, sgst: 14.75, grandTotal: 619.5, pricesIncludeGst: false },
+  bill: {
+    subtotal: 590,
+    taxTotal: 29.5,
+    cgst: 14.75,
+    sgst: 14.75,
+    grandTotal: 619.5,
+    pricesIncludeGst: false,
+  },
   payment: { provider: 'RAZORPAY', status: 'CAPTURED', method: 'upi' },
   canRetryPayment: false,
   placedAt: '2026-09-26T07:30:00Z',
@@ -106,7 +156,11 @@ export async function mockBackend(page: Page): Promise<MockBackend> {
     if (path === '/api/auth/csrf') return route.fulfill({ status: 204 });
     if (path === '/api/public/session') {
       if (url.searchParams.has('t') && url.searchParams.get('t') !== 'abc') {
-        return json(route, { code: 'INVALID_TABLE', message: 'Please scan the QR code on your table' }, 404);
+        return json(
+          route,
+          { code: 'INVALID_TABLE', message: 'Please scan the QR code on your table' },
+          404,
+        );
       }
       return json(route, session);
     }
@@ -140,7 +194,18 @@ export async function mockBackend(page: Page): Promise<MockBackend> {
       return json(route, paidOrder);
     }
     if (path === '/api/public/orders/42') return json(route, paidOrder);
-    if (path === '/api/public/orders') return json(route, [{ id: 42, orderNumber: '260926-042', displayToken: 42, status: 'CONFIRMED', grandTotal: 619.5, itemCount: 3, placedAt: paidOrder.placedAt }]);
+    if (path === '/api/public/orders')
+      return json(route, [
+        {
+          id: 42,
+          orderNumber: '260926-042',
+          displayToken: 42,
+          status: 'CONFIRMED',
+          grandTotal: 619.5,
+          itemCount: 3,
+          placedAt: paidOrder.placedAt,
+        },
+      ]);
     if (path.startsWith('/api/images/')) return route.fulfill({ status: 404 });
     return json(route, { code: 'NOT_FOUND', message: `Unmocked ${method} ${path}` }, 404);
   });

@@ -51,7 +51,10 @@ export function divideHalfUp(numerator: number, denominator: number): number {
 }
 
 /** Formats a rupee amount, e.g. `₹1,250.00`. */
-export function formatInr(rupees: number | null | undefined, options?: { whole?: boolean }): string {
+export function formatInr(
+  rupees: number | null | undefined,
+  options?: { whole?: boolean },
+): string {
   const value = rupees ?? 0;
   if (options?.whole) return inrWholeFormatter.format(value);
   return inrFormatter.format(value);

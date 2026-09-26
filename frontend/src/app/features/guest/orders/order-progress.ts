@@ -38,8 +38,18 @@ export class OrderProgress {
     const o = this.order();
     return [
       { key: 'paid', label: 'Paid', hint: 'Order sent to the kitchen', at: o.paidAt },
-      { key: 'preparing', label: 'Preparing', hint: 'The kitchen is cooking your food', at: o.preparingAt },
-      { key: 'ready', label: 'Ready', hint: o.status === 'COMPLETED' ? 'Served — enjoy your meal!' : 'Ready to serve', at: o.readyAt },
+      {
+        key: 'preparing',
+        label: 'Preparing',
+        hint: 'The kitchen is cooking your food',
+        at: o.preparingAt,
+      },
+      {
+        key: 'ready',
+        label: 'Ready',
+        hint: o.status === 'COMPLETED' ? 'Served — enjoy your meal!' : 'Ready to serve',
+        at: o.readyAt,
+      },
     ];
   });
 

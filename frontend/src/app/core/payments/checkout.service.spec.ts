@@ -41,7 +41,9 @@ class FakeRazorpay {
       } else if (FakeRazorpay.behaviour === 'dismiss') {
         this.options.modal?.ondismiss?.();
       } else {
-        this.failedHandler?.({ error: { code: 'BAD_REQUEST_ERROR', description: 'Card declined' } });
+        this.failedHandler?.({
+          error: { code: 'BAD_REQUEST_ERROR', description: 'Card declined' },
+        });
       }
     });
   }
@@ -73,7 +75,11 @@ const paidOrder = { id: 42, status: 'CONFIRMED' } as GuestOrderView;
 describe('CheckoutService', () => {
   let service: CheckoutService;
   let controller: HttpTestingController;
-  let navigator: { assign: ReturnType<typeof vi.fn>; submitForm: ReturnType<typeof vi.fn>; print: ReturnType<typeof vi.fn> };
+  let navigator: {
+    assign: ReturnType<typeof vi.fn>;
+    submitForm: ReturnType<typeof vi.fn>;
+    print: ReturnType<typeof vi.fn>;
+  };
   let router: Router;
 
   beforeEach(() => {
@@ -101,14 +107,16 @@ describe('CheckoutService', () => {
   });
 
   async function flushVerify(): Promise<void> {
-    await vi.waitFor(() => controller.expectOne('/api/public/payments/verify'), { timeout: 1000 }).then((req) => {
-      expect(req.request.body).toEqual({
-        razorpay_order_id: 'order_R1',
-        razorpay_payment_id: 'pay_P1',
-        razorpay_signature: 'sig',
+    await vi
+      .waitFor(() => controller.expectOne('/api/public/payments/verify'), { timeout: 1000 })
+      .then((req) => {
+        expect(req.request.body).toEqual({
+          razorpay_order_id: 'order_R1',
+          razorpay_payment_id: 'pay_P1',
+          razorpay_signature: 'sig',
+        });
+        req.flush(paidOrder);
       });
-      req.flush(paidOrder);
-    });
   }
 
   describe('SDK (Razorpay)', () => {
@@ -118,7 +126,12 @@ describe('CheckoutService', () => {
       await expect(result).resolves.toEqual({ kind: 'paid', order: paidOrder });
 
       const options = FakeRazorpay.last!.options;
-      expect(options).toMatchObject({ key: 'rzp_test_1', order_id: 'order_R1', amount: 21000, name: 'Spice Route' });
+      expect(options).toMatchObject({
+        key: 'rzp_test_1',
+        order_id: 'order_R1',
+        amount: 21000,
+        name: 'Spice Route',
+      });
       expect(options['scriptUrl']).toBeUndefined();
       expect(options.retry).toEqual({ enabled: false });
       expect(typeof options.modal?.ondismiss).toBe('function');
@@ -141,7 +154,10 @@ describe('CheckoutService', () => {
     it('rejects with reason "verification-failed" when the server cannot verify', async () => {
       const result = service.pay(sdkResponse).catch((e: unknown) => e);
       const req = await vi.waitFor(() => controller.expectOne('/api/public/payments/verify'));
-      req.flush({ code: 'PAYMENT_PROVIDER_ERROR', message: 'Could not verify' }, { status: 502, statusText: 'Bad Gateway' });
+      req.flush(
+        { code: 'PAYMENT_PROVIDER_ERROR', message: 'Could not verify' },
+        { status: 502, statusText: 'Bad Gateway' },
+      );
       expect(await result).toMatchObject({ reason: 'verification-failed' });
     });
   });
@@ -151,26 +167,46 @@ describe('CheckoutService', () => {
       ...sdkResponse,
       provider: 'PAYU',
       mode: 'FORM_POST',
-      checkout: { action: 'https://test.payu.in/_payment', method: 'POST', fields: { key: 'k', hash: 'h', amount: '210.00' } },
+      checkout: {
+        action: 'https://test.payu.in/_payment',
+        method: 'POST',
+        fields: { key: 'k', hash: 'h', amount: '210.00' },
+      },
     };
     await expect(service.pay(response)).resolves.toEqual({ kind: 'navigating' });
-    expect(navigator.submitForm).toHaveBeenCalledWith('https://test.payu.in/_payment', { key: 'k', hash: 'h', amount: '210.00' }, 'POST');
+    expect(navigator.submitForm).toHaveBeenCalledWith(
+      'https://test.payu.in/_payment',
+      { key: 'k', hash: 'h', amount: '210.00' },
+      'POST',
+    );
   });
 
   it('REDIRECT navigates to the provider URL', async () => {
-    const response: CheckoutResponse = { ...sdkResponse, provider: 'PINELABS', mode: 'REDIRECT', checkout: { url: 'https://pay.example.com/x' } };
+    const response: CheckoutResponse = {
+      ...sdkResponse,
+      provider: 'PINELABS',
+      mode: 'REDIRECT',
+      checkout: { url: 'https://pay.example.com/x' },
+    };
     await expect(service.pay(response)).resolves.toEqual({ kind: 'navigating' });
     expect(navigator.assign).toHaveBeenCalledWith('https://pay.example.com/x');
   });
 
   it('goes straight to the order page when the order is no longer payable', async () => {
-    const replay: CheckoutResponse = { orderId: 42, orderNumber: '260926-042', displayToken: 42, status: 'CONFIRMED' };
+    const replay: CheckoutResponse = {
+      orderId: 42,
+      orderNumber: '260926-042',
+      displayToken: 42,
+      status: 'CONFIRMED',
+    };
     await expect(service.pay(replay)).resolves.toEqual({ kind: 'not-payable', orderId: 42 });
     expect(router.navigate).toHaveBeenCalledWith(['/menu', 'orders', 42]);
   });
 
   it('rejects unsupported modes', async () => {
-    const error = await service.pay({ ...sdkResponse, mode: 'QR' as never }).catch((e: unknown) => e);
+    const error = await service
+      .pay({ ...sdkResponse, mode: 'QR' as never })
+      .catch((e: unknown) => e);
     expect(error).toMatchObject({ reason: 'unsupported' });
   });
 });
@@ -185,7 +221,9 @@ describe('CheckoutService with custom strategies', () => {
       providers: [provideRouter([]), { provide: CHECKOUT_STRATEGIES, useValue: [custom] }],
     });
     const service = TestBed.inject(CheckoutService);
-    await expect(service.pay({ ...sdkResponse, provider: 'NEWPAY' })).resolves.toEqual({ kind: 'navigating' });
+    await expect(service.pay({ ...sdkResponse, provider: 'NEWPAY' })).resolves.toEqual({
+      kind: 'navigating',
+    });
     expect(custom.start).toHaveBeenCalled();
   });
 });

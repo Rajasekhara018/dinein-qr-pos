@@ -2,16 +2,26 @@
   type="button"
   class="inline-flex size-touch items-center justify-center rounded-l-control hover:bg-brand-soft disabled:opacity-40"
   [disabled]="disabled() || quantity() <= min()"
-  [attr.aria-label]="(quantity() <= 1 && min() === 0 ? 'Remove ' : 'Decrease ') + (itemName() || 'quantity')"
+  [attr.aria-label]="
+    (quantity() <= 1 && min() === 0 ? 'Remove ' : 'Decrease ') + (itemName() || 'quantity')
+  "
   (click)="step(-1)"
 >
   @if (quantity() <= 1 && min() === 0 && showTrash()) {
-    <svg viewBox="0 0 20 20" class="size-4 fill-current" aria-hidden="true"><path d="M8 2h4l1 1h4v2H3V3h4l1-1Zm-3 5h10l-.8 10.2A2 2 0 0 1 12.2 19H7.8a2 2 0 0 1-2-1.8L5 7Z"/></svg>
+    <svg viewBox="0 0 20 20" class="size-4 fill-current" aria-hidden="true">
+      <path
+        d="M8 2h4l1 1h4v2H3V3h4l1-1Zm-3 5h10l-.8 10.2A2 2 0 0 1 12.2 19H7.8a2 2 0 0 1-2-1.8L5 7Z"
+      />
+    </svg>
   } @else {
-    <svg viewBox="0 0 20 20" class="size-4 fill-current" aria-hidden="true"><path d="M4 9h12v2H4z"/></svg>
+    <svg viewBox="0 0 20 20" class="size-4 fill-current" aria-hidden="true">
+      <path d="M4 9h12v2H4z" />
+    </svg>
   }
 </button>
-<output class="min-w-8 px-1 text-center text-base font-bold tabular-nums" aria-live="polite">{{ quantity() }}</output>
+<output class="min-w-8 px-1 text-center text-base font-bold tabular-nums" aria-live="polite">{{
+  quantity()
+}}</output>
 <button
   type="button"
   class="inline-flex size-touch items-center justify-center rounded-r-control hover:bg-brand-soft disabled:opacity-40"
@@ -19,5 +29,7 @@
   [attr.aria-label]="'Increase ' + (itemName() || 'quantity')"
   (click)="step(1)"
 >
-  <svg viewBox="0 0 20 20" class="size-4 fill-current" aria-hidden="true"><path d="M9 4h2v5h5v2h-5v5H9v-5H4V9h5z"/></svg>
+  <svg viewBox="0 0 20 20" class="size-4 fill-current" aria-hidden="true">
+    <path d="M9 4h2v5h5v2h-5v5H9v-5H4V9h5z" />
+  </svg>
 </button>

@@ -50,7 +50,9 @@ export class GuestShell {
       untracked(() => {
         const result = this.cart.reconcile(menu);
         if (result.unavailable > 0) {
-          this.toasts.warning('Some items in your cart are no longer available.', { key: 'cart-reconcile' });
+          this.toasts.warning('Some items in your cart are no longer available.', {
+            key: 'cart-reconcile',
+          });
         } else if (result.repriced > 0) {
           this.toasts.info('Prices in your cart were updated.', { key: 'cart-reconcile' });
         }
@@ -82,7 +84,12 @@ export class GuestShell {
     const table = this.session.table();
     if (outcome === 'ready' && table) {
       this.cart.bindTable(table.id);
-      if (token) await this.router.navigate([], { queryParams: { t: null }, queryParamsHandling: 'merge', replaceUrl: true });
+      if (token)
+        await this.router.navigate([], {
+          queryParams: { t: null },
+          queryParamsHandling: 'merge',
+          replaceUrl: true,
+        });
     }
   }
 

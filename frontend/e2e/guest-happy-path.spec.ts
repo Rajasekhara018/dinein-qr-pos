@@ -2,7 +2,10 @@ import { expect, test } from '@playwright/test';
 import { mockBackend, razorpayStub } from './fixtures/mock-backend';
 
 test.describe('guest happy path', () => {
-  test('scan → add items (incl. variants) → cart → pay → order status shows the token', async ({ page, isMobile }) => {
+  test('scan → add items (incl. variants) → cart → pay → order status shows the token', async ({
+    page,
+    isMobile,
+  }) => {
     await page.addInitScript(razorpayStub);
     const backend = await mockBackend(page);
 
@@ -70,7 +73,11 @@ test.describe('guest happy path', () => {
       customerPhone: '9876543210',
     });
     expect(backend.verifyRequests).toEqual([
-      { razorpay_order_id: 'order_TEST42', razorpay_payment_id: 'pay_TEST123', razorpay_signature: 'sig_test' },
+      {
+        razorpay_order_id: 'order_TEST42',
+        razorpay_payment_id: 'pay_TEST123',
+        razorpay_signature: 'sig_test',
+      },
     ]);
 
     // The cart was cleared after payment.
@@ -82,6 +89,8 @@ test.describe('guest happy path', () => {
     await mockBackend(page);
     await page.goto('/menu?t=wrong');
     await expect(page).toHaveURL(/\/menu\/scan$/);
-    await expect(page.getByRole('heading', { name: 'Please scan the QR code on your table' })).toBeVisible();
+    await expect(
+      page.getByRole('heading', { name: 'Please scan the QR code on your table' }),
+    ).toBeVisible();
   });
 });

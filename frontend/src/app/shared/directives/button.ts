@@ -45,7 +45,8 @@ export class ButtonDirective {
   readonly disabled = input(false, { transform: booleanAttribute });
 
   protected readonly isButton =
-    (inject<ElementRef<HTMLElement>>(ElementRef).nativeElement.tagName ?? '').toUpperCase() === 'BUTTON';
+    (inject<ElementRef<HTMLElement>>(ElementRef).nativeElement.tagName ?? '').toUpperCase() ===
+    'BUTTON';
 
   protected readonly classes = computed(
     () =>

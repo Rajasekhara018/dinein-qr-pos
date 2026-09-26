@@ -51,7 +51,12 @@ export function normaliseNotes(notes: string | null | undefined): string {
   return (notes ?? '').trim().replace(/\s+/g, ' ').slice(0, MAX_LINE_NOTES);
 }
 
-export function lineKey(itemId: number, variantId: number | null, addonIds: readonly number[], notes: string): string {
+export function lineKey(
+  itemId: number,
+  variantId: number | null,
+  addonIds: readonly number[],
+  notes: string,
+): string {
   const addons = [...addonIds].sort((a, b) => a - b).join(',');
   return `${itemId}|${variantId ?? ''}|${addons}|${normaliseNotes(notes).toLowerCase()}`;
 }

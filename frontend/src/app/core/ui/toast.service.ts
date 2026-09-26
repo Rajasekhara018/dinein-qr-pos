@@ -35,9 +35,15 @@ export class ToastService {
 
   show(kind: ToastKind, message: string, options: ToastOptions = {}): number {
     const id = this.nextId++;
-    const durationMs =
-      options.durationMs ?? (kind === 'error' || options.action ? 6000 : 4000);
-    const toast: Toast = { id, kind, message, action: options.action, key: options.key, durationMs };
+    const durationMs = options.durationMs ?? (kind === 'error' || options.action ? 6000 : 4000);
+    const toast: Toast = {
+      id,
+      kind,
+      message,
+      action: options.action,
+      key: options.key,
+      durationMs,
+    };
     this._toasts.update((list) => {
       const kept = options.key ? list.filter((t) => t.key !== options.key) : list;
       for (const removed of list) {

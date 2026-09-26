@@ -1,54 +1,104 @@
-<main class="mx-auto w-full max-w-5xl px-4 pb-[calc(8rem+env(safe-area-inset-bottom))] pt-4 lg:px-6 lg:pb-10">
+<main
+  class="mx-auto w-full max-w-5xl px-4 pb-[calc(8rem+env(safe-area-inset-bottom))] pt-4 lg:px-6 lg:pb-10"
+>
   <div class="flex items-center gap-2">
     <a appIconButton routerLink="/menu" aria-label="Back to menu" class="-ml-2">
-      <svg viewBox="0 0 20 20" class="size-5 fill-current" aria-hidden="true"><path d="M12.7 4.3 7 10l5.7 5.7 1.4-1.4L9.8 10l4.3-4.3-1.4-1.4Z"/></svg>
+      <svg viewBox="0 0 20 20" class="size-5 fill-current" aria-hidden="true">
+        <path d="M12.7 4.3 7 10l5.7 5.7 1.4-1.4L9.8 10l4.3-4.3-1.4-1.4Z" />
+      </svg>
     </a>
-    <h1 id="cart-title" tabindex="-1" class="font-display text-2xl font-semibold outline-none">Your cart</h1>
+    <h1 id="cart-title" tabindex="-1" class="font-display text-2xl font-semibold outline-none">
+      Your cart
+    </h1>
     @if (session.table(); as table) {
-      <span class="ml-auto rounded-full bg-surface-muted px-3 py-1 text-sm text-ink-muted">Table {{ table.label }}</span>
+      <span class="ml-auto rounded-full bg-surface-muted px-3 py-1 text-sm text-ink-muted"
+        >Table {{ table.label }}</span
+      >
     }
   </div>
 
   @if (failure(); as f) {
-    <section class="mt-4 rounded-card border border-amber-300 bg-amber-50 p-4 text-amber-950 dark:border-amber-700 dark:bg-amber-950 dark:text-amber-50" role="alert" aria-labelledby="payment-failed-title" data-testid="payment-failed">
-      <h2 id="payment-failed-title" class="font-display text-lg font-semibold">Payment not completed</h2>
+    <section
+      class="mt-4 rounded-card border border-amber-300 bg-amber-50 p-4 text-amber-950 dark:border-amber-700 dark:bg-amber-950 dark:text-amber-50"
+      role="alert"
+      aria-labelledby="payment-failed-title"
+      data-testid="payment-failed"
+    >
+      <h2 id="payment-failed-title" class="font-display text-lg font-semibold">
+        Payment not completed
+      </h2>
       <p class="mt-1 text-sm">
         @switch (f.reason) {
-          @case ('dismissed') { You closed the payment window before paying. }
-          @case ('verification-failed') { We couldn't confirm your payment yet. If money was deducted, it will be confirmed automatically — check your order status. }
-          @default { {{ f.message }} }
+          @case ('dismissed') {
+            You closed the payment window before paying.
+          }
+          @case ('verification-failed') {
+            We couldn't confirm your payment yet. If money was deducted, it will be confirmed
+            automatically — check your order status.
+          }
+          @default {
+            {{ f.message }}
+          }
         }
         No money has been taken for this attempt unless your bank shows otherwise.
       </p>
       <div class="mt-3 flex flex-wrap gap-2">
-        <button appButton type="button" [loading]="phase() === 'retrying'" (click)="retryPayment()">Retry payment</button>
+        <button appButton type="button" [loading]="phase() === 'retrying'" (click)="retryPayment()">
+          Retry payment
+        </button>
         <button appButton type="button" variant="outline" (click)="editCart()">Edit cart</button>
         @if (f.reason === 'verification-failed') {
-          <a appButton variant="ghost" [routerLink]="['/menu', 'orders', f.orderId]">View order status</a>
+          <a appButton variant="ghost" [routerLink]="['/menu', 'orders', f.orderId]"
+            >View order status</a
+          >
         }
       </div>
     </section>
   }
 
   @if (cart.isEmpty()) {
-    <app-empty-state title="Your cart is empty" message="Browse the menu and add something you like.">
+    <app-empty-state
+      title="Your cart is empty"
+      message="Browse the menu and add something you like."
+    >
       <a appButton routerLink="/menu">Browse menu</a>
     </app-empty-state>
   } @else {
     <div class="mt-4 grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-start lg:gap-6">
       <div class="min-w-0 space-y-4">
         @if (cart.hasIssues()) {
-          <div class="flex flex-wrap items-center justify-between gap-3 rounded-card border border-red-200 bg-red-50 p-3 text-sm text-red-900 dark:border-red-800 dark:bg-red-950 dark:text-red-100" role="alert">
+          <div
+            class="flex flex-wrap items-center justify-between gap-3 rounded-card border border-red-200 bg-red-50 p-3 text-sm text-red-900 dark:border-red-800 dark:bg-red-950 dark:text-red-100"
+            role="alert"
+          >
             <p class="min-w-0">Some items can no longer be ordered.</p>
-            <button appButton type="button" size="sm" variant="outline" (click)="cart.removeUnavailable()">Remove unavailable items</button>
+            <button
+              appButton
+              type="button"
+              size="sm"
+              variant="outline"
+              (click)="cart.removeUnavailable()"
+            >
+              Remove unavailable items
+            </button>
           </div>
         }
 
         <app-card>
           <h2 class="sr-only">Items</h2>
-          <app-cart-lines [lines]="cart.lines()" (edit)="edit($event)" (remove)="remove($event)" (quantityChange)="setQuantity($event)" />
-          <a routerLink="/menu" class="mt-3 inline-flex min-h-touch items-center gap-1 text-sm font-semibold text-brand-ink hover:underline">
-            <svg viewBox="0 0 20 20" class="size-4 fill-current" aria-hidden="true"><path d="M9 4h2v5h5v2h-5v5H9v-5H4V9h5z"/></svg>
+          <app-cart-lines
+            [lines]="cart.lines()"
+            (edit)="edit($event)"
+            (remove)="remove($event)"
+            (quantityChange)="setQuantity($event)"
+          />
+          <a
+            routerLink="/menu"
+            class="mt-3 inline-flex min-h-touch items-center gap-1 text-sm font-semibold text-brand-ink hover:underline"
+          >
+            <svg viewBox="0 0 20 20" class="size-4 fill-current" aria-hidden="true">
+              <path d="M9 4h2v5h5v2h-5v5H9v-5H4V9h5z" />
+            </svg>
             Add more items
           </a>
         </app-card>
@@ -56,7 +106,10 @@
         <app-card>
           <form [formGroup]="form" class="space-y-4" novalidate (ngSubmit)="pay()">
             <div>
-              <label for="order-notes" class="mb-1 block font-semibold">Notes for the kitchen <span class="font-normal text-ink-muted">(optional)</span></label>
+              <label for="order-notes" class="mb-1 block font-semibold"
+                >Notes for the kitchen
+                <span class="font-normal text-ink-muted">(optional)</span></label
+              >
               <textarea
                 id="order-notes"
                 formControlName="notes"
@@ -65,12 +118,16 @@
                 placeholder="Allergies, spice level, serve together…"
                 class="block w-full resize-none rounded-control border border-line-strong bg-surface px-3 py-2 text-base placeholder:text-ink-subtle"
               ></textarea>
-              <p class="mt-1 text-right text-xs text-ink-subtle">{{ notes.value.length }}/{{ maxNotes }}</p>
+              <p class="mt-1 text-right text-xs text-ink-subtle">
+                {{ notes.value.length }}/{{ maxNotes }}
+              </p>
             </div>
 
             <div class="grid gap-4 sm:grid-cols-2">
               <div class="min-w-0">
-                <label for="customer-name" class="mb-1 block font-semibold">Your name <span class="font-normal text-ink-muted">(optional)</span></label>
+                <label for="customer-name" class="mb-1 block font-semibold"
+                  >Your name <span class="font-normal text-ink-muted">(optional)</span></label
+                >
                 <input
                   id="customer-name"
                   type="text"
@@ -81,9 +138,15 @@
                 />
               </div>
               <div class="min-w-0">
-                <label for="customer-phone" class="mb-1 block font-semibold">Mobile number <span class="font-normal text-ink-muted">(optional)</span></label>
+                <label for="customer-phone" class="mb-1 block font-semibold"
+                  >Mobile number <span class="font-normal text-ink-muted">(optional)</span></label
+                >
                 <div class="flex min-w-0 items-stretch">
-                  <span class="inline-flex items-center rounded-l-control border border-r-0 border-line-strong bg-surface-muted px-3 text-base text-ink-muted" aria-hidden="true">+91</span>
+                  <span
+                    class="inline-flex items-center rounded-l-control border border-r-0 border-line-strong bg-surface-muted px-3 text-base text-ink-muted"
+                    aria-hidden="true"
+                    >+91</span
+                  >
                   <input
                     id="customer-phone"
                     type="tel"
@@ -99,11 +162,25 @@
                   />
                 </div>
                 @if (phone.invalid && (phone.touched || phone.dirty) && phone.value.length >= 10) {
-                  <p id="customer-phone-help" class="mt-1 text-sm text-danger" data-testid="phone-error">Enter a valid 10-digit Indian mobile number.</p>
+                  <p
+                    id="customer-phone-help"
+                    class="mt-1 text-sm text-danger"
+                    data-testid="phone-error"
+                  >
+                    Enter a valid 10-digit Indian mobile number.
+                  </p>
                 } @else if (phone.invalid && phone.touched) {
-                  <p id="customer-phone-help" class="mt-1 text-sm text-danger" data-testid="phone-error">Enter a valid 10-digit Indian mobile number.</p>
+                  <p
+                    id="customer-phone-help"
+                    class="mt-1 text-sm text-danger"
+                    data-testid="phone-error"
+                  >
+                    Enter a valid 10-digit Indian mobile number.
+                  </p>
                 } @else {
-                  <p id="customer-phone-help" class="mt-1 text-xs text-ink-subtle">For payment receipts. We won't spam you.</p>
+                  <p id="customer-phone-help" class="mt-1 text-xs text-ink-subtle">
+                    For payment receipts. We won't spam you.
+                  </p>
                 }
               </div>
             </div>
@@ -118,24 +195,33 @@
           <app-bill-summary [bill]="cart.bill()" [pricesIncludeGst]="cart.pricesIncludeGst()" />
           @if (serverTotal() !== null) {
             <p class="mt-2 rounded-control bg-surface-muted p-2 text-sm" role="status">
-              Amount confirmed by the restaurant: <strong class="tabular-nums">{{ serverTotal()! | inr: 'paise' }}</strong>
+              Amount confirmed by the restaurant:
+              <strong class="tabular-nums">{{ serverTotal()! | inr: 'paise' }}</strong>
             </p>
           }
           @if (errorMessage()) {
-            <p class="mt-3 rounded-control bg-red-50 p-3 text-sm text-red-900 dark:bg-red-950 dark:text-red-100" role="alert" data-testid="checkout-error">
+            <p
+              class="mt-3 rounded-control bg-red-50 p-3 text-sm text-red-900 dark:bg-red-950 dark:text-red-100"
+              role="alert"
+              data-testid="checkout-error"
+            >
               {{ errorMessage() }}
             </p>
           }
           @if (!session.canOrder()) {
             <p class="mt-3 text-sm text-ink-muted" role="status">
               @if (session.closedReason() === 'outside-hours') {
-                We're closed now{{ session.openingHours() ? ' · Open ' + session.openingHours() : '' }}.
+                We're closed now{{
+                  session.openingHours() ? ' · Open ' + session.openingHours() : ''
+                }}.
               } @else {
                 Ordering is closed right now.
               }
             </p>
           }
-          <div class="fixed inset-x-0 bottom-0 z-30 border-t border-line bg-surface px-4 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] lg:static lg:mt-4 lg:border-0 lg:p-0">
+          <div
+            class="fixed inset-x-0 bottom-0 z-30 border-t border-line bg-surface px-4 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] lg:static lg:mt-4 lg:border-0 lg:p-0"
+          >
             <button
               appButton
               type="button"

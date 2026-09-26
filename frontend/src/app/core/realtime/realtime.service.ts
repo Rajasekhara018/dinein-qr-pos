@@ -1,4 +1,12 @@
-import { DestroyRef, DOCUMENT, inject, Injectable, InjectionToken, OnDestroy, signal } from '@angular/core';
+import {
+  DestroyRef,
+  DOCUMENT,
+  inject,
+  Injectable,
+  InjectionToken,
+  OnDestroy,
+  signal,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ReconnectionTimeMode } from '@stomp/stompjs';
 import { RxStomp, RxStompState } from '@stomp/rx-stomp';
@@ -19,7 +27,11 @@ export interface RealtimeConfig {
 
 export const REALTIME_CONFIG = new InjectionToken<RealtimeConfig>('REALTIME_CONFIG', {
   providedIn: 'root',
-  factory: () => ({ heartbeatMs: 10_000, initialReconnectDelayMs: 1_000, maxReconnectDelayMs: 30_000 }),
+  factory: () => ({
+    heartbeatMs: 10_000,
+    initialReconnectDelayMs: 1_000,
+    maxReconnectDelayMs: 30_000,
+  }),
 });
 
 /** Factory seam so tests can supply a fake client. */
@@ -144,9 +156,7 @@ export class RealtimeService implements OnDestroy {
         stomp.configure({ connectHeaders: header ? { Authorization: header } : {} });
       },
     });
-    this.stateSub.add(
-      client.connectionState$.subscribe((state) => this.onState(client, state)),
-    );
+    this.stateSub.add(client.connectionState$.subscribe((state) => this.onState(client, state)));
     this.stateSub.add(
       client.connected$.subscribe(() => {
         this.everConnected = true;

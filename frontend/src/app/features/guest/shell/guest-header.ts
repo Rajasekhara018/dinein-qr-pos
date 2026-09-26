@@ -14,5 +14,7 @@ export class GuestHeader {
   protected readonly cart = inject(CartStore);
   protected readonly restaurant = this.session.restaurant;
   protected readonly table = this.session.table;
-  protected readonly initial = computed(() => (this.restaurant()?.name ?? 'D').trim().charAt(0).toUpperCase());
+  protected readonly initial = computed(() =>
+    (this.restaurant()?.name ?? 'D').trim().charAt(0).toUpperCase(),
+  );
 }

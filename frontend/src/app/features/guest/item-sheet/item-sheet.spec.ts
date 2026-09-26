@@ -29,8 +29,10 @@ describe('ItemSheet', () => {
     return fixture.nativeElement as HTMLElement;
   }
 
-  const total = (el: HTMLElement) => el.querySelector('[data-testid="item-sheet-total"]')!.textContent!.trim();
-  const confirm = (el: HTMLElement) => el.querySelector<HTMLButtonElement>('[data-testid="item-sheet-confirm"]')!;
+  const total = (el: HTMLElement) =>
+    el.querySelector('[data-testid="item-sheet-total"]')!.textContent!.trim();
+  const confirm = (el: HTMLElement) =>
+    el.querySelector<HTMLButtonElement>('[data-testid="item-sheet-confirm"]')!;
 
   function click(el: Element): void {
     (el as HTMLElement).click();
@@ -70,7 +72,12 @@ describe('ItemSheet', () => {
     notes.value = 'extra spicy';
     notes.dispatchEvent(new Event('input'));
     click(confirm(el));
-    expect(ref.close).toHaveBeenCalledWith({ variantId: 22, addonIds: [32], notes: 'extra spicy', quantity: 1 });
+    expect(ref.close).toHaveBeenCalledWith({
+      variantId: 22,
+      addonIds: [32],
+      notes: 'extra spicy',
+      quantity: 1,
+    });
   });
 
   it('pre-fills an existing line when editing', () => {

@@ -27,7 +27,12 @@ import {
   UploadResult,
 } from './models';
 
-function toParams(values: Record<string, string | number | boolean | readonly (string | number)[] | null | undefined>): HttpParams {
+function toParams(
+  values: Record<
+    string,
+    string | number | boolean | readonly (string | number)[] | null | undefined
+  >,
+): HttpParams {
   let params = new HttpParams();
   for (const [key, value] of Object.entries(values)) {
     if (value === null || value === undefined || value === '') continue;
@@ -157,7 +162,9 @@ export class AdminOrdersApi {
 
   /** Cancels a paid order and refunds it in full (calling again retries a failed refund). */
   cancel(id: number, reason?: string): Observable<AdminOrderView> {
-    return this.http.post<AdminOrderView>(`/api/admin/orders/${id}/cancel`, { reason: reason || null });
+    return this.http.post<AdminOrderView>(`/api/admin/orders/${id}/cancel`, {
+      reason: reason || null,
+    });
   }
 }
 
@@ -171,7 +178,9 @@ export class AdminReportsApi {
   }
 
   summary(from: IsoLocalDate, to: IsoLocalDate): Observable<SalesSummary> {
-    return this.http.get<SalesSummary>('/api/admin/reports/summary', { params: toParams({ from, to }) });
+    return this.http.get<SalesSummary>('/api/admin/reports/summary', {
+      params: toParams({ from, to }),
+    });
   }
 
   ordersCsv(from: IsoLocalDate, to: IsoLocalDate): Observable<Blob> {

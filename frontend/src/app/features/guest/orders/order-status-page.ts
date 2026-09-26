@@ -14,7 +14,13 @@ import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import { EMPTY, filter, firstValueFrom, switchMap } from 'rxjs';
 import { ApiError } from '../../../core/api/api-error';
-import { GuestOrderView, OrderStatus, PAID_STATUSES, RealtimeEvent, TOPICS } from '../../../core/api/models';
+import {
+  GuestOrderView,
+  OrderStatus,
+  PAID_STATUSES,
+  RealtimeEvent,
+  TOPICS,
+} from '../../../core/api/models';
 import { PublicApi } from '../../../core/api/public.api';
 import { CheckoutService } from '../../../core/payments/checkout.service';
 import { PaymentNotCompletedError } from '../../../core/payments/checkout.types';
@@ -90,7 +96,9 @@ export class OrderStatusPage {
       )
       .subscribe(() => void this.refetch(this.id()));
 
-    this.realtime.reconnected$.pipe(takeUntilDestroyed()).subscribe(() => void this.refetch(this.id()));
+    this.realtime.reconnected$
+      .pipe(takeUntilDestroyed())
+      .subscribe(() => void this.refetch(this.id()));
 
     // Clear the cart once the order that came from it is paid (covers redirect/form-post providers too).
     effect(() => {
@@ -135,7 +143,9 @@ export class OrderStatusPage {
       if (outcome.kind === 'paid') this.onOrder(outcome.order);
     } catch (e) {
       if (e instanceof PaymentNotCompletedError) {
-        this.paymentMessage.set(e.reason === 'dismissed' ? 'You closed the payment window before paying.' : e.message);
+        this.paymentMessage.set(
+          e.reason === 'dismissed' ? 'You closed the payment window before paying.' : e.message,
+        );
       } else {
         const error = ApiError.from(e);
         this.paymentMessage.set(error.message);

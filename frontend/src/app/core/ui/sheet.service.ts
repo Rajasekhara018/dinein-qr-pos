@@ -31,7 +31,8 @@ export class SheetService {
     component: ComponentType<C>,
     options: SheetOptions<D> = {},
   ): DialogRef<R, C> {
-    const asSheet = (options.presentation ?? (this.breakpoints.isHandset() ? 'sheet' : 'dialog')) === 'sheet';
+    const asSheet =
+      (options.presentation ?? (this.breakpoints.isHandset() ? 'sheet' : 'dialog')) === 'sheet';
     const config: DialogConfig<D, DialogRef<R, C>> = {
       data: options.data,
       ariaLabel: options.ariaLabel ?? null,

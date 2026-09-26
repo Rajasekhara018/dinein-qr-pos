@@ -83,7 +83,8 @@ export class CartStore {
   /** itemId → total quantity across that item's lines (for menu card steppers). */
   readonly quantityByItem = computed(() => {
     const map = new Map<number, number>();
-    for (const line of this._lines()) map.set(line.itemId, (map.get(line.itemId) ?? 0) + line.quantity);
+    for (const line of this._lines())
+      map.set(line.itemId, (map.get(line.itemId) ?? 0) + line.quantity);
     return map;
   });
 
@@ -93,7 +94,11 @@ export class CartStore {
   bindTable(tableId: number): void {
     if (this._tableId() === tableId) return;
     const stored = this.storage.getJson<PersistedCart>(STORAGE_KEYS.cart(tableId));
-    const valid = stored && stored.v === 1 && Array.isArray(stored.lines) && Date.now() - stored.savedAt < MAX_AGE_MS;
+    const valid =
+      stored &&
+      stored.v === 1 &&
+      Array.isArray(stored.lines) &&
+      Date.now() - stored.savedAt < MAX_AGE_MS;
     this._lines.set(valid ? stored.lines.filter(isValidLine) : []);
     this._notes.set(valid ? (stored.notes ?? '') : '');
     this._customerName.set(valid ? (stored.customerName ?? '') : '');
@@ -128,7 +133,11 @@ export class CartStore {
       if (duplicate) {
         return lines
           .filter((l) => l.key !== key)
-          .map((l) => (l.key === duplicate.key ? { ...l, quantity: clampQty(l.quantity + updated.quantity) } : l));
+          .map((l) =>
+            l.key === duplicate.key
+              ? { ...l, quantity: clampQty(l.quantity + updated.quantity) }
+              : l,
+          );
       }
       const copy = [...lines];
       copy[index] = { ...updated, addedAt: lines[index].addedAt };
@@ -153,12 +162,16 @@ export class CartStore {
       this.remove(key);
       return;
     }
-    this.update((lines) => lines.map((l) => (l.key === key ? { ...l, quantity: clampQty(quantity) } : l)));
+    this.update((lines) =>
+      lines.map((l) => (l.key === key ? { ...l, quantity: clampQty(quantity) } : l)),
+    );
   }
 
   /** Decrements the most recently added line of an item (menu card "−" for customisable items). */
   decrementLatest(itemId: number): void {
-    const latest = [...this._lines()].filter((l) => l.itemId === itemId).sort((a, b) => b.addedAt - a.addedAt)[0];
+    const latest = [...this._lines()]
+      .filter((l) => l.itemId === itemId)
+      .sort((a, b) => b.addedAt - a.addedAt)[0];
     if (latest) this.decrement(latest.key);
   }
 
@@ -214,7 +227,9 @@ export class CartStore {
       if (key && !issues.has(key)) issues.set(key, issueFor(problem.reason));
     }
     if (!issues.size) return;
-    this.update((lines) => lines.map((l) => (issues.has(l.key) ? { ...l, issue: issues.get(l.key)! } : l)));
+    this.update((lines) =>
+      lines.map((l) => (issues.has(l.key) ? { ...l, issue: issues.get(l.key)! } : l)),
+    );
   }
 
   /**
@@ -223,7 +238,8 @@ export class CartStore {
    */
   reconcile(menu: MenuResponse): ReconcileResult {
     const items = new Map<number, MenuItem>();
-    for (const category of menu.categories) for (const item of category.items) items.set(item.id, item);
+    for (const category of menu.categories)
+      for (const item of category.items) items.set(item.id, item);
     let repriced = 0;
     let unavailable = 0;
     this._pricesIncludeGst.set(menu.pricesIncludeGst);
@@ -296,7 +312,10 @@ function clampQty(quantity: number): number {
 }
 
 function buildLine(item: MenuItem, selection: ItemSelection | CartLine): CartLine {
-  const variant = selection.variantId != null ? item.variants.find((v) => v.id === selection.variantId) : undefined;
+  const variant =
+    selection.variantId != null
+      ? item.variants.find((v) => v.id === selection.variantId)
+      : undefined;
   const addonIds = [...new Set(selection.addonIds)].sort((a, b) => a - b);
   const addons = addonIds
     .map((id) => item.addons.find((a) => a.id === id))
@@ -326,7 +345,8 @@ function buildLine(item: MenuItem, selection: ItemSelection | CartLine): CartLin
 function validate(line: CartLine, item: MenuItem | undefined): CartProblemReason | null {
   if (!item) return 'ITEM_NOT_FOUND';
   if (!item.available) return 'ITEM_UNAVAILABLE';
-  if (line.variantId != null && !item.variants.some((v) => v.id === line.variantId)) return 'VARIANT_UNAVAILABLE';
+  if (line.variantId != null && !item.variants.some((v) => v.id === line.variantId))
+    return 'VARIANT_UNAVAILABLE';
   if (line.variantId == null && item.variants.length > 0) return 'VARIANT_REQUIRED';
   if (line.addonIds.some((id) => !item.addons.some((a) => a.id === id))) return 'ADDON_UNAVAILABLE';
   return null;

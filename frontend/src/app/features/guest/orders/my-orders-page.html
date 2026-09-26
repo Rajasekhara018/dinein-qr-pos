@@ -1,11 +1,27 @@
 <main class="mx-auto w-full max-w-3xl px-4 pb-10 pt-4 lg:px-6">
   <div class="flex items-center gap-2">
     <a appIconButton routerLink="/menu" aria-label="Back to menu" class="-ml-2">
-      <svg viewBox="0 0 20 20" class="size-5 fill-current" aria-hidden="true"><path d="M12.7 4.3 7 10l5.7 5.7 1.4-1.4L9.8 10l4.3-4.3-1.4-1.4Z"/></svg>
+      <svg viewBox="0 0 20 20" class="size-5 fill-current" aria-hidden="true">
+        <path d="M12.7 4.3 7 10l5.7 5.7 1.4-1.4L9.8 10l4.3-4.3-1.4-1.4Z" />
+      </svg>
     </a>
     <h1 class="font-display text-2xl font-semibold">My orders</h1>
-    <button appIconButton type="button" class="ml-auto" aria-label="Refresh" [disabled]="loading()" (click)="load()">
-      <svg viewBox="0 0 20 20" class="size-5 fill-current" [class.animate-spin]="loading()" aria-hidden="true"><path d="M10 3a7 7 0 0 1 6.3 4H14v2h5V4h-2v1.7A9 9 0 1 0 19 10h-2a7 7 0 1 1-7-7Z"/></svg>
+    <button
+      appIconButton
+      type="button"
+      class="ml-auto"
+      aria-label="Refresh"
+      [disabled]="loading()"
+      (click)="load()"
+    >
+      <svg
+        viewBox="0 0 20 20"
+        class="size-5 fill-current"
+        [class.animate-spin]="loading()"
+        aria-hidden="true"
+      >
+        <path d="M10 3a7 7 0 0 1 6.3 4H14v2h5V4h-2v1.7A9 9 0 1 0 19 10h-2a7 7 0 1 1-7-7Z" />
+      </svg>
     </button>
   </div>
 
@@ -18,9 +34,13 @@
               [routerLink]="['/menu', 'orders', order.id]"
               class="flex min-w-0 items-center gap-4 rounded-card border border-line bg-surface p-4 shadow-card hover:bg-surface-muted"
             >
-              <span class="flex size-14 shrink-0 flex-col items-center justify-center rounded-control bg-brand-soft text-brand-ink">
+              <span
+                class="flex size-14 shrink-0 flex-col items-center justify-center rounded-control bg-brand-soft text-brand-ink"
+              >
                 <span class="text-[0.65rem] font-semibold uppercase tracking-wide">Token</span>
-                <span class="font-display text-xl font-bold leading-none tabular-nums">{{ order.displayToken }}</span>
+                <span class="font-display text-xl font-bold leading-none tabular-nums">{{
+                  order.displayToken
+                }}</span>
               </span>
               <span class="min-w-0 flex-1">
                 <span class="flex flex-wrap items-center gap-2">
@@ -40,7 +60,10 @@
         }
       </ul>
     } @else {
-      <app-empty-state title="No orders yet" message="Orders you place from this table will show up here.">
+      <app-empty-state
+        title="No orders yet"
+        message="Orders you place from this table will show up here."
+      >
         <a appButton routerLink="/menu">Browse menu</a>
       </app-empty-state>
     }

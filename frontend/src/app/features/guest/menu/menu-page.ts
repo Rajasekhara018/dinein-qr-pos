@@ -48,7 +48,8 @@ export class MenuPage {
       .map((c) => ({
         ...c,
         items: c.items.filter(
-          (i) => i.name.toLowerCase().includes(q) || (i.description ?? '').toLowerCase().includes(q),
+          (i) =>
+            i.name.toLowerCase().includes(q) || (i.description ?? '').toLowerCase().includes(q),
         ),
       }))
       .filter((c) => c.items.length > 0);
@@ -88,7 +89,12 @@ export class MenuPage {
       void this.sheet.open(item);
       return;
     }
-    this.cart.add(item, { variantId: defaultVariantId(item), addonIds: [], notes: '', quantity: 1 });
+    this.cart.add(item, {
+      variantId: defaultVariantId(item),
+      addonIds: [],
+      notes: '',
+      quantity: 1,
+    });
   }
 
   protected onQuantity(item: MenuItem, quantity: number): void {
@@ -103,7 +109,9 @@ export class MenuPage {
   }
 
   protected scrollToCategory(id: number): void {
-    const target = this.sections().find((s) => s.nativeElement.dataset['categoryId'] === String(id));
+    const target = this.sections().find(
+      (s) => s.nativeElement.dataset['categoryId'] === String(id),
+    );
     if (!target) return;
     this.activeCategoryId.set(id);
     this.suppressSpyUntil = Date.now() + 900;
@@ -152,7 +160,8 @@ export class MenuPage {
       );
       for (const section of sections) observer.observe(section.nativeElement);
       untracked(() => {
-        if (this.activeCategoryId() == null) this.activeCategoryId.set(this.visibleCategories()[0]?.id ?? null);
+        if (this.activeCategoryId() == null)
+          this.activeCategoryId.set(this.visibleCategories()[0]?.id ?? null);
       });
       onCleanup(() => observer.disconnect());
     });

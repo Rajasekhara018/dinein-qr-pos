@@ -23,7 +23,10 @@ export interface RazorpayOptions {
   retry?: { enabled: boolean; max_count?: number };
   config?: {
     display?: {
-      blocks?: Record<string, { name: string; instruments: { method: string; [k: string]: unknown }[] }>;
+      blocks?: Record<
+        string,
+        { name: string; instruments: { method: string; [k: string]: unknown }[] }
+      >;
       sequence?: string[];
       preferences?: { show_default_blocks?: boolean };
       hide?: { method: string }[];

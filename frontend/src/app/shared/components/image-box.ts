@@ -1,4 +1,11 @@
-import { booleanAttribute, ChangeDetectionStrategy, Component, computed, input, signal } from '@angular/core';
+import {
+  booleanAttribute,
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  input,
+  signal,
+} from '@angular/core';
 
 export type ImageRatio = 'square' | '4/3' | '3/2' | '16/9';
 
