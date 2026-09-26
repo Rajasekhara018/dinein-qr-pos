@@ -13,6 +13,7 @@ import com.heuristq.dinein.payment.gateway.ProviderRefund;
 import com.heuristq.dinein.shared.exception.ApiException;
 import com.heuristq.dinein.shared.util.Text;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -35,14 +36,17 @@ public class RefundService {
     private final OrderLifecycleService lifecycle;
     private final PaymentGatewayRegistry gateways;
     private final TransactionTemplate tx;
+    private final ApplicationEventPublisher events;
 
     public RefundService(OrderRepository orderRepository, PaymentRepository paymentRepository,
-                         OrderLifecycleService lifecycle, PaymentGatewayRegistry gateways, TransactionTemplate tx) {
+                         OrderLifecycleService lifecycle, PaymentGatewayRegistry gateways, TransactionTemplate tx,
+                         ApplicationEventPublisher events) {
         this.orderRepository = orderRepository;
         this.paymentRepository = paymentRepository;
         this.lifecycle = lifecycle;
         this.gateways = gateways;
         this.tx = tx;
+        this.events = events;
     }
 
     public void cancelAndRefund(Long orderId, String reason, String actor) {
@@ -85,6 +89,7 @@ public class RefundService {
         } catch (ApiException e) {
             tx.executeWithoutResult(s -> paymentRepository.findById(toRefund.getId())
                     .ifPresent(p -> p.setRefundStatus(RefundStatus.FAILED)));
+            events.publishEvent(new RefundFailedEvent(orderId, toRefund.getProvider()));
             throw new ApiException(HttpStatus.BAD_GATEWAY, "REFUND_FAILED",
                     "Order was cancelled but the refund could not be started. Try cancelling again to retry the refund.");
         }

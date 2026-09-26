@@ -16,7 +16,7 @@ class PayuHashTest {
     void requestHashFollowsPayuFormula() {
         Map<String, String> f = Map.of("txnid", "DI1X", "amount", "105.00", "productinfo", "Order 1",
                 "firstname", "Guest", "email", "a@b.c", "udf1", "1");
-        String expected = PayuHash.sha512(KEY + "|DI1X|105.00|Order 1|Guest|a@b.c|1|||||||||||" + SALT);
+        String expected = PayuHash.sha512(KEY + "|DI1X|105.00|Order 1|Guest|a@b.c|1||||||||||" + SALT);
 
         assertThat(PayuHash.request(KEY, SALT, f)).isEqualTo(expected);
     }

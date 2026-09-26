@@ -11,6 +11,7 @@ import com.heuristq.dinein.payment.domain.RefundStatus;
 import com.heuristq.dinein.payment.gateway.ProviderPayment;
 import com.heuristq.dinein.shared.util.Money;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,12 +37,14 @@ public class PaymentStateService {
     private final PaymentRepository paymentRepository;
     private final OrderRepository orderRepository;
     private final OrderLifecycleService lifecycle;
+    private final ApplicationEventPublisher events;
 
     public PaymentStateService(PaymentRepository paymentRepository, OrderRepository orderRepository,
-                               OrderLifecycleService lifecycle) {
+                               OrderLifecycleService lifecycle, ApplicationEventPublisher events) {
         this.paymentRepository = paymentRepository;
         this.orderRepository = orderRepository;
         this.lifecycle = lifecycle;
+        this.events = events;
     }
 
     /** Applies any provider-reported payment outcome. */
@@ -175,6 +178,7 @@ public class PaymentStateService {
             if (p.getRefundStatus() != RefundStatus.PROCESSED) {
                 p.setRefundStatus(RefundStatus.FAILED);
                 log.error("payment.refund.failed orderId={} refundId={}", p.getOrderId(), refundId);
+                events.publishEvent(new RefundFailedEvent(p.getOrderId(), provider));
             }
         });
     }
@@ -183,5 +187,6 @@ public class PaymentStateService {
         order.setPaymentFlagged(true);
         order.setFlagReason(reason.length() > 300 ? reason.substring(0, 300) : reason);
         orderRepository.save(order);
+        events.publishEvent(new PaymentFlaggedEvent(order.getId(), order.getFlagReason()));
     }
 }

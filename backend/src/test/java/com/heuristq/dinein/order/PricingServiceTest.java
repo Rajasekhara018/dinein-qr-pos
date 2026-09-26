@@ -38,7 +38,8 @@ class PricingServiceTest {
 
         assertThat(bill.lines()).allSatisfy(l -> assertThat(l.taxAmount()).isEqualByComparingTo("1.67"));
         assertThat(bill.taxTotal()).isEqualByComparingTo("5.01");
-        assertThat(bill.grandTotal()).isEqualByComparingTo("104.99");
+        assertThat(bill.subtotal()).isEqualByComparingTo("99.99");
+        assertThat(bill.grandTotal()).isEqualByComparingTo("105.00");
     }
 
     @Test

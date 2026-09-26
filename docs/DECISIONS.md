@@ -9,6 +9,13 @@ brief left a choice open, it is recorded here.
   `guest`, `order`, `payment`, `settings`, `realtime`, `report`, `notification`) plus `shared/*` infrastructure.
 - IDs are `BIGSERIAL` / `Long` everywhere.
 
+## Frontend uses NgModules (`standalone: false`)
+- At the owner's request the Angular app is NgModule-based, like the reference `gateway-frontend`: `AppModule` +
+  `AppRoutingModule`, lazy feature modules (`GuestModule`, `KitchenModule`, `AdminModule`) each with a
+  `*-routing-module.ts`, and a `SharedModule` exporting the UI kit. This overrides the brief's "standalone components
+  only". Signals, zoneless change detection, OnPush, built-in control flow, functional guards/interceptors and lazy
+  loading are kept.
+
 ## Payments are provider-agnostic
 - `payment.gateway.PaymentGateway` is an SPI implemented by `RazorpayPaymentGateway` (complete),
   `PayuPaymentGateway` (hosted checkout + hash verification + callback + verify_payment + refund) and
