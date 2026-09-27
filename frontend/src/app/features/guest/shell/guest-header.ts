@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { CartStore } from '../data/cart.store';
+import { GuestPrefs } from '../data/guest-prefs';
 import { GuestSessionStore } from '../data/guest-session.store';
 
 @Component({
@@ -12,6 +13,7 @@ import { GuestSessionStore } from '../data/guest-session.store';
 export class GuestHeader {
   private readonly session = inject(GuestSessionStore);
   protected readonly cart = inject(CartStore);
+  protected readonly prefs = inject(GuestPrefs);
   protected readonly restaurant = this.session.restaurant;
   protected readonly table = this.session.table;
   protected readonly initial = computed(() =>

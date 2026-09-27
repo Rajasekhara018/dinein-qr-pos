@@ -3,6 +3,7 @@ import {
   Component,
   computed,
   DestroyRef,
+  DOCUMENT,
   effect,
   HostListener,
   inject,
@@ -40,7 +41,10 @@ const MAX_TIMER = 2_147_483_647;
   selector: 'app-admin-shell',
   standalone: false,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'admin-scope font-admin-sans block min-h-dvh' },
+  host: {
+    class: 'admin-scope font-admin-sans block min-h-dvh',
+    '[class.dark]': 'prefs.theme() === "dark"',
+  },
   templateUrl: './admin-shell.html',
 })
 export class AdminShell {
@@ -96,6 +100,13 @@ export class AdminShell {
   constructor() {
     this.realtime.setAuthProvider(this.authHeader);
     this.notifications.start();
+
+    // Also reflect the theme on <html> so document-level surfaces (CDK overlays/dialogs, toasts, the
+    // command palette) match, not just the shell's own host element.
+    const root = inject(DOCUMENT).documentElement;
+    const hadDark = root.classList.contains('dark');
+    effect(() => root.classList.toggle('dark', this.prefs.theme() === 'dark'));
+    inject(DestroyRef).onDestroy(() => root.classList.toggle('dark', hadDark));
 
     if (this.auth.isOwner()) {
       this.settingsApi.settings().subscribe({

@@ -29,6 +29,19 @@
     </span>
   </a>
   <nav aria-label="Guest" class="flex shrink-0 items-center gap-1">
+    <button
+      appIconButton
+      type="button"
+      [attr.aria-label]="prefs.theme() === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'"
+      data-testid="theme-toggle"
+      (click)="prefs.toggleTheme()"
+    >
+      @if (prefs.theme() === 'dark') {
+        <svg lucideSun class="size-5" aria-hidden="true"></svg>
+      } @else {
+        <svg lucideMoon class="size-5" aria-hidden="true"></svg>
+      }
+    </button>
     <a
       routerLink="/menu/orders"
       routerLinkActive="bg-surface-muted"

@@ -1,6 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  DestroyRef,
   DOCUMENT,
   effect,
   inject,
@@ -14,21 +15,24 @@ import { RealtimeService } from '../../../core/realtime/realtime.service';
 import { ToastService } from '../../../core/ui/toast.service';
 import { brandPalette } from '../../../core/util/color';
 import { CartStore } from '../data/cart.store';
+import { GuestPrefs } from '../data/guest-prefs';
 import { GuestSessionStore } from '../data/guest-session.store';
 import { MenuStore } from '../data/menu.store';
 
 /**
- * Layout + lifetime of the guest app: applies the restaurant's brand colour, loads the menu, keeps it fresh via
- * `/topic/menu` (MENU_UPDATED) and on every reconnect, and reconciles the cart with each new menu.
+ * Layout + lifetime of the guest app: applies the restaurant's brand colour and theme, loads the menu, keeps it
+ * fresh via `/topic/menu` (MENU_UPDATED) and on every reconnect, and reconciles the cart with each new menu.
  */
 @Component({
   selector: 'app-guest-shell',
   standalone: false,
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: { '[class.dark]': 'prefs.theme() === "dark"' },
   templateUrl: './guest-shell.html',
 })
 export class GuestShell {
   protected readonly session = inject(GuestSessionStore);
+  protected readonly prefs = inject(GuestPrefs);
   private readonly menu = inject(MenuStore);
   private readonly cart = inject(CartStore);
   private readonly realtime = inject(RealtimeService);
@@ -39,6 +43,7 @@ export class GuestShell {
 
   constructor() {
     this.applyBrandColour();
+    this.applyTheme();
 
     effect(() => {
       if (this.session.status() === 'ready') untracked(() => void this.menu.load());
@@ -91,6 +96,14 @@ export class GuestShell {
           replaceUrl: true,
         });
     }
+  }
+
+  /** Also reflect the theme on <html> so document-level surfaces (dialogs, toasts, the print stylesheet) match. */
+  private applyTheme(): void {
+    const root = this.document.documentElement;
+    const hadDark = root.classList.contains('dark');
+    effect(() => root.classList.toggle('dark', this.prefs.theme() === 'dark'));
+    inject(DestroyRef).onDestroy(() => root.classList.toggle('dark', hadDark));
   }
 
   private applyBrandColour(): void {

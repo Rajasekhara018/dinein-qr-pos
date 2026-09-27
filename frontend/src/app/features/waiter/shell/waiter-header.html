@@ -44,6 +44,20 @@
     </button>
   }
 
+  <button
+    appIconButton
+    type="button"
+    [attr.aria-label]="prefs.theme() === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'"
+    data-testid="theme-toggle"
+    (click)="prefs.toggleTheme()"
+  >
+    @if (prefs.theme() === 'dark') {
+      <svg lucideSun class="size-5" aria-hidden="true"></svg>
+    } @else {
+      <svg lucideMoon class="size-5" aria-hidden="true"></svg>
+    }
+  </button>
+
   <button appIconButton type="button" aria-label="Sign out" title="Sign out" (click)="signOut.emit()" data-testid="waiter-sign-out">
     <svg viewBox="0 0 24 24" class="size-6" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true">
       <path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3M10 17l-5-5 5-5M5 12h11" />

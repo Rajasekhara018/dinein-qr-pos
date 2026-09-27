@@ -3,6 +3,7 @@ import { AuthStore } from '../../../core/auth/auth.store';
 import { RealtimeService } from '../../../core/realtime/realtime.service';
 import { WaiterAlerts } from '../data/waiter-alerts';
 import { WaiterBoardStore } from '../data/waiter-board.store';
+import { WaiterPrefs } from '../data/waiter-prefs';
 
 /** Waiter header: restaurant, signed-in staff member, live connection, notifications, sound and sign out. */
 @Component({
@@ -15,6 +16,7 @@ import { WaiterBoardStore } from '../data/waiter-board.store';
 export class WaiterHeader {
   protected readonly board = inject(WaiterBoardStore);
   protected readonly alerts = inject(WaiterAlerts);
+  protected readonly prefs = inject(WaiterPrefs);
   private readonly auth = inject(AuthStore);
   private readonly realtime = inject(RealtimeService);
 

@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  DOCUMENT,
+  effect,
+  inject,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import { WAITER_PATHS } from '../../../core/auth/auth-paths';
@@ -8,6 +15,7 @@ import { ConfirmService } from '../../../shared/services/confirm.service';
 import { WaiterAlerts } from '../data/waiter-alerts';
 import { WaiterBoardStore } from '../data/waiter-board.store';
 import { WaiterNotificationsStore } from '../data/waiter-notifications.store';
+import { WaiterPrefs } from '../data/waiter-prefs';
 
 /** setTimeout's max delay (≈ 24.8 days). */
 const MAX_TIMER = 2_147_483_647;
@@ -57,12 +65,14 @@ export const WAITER_NAV: readonly WaiterNavItem[] = [
   providers: [WaiterBoardStore, WaiterNotificationsStore],
   host: {
     class: 'block min-h-dvh bg-bg text-ink',
+    '[class.dark]': 'prefs.theme() === "dark"',
     '(document:pointerdown)': 'onGesture()',
   },
   templateUrl: './waiter-shell.html',
 })
 export class WaiterShell {
   protected readonly board = inject(WaiterBoardStore);
+  protected readonly prefs = inject(WaiterPrefs);
   private readonly notifications = inject(WaiterNotificationsStore);
   private readonly alerts = inject(WaiterAlerts);
   private readonly auth = inject(AuthStore);
@@ -84,6 +94,12 @@ export class WaiterShell {
     this.board.start();
     this.notifications.start();
     void this.alerts.probe();
+
+    // Also reflect the theme on <html> so document-level surfaces (dialogs, toasts) match.
+    const root = inject(DOCUMENT).documentElement;
+    const hadDark = root.classList.contains('dark');
+    effect(() => root.classList.toggle('dark', this.prefs.theme() === 'dark'));
+    inject(DestroyRef).onDestroy(() => root.classList.toggle('dark', hadDark));
 
     this.board.readyArrived$
       .pipe(takeUntilDestroyed())
