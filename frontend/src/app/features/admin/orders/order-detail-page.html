@@ -58,7 +58,7 @@
   </header>
 
   @if (manualRefund(); as refund) {
-    <div class="mb-4 flex items-start gap-3 rounded-card border-2 border-amber-500 bg-amber-100 p-4 text-amber-950 dark:border-amber-500 dark:bg-amber-950 dark:text-amber-50" role="alert" data-testid="manual-refund-banner">
+    <div class="mb-4 flex items-start gap-3 rounded-card border-2 border-warning-border bg-warning-bg p-4 text-warning-fg" role="alert" data-testid="manual-refund-banner">
       <svg viewBox="0 0 24 24" class="mt-0.5 size-7 shrink-0" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
         <path d="M3 6h18v12H3V6Zm9 3a3 3 0 1 0 0 6 3 3 0 0 0 0-6Z" />
       </svg>
@@ -72,14 +72,14 @@
     </div>
   }
   @if (o.paymentFlagged) {
-    <div class="mb-4 rounded-card border border-red-300 bg-red-50 p-4 text-red-950 dark:border-red-800 dark:bg-red-950 dark:text-red-50" role="alert">
+    <div class="mb-4 rounded-card border border-danger-border bg-danger-bg p-4 text-danger-fg" role="alert">
       <p class="font-semibold">Payment flagged — not sent to the kitchen</p>
       <p class="mt-1 text-sm">{{ o.flagReason || 'The payment needs a manual check.' }}</p>
       <p class="mt-1 text-sm">Check the payment in your provider dashboard, then refund or contact the guest.</p>
     </div>
   }
   @if (retryRefund() || refundError()) {
-    <div class="mb-4 flex flex-wrap items-center gap-3 rounded-card border border-amber-300 bg-amber-50 p-4 text-amber-950" role="alert" data-testid="refund-failed">
+    <div class="mb-4 flex flex-wrap items-center gap-3 rounded-card border border-warning-border bg-warning-bg p-4 text-warning-fg" role="alert" data-testid="refund-failed">
       <div class="min-w-0 flex-1">
         <p class="font-semibold">Refund failed</p>
         <p class="mt-1 text-sm">
@@ -123,7 +123,7 @@
                 </p>
               }
               @if (line.notes) {
-                <p class="mt-1 rounded bg-amber-50 px-2 py-1 text-sm text-amber-950">Note: {{ line.notes }}</p>
+                <p class="mt-1 rounded bg-warning-bg px-2 py-1 text-sm text-warning-fg">Note: {{ line.notes }}</p>
               }
               <p class="mt-0.5 text-xs text-ink-subtle">{{ line.unitPrice | inr }} each · GST {{ line.gstPercent }}%</p>
             </div>

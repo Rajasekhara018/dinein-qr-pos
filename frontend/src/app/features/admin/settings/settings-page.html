@@ -7,7 +7,7 @@
 } @else {
   <form class="flex max-w-3xl flex-col gap-6" [formGroup]="form" (ngSubmit)="save()" novalidate>
     @if (formError()) {
-      <p class="rounded-control bg-red-50 px-3 py-2 text-sm font-medium text-red-900" role="alert">{{ formError() }}</p>
+      <p class="rounded-control bg-danger-bg px-3 py-2 text-sm font-medium text-danger-fg" role="alert">{{ formError() }}</p>
     }
 
     <fieldset class="rounded-card border border-line bg-surface p-4 shadow-card sm:p-5">
