@@ -1,4 +1,4 @@
-<app-card class="bill" padding="lg">
+<app-card class="bill" padding="lg" [elevated]="true">
   <header class="border-b border-dashed border-line-strong pb-3 text-center">
     <h2 class="font-display text-lg font-semibold">{{ restaurant()?.name ?? 'Bill' }}</h2>
     @if (restaurant()?.address) {

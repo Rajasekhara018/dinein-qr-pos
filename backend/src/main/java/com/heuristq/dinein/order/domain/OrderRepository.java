@@ -20,6 +20,9 @@ public interface OrderRepository extends JpaRepository<OrderEntity, Long>, JpaSp
 
     boolean existsByIdAndGuestSessionId(Long id, String guestSessionId);
 
+    /** Used to decide whether a table is currently occupied (see {@code PublicSessionController}). */
+    boolean existsByTableIdAndStatusIn(Long tableId, Collection<OrderStatus> statuses);
+
     /** Row lock used by every status change so concurrent verify/webhook/kitchen calls serialise. */
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select o from OrderEntity o where o.id = :id")

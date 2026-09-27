@@ -1,5 +1,7 @@
 package com.heuristq.dinein.guest;
 
+import com.heuristq.dinein.order.domain.OrderRepository;
+import com.heuristq.dinein.order.domain.OrderStatus;
 import com.heuristq.dinein.settings.SettingsService;
 import com.heuristq.dinein.settings.dto.SettingsDtos.PublicRestaurantInfo;
 import com.heuristq.dinein.shared.exception.ApiException;
@@ -33,15 +35,17 @@ public class PublicSessionController {
     private final GuestSessionService guestSessionService;
     private final TableService tableService;
     private final DiningTableRepository tableRepository;
+    private final OrderRepository orderRepository;
     private final SettingsService settingsService;
     private final CookieFactory cookieFactory;
 
     public PublicSessionController(GuestSessionService guestSessionService, TableService tableService,
-                                   DiningTableRepository tableRepository, SettingsService settingsService,
-                                   CookieFactory cookieFactory) {
+                                   DiningTableRepository tableRepository, OrderRepository orderRepository,
+                                   SettingsService settingsService, CookieFactory cookieFactory) {
         this.guestSessionService = guestSessionService;
         this.tableService = tableService;
         this.tableRepository = tableRepository;
+        this.orderRepository = orderRepository;
         this.settingsService = settingsService;
         this.cookieFactory = cookieFactory;
     }
@@ -58,6 +62,15 @@ public class PublicSessionController {
         GuestSession session;
         if (qrToken != null && !qrToken.isBlank()) {
             table = tableService.findActiveByToken(qrToken.trim()).orElseThrow(PublicSessionController::invalidTable);
+            boolean alreadySeatedHere = existing.isPresent() && existing.get().tableId().equals(table.getId());
+            // A device that hasn't already got a session for THIS table is a fresh arrival: if the table already
+            // has an active order (someone else is mid-meal there), refuse rather than start a second, colliding
+            // session for the same physical table. A device that already holds this table's session (adding a
+            // second round, or reloading) is unaffected -- it's not a "fresh" scan.
+            if (!alreadySeatedHere && orderRepository.existsByTableIdAndStatusIn(table.getId(), OrderStatus.KITCHEN_VISIBLE)) {
+                throw new ApiException(HttpStatus.CONFLICT, "TABLE_OCCUPIED",
+                        "This table is currently occupied. Please ask a staff member for help.");
+            }
             session = existing.map(s -> guestSessionService.renew(s, table.getId()))
                     .orElseGet(() -> guestSessionService.newSession(table.getId()));
         } else {

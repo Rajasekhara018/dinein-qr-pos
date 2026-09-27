@@ -1,4 +1,4 @@
-<app-card>
+<app-card [elevated]="true">
   <h2 class="sr-only">Order progress</h2>
   <ol class="grid grid-cols-3 gap-2" role="list">
     @for (step of steps(); track step.key; let i = $index) {

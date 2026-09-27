@@ -46,7 +46,7 @@
 @for (section of sections(); track section.id) {
   <section class="mt-3" [attr.aria-labelledby]="'staff-cat-' + section.id">
     <h3 [id]="'staff-cat-' + section.id" class="mb-2 font-display text-lg font-semibold">{{ section.name }}</h3>
-    <ul class="divide-y divide-line overflow-hidden rounded-card border border-line bg-surface shadow-card" role="list">
+    <ul class="divide-y divide-line overflow-hidden rounded-card border border-line bg-surface shadow-md" role="list">
       @for (item of section.items; track item.id) {
         <li
           class="flex min-w-0 items-center gap-3 px-3 py-2"

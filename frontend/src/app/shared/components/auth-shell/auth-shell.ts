@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 
-export type AuthShellTheme = 'admin' | 'dark' | 'light';
+export type AuthShellTheme = 'admin' | 'staff';
 
 export interface AuthShellBenefit {
   readonly title: string;
@@ -15,10 +15,11 @@ export interface AuthShellBenefit {
  *
  * Themes (see `frontend/src/styles.css` for the tokens):
  *  - `admin`: the fixed green/gold `--admin-brand`/`--admin-accent` palette and Poppins headings (phase 4).
- *  - `dark`: a near-black neutral panel with the restaurant's own `--brand` colour on the icon chips — kitchen,
- *    which is dark by default.
- *  - `light`: a light-neutral panel, same `--brand` accent chips — waiter, which has no brand identity of its own
- *    but is staff-facing like kitchen/admin, so the restaurant's brand colour is contextually correct there too.
+ *  - `staff`: kitchen and waiter — no fixed brand identity, so the panel uses the ordinary semantic surface tokens
+ *    (which is why it needs no dark/light variant of its own: `bg-surface-muted` already flips automatically under
+ *    a `.dark` ancestor, e.g. kitchen's dark-by-default theme) with the restaurant's own `--brand` colour on the
+ *    icon chips and numbered markers — contextually correct for staff screens the same way kitchen's board already
+ *    uses `--brand` for its own accents.
  */
 @Component({
   selector: 'app-auth-shell',
@@ -52,22 +53,19 @@ export class AuthShell {
 
   protected readonly panelClasses = computed(() => {
     const base = this.benefits().length ? 'justify-between' : 'justify-center';
-    switch (this.theme()) {
-      case 'admin':
-        return `${base} bg-admin-brand text-admin-brand-contrast`;
-      case 'dark':
-        return `${base} bg-neutral-950 text-neutral-50`;
-      case 'light':
-        return `${base} bg-neutral-900 text-neutral-50`;
-    }
+    return this.theme() === 'admin'
+      ? `${base} bg-admin-brand text-admin-brand-contrast`
+      : `${base} border-r border-line bg-surface-muted text-ink`;
   });
 
   protected readonly badgeClasses = computed(() =>
-    this.theme() === 'admin' ? 'bg-white/15 text-admin-brand-contrast' : 'bg-white/10 text-neutral-50',
+    this.theme() === 'admin'
+      ? 'bg-white/15 text-admin-brand-contrast'
+      : 'border border-line-strong bg-surface text-ink-muted',
   );
 
   protected readonly mutedClasses = computed(() =>
-    this.theme() === 'admin' ? 'text-admin-brand-contrast/85' : 'text-neutral-400',
+    this.theme() === 'admin' ? 'text-admin-brand-contrast/85' : 'text-ink-muted',
   );
 
   /** Numbered marker style for each benefit row: plain accent text for admin, a solid brand chip otherwise. */

@@ -1,4 +1,4 @@
-<app-card padding="none" class="flex max-h-[calc(100dvh-2rem)] flex-col">
+<app-card padding="none" [elevated]="true" class="flex max-h-[calc(100dvh-2rem)] flex-col">
   <h2 class="border-b border-line px-4 py-3 font-display text-lg font-semibold">Your order</h2>
   @if (cart.isEmpty()) {
     <p class="px-4 py-8 text-center text-sm text-ink-muted">
