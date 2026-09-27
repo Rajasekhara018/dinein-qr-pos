@@ -109,4 +109,15 @@ describe('TicketCard', () => {
     expect(article().classList).toContain('ticket--new');
     expect(el.textContent).toContain('New');
   });
+
+  it('shows a prominent TAKEAWAY chip and a Staff chip, and nothing extra for guest dine-in', () => {
+    render(kOrder({ id: 7, orderType: 'TAKEAWAY', placedByStaff: true, tableLabel: undefined }));
+    expect(el.querySelector('[data-testid="ticket-takeaway"]')!.textContent).toContain('Takeaway');
+    expect(el.querySelector('[data-testid="ticket-staff"]')!.textContent).toContain('Staff');
+    expect(article().getAttribute('aria-label')).toContain('takeaway');
+
+    render(kOrder({ id: 8, orderType: 'DINE_IN', placedByStaff: false }));
+    expect(el.querySelector('[data-testid="ticket-takeaway"]')).toBeNull();
+    expect(el.querySelector('[data-testid="ticket-staff"]')).toBeNull();
+  });
 });

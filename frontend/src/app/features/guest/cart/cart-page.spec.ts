@@ -31,10 +31,12 @@ describe('CartPage', () => {
   let controller: HttpTestingController;
   let checkout: { pay: ReturnType<typeof vi.fn> };
   const canOrder = signal(true);
+  const takeawayEnabled = signal(false);
 
   beforeEach(() => {
     localStorage.clear();
     canOrder.set(true);
+    takeawayEnabled.set(false);
     checkout = { pay: vi.fn() };
     TestBed.configureTestingModule({
       // Import the declaring NgModule (AOT keeps its compilation scope); don't re-declare the component.
@@ -48,6 +50,7 @@ describe('CartPage', () => {
           provide: GuestSessionStore,
           useValue: {
             table: signal({ id: 7, label: 'T7' }),
+            restaurant: computed(() => ({ name: 'Spice Route', takeawayEnabled: takeawayEnabled() })),
             canOrder,
             closedReason: computed(() => (canOrder() ? null : 'not-accepting')),
             openingHours: signal(''),
@@ -233,5 +236,70 @@ describe('CartPage', () => {
     await paying;
     fixture.detectChanges();
     expect(text('checkout-error')).toBe('We are not accepting orders right now');
+  });
+
+  describe('dine-in / takeaway', () => {
+    const toggle = () => el.querySelector('[data-testid="order-type-toggle"]');
+    const choose = (type: 'DINE_IN' | 'TAKEAWAY') => {
+      const radio = el.querySelector<HTMLInputElement>(`[data-testid="order-type-${type}"]`)!;
+      radio.checked = true;
+      radio.dispatchEvent(new Event('change'));
+      fixture.detectChanges();
+    };
+
+    it('is hidden when takeaway is disabled and no orderType is sent', async () => {
+      expect(toggle()).toBeNull();
+      const paying = fixture.componentInstance.pay();
+      const req = controller.expectOne('/api/v1/public/orders');
+      expect('orderType' in req.request.body).toBe(false);
+      req.flush(checkoutResponse);
+      await paying;
+    });
+
+    it('defaults to dine-in and sends the chosen type', async () => {
+      takeawayEnabled.set(true);
+      fixture.detectChanges();
+      expect(toggle()).not.toBeNull();
+      expect(el.querySelector<HTMLInputElement>('[data-testid="order-type-DINE_IN"]')!.checked).toBe(
+        true,
+      );
+
+      choose('TAKEAWAY');
+      const paying = fixture.componentInstance.pay();
+      const req = controller.expectOne('/api/v1/public/orders');
+      expect(req.request.body.orderType).toBe('TAKEAWAY');
+      expect(req.request.body.items).toHaveLength(2);
+      req.flush(checkoutResponse);
+      await paying;
+    });
+
+    it('sends DINE_IN by default when the choice is offered', async () => {
+      takeawayEnabled.set(true);
+      fixture.detectChanges();
+      const paying = fixture.componentInstance.pay();
+      const req = controller.expectOne('/api/v1/public/orders');
+      expect(req.request.body.orderType).toBe('DINE_IN');
+      req.flush(checkoutResponse);
+      await paying;
+    });
+
+    it('falls back to dine-in on TAKEAWAY_DISABLED', async () => {
+      takeawayEnabled.set(true);
+      fixture.detectChanges();
+      choose('TAKEAWAY');
+      const paying = fixture.componentInstance.pay();
+      controller
+        .expectOne('/api/v1/public/orders')
+        .flush(
+          { code: 'TAKEAWAY_DISABLED', message: 'Takeaway is not available right now' },
+          { status: 400, statusText: 'Bad Request' },
+        );
+      await paying;
+      fixture.detectChanges();
+      expect(text('checkout-error')).toContain('switched your order to dine-in');
+      expect(el.querySelector<HTMLInputElement>('[data-testid="order-type-DINE_IN"]')!.checked).toBe(
+        true,
+      );
+    });
   });
 });

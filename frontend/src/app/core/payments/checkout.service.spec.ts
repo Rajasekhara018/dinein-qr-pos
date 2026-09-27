@@ -2,6 +2,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
+import { of } from 'rxjs';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { CheckoutResponse, GuestOrderView } from '../api/models';
 import { BrowserNavigator } from '../util/browser-navigator';
@@ -190,6 +191,24 @@ describe('CheckoutService', () => {
     };
     await expect(service.pay(response)).resolves.toEqual({ kind: 'navigating' });
     expect(navigator.assign).toHaveBeenCalledWith('https://pay.example.com/x');
+  });
+
+  it('SDK with a staff context verifies through the context and uses its order page', async () => {
+    const verify = vi.fn(() => of(paidOrder));
+    const result = await service.pay(sdkResponse, {
+      verify,
+      orderPage: (id) => ['/waiter/orders', id],
+    });
+    expect(result).toEqual({ kind: 'paid', order: paidOrder });
+    expect(verify).toHaveBeenCalledWith({
+      razorpay_order_id: 'order_R1',
+      razorpay_payment_id: 'pay_P1',
+      razorpay_signature: 'sig',
+    });
+    controller.expectNone('/api/v1/public/payments/verify');
+
+    await service.pay({ ...sdkResponse, status: 'CONFIRMED' }, { orderPage: (id) => ['/waiter/orders', id] });
+    expect(router.navigate).toHaveBeenCalledWith(['/waiter/orders', 42]);
   });
 
   it('goes straight to the order page when the order is no longer payable', async () => {
