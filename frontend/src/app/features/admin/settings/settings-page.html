@@ -113,9 +113,14 @@
       }
     </fieldset>
 
-    <div class="sticky bottom-0 z-10 -mx-4 flex flex-wrap justify-end gap-2 border-t border-line bg-surface/95 px-4 py-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] backdrop-blur sm:mx-0 sm:rounded-card sm:border">
-      <button appButton variant="outline" type="button" [disabled]="form.pristine" (click)="discard()">Discard changes</button>
-      <button appButton type="submit" [loading]="saving()" data-testid="settings-save">Save settings</button>
-    </div>
+    @if (dirty()) {
+      <div
+        class="sticky bottom-0 z-10 -mx-4 flex flex-wrap justify-end gap-2 border-t border-line bg-surface/95 px-4 py-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] backdrop-blur sm:mx-0 sm:rounded-card sm:border"
+        data-testid="settings-save-bar"
+      >
+        <button appButton variant="outline" type="button" (click)="discard()">Discard changes</button>
+        <button appButton type="submit" [loading]="saving()" data-testid="settings-save">Save settings</button>
+      </div>
+    }
   </form>
 }

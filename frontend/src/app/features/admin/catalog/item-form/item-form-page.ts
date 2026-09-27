@@ -236,6 +236,19 @@ export class ItemFormPage implements OnInit {
     if (id) void this.load(id);
   }
 
+  /** `unsavedChangesGuard` — asks before leaving with unsaved edits (the form is already pristine right after a
+   *  successful save, so a normal "Cancel"/breadcrumb navigation right after saving is never interrupted). */
+  async canDeactivate(): Promise<boolean> {
+    if (!this.form.dirty) return true;
+    const result = await this.confirmService.confirm({
+      title: 'Discard unsaved changes?',
+      message: 'Your edits to this item have not been saved.',
+      confirmLabel: 'Discard changes',
+      cancelLabel: 'Keep editing',
+    });
+    return !!result;
+  }
+
   private handleSaveError(error: unknown): void {
     if (!(error instanceof ApiError)) {
       this.formError.set(errorMessage(error));

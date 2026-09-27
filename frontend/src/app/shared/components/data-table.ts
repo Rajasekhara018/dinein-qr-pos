@@ -64,7 +64,9 @@ export class DataTable<T extends Record<string, unknown>> {
   readonly selected = model<Set<unknown>>(new Set());
   readonly sort = model<DataTableSort | null>(null);
   readonly page = model(1);
-  readonly pageSize = input(20);
+  readonly pageSize = model(20);
+  /** Choices offered by the page-size selector. Set to `[]` to hide it (fixed page size). */
+  readonly pageSizeOptions = input<readonly number[]>([10, 20, 50]);
   /** When true, `rows` is assumed to already be the current page/sort from the server — no client slicing. */
   readonly serverSide = input(false, { transform: booleanAttribute });
   readonly totalRows = input<number | null>(null);
@@ -94,9 +96,17 @@ export class DataTable<T extends Record<string, unknown>> {
     });
   });
 
-  protected readonly pageCount = computed(() => {
-    const total = this.totalRows() ?? this.sortedRows().length;
-    return Math.max(1, Math.ceil(total / this.pageSize()));
+  protected readonly totalCount = computed(() => this.totalRows() ?? this.sortedRows().length);
+
+  protected readonly pageCount = computed(() => Math.max(1, Math.ceil(this.totalCount() / this.pageSize())));
+
+  /** 1-based inclusive range of rows shown on the current page, for the "Showing X–Y of Z" label. */
+  protected readonly rowRange = computed(() => {
+    const total = this.totalCount();
+    if (!total) return { from: 0, to: 0, total: 0 };
+    const from = (this.page() - 1) * this.pageSize() + 1;
+    const to = Math.min(total, this.page() * this.pageSize());
+    return { from, to, total };
   });
 
   protected readonly pagedRows = computed<T[]>(() => {
@@ -155,6 +165,13 @@ export class DataTable<T extends Record<string, unknown>> {
 
   protected goToPage(page: number): void {
     this.page.set(Math.min(Math.max(1, page), this.pageCount()));
+  }
+
+  protected onPageSizeChange(value: string): void {
+    const size = Number(value);
+    if (!Number.isFinite(size) || size <= 0) return;
+    this.pageSize.set(size);
+    this.page.set(1);
   }
 
   protected toggleDensity(): void {

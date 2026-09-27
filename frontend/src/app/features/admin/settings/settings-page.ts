@@ -34,6 +34,13 @@ export class SettingsPage {
     { initialValue: '#c2410c' },
   );
   protected readonly palette = computed(() => brandPalette(this.color()));
+
+  private readonly formValue = toSignal(this.form.valueChanges.pipe(startWith(null)));
+  /** Drives the sticky save bar's visibility — it should only appear once something has actually changed. */
+  protected readonly dirty = computed(() => {
+    this.formValue();
+    return this.form.dirty;
+  });
   protected readonly logoUrl = computed(() => this.uploadedLogo()?.thumbUrl ?? this.settings()?.logoUrl ?? null);
 
   constructor() {

@@ -91,4 +91,33 @@ describe('DataTable', () => {
     const el: HTMLElement = fixture.nativeElement;
     expect(el.textContent).toContain('No rows to show.');
   });
+
+  it('computes the "Showing X–Y of Z" row range for the current page', () => {
+    const fixture = createTable(rows);
+    const table = fixture.componentInstance;
+
+    expect(table['rowRange']()).toEqual({ from: 1, to: 2, total: 3 });
+    table['goToPage'](2);
+    expect(table['rowRange']()).toEqual({ from: 3, to: 3, total: 3 });
+  });
+
+  it('changing the page size updates pageSize and resets to page 1', () => {
+    const fixture = createTable(rows);
+    const table = fixture.componentInstance;
+
+    table['goToPage'](2);
+    table['onPageSizeChange']('50');
+
+    expect(table.pageSize()).toBe(50);
+    expect(table.page()).toBe(1);
+    expect(table['pageCount']()).toBe(1);
+  });
+
+  it('ignores an invalid page size', () => {
+    const fixture = createTable(rows);
+    const table = fixture.componentInstance;
+
+    table['onPageSizeChange']('not-a-number');
+    expect(table.pageSize()).toBe(2);
+  });
 });

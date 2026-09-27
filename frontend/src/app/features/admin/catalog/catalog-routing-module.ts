@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { unsavedChangesGuard } from '../../../core/routing/unsaved-changes.guard';
 import { CategoriesPage } from './categories/categories-page';
 import { ItemFormPage } from './item-form/item-form-page';
 import { ItemsPage } from './items/items-page';
@@ -18,12 +19,14 @@ const routes: Routes = [
     component: ItemFormPage,
     title: 'New item · DineIn admin',
     data: { breadcrumb: 'New item' },
+    canDeactivate: [unsavedChangesGuard],
   },
   {
     path: 'items/:id',
     component: ItemFormPage,
     title: 'Edit item · DineIn admin',
     data: { breadcrumb: 'Edit item' },
+    canDeactivate: [unsavedChangesGuard],
   },
 ];
 
