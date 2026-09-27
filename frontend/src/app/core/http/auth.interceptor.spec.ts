@@ -25,7 +25,7 @@ describe('authInterceptor', () => {
 
   async function signIn(token = 'jwt-1'): Promise<void> {
     const login = auth.login('owner', 'secret');
-    controller.expectOne('/api/auth/login').flush(tokens(token));
+    controller.expectOne('/api/v1/auth/login').flush(tokens(token));
     await login;
   }
 
@@ -51,12 +51,12 @@ describe('authInterceptor', () => {
     localStorage.clear();
   });
 
-  it('attaches the admin bearer token to /api/admin/**, /api/auth/me and change-password', async () => {
+  it('attaches the admin bearer token to /api/v1/admin/**, /api/v1/auth/me and change-password', async () => {
     await signIn();
-    http.get('/api/admin/categories').subscribe();
-    http.get('/api/auth/me').subscribe();
-    http.post('/api/auth/change-password', {}).subscribe();
-    for (const url of ['/api/admin/categories', '/api/auth/me', '/api/auth/change-password']) {
+    http.get('/api/v1/admin/categories').subscribe();
+    http.get('/api/v1/auth/me').subscribe();
+    http.post('/api/v1/auth/change-password', {}).subscribe();
+    for (const url of ['/api/v1/admin/categories', '/api/v1/auth/me', '/api/v1/auth/change-password']) {
       const req = controller.expectOne(url);
       expect(req.request.headers.get('Authorization')).toBe('Bearer jwt-1');
       req.flush({});
@@ -65,25 +65,25 @@ describe('authInterceptor', () => {
 
   it('does not attach credentials to public endpoints', async () => {
     await signIn();
-    http.get('/api/public/menu').subscribe();
-    const req = controller.expectOne('/api/public/menu');
+    http.get('/api/v1/public/menu').subscribe();
+    const req = controller.expectOne('/api/v1/public/menu');
     expect(req.request.headers.has('Authorization')).toBe(false);
     req.flush({});
   });
 
-  it('attaches the kitchen device token to /api/kitchen/** (and on demand via withAuth)', async () => {
+  it('attaches the kitchen device token to /api/v1/kitchen/** (and on demand via withAuth)', async () => {
     const devices = TestBed.inject(DeviceAuthStore);
     const register = devices.registerDevice({ username: 'chef', pin: '1234' });
-    controller.expectOne('/api/auth/kitchen-device').flush({
+    controller.expectOne('/api/v1/auth/kitchen-device').flush({
       deviceToken: 'dvc_abc',
       expiresAt: new Date(Date.now() + 86_400_000).toISOString(),
       user: { ...owner, role: 'KITCHEN' },
     });
     await register;
 
-    http.get('/api/kitchen/orders').subscribe();
-    http.get('/api/auth/me', { context: withAuth('device') }).subscribe();
-    for (const url of ['/api/kitchen/orders', '/api/auth/me']) {
+    http.get('/api/v1/kitchen/orders').subscribe();
+    http.get('/api/v1/auth/me', { context: withAuth('device') }).subscribe();
+    for (const url of ['/api/v1/kitchen/orders', '/api/v1/auth/me']) {
       const req = controller.expectOne(url);
       expect(req.request.headers.get('Authorization')).toBe('Bearer dvc_abc');
       req.flush({});
@@ -92,25 +92,25 @@ describe('authInterceptor', () => {
 
   it('refreshes ONCE for concurrent 401s and retries each request with the new token', async () => {
     await signIn('expired');
-    const a = firstValueFrom(http.get<{ ok: string }>('/api/admin/items'));
-    const b = firstValueFrom(http.get<{ ok: string }>('/api/admin/tables'));
+    const a = firstValueFrom(http.get<{ ok: string }>('/api/v1/admin/items'));
+    const b = firstValueFrom(http.get<{ ok: string }>('/api/v1/admin/tables'));
 
     controller
-      .expectOne('/api/admin/items')
+      .expectOne('/api/v1/admin/items')
       .flush({ code: 'UNAUTHORIZED' }, { status: 401, statusText: 'Unauthorized' });
     controller
-      .expectOne('/api/admin/tables')
+      .expectOne('/api/v1/admin/tables')
       .flush({ code: 'UNAUTHORIZED' }, { status: 401, statusText: 'Unauthorized' });
 
-    const refresh = controller.match('/api/auth/refresh');
+    const refresh = controller.match('/api/v1/auth/refresh');
     expect(refresh.length).toBe(1);
     expect(refresh[0].request.headers.has('Authorization')).toBe(false);
     refresh[0].flush(tokens('fresh'));
     await Promise.resolve();
     await new Promise((r) => setTimeout(r));
 
-    const retriedItems = controller.expectOne('/api/admin/items');
-    const retriedTables = controller.expectOne('/api/admin/tables');
+    const retriedItems = controller.expectOne('/api/v1/admin/items');
+    const retriedTables = controller.expectOne('/api/v1/admin/tables');
     expect(retriedItems.request.headers.get('Authorization')).toBe('Bearer fresh');
     expect(retriedTables.request.headers.get('Authorization')).toBe('Bearer fresh');
     retriedItems.flush({ ok: 'items' });
@@ -123,10 +123,10 @@ describe('authInterceptor', () => {
 
   it('logs out and redirects to the admin login when the refresh fails', async () => {
     await signIn('expired');
-    const call = firstValueFrom(http.get('/api/admin/items'));
-    controller.expectOne('/api/admin/items').flush({}, { status: 401, statusText: 'Unauthorized' });
+    const call = firstValueFrom(http.get('/api/v1/admin/items'));
+    controller.expectOne('/api/v1/admin/items').flush({}, { status: 401, statusText: 'Unauthorized' });
     controller
-      .expectOne('/api/auth/refresh')
+      .expectOne('/api/v1/auth/refresh')
       .flush({ code: 'SESSION_EXPIRED' }, { status: 401, statusText: 'Unauthorized' });
 
     await expect(call).rejects.toBeTruthy();
@@ -136,28 +136,28 @@ describe('authInterceptor', () => {
 
   it('does not refresh-loop when the retried request is also unauthorized', async () => {
     await signIn('expired');
-    const call = firstValueFrom(http.get('/api/admin/items'));
-    controller.expectOne('/api/admin/items').flush({}, { status: 401, statusText: 'Unauthorized' });
-    controller.expectOne('/api/auth/refresh').flush(tokens('fresh'));
+    const call = firstValueFrom(http.get('/api/v1/admin/items'));
+    controller.expectOne('/api/v1/admin/items').flush({}, { status: 401, statusText: 'Unauthorized' });
+    controller.expectOne('/api/v1/auth/refresh').flush(tokens('fresh'));
     await new Promise((r) => setTimeout(r));
-    controller.expectOne('/api/admin/items').flush({}, { status: 401, statusText: 'Unauthorized' });
+    controller.expectOne('/api/v1/admin/items').flush({}, { status: 401, statusText: 'Unauthorized' });
     await expect(call).rejects.toBeTruthy();
-    controller.expectNone('/api/auth/refresh');
+    controller.expectNone('/api/v1/auth/refresh');
   });
 
   it('forgets the kitchen device on 401', async () => {
     const devices = TestBed.inject(DeviceAuthStore);
     const register = devices.registerDevice({ username: 'chef', password: 'pw' });
-    controller.expectOne('/api/auth/kitchen-device').flush({
+    controller.expectOne('/api/v1/auth/kitchen-device').flush({
       deviceToken: 'dvc_revoked',
       expiresAt: new Date(Date.now() + 86_400_000).toISOString(),
       user: { ...owner, role: 'KITCHEN' },
     });
     await register;
 
-    const call = firstValueFrom(http.get('/api/kitchen/orders'));
+    const call = firstValueFrom(http.get('/api/v1/kitchen/orders'));
     controller
-      .expectOne('/api/kitchen/orders')
+      .expectOne('/api/v1/kitchen/orders')
       .flush({}, { status: 401, statusText: 'Unauthorized' });
     await expect(call).rejects.toBeTruthy();
     expect(devices.isRegistered()).toBe(false);

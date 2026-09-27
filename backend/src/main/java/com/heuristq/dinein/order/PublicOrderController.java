@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/public")
+@RequestMapping("/api/v1/public")
 public class PublicOrderController {
 
     private final OrderPlacementService placementService;

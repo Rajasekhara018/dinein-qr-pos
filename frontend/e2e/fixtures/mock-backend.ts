@@ -153,8 +153,8 @@ export async function mockBackend(page: Page): Promise<MockBackend> {
     const path = url.pathname;
     const method = request.method();
 
-    if (path === '/api/auth/csrf') return route.fulfill({ status: 204 });
-    if (path === '/api/public/session') {
+    if (path === '/api/v1/auth/csrf') return route.fulfill({ status: 204 });
+    if (path === '/api/v1/public/session') {
       if (url.searchParams.has('t') && url.searchParams.get('t') !== 'abc') {
         return json(
           route,
@@ -164,8 +164,8 @@ export async function mockBackend(page: Page): Promise<MockBackend> {
       }
       return json(route, session);
     }
-    if (path === '/api/public/menu') return json(route, menu);
-    if (path === '/api/public/orders' && method === 'POST') {
+    if (path === '/api/v1/public/menu') return json(route, menu);
+    if (path === '/api/v1/public/orders' && method === 'POST') {
       state.placeOrderRequests.push({ headers: request.headers(), body: request.postDataJSON() });
       return json(route, {
         orderId: 42,
@@ -189,12 +189,12 @@ export async function mockBackend(page: Page): Promise<MockBackend> {
         },
       });
     }
-    if (path === '/api/public/payments/verify') {
+    if (path === '/api/v1/public/payments/verify') {
       state.verifyRequests.push(request.postDataJSON());
       return json(route, paidOrder);
     }
-    if (path === '/api/public/orders/42') return json(route, paidOrder);
-    if (path === '/api/public/orders')
+    if (path === '/api/v1/public/orders/42') return json(route, paidOrder);
+    if (path === '/api/v1/public/orders')
       return json(route, [
         {
           id: 42,
@@ -206,7 +206,7 @@ export async function mockBackend(page: Page): Promise<MockBackend> {
           placedAt: paidOrder.placedAt,
         },
       ]);
-    if (path.startsWith('/api/images/')) return route.fulfill({ status: 404 });
+    if (path.startsWith('/api/v1/images/')) return route.fulfill({ status: 404 });
     return json(route, { code: 'NOT_FOUND', message: `Unmocked ${method} ${path}` }, 404);
   });
 

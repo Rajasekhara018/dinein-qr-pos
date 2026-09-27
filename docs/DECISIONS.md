@@ -26,17 +26,17 @@ brief left a choice open, it is recorded here.
   webhooks, refunds and reconciliation always use the gateway that took the payment.
 - Schema uses generic columns: `payment.provider`, `provider_order_id`, `provider_payment_id`, `provider_refund_id`
   (unique per provider) instead of `razorpay_*`; `payment_event.provider` + `provider_event_id`.
-- `POST /api/public/orders` and `POST /api/public/orders/{id}/retry-payment` return a `CheckoutResponse`:
+- `POST /api/v1/public/orders` and `POST /api/v1/public/orders/{id}/retry-payment` return a `CheckoutResponse`:
   `{orderId, orderNumber, displayToken, status, provider, mode, checkout, amountPaise, currency, restaurantName}`
   where `mode` is:
   - `SDK` – `checkout` holds Razorpay Checkout.js options (`key`, `order_id`, `amount`, `currency`, `name`,
     `description`, `prefill`, `theme`, `scriptUrl`). On success the client posts the handler response to
-    `POST /api/public/payments/verify`.
+    `POST /api/v1/public/payments/verify`.
   - `FORM_POST` – `checkout = {action, method, fields}`; the client auto-submits a form (PayU). PayU posts back to
-    `POST /api/public/payments/{provider}/callback`, which verifies and 303-redirects to `/menu/orders/{id}?payment=return|failed`.
+    `POST /api/v1/public/payments/{provider}/callback`, which verifies and 303-redirects to `/menu/orders/{id}?payment=return|failed`.
   - `REDIRECT` – `checkout = {url}`; the client navigates there.
   - If `status != PENDING_PAYMENT` (idempotent replay after payment) provider fields are null → go to the order page.
-- Webhooks: `POST /api/webhooks/{provider}` (e.g. `/api/webhooks/razorpay`, `/api/webhooks/payu`).
+- Webhooks: `POST /api/v1/webhooks/{provider}` (e.g. `/api/v1/webhooks/razorpay`, `/api/v1/webhooks/payu`).
 - A failed attempt keeps the order in `PENDING_PAYMENT` so the guest can retry; the expiry job (15 min) reconciles
   with the provider and then sets `PAYMENT_FAILED` (a failed attempt exists) or `EXPIRED`.
 - Amount mismatch or a second captured payment sets `orders.payment_flagged` + `flag_reason`; the order is not sent to
@@ -103,14 +103,31 @@ brief left a choice open, it is recorded here.
 
 ## Security details
 - Access JWT (HS256, 15 min) in memory on the client; refresh token in HttpOnly `dinein_rt` cookie
-  (`SameSite=Strict`, path `/api/auth`), rotated on every refresh.
+  (`SameSite=Strict`, path `/api/v1/auth`), rotated on every refresh.
 - Kitchen devices: `Authorization: Bearer dvc_<token>` (30 days, hashed, revocable). Devices always act as KITCHEN.
 - A JWT with `pwc=true` (password change required) only grants `PASSWORD_CHANGE_REQUIRED`; the client must call
-  `POST /api/auth/change-password` before anything else works.
+  `POST /api/v1/auth/change-password` before anything else works.
 - Guest session: stateless HMAC-signed `dinein_gs` cookie (HttpOnly, SameSite=Lax, 12 h).
 - CSRF (cookie `XSRF-TOKEN` → header `X-XSRF-TOKEN`, Angular's built-in names) is enforced only on cookie-authenticated
-  mutations: `/api/auth/refresh`, `/api/auth/logout`, `/api/public/**` (except provider callbacks). The SPA should
-  call `GET /api/auth/csrf` once at startup if the cookie is missing.
+  mutations: `/api/v1/auth/refresh`, `/api/v1/auth/logout`, `/api/v1/public/**` (except provider callbacks). The SPA
+  should call `GET /api/v1/auth/csrf` once at startup if the cookie is missing.
+
+## API versioning
+- Every REST endpoint is URL-path versioned under `/api/v1` (e.g. `/api/v1/admin/items`,
+  `/api/v1/public/payments/{provider}/callback`, `/api/v1/webhooks/{provider}`). Path versioning is visible in logs,
+  cache keys and proxy rules, and needs nothing from clients beyond the URL.
+- The version is declared literally on each controller's class-level `@RequestMapping` (`@RequestMapping("/api/v1/admin/tables")`),
+  so a controller's full path is readable where it is defined; method-level mappings stay relative. Non-controller code
+  that needs a full path (security matchers, CSRF matchers, rate-limit rules, the refresh cookie path, image URLs,
+  payment callback URLs) uses `ApiPaths.V1`. The SPA builds every URL from `API_BASE` in `core/api/api-base.ts`.
+- A v2 is added as new controllers (or new mappings) under `/api/v2`, next to the v1 ones, plus matching security rules;
+  v1 keeps working until clients have moved.
+- `/ws` (STOMP) is not versioned: it is not a REST controller, and its topics are unchanged. Actuator and springdoc
+  (`/actuator/**`, `/swagger-ui.html`, `/v3/api-docs`) are infrastructure and stay where Boot puts them.
+- The refresh cookie path moved from `/api/auth` to `/api/v1/auth`, so a browser no longer sends its old cookie to the
+  refresh endpoint: staff who were signed in before the change must log in again once. Kitchen device tokens are
+  stored by the SPA, not in a path-scoped cookie, so remembered kitchen devices are unaffected. Nginx
+  (`location /api/`) and the dev proxy (`/api`) already cover `/api/v1` and did not change.
 
 ## Realtime
 - STOMP over native WebSocket at `/ws`. Staff authenticate with the `Authorization: Bearer …` STOMP CONNECT header;
@@ -127,39 +144,39 @@ brief left a choice open, it is recorded here.
 ## Order types, waiters and offline payments
 - `orders.order_type` is `DINE_IN` (default) or `TAKEAWAY`. Guests send an optional `orderType`; staff send it with
   their order. `restaurant_settings.takeaway_enabled` (default true) switches takeaway off for guests **and** staff
-  (`400 TAKEAWAY_DISABLED`). `PUT /api/admin/settings` treats a missing `takeawayEnabled` as "unchanged" so older
+  (`400 TAKEAWAY_DISABLED`). `PUT /api/v1/admin/settings` treats a missing `takeawayEnabled` as "unchanged" so older
   clients cannot switch it off by accident. The accepting-orders switch and opening hours also apply to staff orders.
-- Role `WAITER`. Waiters sign in on `POST /api/auth/login` with password **or PIN** (the kitchen's PIN idea, but a
+- Role `WAITER`. Waiters sign in on `POST /api/v1/auth/login` with password **or PIN** (the kitchen's PIN idea, but a
   normal user session, not a device token: waiters are individuals and their actions are attributed to them). PIN
   sign-in on that endpoint is refused for other roles (`403 PIN_LOGIN_NOT_ALLOWED`); kitchen accounts still sign in
   only on the kitchen screen. Like kitchen accounts, waiters are not forced to change an admin-set password.
-- `/api/waiter/**` is open to WAITER, MANAGER and OWNER. `GET /api/waiter/menu` returns the guest menu **including
+- `/api/v1/waiter/**` is open to WAITER, MANAGER and OWNER. `GET /api/v1/waiter/menu` returns the guest menu **including
   unavailable items** (flagged `available: false`), because the waiter has to tell the guest; ordering one is rejected
   exactly as for guests. Waiter order lists do not auto-hide READY orders (the kitchen's does): they stay until served.
-- Staff-assisted orders (`POST /api/waiter/orders`, `POST /api/admin/orders`) go through the same placement core as
+- Staff-assisted orders (`POST /api/v1/waiter/orders`, `POST /api/v1/admin/orders`) go through the same placement core as
   guest orders (`OrderPlacementService#createOrder`: menu validation, server-side pricing, snapshots, order numbers).
   They have no guest session: `orders.guest_session_id` is now nullable and `orders.placed_by_staff_id` records the
   staff member (a CHECK requires one of the two). Guest ownership checks are null-safe (`OrderEntity#belongsToGuest`).
   The idempotency key travels in the body (`idempotencyKey`); a replay returns the same order.
 - `paymentMethod: ONLINE` returns the same `CheckoutResponse` as the guest flow and expires the same way. Redirect-based
   gateways return to `/waiter/orders/{id}` instead of `/menu/orders/{id}`; SDK checkouts are verified with
-  `POST /api/waiter/payments/verify`.
+  `POST /api/v1/waiter/payments/verify`.
 - Offline methods (`CASH`, `UPI_AT_COUNTER`, `CARD_AT_COUNTER`) create the order and, in the same transaction, a
   `payment` row with `provider = OFFLINE`, `method`, `recorded_by_staff_id`, which is then confirmed through
   `PaymentStateService#confirmCapture`, the path online captures use. So kitchen realtime, notifications, flags and
   order numbers behave identically. The response is a `CheckoutResponse` with `status = CONFIRMED`,
   `provider = OFFLINE`, `amountPaise`, and null `mode`/`checkout`.
-- `POST /api/admin/orders/{id}/mark-paid-offline {method}` settles PENDING_PAYMENT, EXPIRED or PAYMENT_FAILED orders
+- `POST /api/v1/admin/orders/{id}/mark-paid-offline {method}` settles PENDING_PAYMENT, EXPIRED or PAYMENT_FAILED orders
   under the order row lock (`SELECT … FOR UPDATE`): `409 ALREADY_PAID` if any payment is captured, `409 PAYMENT_FLAGGED`
   for flagged orders. A later online capture of the same order is flagged "paid twice", as for two online captures.
 - `OFFLINE` is deliberately **not** a `PaymentGateway` bean. `PaymentGatewayRegistry#get("OFFLINE")` always fails
   (and no gateway may claim that code), and callers branch on `PaymentEntity#isOffline()`: `RefundService` marks the
   refund `MANUAL` (new `refund_status`, money handed back in cash, `manualRefundDue` in the admin order detail),
   `PaymentExpiryJob` skips offline rows, and webhooks/verify reject the code. A no-op gateway would have made
-  `OFFLINE` selectable as the active provider and reachable at `/api/webhooks/offline`.
+  `OFFLINE` selectable as the active provider and reachable at `/api/v1/webhooks/offline`.
 - Waiters get an in-app "order ready" notification (`ORDER_READY` to role `WAITER`) with their own inbox endpoints
-  under `/api/waiter/notifications` and topic `/topic/waiter/notifications`. Waiter push notifications are not wired
-  (push registration lives under `/api/admin`).
+  under `/api/v1/waiter/notifications` and topic `/topic/waiter/notifications`. Waiter push notifications are not wired
+  (push registration lives under `/api/v1/admin`).
 - Reports: the summary adds `paymentChannels` (`ONLINE`, `CASH`, `UPI_AT_COUNTER`, `CARD_AT_COUNTER`), `orderTypes`
   and `manualRefundAmount`; the CSV adds `order_type`, `refund_status` and `placed_by`; the admin order list takes an
   `orderType` filter.

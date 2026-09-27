@@ -17,7 +17,7 @@ export const COLUMN_LABELS: Record<KitchenColumn, string> = {
 /** `ok` < `warn` (amber) < `alert` (red). */
 export type AgeLevel = 'ok' | 'warn' | 'alert';
 
-/** Used until `/api/kitchen/config` answers (mirrors the backend defaults). */
+/** Used until `/api/v1/kitchen/config` answers (mirrors the backend defaults). */
 export const DEFAULT_KITCHEN_CONFIG: KitchenConfig = {
   restaurantName: 'Kitchen',
   warnMinutes: 10,

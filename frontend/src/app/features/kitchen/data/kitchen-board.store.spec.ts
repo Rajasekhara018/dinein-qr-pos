@@ -62,14 +62,14 @@ describe('KitchenBoardStore', () => {
   });
 
   const flushOrders = async (orders: KitchenOrderView[]) => {
-    http.expectOne((r) => r.url === '/api/kitchen/orders').flush(orders);
+    http.expectOne((r) => r.url === '/api/v1/kitchen/orders').flush(orders);
     await tick();
   };
 
   async function start(orders: KitchenOrderView[]) {
     store.start();
-    http.expectOne('/api/kitchen/config').flush(testConfig);
-    const req = http.expectOne((r) => r.url === '/api/kitchen/orders');
+    http.expectOne('/api/v1/kitchen/config').flush(testConfig);
+    const req = http.expectOne((r) => r.url === '/api/v1/kitchen/orders');
     expect(req.request.params.get('status')).toBe('CONFIRMED,PREPARING,READY');
     req.flush(orders);
     await tick();
@@ -154,7 +154,7 @@ describe('KitchenBoardStore', () => {
     expect(store.columns().PREPARING.map((o) => o.id)).toEqual([1]);
     expect(store.pending().has(1)).toBe(true);
 
-    const req = http.expectOne('/api/kitchen/orders/1/status');
+    const req = http.expectOne('/api/v1/kitchen/orders/1/status');
     expect(req.request.method).toBe('PATCH');
     expect(req.request.body).toEqual({ status: 'PREPARING' });
     req.flush({ ...order, status: 'PREPARING', preparingAt: '2026-09-26T07:00:05Z' });
@@ -170,7 +170,7 @@ describe('KitchenBoardStore', () => {
     connected.next();
     await flushOrders([order]);
     expect(store.orders()[0].status).toBe('PREPARING');
-    http.expectOne('/api/kitchen/orders/1/status').flush({ ...order, status: 'PREPARING' });
+    http.expectOne('/api/v1/kitchen/orders/1/status').flush({ ...order, status: 'PREPARING' });
     await done;
   });
 
@@ -179,7 +179,7 @@ describe('KitchenBoardStore', () => {
     await start([order]);
     const done = store.advance(order);
     expect(store.visible()).toEqual([]);
-    http.expectOne('/api/kitchen/orders/1/status').flush({ ...order, status: 'COMPLETED' });
+    http.expectOne('/api/v1/kitchen/orders/1/status').flush({ ...order, status: 'COMPLETED' });
     await done;
     expect(store.orders()).toEqual([]);
   });
@@ -189,7 +189,7 @@ describe('KitchenBoardStore', () => {
     await start([order]);
     const done = store.advance(order);
     http
-      .expectOne('/api/kitchen/orders/1/status')
+      .expectOne('/api/v1/kitchen/orders/1/status')
       .flush({ code: 'INTERNAL_ERROR', message: 'Boom' }, { status: 500, statusText: 'Error' });
     await done;
     expect(store.columns().CONFIRMED.map((o) => o.id)).toEqual([1]);
@@ -202,7 +202,7 @@ describe('KitchenBoardStore', () => {
     await start([order]);
     const done = store.advance(order);
     http
-      .expectOne('/api/kitchen/orders/1/status')
+      .expectOne('/api/v1/kitchen/orders/1/status')
       .flush(
         { code: 'ILLEGAL_TRANSITION', message: 'Nope' },
         { status: 409, statusText: 'Conflict' },
@@ -218,14 +218,14 @@ describe('KitchenBoardStore', () => {
     await start([order]);
     void store.advance(order);
     void store.advance(store.orders()[0]);
-    expect(http.match('/api/kitchen/orders/1/status')).toHaveLength(1);
+    expect(http.match('/api/v1/kitchen/orders/1/status')).toHaveLength(1);
   });
 
   it('reports a load error only when the first load fails', async () => {
     store.start();
-    http.expectOne('/api/kitchen/config').flush(testConfig);
+    http.expectOne('/api/v1/kitchen/config').flush(testConfig);
     http
-      .expectOne((r) => r.url === '/api/kitchen/orders')
+      .expectOne((r) => r.url === '/api/v1/kitchen/orders')
       .flush(null, { status: 500, statusText: 'x' });
     await tick();
     expect(store.error()).not.toBeNull();

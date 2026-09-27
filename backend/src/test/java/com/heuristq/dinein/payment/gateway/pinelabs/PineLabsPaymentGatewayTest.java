@@ -58,7 +58,7 @@ class PineLabsPaymentGatewayTest {
 
     private CheckoutContext ctx(String providerOrderId) {
         return new CheckoutContext(42L, "A-0042", 50000, "INR", "Asha K", "9876543210", "Cafe", "#000000",
-                providerOrderId, "https://dinein.test/api/public/payments/pinelabs/callback", "https://dinein.test/menu/orders/42");
+                providerOrderId, "https://dinein.test/api/v1/public/payments/pinelabs/callback", "https://dinein.test/menu/orders/42");
     }
 
     private void expectToken(String token, Instant expiresAt) {
@@ -101,7 +101,7 @@ class PineLabsPaymentGatewayTest {
                 .andExpect(jsonPath("$.order_amount.currency").value("INR"))
                 .andExpect(jsonPath("$.pre_auth").value(false))
                 .andExpect(jsonPath("$.integration_mode").value("REDIRECT"))
-                .andExpect(jsonPath("$.callback_url").value("https://dinein.test/api/public/payments/pinelabs/callback?dinein_order=42"))
+                .andExpect(jsonPath("$.callback_url").value("https://dinein.test/api/v1/public/payments/pinelabs/callback?dinein_order=42"))
                 .andExpect(jsonPath("$.purchase_details.customer.mobile_number").value("9876543210"))
                 .andExpect(jsonPath("$.purchase_details.merchant_metadata.order_id").value("42"))
                 .andRespond(withSuccess("{\"token\":\"t\",\"order_id\":\"" + ORDER_ID

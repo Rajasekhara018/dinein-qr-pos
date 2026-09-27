@@ -19,7 +19,7 @@ const ACTION_CLASSES: Record<string, string> = {
 
 /**
  * One order ticket. Stateless: elapsed time comes from the board's shared ticker (`now`), thresholds from
- * `/api/kitchen/config`. Age is conveyed by colour AND a text/icon badge.
+ * `/api/v1/kitchen/config`. Age is conveyed by colour AND a text/icon badge.
  */
 @Component({
   selector: 'app-ticket-card',

@@ -2,9 +2,9 @@ import { HttpContext, HttpContextToken } from '@angular/common/http';
 
 /**
  * Which credential `authInterceptor` attaches.
- * - `auto` (default): admin JWT for `/api/admin/**`, `/api/auth/me`, `/api/auth/change-password`;
- *   kitchen device token for `/api/kitchen/**`; nothing otherwise.
- * - `admin` / `device`: force one (e.g. the kitchen app calling `/api/auth/me` with its device token).
+ * - `auto` (default): admin JWT for `/api/v1/admin/**`, `/api/v1/auth/me`, `/api/v1/auth/change-password`;
+ *   kitchen device token for `/api/v1/kitchen/**`; nothing otherwise.
+ * - `admin` / `device`: force one (e.g. the kitchen app calling `/api/v1/auth/me` with its device token).
  * - `none`: never attach.
  */
 export type AuthMode = 'auto' | 'admin' | 'device' | 'none';

@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
  * the caller's role or user id), reachable by waiters. New entries are announced on {@code /topic/waiter/notifications}.
  */
 @RestController
-@RequestMapping("/api/waiter")
+@RequestMapping("/api/v1/waiter")
 public class WaiterNotificationController {
 
     private final InAppNotificationService inAppService;

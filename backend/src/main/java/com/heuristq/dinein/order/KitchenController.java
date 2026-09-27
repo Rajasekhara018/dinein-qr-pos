@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Set;
 
 @RestController
-@RequestMapping("/api/kitchen")
+@RequestMapping("/api/v1/kitchen")
 public class KitchenController {
 
     /** Kitchen actions: Start, Ready, Served. */

@@ -75,11 +75,11 @@ class WaiterFlowIT extends AbstractIntegrationTest {
     private String token(StaffRole role) throws Exception {
         StaffUserEntity user = createUser(role);
         if (role == StaffRole.KITCHEN) {
-            MvcResult device = mvc.perform(post("/api/auth/kitchen-device").contentType(MediaType.APPLICATION_JSON)
+            MvcResult device = mvc.perform(post("/api/v1/auth/kitchen-device").contentType(MediaType.APPLICATION_JSON)
                     .content("{\"username\":\"%s\",\"pin\":\"2468\"}".formatted(user.getUsername()))).andReturn();
             return "Bearer " + body(device).get("deviceToken").asText();
         }
-        MvcResult login = mvc.perform(post("/api/auth/login").contentType(MediaType.APPLICATION_JSON)
+        MvcResult login = mvc.perform(post("/api/v1/auth/login").contentType(MediaType.APPLICATION_JSON)
                 .content("{\"username\":\"%s\",\"password\":\"Secret123\"}".formatted(user.getUsername()))).andReturn();
         assertThat(login.getResponse().getStatus()).as(login.getResponse().getContentAsString()).isEqualTo(200);
         return "Bearer " + body(login).get("accessToken").asText();
@@ -103,12 +103,12 @@ class WaiterFlowIT extends AbstractIntegrationTest {
     }
 
     private long cashOrder(String waiter) throws Exception {
-        return placeStaffOrder(waiter, "/api/waiter/orders",
+        return placeStaffOrder(waiter, "/api/v1/waiter/orders",
                 staffCart(table.getId(), "DINE_IN", "CASH", UUID.randomUUID().toString())).get("orderId").asLong();
     }
 
     private void kitchenStatus(String auth, long orderId, String status) throws Exception {
-        mvc.perform(patch("/api/kitchen/orders/" + orderId + "/status").header("Authorization", auth)
+        mvc.perform(patch("/api/v1/kitchen/orders/" + orderId + "/status").header("Authorization", auth)
                         .contentType(MediaType.APPLICATION_JSON).content("{\"status\":\"" + status + "\"}"))
                 .andExpect(status().isOk());
     }
@@ -124,21 +124,21 @@ class WaiterFlowIT extends AbstractIntegrationTest {
     @Test
     void waiterEndpointsAreForWaitersManagersAndOwnersOnly() throws Exception {
         String waiter = token(StaffRole.WAITER);
-        mvc.perform(get("/api/waiter/config").header("Authorization", waiter))
+        mvc.perform(get("/api/v1/waiter/config").header("Authorization", waiter))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.staff.role").value("WAITER"))
                 .andExpect(jsonPath("$.takeawayEnabled").isBoolean())
                 .andExpect(jsonPath("$.onlinePaymentsAvailable").value(true));
-        mvc.perform(get("/api/waiter/menu").header("Authorization", waiter)).andExpect(status().isOk());
-        mvc.perform(get("/api/admin/orders").header("Authorization", waiter)).andExpect(status().isForbidden());
-        mvc.perform(get("/api/kitchen/orders").header("Authorization", waiter)).andExpect(status().isForbidden());
+        mvc.perform(get("/api/v1/waiter/menu").header("Authorization", waiter)).andExpect(status().isOk());
+        mvc.perform(get("/api/v1/admin/orders").header("Authorization", waiter)).andExpect(status().isForbidden());
+        mvc.perform(get("/api/v1/kitchen/orders").header("Authorization", waiter)).andExpect(status().isForbidden());
 
         String kitchen = token(StaffRole.KITCHEN);
-        mvc.perform(get("/api/waiter/tables").header("Authorization", kitchen)).andExpect(status().isForbidden());
-        mvc.perform(get("/api/waiter/orders")).andExpect(status().isUnauthorized());
+        mvc.perform(get("/api/v1/waiter/tables").header("Authorization", kitchen)).andExpect(status().isForbidden());
+        mvc.perform(get("/api/v1/waiter/orders")).andExpect(status().isUnauthorized());
 
-        mvc.perform(get("/api/waiter/orders").header("Authorization", token(StaffRole.MANAGER))).andExpect(status().isOk());
-        mvc.perform(get("/api/waiter/orders").header("Authorization", token(StaffRole.OWNER))).andExpect(status().isOk());
+        mvc.perform(get("/api/v1/waiter/orders").header("Authorization", token(StaffRole.MANAGER))).andExpect(status().isOk());
+        mvc.perform(get("/api/v1/waiter/orders").header("Authorization", token(StaffRole.OWNER))).andExpect(status().isOk());
     }
 
     // ----- staff-assisted orders -----------------------------------------------------------------
@@ -147,7 +147,7 @@ class WaiterFlowIT extends AbstractIntegrationTest {
     void cashOrderFromTheWaiterGoesStraightToTheKitchen() throws Exception {
         String waiter = token(StaffRole.WAITER);
         String key = UUID.randomUUID().toString();
-        JsonNode placed = placeStaffOrder(waiter, "/api/waiter/orders", staffCart(table.getId(), "DINE_IN", "CASH", key));
+        JsonNode placed = placeStaffOrder(waiter, "/api/v1/waiter/orders", staffCart(table.getId(), "DINE_IN", "CASH", key));
 
         long orderId = placed.get("orderId").asLong();
         assertThat(placed.get("status").asText()).isEqualTo("CONFIRMED");
@@ -169,7 +169,7 @@ class WaiterFlowIT extends AbstractIntegrationTest {
         assertThat(payment.getRecordedByStaffId()).isEqualTo(order.getPlacedByStaffId());
 
         // Visible to the kitchen, with type and table.
-        JsonNode kitchen = body(mvc.perform(get("/api/kitchen/orders").header("Authorization", token(StaffRole.KITCHEN)))
+        JsonNode kitchen = body(mvc.perform(get("/api/v1/kitchen/orders").header("Authorization", token(StaffRole.KITCHEN)))
                 .andExpect(status().isOk()).andReturn());
         JsonNode ticket = find(kitchen, orderId);
         assertThat(ticket.get("orderType").asText()).isEqualTo("DINE_IN");
@@ -177,7 +177,7 @@ class WaiterFlowIT extends AbstractIntegrationTest {
         assertThat(ticket.get("placedByStaff").asBoolean()).isTrue();
 
         // And on the waiter's table overview.
-        JsonNode tables = body(mvc.perform(get("/api/waiter/tables").header("Authorization", waiter)).andReturn());
+        JsonNode tables = body(mvc.perform(get("/api/v1/waiter/tables").header("Authorization", waiter)).andReturn());
         JsonNode row = null;
         for (JsonNode t : tables) {
             if (t.get("id").asLong() == table.getId()) {
@@ -189,14 +189,14 @@ class WaiterFlowIT extends AbstractIntegrationTest {
         assertThat(row.get("openOrders").asInt()).isEqualTo(1);
 
         // Repeating the idempotency key returns the same order.
-        JsonNode replay = placeStaffOrder(waiter, "/api/waiter/orders", staffCart(table.getId(), "DINE_IN", "CASH", key));
+        JsonNode replay = placeStaffOrder(waiter, "/api/v1/waiter/orders", staffCart(table.getId(), "DINE_IN", "CASH", key));
         assertThat(replay.get("orderId").asLong()).isEqualTo(orderId);
         assertThat(paymentRepository.findByOrderIdOrderByIdAsc(orderId)).hasSize(1);
     }
 
     @Test
     void dineInStaffOrderNeedsATable() throws Exception {
-        mvc.perform(post("/api/waiter/orders").header("Authorization", token(StaffRole.WAITER))
+        mvc.perform(post("/api/v1/waiter/orders").header("Authorization", token(StaffRole.WAITER))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(staffCart(null, "DINE_IN", "CASH", UUID.randomUUID().toString())))
                 .andExpect(status().isBadRequest())
@@ -206,7 +206,7 @@ class WaiterFlowIT extends AbstractIntegrationTest {
     @Test
     void staffOnlineOrderUsesTheGuestCheckoutAndIsVerifiedFromTheWaiterScreen() throws Exception {
         String waiter = token(StaffRole.WAITER);
-        JsonNode checkout = placeStaffOrder(waiter, "/api/waiter/orders",
+        JsonNode checkout = placeStaffOrder(waiter, "/api/v1/waiter/orders",
                 staffCart(table.getId(), "DINE_IN", "ONLINE", UUID.randomUUID().toString()));
         long orderId = checkout.get("orderId").asLong();
         assertThat(checkout.get("status").asText()).isEqualTo("PENDING_PAYMENT");
@@ -215,7 +215,7 @@ class WaiterFlowIT extends AbstractIntegrationTest {
 
         doReturn(new ProviderPayment(rzpOrderId, "pay_staff1", ProviderPayment.Outcome.CAPTURED, 81900L, "upi", null))
                 .when(razorpay).fetchPayment(rzpOrderId, "pay_staff1");
-        mvc.perform(post("/api/waiter/payments/verify").header("Authorization", waiter)
+        mvc.perform(post("/api/v1/waiter/payments/verify").header("Authorization", waiter)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {"razorpay_order_id":"%s","razorpay_payment_id":"pay_staff1","razorpay_signature":"%s"}"""
@@ -235,12 +235,12 @@ class WaiterFlowIT extends AbstractIntegrationTest {
             assertThat(rejected.getResponse().getStatus()).isEqualTo(400);
             assertThat(body(rejected).get("code").asText()).isEqualTo("TAKEAWAY_DISABLED");
 
-            mvc.perform(post("/api/waiter/orders").header("Authorization", token(StaffRole.WAITER))
+            mvc.perform(post("/api/v1/waiter/orders").header("Authorization", token(StaffRole.WAITER))
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(staffCart(null, "TAKEAWAY", "CASH", UUID.randomUUID().toString())))
                     .andExpect(status().isBadRequest())
                     .andExpect(jsonPath("$.code").value("TAKEAWAY_DISABLED"));
-            mvc.perform(get("/api/public/session").param("t", table.getQrToken()))
+            mvc.perform(get("/api/v1/public/session").param("t", table.getQrToken()))
                     .andExpect(jsonPath("$.restaurant.takeawayEnabled").value(false));
         } finally {
             setTakeaway(true);
@@ -250,7 +250,7 @@ class WaiterFlowIT extends AbstractIntegrationTest {
         MvcResult accepted = placeOrder(guest, UUID.randomUUID().toString(), guestTakeaway);
         assertThat(accepted.getResponse().getStatus()).isEqualTo(200);
         long orderId = body(accepted).get("orderId").asLong();
-        mvc.perform(get("/api/public/orders/" + orderId).cookie(guest))
+        mvc.perform(get("/api/v1/public/orders/" + orderId).cookie(guest))
                 .andExpect(jsonPath("$.orderType").value("TAKEAWAY"));
         // Guest orders without a type are dine-in.
         long dineIn = body(placeOrder(guest, UUID.randomUUID().toString(), simpleCart())).get("orderId").asLong();
@@ -265,17 +265,17 @@ class WaiterFlowIT extends AbstractIntegrationTest {
         String kitchen = token(StaffRole.KITCHEN);
         long orderId = cashOrder(waiter);
 
-        mvc.perform(patch("/api/waiter/orders/" + orderId + "/serve").header("Authorization", waiter))
+        mvc.perform(patch("/api/v1/waiter/orders/" + orderId + "/serve").header("Authorization", waiter))
                 .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.code").value("ILLEGAL_TRANSITION"));
 
         kitchenStatus(kitchen, orderId, "PREPARING");
         kitchenStatus(kitchen, orderId, "READY");
-        JsonNode ready = body(mvc.perform(get("/api/waiter/orders").param("status", "READY")
+        JsonNode ready = body(mvc.perform(get("/api/v1/waiter/orders").param("status", "READY")
                 .header("Authorization", waiter)).andReturn());
         assertThat(find(ready, orderId)).isNotNull();
 
-        mvc.perform(patch("/api/waiter/orders/" + orderId + "/serve").header("Authorization", waiter))
+        mvc.perform(patch("/api/v1/waiter/orders/" + orderId + "/serve").header("Authorization", waiter))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value("COMPLETED"));
         assertThat(orderRepository.findById(orderId).orElseThrow().getCompletedAt()).isNotNull();
@@ -288,7 +288,7 @@ class WaiterFlowIT extends AbstractIntegrationTest {
         long orderId = cashOrder(token(StaffRole.WAITER));
         String manager = token(StaffRole.MANAGER);
 
-        mvc.perform(post("/api/admin/orders/" + orderId + "/cancel").header("Authorization", manager)
+        mvc.perform(post("/api/v1/admin/orders/" + orderId + "/cancel").header("Authorization", manager)
                         .contentType(MediaType.APPLICATION_JSON).content("{\"reason\":\"guest left\"}"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value("CANCELLED"))
@@ -312,7 +312,7 @@ class WaiterFlowIT extends AbstractIntegrationTest {
         assertThat(orderRepository.findById(orderId).orElseThrow().getStatus()).isEqualTo(OrderStatus.EXPIRED);
 
         String manager = token(StaffRole.MANAGER);
-        mvc.perform(post("/api/admin/orders/" + orderId + "/mark-paid-offline").header("Authorization", manager)
+        mvc.perform(post("/api/v1/admin/orders/" + orderId + "/mark-paid-offline").header("Authorization", manager)
                         .contentType(MediaType.APPLICATION_JSON).content("{\"method\":\"CASH\"}"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value("CONFIRMED"))
@@ -320,11 +320,11 @@ class WaiterFlowIT extends AbstractIntegrationTest {
                 .andExpect(jsonPath("$.payments[1].method").value("CASH"))
                 .andExpect(jsonPath("$.payments[1].status").value("CAPTURED"));
 
-        mvc.perform(post("/api/admin/orders/" + orderId + "/mark-paid-offline").header("Authorization", manager)
+        mvc.perform(post("/api/v1/admin/orders/" + orderId + "/mark-paid-offline").header("Authorization", manager)
                         .contentType(MediaType.APPLICATION_JSON).content("{\"method\":\"CASH\"}"))
                 .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.code").value("ALREADY_PAID"));
-        mvc.perform(post("/api/admin/orders/" + orderId + "/mark-paid-offline").header("Authorization", manager)
+        mvc.perform(post("/api/v1/admin/orders/" + orderId + "/mark-paid-offline").header("Authorization", manager)
                         .contentType(MediaType.APPLICATION_JSON).content("{\"method\":\"ONLINE\"}"))
                 .andExpect(status().isBadRequest());
     }
@@ -338,11 +338,11 @@ class WaiterFlowIT extends AbstractIntegrationTest {
         JsonNode before = summary(owner, today);
 
         // Counter takeaway paid by UPI (placed by the owner from admin), waiter dine-in paid in cash, guest online.
-        placeStaffOrder(owner, "/api/admin/orders", staffCart(null, "TAKEAWAY", "UPI_AT_COUNTER", UUID.randomUUID().toString()));
+        placeStaffOrder(owner, "/api/v1/admin/orders", staffCart(null, "TAKEAWAY", "UPI_AT_COUNTER", UUID.randomUUID().toString()));
         cashOrder(token(StaffRole.WAITER));
         JsonNode checkout = body(placeOrder(guestCookie(), UUID.randomUUID().toString(), simpleCart()));
         String payload = capturedWebhook(checkout.get("checkout").get("order_id").asText(), "pay_rep1", 81900L);
-        mvc.perform(post("/api/webhooks/razorpay").contentType(MediaType.APPLICATION_JSON).content(payload)
+        mvc.perform(post("/api/v1/webhooks/razorpay").contentType(MediaType.APPLICATION_JSON).content(payload)
                         .header("X-Razorpay-Signature", webhookSignature(payload))
                         .header("X-Razorpay-Event-Id", "evt_" + UUID.randomUUID()))
                 .andExpect(status().isOk());
@@ -357,19 +357,19 @@ class WaiterFlowIT extends AbstractIntegrationTest {
         assertThat(delta(before, after, "orderTypes", "orderType", "DINE_IN")).isEqualTo(2);
         assertThat(after.get("manualRefundAmount")).isNotNull();
 
-        String csv = mvc.perform(get("/api/admin/reports/orders.csv").param("from", today).param("to", today)
+        String csv = mvc.perform(get("/api/v1/admin/reports/orders.csv").param("from", today).param("to", today)
                 .header("Authorization", owner)).andExpect(status().isOk()).andReturn()
                 .getResponse().getContentAsString(StandardCharsets.UTF_8);
         assertThat(csv.lines().findFirst().orElseThrow()).contains("order_type").contains("placed_by");
         assertThat(csv).contains("TAKEAWAY").contains("UPI_AT_COUNTER");
 
-        mvc.perform(get("/api/admin/orders").param("orderType", "TAKEAWAY").header("Authorization", owner))
+        mvc.perform(get("/api/v1/admin/orders").param("orderType", "TAKEAWAY").header("Authorization", owner))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content[0].orderType").value("TAKEAWAY"));
     }
 
     private JsonNode summary(String owner, String day) throws Exception {
-        return body(mvc.perform(get("/api/admin/reports/summary").param("from", day).param("to", day)
+        return body(mvc.perform(get("/api/v1/admin/reports/summary").param("from", day).param("to", day)
                 .header("Authorization", owner)).andExpect(status().isOk()).andReturn());
     }
 

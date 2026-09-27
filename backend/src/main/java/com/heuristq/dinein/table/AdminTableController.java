@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/admin/tables")
+@RequestMapping("/api/v1/admin/tables")
 public class AdminTableController {
 
     private final TableService tableService;

@@ -10,7 +10,7 @@ How the UAT server at `35.154.15.238` builds and runs Dine-in QR POS. The pipeli
 |---|---|---|---|
 | **The app**: customer menu, admin and kitchen (SPA + `/api` + `/ws` through nginx) | http://35.154.15.238:85 | **85** | `dinein-frontend-container` |
 | Backend API, direct (testing only) | http://35.154.15.238:9030/api/... | **9030** | `dinein-backend-container` |
-| PostgreSQL | – | not published | `dinein-postgres-container` |
+| PostgreSQL (shared with bestride, database `dinein`) | – | 5432 (bestride's) | `bestride-postgres-container` |
 
 - Customers and staff only ever need port **85**. nginx serves the Angular app and proxies `/api`
   and `/ws` to the backend, so browser and API share one origin (no CORS, cookies work).
@@ -28,19 +28,21 @@ How the UAT server at `35.154.15.238` builds and runs Dine-in QR POS. The pipeli
 
 ## Containers
 
-All three are on the Docker network `dinein-network`, separate from the other apps on the server.
+Frontend and backend are on the Docker network `dinein-network`. The database is the shared
+`bestride-postgres-container`, which lives on `bestride-network` and is also connected to
+`dinein-network`, so the dine-in backend can reach it without joining the bestride network.
 
 | Container | Image | Memory | Notes |
 |---|---|---|---|
 | `dinein-frontend-container` | `nginx:1.27-alpine` + Angular build | 128m | `frontend/nginx/default.conf` proxies to `http://backend:8080` |
 | `dinein-backend-container` | Spring Boot 3.5, JRE 21 | 640m | network alias **`backend`**, so the nginx config works unchanged |
-| `dinein-postgres-container` | `postgres:16-alpine` | 256m | data in the named volume **`dinein-pgdata`**, kept across redeploys |
+| `bestride-postgres-container` | `postgres:16` | shared | owned by the bestride pipelines; dine-in only adds the `dinein` database |
 
 ## Pipelines
 
 | Jenkinsfile | Stages |
 |---|---|
-| `jenkins-pipeline/dine-in-qr/Backend/Jenkinsfile` | Sparse checkout `backend/` → Docker build → **Ensure Postgres** (creates it once, waits for `pg_isready`) → run → **Wait For Healthy** (fails the job unless `/actuator/health/readiness` passes) → image cleanup |
+| `jenkins-pipeline/dine-in-qr/Backend/Jenkinsfile` | Sparse checkout `backend/` → Docker build → **Ensure Postgres** (starts the shared bestride Postgres if no pipeline has yet, connects it to `dinein-network`, creates the `dinein` database if missing) → run → **Wait For Healthy** (fails the job unless `/actuator/health/readiness` passes) → image cleanup |
 | `jenkins-pipeline/dine-in-qr/Frontend/Jenkinsfile` | Sparse checkout `frontend/` → Docker build → **Check Backend** (fails clearly if the backend isn't running) → run → image cleanup |
 
 Both check out `git@github.com:Rajasekhara018/dinein-qr-pos.git`, branch `master`, with the Jenkins
@@ -56,13 +58,21 @@ Manage Jenkins → Credentials → System → Global credentials:
 
 | ID | Kind | Used as |
 |---|---|---|
-| `dinein_db_creds` | Username with password | Postgres user / password (`DB_USERNAME`, `DB_PASSWORD`) |
 | `dinein_jwt_secret` | Secret text | `APP_JWT_SECRET` (at least 32 random characters: `openssl rand -base64 48`) |
 | `dinein_guest_secret` | Secret text | `APP_GUEST_SESSION_SECRET` (another 32+ random characters) |
 | `dinein_bootstrap_owner` | Username with password | `BOOTSTRAP_OWNER_USERNAME` / `BOOTSTRAP_OWNER_PASSWORD`, the first owner login (created once, only when no owner exists) |
 
-The Postgres password is fixed when the volume is first created. Changing `dinein_db_creds` later
-also needs `ALTER USER ... PASSWORD ...` inside Postgres, or a fresh volume (which loses the data).
+### Database
+
+The container and credentials are the same as the bestride services use:
+`bestride-postgres-container`, user/password `rider` / `rider`, set in the Backend Jenkinsfile
+(`POSTGRES_USER` / `POSTGRES_PASSWORD`). Dine-in has its own database, `dinein`, next to the
+bestride ones (`rider_uam`, …). If the bestride credentials ever change, change them here too.
+
+Because the container is shared, removing or recreating `bestride-postgres-container` affects
+dine-in as well. After it is recreated, re-run the dine-in Backend pipeline: that reconnects the
+container to `dinein-network` and recreates the `dinein` database. The data is gone unless it
+was restored from a backup.
 
 ## Runtime settings (set in the Backend Jenkinsfile)
 
@@ -87,7 +97,7 @@ docker stats --no-stream $(docker ps -q --filter name=dinein)
 docker logs --tail 100 dinein-backend-container
 docker logs --tail 100 dinein-frontend-container
 
-# Backup / restore (the volume survives redeploys, not host loss)
-docker exec dinein-postgres-container pg_dump -U <db-user> -d dinein -Fc > /backups/dinein-$(date +%F).dump
-docker exec -i dinein-postgres-container pg_restore -U <db-user> -d dinein --clean --if-exists < /backups/dinein-YYYY-MM-DD.dump
+# Backup / restore of the dinein database only
+docker exec bestride-postgres-container pg_dump -U rider -d dinein -Fc > /backups/dinein-$(date +%F).dump
+docker exec -i bestride-postgres-container pg_restore -U rider -d dinein --clean --if-exists < /backups/dinein-YYYY-MM-DD.dump
 ```

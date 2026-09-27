@@ -14,11 +14,11 @@ import java.util.Map;
 import java.util.TreeMap;
 
 /**
- * {@code POST /api/webhooks/{provider}} (e.g. {@code /api/webhooks/razorpay}). The body is read as raw bytes
+ * {@code POST /api/v1/webhooks/{provider}} (e.g. {@code /api/v1/webhooks/razorpay}). The body is read as raw bytes
  * <em>before</em> any parsing, because signatures are computed over the exact bytes sent.
  */
 @RestController
-@RequestMapping("/api/webhooks")
+@RequestMapping("/api/v1/webhooks")
 public class WebhookController {
 
     private static final int MAX_BODY_BYTES = 256 * 1024;

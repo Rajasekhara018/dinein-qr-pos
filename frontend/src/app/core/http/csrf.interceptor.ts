@@ -7,27 +7,28 @@ import {
 } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { catchError, defer, map, Observable, of, shareReplay, switchMap, throwError } from 'rxjs';
+import { API_BASE } from '../api/api-base';
 import { IS_RETRY, pathOf } from './http-context';
 
 export const XSRF_COOKIE = 'XSRF-TOKEN';
 export const XSRF_HEADER = 'X-XSRF-TOKEN';
 
 const SAFE_METHODS = new Set(['GET', 'HEAD', 'OPTIONS', 'TRACE']);
-const PROVIDER_CALLBACK = /^\/api\/public\/payments\/[^/]+\/callback$/;
+const PROVIDER_CALLBACK = new RegExp(`^${API_BASE}/public/payments/[^/]+/callback$`);
 
 /** Endpoints authenticated by cookies, where Spring Security enforces CSRF (see backend SecurityConfig). */
 export function requiresCsrf(req: HttpRequest<unknown>): boolean {
   if (SAFE_METHODS.has(req.method)) return false;
   const path = pathOf(req.url);
-  if (path === '/api/auth/refresh' || path === '/api/auth/logout') return true;
-  return path.startsWith('/api/public/') && !PROVIDER_CALLBACK.test(path);
+  if (path === `${API_BASE}/auth/refresh` || path === `${API_BASE}/auth/logout`) return true;
+  return path.startsWith(`${API_BASE}/public/`) && !PROVIDER_CALLBACK.test(path);
 }
 
-/** Shared in-flight `GET /api/auth/csrf` so concurrent mutations fetch the cookie only once. */
+/** Shared in-flight `GET /api/v1/auth/csrf` so concurrent mutations fetch the cookie only once. */
 let csrfFetch: Observable<unknown> | null = null;
 
 /**
- * Makes sure the `XSRF-TOKEN` cookie exists before a cookie-authenticated mutation (calls `GET /api/auth/csrf` once
+ * Makes sure the `XSRF-TOKEN` cookie exists before a cookie-authenticated mutation (calls `GET /api/v1/auth/csrf` once
  * when it is missing) and echoes it in `X-XSRF-TOKEN`. On `403 CSRF_INVALID` it refetches the token and retries
  * once. Angular's built-in XSRF support (withXsrfConfiguration) covers the normal case; this covers first visits
  * and expired cookies.
@@ -42,7 +43,7 @@ export const csrfInterceptor: HttpInterceptorFn = (req, next) => {
       const existing = extractor.getToken();
       if (existing && !force) return of(existing);
       csrfFetch ??= http
-        .get('/api/auth/csrf')
+        .get(`${API_BASE}/auth/csrf`)
         .pipe(shareReplay({ bufferSize: 1, refCount: false }));
       return csrfFetch.pipe(
         map(() => {

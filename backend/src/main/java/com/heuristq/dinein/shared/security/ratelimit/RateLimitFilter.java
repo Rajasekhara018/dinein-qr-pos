@@ -4,6 +4,7 @@ import com.heuristq.dinein.shared.security.CookieFactory;
 import com.heuristq.dinein.shared.security.CurrentStaff;
 import com.heuristq.dinein.shared.security.JsonSecurityErrorHandlers;
 import com.heuristq.dinein.shared.util.SecureTokens;
+import com.heuristq.dinein.shared.web.ApiPaths;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -41,13 +42,13 @@ public class RateLimitFilter extends OncePerRequestFilter {
             String path = request.getRequestURI();
             RateLimitProperties.Rule rule = null;
             String key = null;
-            if (path.equals("/api/auth/login") || path.equals("/api/auth/kitchen-device")) {
+            if (path.equals(ApiPaths.V1 + "/auth/login") || path.equals(ApiPaths.V1 + "/auth/kitchen-device")) {
                 rule = properties.login();
                 key = "login:" + request.getRemoteAddr();
-            } else if (path.equals("/api/public/orders")) {
+            } else if (path.equals(ApiPaths.V1 + "/public/orders")) {
                 rule = properties.order();
                 key = "order:" + guestKey(request);
-            } else if (path.equals("/api/admin/images")) {
+            } else if (path.equals(ApiPaths.V1 + "/admin/images")) {
                 rule = properties.upload();
                 key = "upload:" + CurrentStaff.find().map(p -> "u" + p.userId()).orElse(request.getRemoteAddr());
             }

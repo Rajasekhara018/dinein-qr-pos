@@ -2,6 +2,7 @@ import { HttpClient, HttpEvent, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { silentErrors } from '../http/http-context';
+import { API_BASE } from './api-base';
 import {
   AdminOrderSearchParams,
   AdminOrderSummary,
@@ -45,123 +46,123 @@ function toParams(
   return params;
 }
 
-/** Menu admin: `/api/admin/categories`, `/api/admin/items`, `/api/admin/images`. */
+/** Menu admin: `/api/v1/admin/categories`, `/api/v1/admin/items`, `/api/v1/admin/images`. */
 @Injectable({ providedIn: 'root' })
 export class AdminMenuApi {
   private readonly http = inject(HttpClient);
 
   categories(): Observable<CategoryResponse[]> {
-    return this.http.get<CategoryResponse[]>('/api/admin/categories');
+    return this.http.get<CategoryResponse[]>(`${API_BASE}/admin/categories`);
   }
 
   createCategory(body: CategoryRequest): Observable<CategoryResponse> {
-    return this.http.post<CategoryResponse>('/api/admin/categories', body);
+    return this.http.post<CategoryResponse>(`${API_BASE}/admin/categories`, body);
   }
 
   updateCategory(id: number, body: CategoryRequest): Observable<CategoryResponse> {
-    return this.http.put<CategoryResponse>(`/api/admin/categories/${id}`, body);
+    return this.http.put<CategoryResponse>(`${API_BASE}/admin/categories/${id}`, body);
   }
 
   setCategoryActive(id: number, active: boolean): Observable<CategoryResponse> {
-    return this.http.patch<CategoryResponse>(`/api/admin/categories/${id}/status`, { active });
+    return this.http.patch<CategoryResponse>(`${API_BASE}/admin/categories/${id}/status`, { active });
   }
 
   reorderCategories(ids: number[]): Observable<CategoryResponse[]> {
-    return this.http.patch<CategoryResponse[]>('/api/admin/categories/reorder', { ids });
+    return this.http.patch<CategoryResponse[]>(`${API_BASE}/admin/categories/reorder`, { ids });
   }
 
   items(search: ItemSearchParams = {}): Observable<PageResponse<ItemResponse>> {
-    return this.http.get<PageResponse<ItemResponse>>('/api/admin/items', {
+    return this.http.get<PageResponse<ItemResponse>>(`${API_BASE}/admin/items`, {
       params: toParams({ ...search }),
     });
   }
 
   item(id: number): Observable<ItemResponse> {
-    return this.http.get<ItemResponse>(`/api/admin/items/${id}`);
+    return this.http.get<ItemResponse>(`${API_BASE}/admin/items/${id}`);
   }
 
   createItem(body: ItemRequest): Observable<ItemResponse> {
-    return this.http.post<ItemResponse>('/api/admin/items', body);
+    return this.http.post<ItemResponse>(`${API_BASE}/admin/items`, body);
   }
 
   updateItem(id: number, body: ItemRequest): Observable<ItemResponse> {
-    return this.http.put<ItemResponse>(`/api/admin/items/${id}`, body);
+    return this.http.put<ItemResponse>(`${API_BASE}/admin/items/${id}`, body);
   }
 
   setItemAvailability(id: number, available: boolean): Observable<ItemResponse> {
-    return this.http.patch<ItemResponse>(`/api/admin/items/${id}/availability`, { available });
+    return this.http.patch<ItemResponse>(`${API_BASE}/admin/items/${id}/availability`, { available });
   }
 
   updateItemPrice(id: number, body: PriceRequest): Observable<ItemResponse> {
-    return this.http.patch<ItemResponse>(`/api/admin/items/${id}/price`, body);
+    return this.http.patch<ItemResponse>(`${API_BASE}/admin/items/${id}/price`, body);
   }
 
   deleteItem(id: number): Observable<void> {
-    return this.http.delete<void>(`/api/admin/items/${id}`);
+    return this.http.delete<void>(`${API_BASE}/admin/items/${id}`);
   }
 
   /** Multipart upload (field `file`); subscribe to events for progress. */
   uploadImage(file: Blob, fileName = 'image.jpg'): Observable<HttpEvent<UploadResult>> {
     const form = new FormData();
     form.append('file', file, fileName);
-    return this.http.post<UploadResult>('/api/admin/images', form, {
+    return this.http.post<UploadResult>(`${API_BASE}/admin/images`, form, {
       reportProgress: true,
       observe: 'events',
     });
   }
 }
 
-/** `/api/admin/tables` */
+/** `/api/v1/admin/tables` */
 @Injectable({ providedIn: 'root' })
 export class AdminTablesApi {
   private readonly http = inject(HttpClient);
 
   list(): Observable<TableResponse[]> {
-    return this.http.get<TableResponse[]>('/api/admin/tables');
+    return this.http.get<TableResponse[]>(`${API_BASE}/admin/tables`);
   }
 
   create(body: TableRequest): Observable<TableResponse> {
-    return this.http.post<TableResponse>('/api/admin/tables', body);
+    return this.http.post<TableResponse>(`${API_BASE}/admin/tables`, body);
   }
 
   update(id: number, body: TableRequest): Observable<TableResponse> {
-    return this.http.put<TableResponse>(`/api/admin/tables/${id}`, body);
+    return this.http.put<TableResponse>(`${API_BASE}/admin/tables/${id}`, body);
   }
 
   regenerateQr(id: number): Observable<TableResponse> {
-    return this.http.post<TableResponse>(`/api/admin/tables/${id}/regenerate-qr`, null);
+    return this.http.post<TableResponse>(`${API_BASE}/admin/tables/${id}/regenerate-qr`, null);
   }
 
   /** Printable A4 PDF (all tables when `ids` is empty). Returned as a Blob because it needs the bearer token. */
   qrPdf(ids: number[] = []): Observable<Blob> {
-    return this.http.get('/api/admin/tables/qr.pdf', {
+    return this.http.get(`${API_BASE}/admin/tables/qr.pdf`, {
       params: toParams({ ids }),
       responseType: 'blob',
     });
   }
 
   qrPng(id: number): Observable<Blob> {
-    return this.http.get(`/api/admin/tables/${id}/qr.png`, { responseType: 'blob' });
+    return this.http.get(`${API_BASE}/admin/tables/${id}/qr.png`, { responseType: 'blob' });
   }
 }
 
-/** `/api/admin/orders` */
+/** `/api/v1/admin/orders` */
 @Injectable({ providedIn: 'root' })
 export class AdminOrdersApi {
   private readonly http = inject(HttpClient);
 
   list(search: AdminOrderSearchParams = {}): Observable<PageResponse<AdminOrderSummary>> {
-    return this.http.get<PageResponse<AdminOrderSummary>>('/api/admin/orders', {
+    return this.http.get<PageResponse<AdminOrderSummary>>(`${API_BASE}/admin/orders`, {
       params: toParams({ ...search }),
     });
   }
 
   get(id: number): Observable<AdminOrderView> {
-    return this.http.get<AdminOrderView>(`/api/admin/orders/${id}`);
+    return this.http.get<AdminOrderView>(`${API_BASE}/admin/orders/${id}`);
   }
 
   changeStatus(id: number, status: OrderStatus): Observable<AdminOrderView> {
-    return this.http.patch<AdminOrderView>(`/api/admin/orders/${id}/status`, { status });
+    return this.http.patch<AdminOrderView>(`${API_BASE}/admin/orders/${id}/status`, { status });
   }
 
   /**
@@ -170,7 +171,7 @@ export class AdminOrdersApi {
    */
   cancel(id: number, reason?: string): Observable<AdminOrderView> {
     return this.http.post<AdminOrderView>(
-      `/api/admin/orders/${id}/cancel`,
+      `${API_BASE}/admin/orders/${id}/cancel`,
       { reason: reason || null },
       { context: silentErrors() },
     );
@@ -183,17 +184,17 @@ export class AdminReportsApi {
   private readonly http = inject(HttpClient);
 
   dashboard(): Observable<Dashboard> {
-    return this.http.get<Dashboard>('/api/admin/dashboard');
+    return this.http.get<Dashboard>(`${API_BASE}/admin/dashboard`);
   }
 
   summary(from: IsoLocalDate, to: IsoLocalDate): Observable<SalesSummary> {
-    return this.http.get<SalesSummary>('/api/admin/reports/summary', {
+    return this.http.get<SalesSummary>(`${API_BASE}/admin/reports/summary`, {
       params: toParams({ from, to }),
     });
   }
 
   ordersCsv(from: IsoLocalDate, to: IsoLocalDate): Observable<Blob> {
-    return this.http.get('/api/admin/reports/orders.csv', {
+    return this.http.get(`${API_BASE}/admin/reports/orders.csv`, {
       params: toParams({ from, to }),
       responseType: 'blob',
     });
@@ -206,57 +207,57 @@ export class AdminSettingsApi {
   private readonly http = inject(HttpClient);
 
   settings(): Observable<SettingsResponse> {
-    return this.http.get<SettingsResponse>('/api/admin/settings');
+    return this.http.get<SettingsResponse>(`${API_BASE}/admin/settings`);
   }
 
   updateSettings(body: UpdateSettingsRequest): Observable<SettingsResponse> {
-    return this.http.put<SettingsResponse>('/api/admin/settings', body);
+    return this.http.put<SettingsResponse>(`${API_BASE}/admin/settings`, body);
   }
 
   staff(): Observable<StaffResponse[]> {
-    return this.http.get<StaffResponse[]>('/api/admin/staff');
+    return this.http.get<StaffResponse[]>(`${API_BASE}/admin/staff`);
   }
 
   createStaff(body: CreateStaffRequest): Observable<StaffResponse> {
-    return this.http.post<StaffResponse>('/api/admin/staff', body);
+    return this.http.post<StaffResponse>(`${API_BASE}/admin/staff`, body);
   }
 
   updateStaff(id: number, body: UpdateStaffRequest): Observable<StaffResponse> {
-    return this.http.put<StaffResponse>(`/api/admin/staff/${id}`, body);
+    return this.http.put<StaffResponse>(`${API_BASE}/admin/staff/${id}`, body);
   }
 
   devices(): Observable<DeviceResponse[]> {
-    return this.http.get<DeviceResponse[]>('/api/admin/devices');
+    return this.http.get<DeviceResponse[]>(`${API_BASE}/admin/devices`);
   }
 
   revokeDevice(id: number): Observable<void> {
-    return this.http.delete<void>(`/api/admin/devices/${id}`);
+    return this.http.delete<void>(`${API_BASE}/admin/devices/${id}`);
   }
 }
 
-/** Staff inbox: `/api/admin/notifications` (owner/manager). */
+/** Staff inbox: `/api/v1/admin/notifications` (owner/manager). */
 @Injectable({ providedIn: 'root' })
 export class AdminNotificationsApi {
   private readonly http = inject(HttpClient);
 
   list(search: NotificationSearchParams = {}): Observable<PageResponse<NotificationView>> {
-    return this.http.get<PageResponse<NotificationView>>('/api/admin/notifications', {
+    return this.http.get<PageResponse<NotificationView>>(`${API_BASE}/admin/notifications`, {
       params: toParams({ ...search }),
     });
   }
 
   /** Background poll/refresh: no global error toast. */
   unreadCount(): Observable<UnreadCount> {
-    return this.http.get<UnreadCount>('/api/admin/notifications/unread-count', {
+    return this.http.get<UnreadCount>(`${API_BASE}/admin/notifications/unread-count`, {
       context: silentErrors(),
     });
   }
 
   markRead(id: number): Observable<void> {
-    return this.http.post<void>(`/api/admin/notifications/${id}/read`, null);
+    return this.http.post<void>(`${API_BASE}/admin/notifications/${id}/read`, null);
   }
 
   markAllRead(): Observable<void> {
-    return this.http.post<void>('/api/admin/notifications/read-all', null);
+    return this.http.post<void>(`${API_BASE}/admin/notifications/read-all`, null);
   }
 }

@@ -20,7 +20,7 @@ export function defaultCheckoutStrategies(): readonly CheckoutStrategy[] {
 export const orderPagePath = (orderId: number) => ['/menu', 'orders', orderId];
 
 /**
- * Provider-agnostic checkout. Hand it the `CheckoutResponse` from `POST /api/public/orders` or
+ * Provider-agnostic checkout. Hand it the `CheckoutResponse` from `POST /api/v1/public/orders` or
  * `/retry-payment`:
  * - `status !== PENDING_PAYMENT` → navigates straight to the order page (`not-payable`).
  * - otherwise the first matching {@link CheckoutStrategy} starts the payment (SDK modal, form post, redirect).

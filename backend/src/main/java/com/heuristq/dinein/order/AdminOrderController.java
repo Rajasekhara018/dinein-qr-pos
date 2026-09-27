@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.Set;
 
 @RestController
-@RequestMapping("/api/admin/orders")
+@RequestMapping("/api/v1/admin/orders")
 public class AdminOrderController {
 
     private static final Set<OrderStatus> ADMIN_TARGETS =
@@ -64,7 +64,7 @@ public class AdminOrderController {
         return queryService.adminOrders(status, orderType, date, q, page, size);
     }
 
-    /** Counter order placed by an owner/manager; same contract as {@code POST /api/waiter/orders}. */
+    /** Counter order placed by an owner/manager; same contract as {@code POST /api/v1/waiter/orders}. */
     @PostMapping
     public CheckoutResponse place(@Valid @RequestBody StaffPlaceOrderRequest request) {
         return placementService.placeForStaff(CurrentStaff.require(), request);

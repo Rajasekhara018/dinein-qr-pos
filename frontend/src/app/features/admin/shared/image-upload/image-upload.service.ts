@@ -7,6 +7,7 @@ import {
 } from '@angular/common/http';
 import { createEnvironmentInjector, EnvironmentInjector, inject, Injectable } from '@angular/core';
 import { filter, map, Observable } from 'rxjs';
+import { API_BASE } from '../../../../core/api/api-base';
 import { UploadResult } from '../../../../core/api/models';
 import { authInterceptor } from '../../../../core/http/auth.interceptor';
 import { csrfInterceptor, XSRF_COOKIE, XSRF_HEADER } from '../../../../core/http/csrf.interceptor';
@@ -18,7 +19,7 @@ export type UploadEvent =
   | { kind: 'done'; result: UploadResult };
 
 /**
- * `POST /api/admin/images` with real upload progress.
+ * `POST /api/v1/admin/images` with real upload progress.
  *
  * The app's HttpClient uses `withFetch()`, and the Fetch API cannot report upload progress. This service owns a
  * child HttpClient without `withFetch()` (so Angular uses its XHR backend) but with the same interceptor chain
@@ -40,7 +41,7 @@ export class ImageUploadService {
     const form = new FormData();
     form.append('file', file, fileName);
     return this.http
-      .post<UploadResult>('/api/admin/images', form, {
+      .post<UploadResult>(`${API_BASE}/admin/images`, form, {
         reportProgress: true,
         observe: 'events',
         context: silentErrors(),

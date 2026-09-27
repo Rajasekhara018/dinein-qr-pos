@@ -1,15 +1,16 @@
 import { HttpClient, HttpContext, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { API_BASE } from './api-base';
 import { KITCHEN_STATUSES, KitchenConfig, KitchenOrderView, OrderStatus } from './models';
 
-/** `/api/kitchen/**` — the device token (or an owner/manager JWT via `withAuth('admin')`) is attached by authInterceptor. */
+/** `/api/v1/kitchen/**` — the device token (or an owner/manager JWT via `withAuth('admin')`) is attached by authInterceptor. */
 @Injectable({ providedIn: 'root' })
 export class KitchenApi {
   private readonly http = inject(HttpClient);
 
   config(): Observable<KitchenConfig> {
-    return this.http.get<KitchenConfig>('/api/kitchen/config');
+    return this.http.get<KitchenConfig>(`${API_BASE}/kitchen/config`);
   }
 
   orders(
@@ -17,7 +18,7 @@ export class KitchenApi {
     context?: HttpContext,
   ): Observable<KitchenOrderView[]> {
     const params = new HttpParams().set('status', statuses.join(','));
-    return this.http.get<KitchenOrderView[]>('/api/kitchen/orders', { params, context });
+    return this.http.get<KitchenOrderView[]>(`${API_BASE}/kitchen/orders`, { params, context });
   }
 
   /** CONFIRMED → PREPARING → READY → COMPLETED (Start / Ready / Served). */
@@ -27,7 +28,7 @@ export class KitchenApi {
     context?: HttpContext,
   ): Observable<KitchenOrderView> {
     return this.http.patch<KitchenOrderView>(
-      `/api/kitchen/orders/${orderId}/status`,
+      `${API_BASE}/kitchen/orders/${orderId}/status`,
       { status },
       { context },
     );

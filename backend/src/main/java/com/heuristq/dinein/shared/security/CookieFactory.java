@@ -1,6 +1,7 @@
 package com.heuristq.dinein.shared.security;
 
 import com.heuristq.dinein.shared.config.AppProperties;
+import com.heuristq.dinein.shared.web.ApiPaths;
 import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Component;
 
@@ -11,7 +12,7 @@ import java.time.Duration;
 public class CookieFactory {
 
     public static final String REFRESH_COOKIE = "dinein_rt";
-    public static final String REFRESH_COOKIE_PATH = "/api/auth";
+    public static final String REFRESH_COOKIE_PATH = ApiPaths.V1 + "/auth";
     public static final String GUEST_COOKIE = "dinein_gs";
     public static final String CSRF_COOKIE = "XSRF-TOKEN";
 

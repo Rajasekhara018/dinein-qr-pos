@@ -17,7 +17,7 @@ public class OpenApiConfig {
         return new OpenAPI()
                 .info(new Info().title("DineIn QR ordering API").version("v1")
                         .description("Guest ordering, kitchen display and admin APIs. Staff endpoints need a bearer "
-                                + "access token (POST /api/auth/login) or a kitchen device token."))
+                                + "access token (POST /api/v1/auth/login) or a kitchen device token."))
                 .components(new Components().addSecuritySchemes("bearer",
                         new SecurityScheme().type(SecurityScheme.Type.HTTP).scheme("bearer").bearerFormat("JWT")))
                 .addSecurityItem(new SecurityRequirement().addList("bearer"));

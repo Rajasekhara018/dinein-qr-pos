@@ -59,14 +59,14 @@ class OrderPaymentFlowIT extends AbstractIntegrationTest {
     }
 
     private MockHttpServletRequestBuilder verifyRequest(Cookie guest, String rzpOrderId, String paymentId) {
-        return post("/api/public/payments/verify").with(csrf()).cookie(guest).contentType(MediaType.APPLICATION_JSON)
+        return post("/api/v1/public/payments/verify").with(csrf()).cookie(guest).contentType(MediaType.APPLICATION_JSON)
                 .content("""
                         {"razorpay_order_id":"%s","razorpay_payment_id":"%s","razorpay_signature":"%s"}"""
                         .formatted(rzpOrderId, paymentId, paymentSignature(rzpOrderId, paymentId)));
     }
 
     private MockHttpServletRequestBuilder webhook(String payload, String eventId) {
-        return post("/api/webhooks/razorpay").contentType(MediaType.APPLICATION_JSON).content(payload)
+        return post("/api/v1/webhooks/razorpay").contentType(MediaType.APPLICATION_JSON).content(payload)
                 .header("X-Razorpay-Signature", webhookSignature(payload))
                 .header("X-Razorpay-Event-Id", eventId);
     }
@@ -109,7 +109,7 @@ class OrderPaymentFlowIT extends AbstractIntegrationTest {
         Cookie guest = guestCookie();
         String rzpOrderId = checkout(guest).get("checkout").get("order_id").asText();
 
-        mvc.perform(post("/api/public/payments/verify").with(csrf()).cookie(guest).contentType(MediaType.APPLICATION_JSON)
+        mvc.perform(post("/api/v1/public/payments/verify").with(csrf()).cookie(guest).contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {"razorpay_order_id":"%s","razorpay_payment_id":"pay_x","razorpay_signature":"%s"}"""
                                 .formatted(rzpOrderId, paymentSignature(rzpOrderId, "pay_other"))))
@@ -200,7 +200,7 @@ class OrderPaymentFlowIT extends AbstractIntegrationTest {
     @Test
     void invalidWebhookSignatureIsRejectedWith400() throws Exception {
         String payload = capturedWebhook("order_x", "pay_x", 100L);
-        mvc.perform(post("/api/webhooks/razorpay").contentType(MediaType.APPLICATION_JSON).content(payload)
+        mvc.perform(post("/api/v1/webhooks/razorpay").contentType(MediaType.APPLICATION_JSON).content(payload)
                         .header("X-Razorpay-Signature", "0".repeat(64)))
                 .andExpect(status().isBadRequest());
     }
@@ -210,7 +210,7 @@ class OrderPaymentFlowIT extends AbstractIntegrationTest {
         paneer.setAvailable(false);
         itemRepository.save(paneer);
 
-        mvc.perform(post("/api/public/orders").with(csrf()).cookie(guestCookie())
+        mvc.perform(post("/api/v1/public/orders").with(csrf()).cookie(guestCookie())
                         .header("Idempotency-Key", UUID.randomUUID().toString())
                         .contentType(MediaType.APPLICATION_JSON).content(simpleCart()))
                 .andExpect(status().isConflict())
@@ -228,7 +228,7 @@ class OrderPaymentFlowIT extends AbstractIntegrationTest {
         paneer.setBasePrice(new BigDecimal("999.00"));
         itemRepository.save(paneer);
 
-        mvc.perform(get("/api/public/orders/" + orderId).cookie(guest))
+        mvc.perform(get("/api/v1/public/orders/" + orderId).cookie(guest))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.items[0].unitPrice").value(260.00))
                 .andExpect(jsonPath("$.bill.grandTotal").value(819.00));
@@ -238,8 +238,8 @@ class OrderPaymentFlowIT extends AbstractIntegrationTest {
     void guestsCannotReadOtherGuestsOrders() throws Exception {
         long orderId = checkout(guestCookie()).get("orderId").asLong();
 
-        mvc.perform(get("/api/public/orders/" + orderId).cookie(guestCookie())).andExpect(status().isNotFound());
-        mvc.perform(get("/api/public/orders/" + orderId)).andExpect(status().isUnauthorized());
+        mvc.perform(get("/api/v1/public/orders/" + orderId).cookie(guestCookie())).andExpect(status().isNotFound());
+        mvc.perform(get("/api/v1/public/orders/" + orderId)).andExpect(status().isUnauthorized());
     }
 
     @Test

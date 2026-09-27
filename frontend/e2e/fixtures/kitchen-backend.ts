@@ -125,8 +125,8 @@ export async function mockKitchenBackend(page: Page): Promise<KitchenMock> {
     const path = url.pathname;
     const method = request.method();
 
-    if (path === '/api/auth/csrf') return route.fulfill({ status: 204 });
-    if (path === '/api/auth/kitchen-device' && method === 'POST') {
+    if (path === '/api/v1/auth/csrf') return route.fulfill({ status: 204 });
+    if (path === '/api/v1/auth/kitchen-device' && method === 'POST') {
       const body = request.postDataJSON() as { username: string; pin?: string };
       mock.loginRequests.push(body);
       if (body.pin !== '1234') {
@@ -138,7 +138,7 @@ export async function mockKitchenBackend(page: Page): Promise<KitchenMock> {
         user: deviceSession.user,
       });
     }
-    if (path === '/api/kitchen/config') {
+    if (path === '/api/v1/kitchen/config') {
       return json(route, {
         restaurantName: 'Spice Route',
         warnMinutes: 10,
@@ -146,8 +146,8 @@ export async function mockKitchenBackend(page: Page): Promise<KitchenMock> {
         readyAutoHideMinutes: 10,
       });
     }
-    if (path === '/api/kitchen/orders' && method === 'GET') return json(route, mock.orders);
-    const statusMatch = /^\/api\/kitchen\/orders\/(\d+)\/status$/.exec(path);
+    if (path === '/api/v1/kitchen/orders' && method === 'GET') return json(route, mock.orders);
+    const statusMatch = /^\/api\/v1\/kitchen\/orders\/(\d+)\/status$/.exec(path);
     if (statusMatch && method === 'PATCH') {
       const id = Number(statusMatch[1]);
       const body = request.postDataJSON() as { status: string };

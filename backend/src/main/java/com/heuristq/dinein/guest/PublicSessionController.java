@@ -21,7 +21,7 @@ import java.time.Instant;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/public/session")
+@RequestMapping("/api/v1/public/session")
 public class PublicSessionController {
 
     public record TableInfo(Long id, String label) {

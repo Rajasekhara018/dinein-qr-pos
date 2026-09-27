@@ -17,10 +17,10 @@ from an admin panel.
 | Role | Signs in with | Can |
 |---|---|---|
 | Customer | nothing (table QR, signed cookie) | Order dine-in or takeaway (if enabled), pay online, follow their own orders |
-| Owner | `POST /api/auth/login`, username + password | Everything: admin panel incl. staff, settings, reports; waiter and kitchen screens |
-| Manager | `POST /api/auth/login`, username + password | Admin panel except staff, settings changes and reports; waiter and kitchen screens |
-| Kitchen | `POST /api/auth/kitchen-device`, password or PIN (30-day device token) | Kitchen board only: start, ready, served |
-| Waiter | `POST /api/auth/login`, password **or PIN** | Waiter screen only (`/api/waiter/**`): tables, active orders, serve READY orders, take orders paid online or offline |
+| Owner | `POST /api/v1/auth/login`, username + password | Everything: admin panel incl. staff, settings, reports; waiter and kitchen screens |
+| Manager | `POST /api/v1/auth/login`, username + password | Admin panel except staff, settings changes and reports; waiter and kitchen screens |
+| Kitchen | `POST /api/v1/auth/kitchen-device`, password or PIN (30-day device token) | Kitchen board only: start, ready, served |
+| Waiter | `POST /api/v1/auth/login`, password **or PIN** | Waiter screen only (`/api/v1/waiter/**`): tables, active orders, serve READY orders, take orders paid online or offline |
 
 - The original brief is in [docs/REQUIREMENTS.md](docs/REQUIREMENTS.md).
 - Deliberate deviations and design choices are in [docs/DECISIONS.md](docs/DECISIONS.md). Main ones: Gradle,
@@ -35,7 +35,7 @@ from an admin panel.
                                   ├─ /            Angular SPA (guest, kitchen, admin – lazy-loaded modules)
                                   ├─ /api/**  ──▶ Spring Boot backend :8080 ──▶ PostgreSQL 16
                                   └─ /ws      ──▶ STOMP over WebSocket (same backend)
- Razorpay / PayU / Pine Labs ──webhooks──▶ /api/webhooks/{provider}
+ Razorpay / PayU / Pine Labs ──webhooks──▶ /api/v1/webhooks/{provider}
 ```
 
 **Backend** (`backend/`) — Java 21, Spring Boot 3.5, Gradle.
@@ -46,7 +46,7 @@ from an admin panel.
 - **Prices are computed on the server only.** Order lines snapshot name, price and GST, so later menu edits never
   change a past bill.
 - **Images** are stored in PostgreSQL as re-encoded main (800 px) and thumbnail (200 px) versions.
-  - Served from `/api/images/{id}` with `ETag` and a one-year `immutable` cache.
+  - Served from `/api/v1/images/{id}` with `ETag` and a one-year `immutable` cache.
   - Menu responses carry only image URLs, never the bytes.
 - **Payments** go through a `PaymentGateway` SPI.
   - Razorpay (Checkout.js), PayU (hosted form) and Pine Labs Online / Plural (hosted redirect) are implemented.
@@ -176,7 +176,7 @@ does not break refunds or webhooks for older orders.
 
 In the dashboard, open **Account & Settings → Webhooks → Add new webhook**:
 
-- **URL:** `https://<your public host>/api/webhooks/razorpay`
+- **URL:** `https://<your public host>/api/v1/webhooks/razorpay`
 - **Secret:** a random string. Put the same value in `RAZORPAY_WEBHOOK_SECRET`.
 - **Events:** `payment.captured`, `payment.failed`, `order.paid`, `refund.processed` (optionally `refund.failed`)
 
@@ -194,16 +194,16 @@ cloudflared tunnel --url http://localhost:4200
 ngrok http 4200
 ```
 
-Use the printed HTTPS URL + `/api/webhooks/razorpay` as the webhook URL, and set `APP_PUBLIC_BASE_URL` to the same
+Use the printed HTTPS URL + `/api/v1/webhooks/razorpay` as the webhook URL, and set `APP_PUBLIC_BASE_URL` to the same
 origin so QR codes and redirects point there.
 
 ### PayU
 
 1. Set `PAYMENT_PROVIDER=PAYU`, `PAYU_KEY` and `PAYU_SALT` (test credentials from the PayU dashboard).
 2. The guest is sent to PayU's hosted page.
-3. PayU posts the result back to `/api/public/payments/payu/callback`. The backend checks the hash, confirms the
+3. PayU posts the result back to `/api/v1/public/payments/payu/callback`. The backend checks the hash, confirms the
    payment with the `verify_payment` API, and then redirects the guest to their order page.
-4. Configure the PayU webhook to `https://<host>/api/webhooks/payu`.
+4. Configure the PayU webhook to `https://<host>/api/v1/webhooks/payu`.
 
 ### Pine Labs Online (Plural)
 
@@ -212,10 +212,10 @@ origin so QR codes and redirects point there.
 2. The backend gets an OAuth token (`/api/auth/v1/token`, cached until shortly before `expires_at`) and creates a
    hosted-checkout order (`/api/checkout/v1/orders`, `pre_auth=false`, amount in paise). The guest is redirected to
    the returned `redirect_url`.
-3. Pine Labs sends the guest back to `https://<host>/api/public/payments/pinelabs/callback` (GET or form POST). The
+3. Pine Labs sends the guest back to `https://<host>/api/v1/public/payments/pinelabs/callback` (GET or form POST). The
    backend takes only the `order_id` from that redirect. It reads the real result from
    `GET /api/pay/v1/orders/{order_id}` before confirming anything, then redirects the guest to their order page.
-4. Ask Pine Labs (dashboard or support) to set the webhook URL to `https://<host>/api/webhooks/pinelabs` with the
+4. Ask Pine Labs (dashboard or support) to set the webhook URL to `https://<host>/api/v1/webhooks/pinelabs` with the
    events `ORDER_PROCESSED`, `ORDER_FAILED`, `PAYMENT_FAILED`, `REFUND_PROCESSED` and `REFUND_FAILED`.
    - Webhooks are verified with `webhook-id`/`webhook-timestamp`/`webhook-signature` (HMAC-SHA256 over the raw
      body) and de-duplicated by `webhook-id`.
@@ -244,11 +244,11 @@ The frontend already handles all three checkout modes.
 
 Staff can take the money themselves instead of the guest paying online:
 
-- **Staff-assisted order**: `POST /api/waiter/orders` (or `POST /api/admin/orders`) with `paymentMethod` `CASH`,
+- **Staff-assisted order**: `POST /api/v1/waiter/orders` (or `POST /api/v1/admin/orders`) with `paymentMethod` `CASH`,
   `UPI_AT_COUNTER` or `CARD_AT_COUNTER`. The order is created and confirmed in one step and goes straight to the
   kitchen. With `paymentMethod: ONLINE` the response is the usual checkout (show it to the guest on the waiter's
   device); the order then expires like a guest order if nobody pays.
-- **Counter settlement**: `POST /api/admin/orders/{id}/mark-paid-offline {"method":"CASH"}` settles a
+- **Counter settlement**: `POST /api/v1/admin/orders/{id}/mark-paid-offline {"method":"CASH"}` settles a
   `PENDING_PAYMENT`, `EXPIRED` or `PAYMENT_FAILED` order (e.g. the guest's online payment failed and they pay cash).
   `409 ALREADY_PAID` if a payment was already captured; `409 PAYMENT_FLAGGED` for flagged orders.
 - An offline payment is a `payment` row with `provider = OFFLINE`, the method, status `CAPTURED` and
@@ -319,21 +319,21 @@ In **Admin → Tables**:
 ### Waiter screen
 
 Waiters open `https://<host>/waiter` on their phone and sign in with username + password or PIN
-(`POST /api/auth/login` with `{"username","pin"}`); they get the normal 15-minute access token and refresh cookie.
+(`POST /api/v1/auth/login` with `{"username","pin"}`); they get the normal 15-minute access token and refresh cookie.
 Owners and managers can use the waiter screen too; kitchen accounts and devices cannot.
 
 | Endpoint | Purpose |
 |---|---|
-| `GET /api/waiter/config` | Restaurant name, ordering/takeaway switches, whether online payment is available, the signed-in staff member |
-| `GET /api/waiter/tables` | Active tables with counts of their open orders (confirmed / preparing / ready) |
-| `GET /api/waiter/orders?status=` | Active orders (`CONFIRMED,PREPARING,READY` by default), oldest first, with items, table and type. READY orders stay until served |
-| `GET /api/waiter/orders/{id}` | One order with bill and latest payment (the return page after an online payment) |
-| `PATCH /api/waiter/orders/{id}/serve` | `READY → COMPLETED`; `409 ILLEGAL_TRANSITION` from any other status |
-| `GET /api/waiter/menu` | The guest menu, **including unavailable items** (`available: false`) so the waiter can tell the guest |
-| `POST /api/waiter/orders` | Staff-assisted order: `{tableId, orderType, items, note, customerName?, customerPhone?, paymentMethod, idempotencyKey}` |
-| `POST /api/waiter/orders/{id}/retry-payment` | New checkout for an unpaid staff-assisted ONLINE order |
-| `POST /api/waiter/payments/verify` | SDK checkout success handler for orders paid on the waiter's device |
-| `GET /api/waiter/notifications`, `/unread-count`, `POST .../{id}/read`, `POST .../read-all` | Waiter inbox ("order ready") |
+| `GET /api/v1/waiter/config` | Restaurant name, ordering/takeaway switches, whether online payment is available, the signed-in staff member |
+| `GET /api/v1/waiter/tables` | Active tables with counts of their open orders (confirmed / preparing / ready) |
+| `GET /api/v1/waiter/orders?status=` | Active orders (`CONFIRMED,PREPARING,READY` by default), oldest first, with items, table and type. READY orders stay until served |
+| `GET /api/v1/waiter/orders/{id}` | One order with bill and latest payment (the return page after an online payment) |
+| `PATCH /api/v1/waiter/orders/{id}/serve` | `READY → COMPLETED`; `409 ILLEGAL_TRANSITION` from any other status |
+| `GET /api/v1/waiter/menu` | The guest menu, **including unavailable items** (`available: false`) so the waiter can tell the guest |
+| `POST /api/v1/waiter/orders` | Staff-assisted order: `{tableId, orderType, items, note, customerName?, customerPhone?, paymentMethod, idempotencyKey}` |
+| `POST /api/v1/waiter/orders/{id}/retry-payment` | New checkout for an unpaid staff-assisted ONLINE order |
+| `POST /api/v1/waiter/payments/verify` | SDK checkout success handler for orders paid on the waiter's device |
+| `GET /api/v1/waiter/notifications`, `/unread-count`, `POST .../{id}/read`, `POST .../read-all` | Waiter inbox ("order ready") |
 
 Live updates: waiters subscribe to `/topic/kitchen/orders` (READY events carry the full order) and
 `/topic/waiter/notifications`.

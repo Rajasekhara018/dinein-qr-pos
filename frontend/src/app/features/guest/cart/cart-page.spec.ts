@@ -98,7 +98,7 @@ describe('CartPage', () => {
     expect(text('phone-error')).toContain('valid 10-digit Indian mobile');
     payButton().click();
     await fixture.whenStable();
-    controller.expectNone('/api/public/orders');
+    controller.expectNone('/api/v1/public/orders');
 
     typeInto('#customer-phone', '5876543210');
     expect(text('phone-error')).toBeTruthy();
@@ -123,7 +123,7 @@ describe('CartPage', () => {
     typeInto('#customer-name', 'Asha');
     const paying = fixture.componentInstance.pay();
 
-    const req = controller.expectOne('/api/public/orders');
+    const req = controller.expectOne('/api/v1/public/orders');
     expect(req.request.headers.get('Idempotency-Key')).toMatch(/^[0-9a-f-]{36}$/);
     expect(req.request.body.customerName).toBe('Asha');
     expect(req.request.body.items).toEqual([
@@ -140,12 +140,12 @@ describe('CartPage', () => {
   it('reuses the same key for a retried attempt and ignores double taps', async () => {
     const first = fixture.componentInstance.pay();
     const doubleTap = fixture.componentInstance.pay();
-    const req1 = controller.expectOne('/api/public/orders');
+    const req1 = controller.expectOne('/api/v1/public/orders');
     req1.error(new ProgressEvent('error'), { status: 0 });
     await Promise.all([first, doubleTap]);
 
     const second = fixture.componentInstance.pay();
-    const req2 = controller.expectOne('/api/public/orders');
+    const req2 = controller.expectOne('/api/v1/public/orders');
     expect(req2.request.headers.get('Idempotency-Key')).toBe(
       req1.request.headers.get('Idempotency-Key'),
     );
@@ -154,7 +154,7 @@ describe('CartPage', () => {
 
     cart.increment(cart.lines()[0].key);
     const third = fixture.componentInstance.pay();
-    const req3 = controller.expectOne('/api/public/orders');
+    const req3 = controller.expectOne('/api/v1/public/orders');
     expect(req3.request.headers.get('Idempotency-Key')).not.toBe(
       req1.request.headers.get('Idempotency-Key'),
     );
@@ -164,7 +164,7 @@ describe('CartPage', () => {
 
   it('highlights unavailable lines on ITEM_UNAVAILABLE and disables Pay', async () => {
     const paying = fixture.componentInstance.pay();
-    controller.expectOne('/api/public/orders').flush(
+    controller.expectOne('/api/v1/public/orders').flush(
       {
         code: 'ITEM_UNAVAILABLE',
         message: 'Some items are unavailable',
@@ -182,7 +182,7 @@ describe('CartPage', () => {
     );
     await paying;
     controller
-      .match('/api/public/menu')
+      .match('/api/v1/public/menu')
       .forEach((r) => r.flush({ version: 'v', pricesIncludeGst: false, categories: [] }));
     fixture.detectChanges();
 
@@ -197,7 +197,7 @@ describe('CartPage', () => {
       new PaymentNotCompletedError('dismissed', 42, 'Payment was cancelled.'),
     );
     const paying = fixture.componentInstance.pay();
-    controller.expectOne('/api/public/orders').flush(checkoutResponse);
+    controller.expectOne('/api/v1/public/orders').flush(checkoutResponse);
     await paying;
     fixture.detectChanges();
 
@@ -209,7 +209,7 @@ describe('CartPage', () => {
 
     checkout.pay.mockResolvedValue({ kind: 'paid', order: { id: 42 } });
     const retry = fixture.componentInstance.retryPayment();
-    controller.expectOne('/api/public/orders/42/retry-payment').flush(checkoutResponse);
+    controller.expectOne('/api/v1/public/orders/42/retry-payment').flush(checkoutResponse);
     await retry;
     expect(checkout.pay).toHaveBeenCalledTimes(2);
     expect(cart.isEmpty()).toBe(true);
@@ -225,7 +225,7 @@ describe('CartPage', () => {
   it('shows a message on ORDERING_CLOSED', async () => {
     const paying = fixture.componentInstance.pay();
     controller
-      .expectOne('/api/public/orders')
+      .expectOne('/api/v1/public/orders')
       .flush(
         { code: 'ORDERING_CLOSED', message: 'We are not accepting orders right now' },
         { status: 503, statusText: 'Service Unavailable' },

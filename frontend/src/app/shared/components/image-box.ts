@@ -18,7 +18,7 @@ const RATIO_CLASS: Record<ImageRatio, string> = {
 
 /**
  * Fixed-aspect-ratio image box (no layout shift) using `NgOptimizedImage` in `fill` mode. Images come from the
- * same origin (`/api/images/{id}` or `/thumb`) with immutable caching, so no image loader is configured.
+ * same origin (`/api/v1/images/{id}` or `/thumb`) with immutable caching, so no image loader is configured.
  * Shows a neutral placeholder while loading, when there is no image, or if it fails to load. Lazy by default;
  * set `priority` for the LCP image.
  */

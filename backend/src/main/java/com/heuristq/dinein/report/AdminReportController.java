@@ -19,7 +19,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 
 @RestController
-@RequestMapping("/api/admin")
+@RequestMapping("/api/v1/admin")
 public class AdminReportController {
 
     private final ReportService reportService;

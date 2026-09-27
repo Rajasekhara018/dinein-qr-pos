@@ -31,8 +31,8 @@ describe('errorInterceptor', () => {
   });
 
   it('normalises the backend error body into a typed ApiError', async () => {
-    const call = firstValueFrom(http.post('/api/public/orders', {}));
-    controller.expectOne('/api/public/orders').flush(
+    const call = firstValueFrom(http.post('/api/v1/public/orders', {}));
+    controller.expectOne('/api/v1/public/orders').flush(
       {
         code: 'ITEM_UNAVAILABLE',
         message: 'Some items are unavailable',
@@ -48,9 +48,9 @@ describe('errorInterceptor', () => {
   });
 
   it('does not toast handled 4xx errors', async () => {
-    const call = firstValueFrom(http.get('/api/public/orders/9'));
+    const call = firstValueFrom(http.get('/api/v1/public/orders/9'));
     controller
-      .expectOne('/api/public/orders/9')
+      .expectOne('/api/v1/public/orders/9')
       .flush(
         { code: 'NOT_FOUND', message: 'Order not found' },
         { status: 404, statusText: 'Not Found' },
@@ -60,9 +60,9 @@ describe('errorInterceptor', () => {
   });
 
   it('toasts unexpected 5xx errors', async () => {
-    const call = firstValueFrom(http.get('/api/public/menu'));
+    const call = firstValueFrom(http.get('/api/v1/public/menu'));
     controller
-      .expectOne('/api/public/menu')
+      .expectOne('/api/v1/public/menu')
       .flush(
         { code: 'INTERNAL_ERROR', message: 'Something went wrong' },
         { status: 500, statusText: 'Server Error' },
@@ -72,8 +72,8 @@ describe('errorInterceptor', () => {
   });
 
   it('maps network failures to NETWORK_ERROR and toasts them', async () => {
-    const call = firstValueFrom(http.get('/api/public/menu'));
-    controller.expectOne('/api/public/menu').error(new ProgressEvent('error'), { status: 0 });
+    const call = firstValueFrom(http.get('/api/v1/public/menu'));
+    controller.expectOne('/api/v1/public/menu').error(new ProgressEvent('error'), { status: 0 });
     const error = (await call.catch((e: unknown) => e)) as ApiError;
     expect(error.code).toBe('NETWORK_ERROR');
     expect(error.isNetworkError).toBe(true);
@@ -81,9 +81,9 @@ describe('errorInterceptor', () => {
   });
 
   it('stays silent for 5xx when the caller opted out', async () => {
-    const call = firstValueFrom(http.post('/api/public/orders', {}, { context: silentErrors() }));
+    const call = firstValueFrom(http.post('/api/v1/public/orders', {}, { context: silentErrors() }));
     controller
-      .expectOne('/api/public/orders')
+      .expectOne('/api/v1/public/orders')
       .flush(
         { code: 'PAYMENTS_NOT_CONFIGURED', message: 'x' },
         { status: 503, statusText: 'Unavailable' },
@@ -94,9 +94,9 @@ describe('errorInterceptor', () => {
   });
 
   it('falls back to a generic error when the body is not JSON', async () => {
-    const call = firstValueFrom(http.get('/api/admin/x'));
+    const call = firstValueFrom(http.get('/api/v1/admin/x'));
     controller
-      .expectOne('/api/admin/x')
+      .expectOne('/api/v1/admin/x')
       .flush('<html>Bad gateway</html>', { status: 502, statusText: 'Bad Gateway' });
     const error = (await call.catch((e: unknown) => e)) as ApiError;
     expect(error).toMatchObject({ status: 502, code: 'INTERNAL_ERROR' });

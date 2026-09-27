@@ -7,7 +7,7 @@ import { StaffInfo, StaffRole, TokenResponse } from '../api/models';
  * Admin (OWNER / MANAGER) session.
  *
  * - The access JWT lives in memory only (a signal) — never in storage. The refresh token is an HttpOnly cookie
- *   (`dinein_rt`, path `/api/auth`) the browser sends to `/api/auth/refresh`.
+ *   (`dinein_rt`, path `/api/v1/auth`) the browser sends to `/api/v1/auth/refresh`.
  * - After a reload the session is restored with {@link ensureSession} (one silent refresh), which the admin guards
  *   call; `authInterceptor` also refreshes once on a 401.
  * - `refresh()` is single-flight: concurrent callers share one request.
@@ -28,7 +28,7 @@ export class AuthStore {
   readonly isAuthenticated = computed(() => this._accessToken() !== null && this._user() !== null);
   readonly role = computed<StaffRole | null>(() => this._user()?.role ?? null);
   readonly isOwner = computed(() => this.role() === 'OWNER');
-  /** The JWT only grants `/api/auth/change-password` until this is false. */
+  /** The JWT only grants `/api/v1/auth/change-password` until this is false. */
   readonly mustChangePassword = computed(() => this._user()?.mustChangePassword ?? false);
 
   private refreshInFlight: Promise<boolean> | null = null;

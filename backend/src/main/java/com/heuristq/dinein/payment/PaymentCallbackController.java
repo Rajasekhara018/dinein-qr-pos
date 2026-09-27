@@ -24,7 +24,7 @@ import java.util.Map;
  */
 @Slf4j
 @RestController
-@RequestMapping("/api/public/payments")
+@RequestMapping("/api/v1/public/payments")
 public class PaymentCallbackController {
 
     private final PaymentService paymentService;

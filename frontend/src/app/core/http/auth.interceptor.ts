@@ -2,6 +2,7 @@ import { HttpErrorResponse, HttpInterceptorFn, HttpRequest } from '@angular/comm
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { catchError, from, switchMap, throwError } from 'rxjs';
+import { API_BASE } from '../api/api-base';
 import { ADMIN_PATHS, KITCHEN_PATHS } from '../auth/auth-paths';
 import { AuthStore } from '../auth/auth.store';
 import { DeviceAuthStore } from '../auth/device-auth.store';
@@ -13,13 +14,13 @@ export function resolveAuthMode(req: HttpRequest<unknown>): Exclude<AuthMode, 'a
   if (mode !== 'auto') return mode;
   const path = pathOf(req.url);
   if (
-    path.startsWith('/api/admin/') ||
-    path === '/api/auth/me' ||
-    path === '/api/auth/change-password'
+    path.startsWith(`${API_BASE}/admin/`) ||
+    path === `${API_BASE}/auth/me` ||
+    path === `${API_BASE}/auth/change-password`
   ) {
     return 'admin';
   }
-  if (path.startsWith('/api/kitchen/')) return 'device';
+  if (path.startsWith(`${API_BASE}/kitchen/`)) return 'device';
   return 'none';
 }
 
@@ -29,7 +30,7 @@ const withBearer = (req: HttpRequest<unknown>, token: string | null) =>
 /**
  * Attaches `Authorization: Bearer …`:
  * - admin calls: the in-memory access JWT from {@link AuthStore}. On 401 it performs ONE single-flight
- *   `POST /api/auth/refresh` (shared by all concurrent failures) and retries once; if refreshing fails the session
+ *   `POST /api/v1/auth/refresh` (shared by all concurrent failures) and retries once; if refreshing fails the session
  *   is cleared and the user is sent to the admin login.
  * - kitchen calls: the persisted device token from {@link DeviceAuthStore}; on 401 the device is forgotten and the
  *   kitchen login is shown.

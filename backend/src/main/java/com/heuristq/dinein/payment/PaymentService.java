@@ -19,6 +19,7 @@ import com.heuristq.dinein.settings.domain.RestaurantSettingsEntity;
 import com.heuristq.dinein.shared.config.AppProperties;
 import com.heuristq.dinein.shared.exception.ApiException;
 import com.heuristq.dinein.shared.util.Money;
+import com.heuristq.dinein.shared.web.ApiPaths;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -89,7 +90,7 @@ public class PaymentService {
     private CheckoutContext contextFor(OrderEntity order, RestaurantSettingsEntity settings, PaymentGateway gateway) {
         return new CheckoutContext(order.getId(), order.getOrderNumber(), Money.toPaise(order.getGrandTotal()), "INR",
                 order.getCustomerName(), order.getCustomerPhone(), settings.getName(), settings.getBrandColor(), null,
-                publicBaseUrl + "/api/public/payments/" + gateway.code().toLowerCase() + "/callback",
+                publicBaseUrl + ApiPaths.V1 + "/public/payments/" + gateway.code().toLowerCase() + "/callback",
                 publicBaseUrl + orderPagePath(order));
     }
 

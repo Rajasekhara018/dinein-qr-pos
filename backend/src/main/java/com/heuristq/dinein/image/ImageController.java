@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit;
  * The ETag check runs against the hash only, so a 304 never loads the BYTEA column.
  */
 @RestController
-@RequestMapping("/api/images")
+@RequestMapping("/api/v1/images")
 public class ImageController {
 
     private static final CacheControl IMMUTABLE = CacheControl.maxAge(365, TimeUnit.DAYS).cachePublic().immutable();

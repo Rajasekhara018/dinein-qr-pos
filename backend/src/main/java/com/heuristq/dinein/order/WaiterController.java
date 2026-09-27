@@ -42,7 +42,7 @@ import java.util.Set;
  * list, serving READY orders, and staff-assisted ordering paid online or offline.
  */
 @RestController
-@RequestMapping("/api/waiter")
+@RequestMapping("/api/v1/waiter")
 public class WaiterController {
 
     /** Waiters only hand food over: READY -> COMPLETED. */
@@ -139,7 +139,7 @@ public class WaiterController {
 
     /**
      * Client-side verification after an SDK checkout run on the waiter's device (same body as
-     * {@code POST /api/public/payments/verify}). The provider signature authenticates the payment.
+     * {@code POST /api/v1/public/payments/verify}). The provider signature authenticates the payment.
      */
     @PostMapping("/payments/verify")
     public GuestOrderView verify(@RequestBody Map<String, String> body) {

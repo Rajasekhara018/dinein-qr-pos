@@ -2,7 +2,7 @@ import { ItemResponse, PriceRequest, VariantPrice } from '../../../../core/api/m
 import { toPaise } from '../../../../core/util/money';
 
 /**
- * Quick inline rate edit (`PATCH /api/admin/items/{id}/price`): either the base price, or prices of specific sizes.
+ * Quick inline rate edit (`PATCH /api/v1/admin/items/{id}/price`): either the base price, or prices of specific sizes.
  * All comparisons are done in paise to avoid floating-point noise.
  */
 export interface PriceChange {

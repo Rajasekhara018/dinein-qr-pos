@@ -41,7 +41,7 @@ test.describe('admin panel', () => {
     await expect(page.getByTestId('kpi-revenue')).toContainText('18,450.50');
     await expect(page.getByTestId('flagged-alert')).toBeVisible();
     await expect(page.getByTestId('notifications-badge')).toHaveText('2');
-    expect(state.requests.find((r) => r.path === '/api/auth/change-password')?.body).toEqual({
+    expect(state.requests.find((r) => r.path === '/api/v1/auth/change-password')?.body).toEqual({
       currentPassword: 'Owner@2026x',
       newPassword: 'NewSecret2026',
     });
@@ -74,7 +74,7 @@ test.describe('admin panel', () => {
 
     await expect(page).toHaveURL(/\/admin\/menu\/items\?categoryId=10/);
     await expect(page.getByText('Paneer Tikka').locator('visible=true').first()).toBeVisible();
-    const created = state.requests.find((r) => r.method === 'POST' && r.path === '/api/admin/items');
+    const created = state.requests.find((r) => r.method === 'POST' && r.path === '/api/v1/admin/items');
     expect(created?.body).toMatchObject({
       categoryId: 10,
       name: 'Paneer Tikka',
@@ -105,7 +105,7 @@ test.describe('admin panel', () => {
     await toast.getByRole('button', { name: 'Undo' }).click();
 
     await expect(page.getByTestId('price-1').locator('visible=true')).toHaveText('₹120.00');
-    const patches = state.requests.filter((r) => r.method === 'PATCH' && r.path === '/api/admin/items/1/price');
+    const patches = state.requests.filter((r) => r.method === 'PATCH' && r.path === '/api/v1/admin/items/1/price');
     expect(patches.map((p) => p.body)).toEqual([
       { basePrice: 135.5, version: 3 },
       { basePrice: 120, version: 4 },

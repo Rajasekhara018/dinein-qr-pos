@@ -108,7 +108,7 @@ describe('CheckoutService', () => {
 
   async function flushVerify(): Promise<void> {
     await vi
-      .waitFor(() => controller.expectOne('/api/public/payments/verify'), { timeout: 1000 })
+      .waitFor(() => controller.expectOne('/api/v1/public/payments/verify'), { timeout: 1000 })
       .then((req) => {
         expect(req.request.body).toEqual({
           razorpay_order_id: 'order_R1',
@@ -153,7 +153,7 @@ describe('CheckoutService', () => {
 
     it('rejects with reason "verification-failed" when the server cannot verify', async () => {
       const result = service.pay(sdkResponse).catch((e: unknown) => e);
-      const req = await vi.waitFor(() => controller.expectOne('/api/public/payments/verify'));
+      const req = await vi.waitFor(() => controller.expectOne('/api/v1/public/payments/verify'));
       req.flush(
         { code: 'PAYMENT_PROVIDER_ERROR', message: 'Could not verify' },
         { status: 502, statusText: 'Bad Gateway' },

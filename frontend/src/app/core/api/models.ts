@@ -768,7 +768,7 @@ export interface CheckoutResponse {
   restaurantName?: string;
 }
 
-/** Body for `POST /api/public/payments/verify` (Razorpay success handler response, or provider fields). */
+/** Body for `POST /api/v1/public/payments/verify` (Razorpay success handler response, or provider fields). */
 export type PaymentVerifyRequest = Record<string, string>;
 
 export interface RazorpaySuccessResponse {

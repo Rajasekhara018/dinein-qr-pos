@@ -7,6 +7,7 @@ import com.heuristq.dinein.shared.security.csrf.SpaCsrfTokenRequestHandler;
 import com.heuristq.dinein.shared.security.ratelimit.RateLimitFilter;
 import com.heuristq.dinein.shared.security.ratelimit.RateLimitProperties;
 import com.heuristq.dinein.shared.security.ratelimit.RateLimitService;
+import com.heuristq.dinein.shared.web.ApiPaths;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -41,6 +42,7 @@ import java.util.Set;
 public class SecurityConfig {
 
     private static final Set<String> SAFE_METHODS = Set.of("GET", "HEAD", "OPTIONS", "TRACE");
+    private static final String V1 = ApiPaths.V1;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http,
@@ -73,13 +75,13 @@ public class SecurityConfig {
                         .requestMatchers("/error", "/actuator/health/**", "/actuator/info").permitAll()
                         .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .requestMatchers("/ws", "/ws/**").permitAll()
-                        .requestMatchers("/api/public/**", "/api/images/**", "/api/webhooks/**").permitAll()
-                        .requestMatchers("/api/auth/login", "/api/auth/refresh", "/api/auth/logout",
-                                "/api/auth/kitchen-device", "/api/auth/csrf").permitAll()
-                        .requestMatchers("/api/auth/**").authenticated()
-                        .requestMatchers("/api/admin/**").hasAnyRole("OWNER", "MANAGER")
-                        .requestMatchers("/api/kitchen/**").hasAnyRole("KITCHEN", "OWNER", "MANAGER")
-                        .requestMatchers("/api/waiter/**").hasAnyRole("WAITER", "OWNER", "MANAGER")
+                        .requestMatchers(V1 + "/public/**", V1 + "/images/**", V1 + "/webhooks/**").permitAll()
+                        .requestMatchers(V1 + "/auth/login", V1 + "/auth/refresh", V1 + "/auth/logout",
+                                V1 + "/auth/kitchen-device", V1 + "/auth/csrf").permitAll()
+                        .requestMatchers(V1 + "/auth/**").authenticated()
+                        .requestMatchers(V1 + "/admin/**").hasAnyRole("OWNER", "MANAGER")
+                        .requestMatchers(V1 + "/kitchen/**").hasAnyRole("KITCHEN", "OWNER", "MANAGER")
+                        .requestMatchers(V1 + "/waiter/**").hasAnyRole("WAITER", "OWNER", "MANAGER")
                         .anyRequest().denyAll())
                 .addFilterBefore(new TokenAuthenticationFilter(tokenAuthenticator), UsernamePasswordAuthenticationFilter.class)
                 .addFilterAfter(new RateLimitFilter(rateLimitService, rateLimitProperties, errorHandlers),
@@ -94,11 +96,11 @@ public class SecurityConfig {
         PathPatternRequestMatcher.Builder path = PathPatternRequestMatcher.withDefaults();
         RequestMatcher unsafeMethod = request -> !SAFE_METHODS.contains(request.getMethod());
         RequestMatcher cookiePaths = new OrRequestMatcher(
-                path.matcher("/api/auth/refresh"),
-                path.matcher("/api/auth/logout"),
-                path.matcher("/api/public/**"));
+                path.matcher(V1 + "/auth/refresh"),
+                path.matcher(V1 + "/auth/logout"),
+                path.matcher(V1 + "/public/**"));
         // Provider redirects (e.g. PayU surl/furl) are cross-site form posts authenticated by the provider's hash.
-        RequestMatcher providerCallbacks = path.matcher("/api/public/payments/{provider}/callback");
+        RequestMatcher providerCallbacks = path.matcher(V1 + "/public/payments/{provider}/callback");
         return new AndRequestMatcher(unsafeMethod, cookiePaths, new NegatedRequestMatcher(providerCallbacks));
     }
 
@@ -115,7 +117,7 @@ public class SecurityConfig {
         config.setAllowCredentials(true);
         config.setMaxAge(3600L);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/api/**", config);
+        source.registerCorsConfiguration(V1 + "/**", config);
         source.registerCorsConfiguration("/ws/**", config);
         return source;
     }

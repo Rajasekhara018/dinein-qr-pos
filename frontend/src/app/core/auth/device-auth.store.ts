@@ -21,7 +21,7 @@ export interface RegisterDeviceInput {
 
 /**
  * Kitchen device session: a long-lived (30 day) revocable `dvc_…` token, persisted in localStorage so the tablet
- * "remembers" the device. Sent as `Authorization: Bearer` by `authInterceptor` for `/api/kitchen/**`, and should be
+ * "remembers" the device. Sent as `Authorization: Bearer` by `authInterceptor` for `/api/v1/kitchen/**`, and should be
  * supplied to `RealtimeService.setAuthProvider()` for the kitchen STOMP connection.
  */
 @Injectable({ providedIn: 'root' })

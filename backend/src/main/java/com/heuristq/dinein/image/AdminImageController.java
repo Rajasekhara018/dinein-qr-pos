@@ -13,7 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 @RestController
-@RequestMapping("/api/admin/images")
+@RequestMapping("/api/v1/admin/images")
 public class AdminImageController {
 
     private final ImageService imageService;

@@ -119,7 +119,7 @@ public abstract class AbstractIntegrationTest {
 
     /** Scans the table QR and returns the guest-session cookie. */
     protected Cookie guestCookie() throws Exception {
-        MvcResult result = mvc.perform(get("/api/public/session").param("t", table.getQrToken())).andReturn();
+        MvcResult result = mvc.perform(get("/api/v1/public/session").param("t", table.getQrToken())).andReturn();
         Cookie cookie = result.getResponse().getCookie("dinein_gs");
         if (cookie == null) {
             throw new IllegalStateException("no guest cookie: " + result.getResponse().getContentAsString());
@@ -128,7 +128,7 @@ public abstract class AbstractIntegrationTest {
     }
 
     protected MvcResult placeOrder(Cookie guest, String idempotencyKey, String body) throws Exception {
-        return mvc.perform(post("/api/public/orders").with(csrf()).cookie(guest)
+        return mvc.perform(post("/api/v1/public/orders").with(csrf()).cookie(guest)
                 .header("Idempotency-Key", idempotencyKey)
                 .contentType(MediaType.APPLICATION_JSON).content(body)).andReturn();
     }

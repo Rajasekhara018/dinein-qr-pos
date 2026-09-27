@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 /** Inbox and push registration for the logged-in owner/manager. */
 @RestController
-@RequestMapping("/api/admin")
+@RequestMapping("/api/v1/admin")
 public class AdminNotificationController {
 
     private final InAppNotificationService inAppService;

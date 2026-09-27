@@ -135,7 +135,7 @@ const tables = [1, 2, 3, 12].map((n) => ({
   label: n === 12 ? 'COUNTER' : `T${n}`,
   active: n !== 3,
   qrUrl: `http://localhost:4200/menu?t=token-${n}-abcdefghijklmnopqrstuvwxyz`,
-  qrImageUrl: `/api/admin/tables/${n}/qr.png`,
+  qrImageUrl: `/api/v1/admin/tables/${n}/qr.png`,
   createdAt: '2026-09-01T00:00:00Z',
   updatedAt: '2026-09-01T00:00:00Z',
 }));
@@ -225,13 +225,13 @@ export async function mockAdminBackend(
     }
     state.requests.push({ method, path, body });
 
-    if (path === '/api/auth/csrf') return route.fulfill({ status: 204 });
-    if (path === '/api/auth/refresh') {
+    if (path === '/api/v1/auth/csrf') return route.fulfill({ status: 204 });
+    if (path === '/api/v1/auth/refresh') {
       return state.loggedIn
         ? json(route, token(state.mustChangePassword))
         : json(route, { code: 'SESSION_EXPIRED', message: 'Please sign in again' }, 401);
     }
-    if (path === '/api/auth/login') {
+    if (path === '/api/v1/auth/login') {
       const { username, password } = body as { username: string; password: string };
       if (username !== 'owner' || password !== 'Owner@2026x') {
         return json(route, { code: 'INVALID_CREDENTIALS', message: 'Invalid username or password' }, 401);
@@ -239,18 +239,18 @@ export async function mockAdminBackend(
       state.loggedIn = true;
       return json(route, token(state.mustChangePassword));
     }
-    if (path === '/api/auth/change-password') {
+    if (path === '/api/v1/auth/change-password') {
       state.mustChangePassword = false;
       return json(route, token(false));
     }
-    if (path === '/api/auth/logout') {
+    if (path === '/api/v1/auth/logout') {
       state.loggedIn = false;
       return route.fulfill({ status: 204 });
     }
 
-    if (path === '/api/admin/dashboard') return json(route, dashboard);
-    if (path === '/api/admin/notifications/unread-count') return json(route, { count: 2 });
-    if (path === '/api/admin/notifications') {
+    if (path === '/api/v1/admin/dashboard') return json(route, dashboard);
+    if (path === '/api/v1/admin/notifications/unread-count') return json(route, { count: 2 });
+    if (path === '/api/v1/admin/notifications') {
       return json(route, {
         content: [
           {
@@ -272,9 +272,9 @@ export async function mockAdminBackend(
       });
     }
 
-    if (path === '/api/admin/categories' && method === 'GET') return json(route, categories);
+    if (path === '/api/v1/admin/categories' && method === 'GET') return json(route, categories);
 
-    if (path === '/api/admin/items' && method === 'GET') {
+    if (path === '/api/v1/admin/items' && method === 'GET') {
       const categoryId = url.searchParams.get('categoryId');
       const q = url.searchParams.get('q')?.toLowerCase();
       const content = state.items.filter(
@@ -284,7 +284,7 @@ export async function mockAdminBackend(
       );
       return json(route, { content, page: 0, size: 50, totalElements: content.length, totalPages: 1 });
     }
-    if (path === '/api/admin/items' && method === 'POST') {
+    if (path === '/api/v1/admin/items' && method === 'POST') {
       const req = body as Json & { variants: Json[]; addons: Json[]; categoryId: number };
       const variants = req.variants.map((v, i) => ({ ...v, id: 1000 + i }));
       const item = {
@@ -302,7 +302,7 @@ export async function mockAdminBackend(
       state.items.push(item);
       return json(route, item, 201);
     }
-    const priceMatch = /^\/api\/admin\/items\/(\d+)\/price$/.exec(path);
+    const priceMatch = /^\/api\/v1\/admin\/items\/(\d+)\/price$/.exec(path);
     if (priceMatch && method === 'PATCH') {
       const item = state.items.find((i) => i['id'] === Number(priceMatch[1]))!;
       const req = body as { basePrice?: number; version: number };
@@ -316,28 +316,28 @@ export async function mockAdminBackend(
       item['version'] = (item['version'] as number) + 1;
       return json(route, item);
     }
-    const itemMatch = /^\/api\/admin\/items\/(\d+)$/.exec(path);
+    const itemMatch = /^\/api\/v1\/admin\/items\/(\d+)$/.exec(path);
     if (itemMatch && method === 'GET') {
       return json(route, state.items.find((i) => i['id'] === Number(itemMatch[1])));
     }
 
-    if (path === '/api/admin/orders') {
+    if (path === '/api/v1/admin/orders') {
       const content = [...recentOrders, ...Array.from({ length: 8 }, (_, i) => orderSummary(30 - i, 'COMPLETED'))];
       return json(route, { content, page: 0, size: 25, totalElements: content.length, totalPages: 1 });
     }
 
-    const orderMatch = /^\/api\/admin\/orders\/(\d+)$/.exec(path);
+    const orderMatch = /^\/api\/v1\/admin\/orders\/(\d+)$/.exec(path);
     if (orderMatch) return json(route, { ...orderDetail, id: Number(orderMatch[1]) });
-    if (path === '/api/admin/tables') return json(route, tables);
-    if (/^\/api\/admin\/tables\/\d+\/qr\.png$/.test(path)) {
+    if (path === '/api/v1/admin/tables') return json(route, tables);
+    if (/^\/api\/v1\/admin\/tables\/\d+\/qr\.png$/.test(path)) {
       return route.fulfill({ status: 200, contentType: 'image/png', body: Buffer.from(PNG_1PX, 'base64') });
     }
-    if (path === '/api/admin/reports/summary') return json(route, salesSummary);
-    if (path === '/api/admin/settings') return json(route, settings);
-    if (path === '/api/admin/staff') return json(route, staff);
-    if (path === '/api/admin/devices') return json(route, devices);
+    if (path === '/api/v1/admin/reports/summary') return json(route, salesSummary);
+    if (path === '/api/v1/admin/settings') return json(route, settings);
+    if (path === '/api/v1/admin/staff') return json(route, staff);
+    if (path === '/api/v1/admin/devices') return json(route, devices);
 
-    if (path.startsWith('/api/images/')) return route.fulfill({ status: 404 });
+    if (path.startsWith('/api/v1/images/')) return route.fulfill({ status: 404 });
     return json(route, { code: 'NOT_FOUND', message: `Unmocked ${method} ${path}` }, 404);
   });
 

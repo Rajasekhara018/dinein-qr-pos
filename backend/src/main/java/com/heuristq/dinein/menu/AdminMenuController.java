@@ -25,9 +25,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-/** Menu management for OWNER and MANAGER (enforced by the /api/admin/** rule). */
+/** Menu management for OWNER and MANAGER (enforced by the /api/v1/admin/** rule). */
 @RestController
-@RequestMapping("/api/admin")
+@RequestMapping("/api/v1/admin")
 public class AdminMenuController {
 
     private final CategoryService categoryService;

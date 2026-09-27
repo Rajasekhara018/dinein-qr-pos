@@ -179,10 +179,10 @@ describe('item form', () => {
       const form = createItemForm();
       patchItemForm(form, biryani);
       form.controls.variants.at(1).patchValue({ price: 350 });
-      const preview = toPreviewItem(form, { thumbUrl: '/api/images/5/thumb' });
+      const preview = toPreviewItem(form, { thumbUrl: '/api/v1/images/5/thumb' });
       expect(preview.displayPrice).toBe(180);
       expect(preview.variants.map((v) => v.price)).toEqual([180, 350]);
-      expect(preview.thumbUrl).toBe('/api/images/5/thumb');
+      expect(preview.thumbUrl).toBe('/api/v1/images/5/thumb');
     });
   });
 

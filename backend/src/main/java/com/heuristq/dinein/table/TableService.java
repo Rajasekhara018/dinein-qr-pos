@@ -3,6 +3,7 @@ package com.heuristq.dinein.table;
 import com.heuristq.dinein.shared.config.AppProperties;
 import com.heuristq.dinein.shared.exception.ApiException;
 import com.heuristq.dinein.shared.util.SecureTokens;
+import com.heuristq.dinein.shared.web.ApiPaths;
 import com.heuristq.dinein.table.domain.DiningTableEntity;
 import com.heuristq.dinein.table.domain.DiningTableRepository;
 import com.heuristq.dinein.table.dto.TableDtos.TableRequest;
@@ -109,6 +110,6 @@ public class TableService {
 
     private TableResponse toResponse(DiningTableEntity t) {
         return new TableResponse(t.getId(), t.getLabel(), t.isActive(), menuUrl(t),
-                "/api/admin/tables/" + t.getId() + "/qr.png", t.getCreatedAt(), t.getUpdatedAt());
+                ApiPaths.V1 + "/admin/tables/" + t.getId() + "/qr.png", t.getCreatedAt(), t.getUpdatedAt());
     }
 }
