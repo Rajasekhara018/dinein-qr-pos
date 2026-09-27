@@ -249,4 +249,16 @@ export class OrderDetailPage implements OnInit {
       this.busy.set(null);
     }
   }
+
+  /** Copies a payment/order identifier to the clipboard (a plain click-to-copy, no visible field state beyond the
+   *  toast — `navigator.clipboard` requires a secure context, which the admin panel always is in production). */
+  protected async copy(label: string, value: string | null | undefined): Promise<void> {
+    if (!value) return;
+    try {
+      await navigator.clipboard.writeText(value);
+      this.toasts.success(`${label} copied.`);
+    } catch {
+      this.toasts.error('Could not copy to clipboard.');
+    }
+  }
 }

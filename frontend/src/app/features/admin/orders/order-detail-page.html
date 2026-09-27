@@ -181,9 +181,35 @@
             }
             @if (!isOffline(p)) {
               <dt class="text-ink-muted">Payment ID</dt>
-              <dd class="break-all font-mono text-xs">{{ p.providerPaymentId ?? '—' }}</dd>
+              <dd class="flex min-w-0 items-center gap-1">
+                <span class="break-all font-mono text-xs">{{ p.providerPaymentId ?? '—' }}</span>
+                @if (p.providerPaymentId) {
+                  <button
+                    appIconButton
+                    type="button"
+                    class="!size-7 shrink-0"
+                    aria-label="Copy payment ID"
+                    (click)="copy('Payment ID', p.providerPaymentId)"
+                  >
+                    <svg lucideCopy class="size-3.5" aria-hidden="true"></svg>
+                  </button>
+                }
+              </dd>
               <dt class="text-ink-muted">Provider order</dt>
-              <dd class="break-all font-mono text-xs">{{ p.providerOrderId ?? '—' }}</dd>
+              <dd class="flex min-w-0 items-center gap-1">
+                <span class="break-all font-mono text-xs">{{ p.providerOrderId ?? '—' }}</span>
+                @if (p.providerOrderId) {
+                  <button
+                    appIconButton
+                    type="button"
+                    class="!size-7 shrink-0"
+                    aria-label="Copy provider order ID"
+                    (click)="copy('Provider order ID', p.providerOrderId)"
+                  >
+                    <svg lucideCopy class="size-3.5" aria-hidden="true"></svg>
+                  </button>
+                }
+              </dd>
             }
             @if (p.failureReason) {
               <dt class="text-ink-muted">Failure</dt>
@@ -191,7 +217,7 @@
             }
             @if (p.refundStatus) {
               <dt class="text-ink-muted">Refund</dt>
-              <dd class="font-medium" [class.text-danger]="p.refundStatus === 'FAILED'" [class.text-amber-800]="p.refundStatus === 'MANUAL'" [attr.data-testid]="'refund-status-' + p.refundStatus">
+              <dd class="font-medium" [class.text-danger]="p.refundStatus === 'FAILED'" [class.text-warning]="p.refundStatus === 'MANUAL'" [attr.data-testid]="'refund-status-' + p.refundStatus">
                 {{ refundStatusLabel(p.refundStatus) }}
                 @if (p.refundStatus === 'MANUAL' && p.amountPaise !== undefined) {
                   {{ p.amountPaise | inr: 'paise' }} (cash)
@@ -200,7 +226,18 @@
             }
             @if (p.providerRefundId) {
               <dt class="text-ink-muted">Refund ID</dt>
-              <dd class="break-all font-mono text-xs">{{ p.providerRefundId }}</dd>
+              <dd class="flex min-w-0 items-center gap-1">
+                <span class="break-all font-mono text-xs">{{ p.providerRefundId }}</span>
+                <button
+                  appIconButton
+                  type="button"
+                  class="!size-7 shrink-0"
+                  aria-label="Copy refund ID"
+                  (click)="copy('Refund ID', p.providerRefundId)"
+                >
+                  <svg lucideCopy class="size-3.5" aria-hidden="true"></svg>
+                </button>
+              </dd>
             }
           </dl>
         }
