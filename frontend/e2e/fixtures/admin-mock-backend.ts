@@ -135,7 +135,10 @@ const tables = [1, 2, 3, 12].map((n) => ({
   label: n === 12 ? 'COUNTER' : `T${n}`,
   active: n !== 3,
   qrUrl: `http://localhost:4200/menu?t=token-${n}-abcdefghijklmnopqrstuvwxyz`,
-  qrImageUrl: `/api/v1/admin/tables/${n}/qr.png`,
+  // Real responses append ?v=<fingerprint of the current QR token>, so the browser can cache the image forever
+  // yet a regenerate always hands out a fresh URL. Mirrored here so a route mock matching on the query string
+  // (if one is ever added) reflects the real contract.
+  qrImageUrl: `/api/v1/admin/tables/${n}/qr.png?v=mock${n}`,
   createdAt: '2026-09-01T00:00:00Z',
   updatedAt: '2026-09-01T00:00:00Z',
 }));
