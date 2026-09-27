@@ -171,7 +171,7 @@
             <dd class="font-medium">{{ paymentStatusLabel(p.status) }}</dd>
             <dt class="text-ink-muted">Method</dt>
             <dd>{{ methodText(p) }}</dd>
-            @if (p.recordedByStaffId != null) {
+            @if (p.recordedByStaffId !== undefined && p.recordedByStaffId !== null) {
               <dt class="text-ink-muted">Recorded by</dt>
               <dd data-testid="payment-recorded-by">{{ recordedBy(o, p) }}</dd>
             }
