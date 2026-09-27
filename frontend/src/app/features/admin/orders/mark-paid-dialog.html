@@ -1,0 +1,26 @@
+<app-bottom-sheet [title]="'Mark order #' + data.order.displayToken + ' as paid'" (closed)="ref.close()">
+  <p class="text-sm text-ink-muted">
+    Use this when the guest paid at the counter instead of online. The order is sent to the kitchen
+    straight away. If an online payment for it arrives later, the order is flagged as paid twice.
+  </p>
+  <p class="mt-4 rounded-card bg-surface-muted p-4 text-center">
+    <span class="block text-sm text-ink-muted">Amount to collect</span>
+    <strong class="font-display text-3xl tabular-nums" data-testid="mark-paid-amount">{{
+      data.order.bill.grandTotal | inr
+    }}</strong>
+  </p>
+  <app-payment-method-picker
+    class="mt-4"
+    legend="How was it paid?"
+    name="mark-paid-method"
+    [methods]="methods"
+    [value]="method()"
+    (valueChange)="onMethod($event)"
+  />
+  <div sheetFooter class="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+    <button appButton variant="outline" type="button" (click)="ref.close()">Cancel</button>
+    <button appButton type="button" data-testid="mark-paid-confirm" (click)="confirm()">
+      Confirm: paid by {{ methodLabel() }}
+    </button>
+  </div>
+</app-bottom-sheet>

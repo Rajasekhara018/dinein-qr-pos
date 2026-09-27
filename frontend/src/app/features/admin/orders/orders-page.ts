@@ -4,7 +4,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { debounceTime, distinctUntilChanged, firstValueFrom } from 'rxjs';
 import { AdminOrdersApi } from '../../../core/api/admin.api';
-import { AdminOrderSummary, OrderStatus } from '../../../core/api/models';
+import { AdminOrderSummary, ORDER_TYPES, OrderStatus, OrderType } from '../../../core/api/models';
 import { RealtimeService } from '../../../core/realtime/realtime.service';
 import { orderStatusLabel } from '../../../shared/components/order-status-badge';
 import { orderRefreshSignals } from '../data/live-refresh';
@@ -18,7 +18,10 @@ interface OrderFilterForm {
 
 const PAGE_SIZE = 25;
 
-/** Orders: filter by IST date, status (multi) and search; table/cards; live refresh. Filters live in the URL. */
+/**
+ * Orders: filter by IST date, status (multi), order type and search; table/cards; live refresh. Filters live in the
+ * URL (`date`, `status`, `type`, `q`, `page`).
+ */
 @Component({
   selector: 'app-admin-orders-page',
   standalone: false,
@@ -41,6 +44,12 @@ export class OrdersPage implements OnInit {
     q: new FormControl('', { nonNullable: true }),
   });
   protected readonly statuses = signal<ReadonlySet<OrderStatus>>(new Set());
+  protected readonly orderType = signal<OrderType | null>(null);
+  protected readonly typeOptions: { value: OrderType | null; label: string }[] = [
+    { value: null, label: 'All types' },
+    { value: 'DINE_IN', label: 'Dine-in' },
+    { value: 'TAKEAWAY', label: 'Takeaway' },
+  ];
   protected readonly page = signal(0);
 
   protected readonly orders = signal<AdminOrderSummary[]>([]);
@@ -68,6 +77,10 @@ export class OrdersPage implements OnInit {
     const params = this.route.snapshot.queryParamMap;
     const date = params.get('date');
     const status = params.get('status');
+    const type = params.get('type');
+    this.orderType.set(
+      type && (ORDER_TYPES as readonly string[]).includes(type) ? (type as OrderType) : null,
+    );
     this.filters.setValue(
       { date: date && /^\d{4}-\d{2}-\d{2}$/.test(date) ? date : istDate(), q: params.get('q') ?? '' },
       { emitEvent: false },
@@ -87,6 +100,12 @@ export class OrdersPage implements OnInit {
       else next.add(status);
       return next;
     });
+    this.apply();
+  }
+
+  protected setOrderType(type: OrderType | null): void {
+    if (this.orderType() === type) return;
+    this.orderType.set(type);
     this.apply();
   }
 
@@ -120,6 +139,7 @@ export class OrdersPage implements OnInit {
         date: date === istDate() ? null : date,
         q: q.trim() || null,
         status: this.statuses().size ? [...this.statuses()].join(',') : null,
+        type: this.orderType(),
         page: this.page() || null,
       },
     });
@@ -135,6 +155,7 @@ export class OrdersPage implements OnInit {
           date: date || undefined,
           q: q.trim() || undefined,
           status: this.statuses().size ? [...this.statuses()] : undefined,
+          orderType: this.orderType() ?? undefined,
           page: this.page(),
           size: PAGE_SIZE,
         }),

@@ -45,9 +45,29 @@ export function refundStatusLabel(status: string | undefined): string {
       return 'Refunded';
     case 'FAILED':
       return 'Refund failed';
+    case 'MANUAL':
+      return 'Manual refund: hand back';
     default:
       return status ?? '—';
   }
+}
+
+/** Unpaid orders an admin can settle at the counter (`POST /admin/orders/{id}/mark-paid-offline`). */
+export const MARK_PAID_STATUSES: readonly OrderStatus[] = ['PENDING_PAYMENT', 'EXPIRED', 'PAYMENT_FAILED'];
+
+export function canMarkPaidOffline(order: AdminOrderView): boolean {
+  return MARK_PAID_STATUSES.includes(order.status) && !order.paymentFlagged;
+}
+
+/** The offline payment that has to be handed back (refund status MANUAL), if any. */
+export function manualRefundPayment(order: AdminOrderView): PaymentView | undefined {
+  return order.payments.find((p) => p.refundStatus === 'MANUAL');
+}
+
+/** Rupees to hand back for a manual refund: the offline payment amount, else the bill total. */
+export function manualRefundAmount(order: AdminOrderView): number {
+  const payment = manualRefundPayment(order);
+  return payment?.amountPaise != null ? payment.amountPaise / 100 : order.bill.grandTotal;
 }
 
 export function paymentStatusLabel(status: string | undefined): string {

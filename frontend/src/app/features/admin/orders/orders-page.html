@@ -1,4 +1,9 @@
-<app-page-header title="Orders" subtitle="Updates live as the kitchen works." />
+<app-page-header title="Orders" subtitle="Updates live as the kitchen works.">
+  <a appButton routerLink="/admin/orders/new" data-testid="new-order">
+    <svg viewBox="0 0 20 20" class="size-4 fill-current" aria-hidden="true"><path d="M9 4h2v5h5v2h-5v5H9v-5H4V9h5z" /></svg>
+    New order
+  </a>
+</app-page-header>
 
 <form class="mb-4 rounded-card border border-line bg-surface p-3 shadow-card sm:p-4" [formGroup]="filters" (ngSubmit)="load()" role="search" aria-label="Filter orders">
   <div class="grid grid-cols-1 gap-3 sm:grid-cols-[auto_minmax(0,1fr)]">
@@ -48,6 +53,25 @@
       }
     </div>
   </fieldset>
+  <fieldset class="mt-3">
+    <legend class="text-sm font-medium text-ink">Type</legend>
+    <div class="mt-1 flex flex-wrap gap-2">
+      @for (option of typeOptions; track option.label) {
+        <button
+          type="button"
+          class="min-h-touch rounded-full border px-4 text-sm font-medium"
+          [class.border-brand]="orderType() === option.value"
+          [class.bg-brand-soft]="orderType() === option.value"
+          [class.border-line-strong]="orderType() !== option.value"
+          [attr.aria-pressed]="orderType() === option.value"
+          [attr.data-testid]="'type-filter-' + (option.value ?? 'ALL')"
+          (click)="setOrderType(option.value)"
+        >
+          {{ option.label }}
+        </button>
+      }
+    </div>
+  </fieldset>
 </form>
 
 <div class="mb-2 flex min-h-6 items-center justify-between gap-2 text-sm text-ink-muted" aria-live="polite">
@@ -70,7 +94,7 @@
 } @else if (error() && !loaded()) {
   <app-error-state title="Could not load orders" [error]="error()" (retry)="load()" />
 } @else if (orders().length === 0) {
-  <app-empty-state title="No orders found" message="Try another date or status." />
+  <app-empty-state title="No orders found" message="Try another date, status or type." />
 } @else {
   <app-order-list [orders]="orders()" caption="Orders" />
   @if (totalPages() > 1) {
