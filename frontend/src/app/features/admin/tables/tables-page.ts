@@ -5,8 +5,8 @@ import { TableResponse } from '../../../core/api/models';
 import { SheetService } from '../../../core/ui/sheet.service';
 import { ToastService } from '../../../core/ui/toast.service';
 import { copyText, saveBlob } from '../shared/browser';
-import { ConfirmService } from '../shared/confirm.service';
-import { errorMessage } from '../shared/form-errors';
+import { ConfirmService } from '../../../shared/services/confirm.service';
+import { errorMessage } from '../../../shared/util/form-errors';
 import { QrPreviewData, QrPreviewDialog } from './qr-preview-dialog';
 import { TableDialog, TableDialogData } from './table-dialog';
 

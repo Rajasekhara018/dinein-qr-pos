@@ -5,7 +5,7 @@ import { firstValueFrom } from 'rxjs';
 import { ApiError } from '../../../../core/api/api-error';
 import { AdminMenuApi } from '../../../../core/api/admin.api';
 import { CategoryResponse, UploadResult } from '../../../../core/api/models';
-import { applyServerErrors, errorMessage, setServerError } from '../../shared/form-errors';
+import { applyServerErrors, errorMessage, setServerError } from '../../../../shared/util/form-errors';
 
 export interface CategoryDialogData {
   category: CategoryResponse | null;

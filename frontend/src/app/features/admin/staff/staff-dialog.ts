@@ -8,7 +8,7 @@ import { AdminSettingsApi } from '../../../core/api/admin.api';
 import { StaffResponse, StaffRole } from '../../../core/api/models';
 import { AuthStore } from '../../../core/auth/auth.store';
 import { generateTemporaryPassword, PASSWORD_MESSAGES, passwordPolicy } from '../auth/password-validators';
-import { applyServerErrors, errorMessage, setServerError } from '../shared/form-errors';
+import { applyServerErrors, errorMessage, setServerError } from '../../../shared/util/form-errors';
 
 export interface StaffDialogData {
   staff: StaffResponse | null;

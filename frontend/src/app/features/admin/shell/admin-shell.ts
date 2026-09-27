@@ -19,7 +19,8 @@ import { RealtimeService } from '../../../core/realtime/realtime.service';
 import { ToastService } from '../../../core/ui/toast.service';
 import { BreakpointService } from '../../../core/ui/breakpoint.service';
 import { SafeStorage } from '../../../core/util/storage';
-import { errorMessage } from '../shared/form-errors';
+import { errorMessage } from '../../../shared/util/form-errors';
+import { ConfirmService } from '../../../shared/services/confirm.service';
 import { AdminPrefs } from '../data/admin-prefs';
 import { visibleNavGroups } from '../data/admin-nav';
 import { AdminNotificationsStore } from '../data/notifications.store';
@@ -51,6 +52,7 @@ export class AdminShell {
   private readonly notifications = inject(AdminNotificationsStore);
   private readonly settingsApi = inject(AdminSettingsApi);
   private readonly toasts = inject(ToastService);
+  private readonly confirmSvc = inject(ConfirmService);
   protected readonly isDesktop = inject(BreakpointService).isDesktop;
 
   protected readonly navGroups = computed(() => visibleNavGroups(this.auth.isOwner()));
@@ -194,8 +196,15 @@ export class AdminShell {
   }
 
   protected async logout(): Promise<void> {
-    this.loggingOut = true;
     this.userMenuOpen.set(false);
+    const result = await this.confirmSvc.confirm({
+      title: 'Sign out?',
+      message: 'Sign out of the admin panel?',
+      confirmLabel: 'Sign out',
+      tone: 'primary',
+    });
+    if (!result) return;
+    this.loggingOut = true;
     this.notifications.stop();
     await this.realtime.disconnect();
     await this.auth.logout();

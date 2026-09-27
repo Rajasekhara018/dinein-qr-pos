@@ -11,9 +11,11 @@ import { AuthShell } from './components/auth-shell/auth-shell';
 import { BottomSheet } from './components/bottom-sheet';
 import { Card } from './components/card';
 import { Chip } from './components/chip';
+import { ConfirmDialog } from './components/confirm-dialog/confirm-dialog';
 import { DataTable } from './components/data-table';
 import { EmptyState } from './components/empty-state';
 import { ErrorState } from './components/error-state';
+import { FieldError } from './components/field-error/field-error';
 import { ImageBox } from './components/image-box';
 import { OrderStatusBadge } from './components/order-status-badge';
 import { OrderTypeBadge } from './components/order-type-badge';
@@ -24,6 +26,7 @@ import { Skeleton } from './components/skeleton';
 import { Spinner } from './components/spinner';
 import { VegMarker } from './components/veg-marker';
 import { ButtonDirective, IconButtonDirective } from './directives/button';
+import { InputDirective } from './directives/input.directive';
 import { APP_ICONS } from './icons';
 import { InrPipe } from './pipes/inr-pipe';
 
@@ -32,9 +35,11 @@ const COMPONENTS = [
   BottomSheet,
   Card,
   Chip,
+  ConfirmDialog,
   DataTable,
   EmptyState,
   ErrorState,
+  FieldError,
   ImageBox,
   OrderStatusBadge,
   OrderTypeBadge,
@@ -46,6 +51,7 @@ const COMPONENTS = [
   VegMarker,
   ButtonDirective,
   IconButtonDirective,
+  InputDirective,
   InrPipe,
 ];
 

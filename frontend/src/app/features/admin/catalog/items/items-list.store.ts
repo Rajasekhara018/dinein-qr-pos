@@ -5,7 +5,7 @@ import { AdminMenuApi } from '../../../../core/api/admin.api';
 import { ItemResponse, ItemSearchParams } from '../../../../core/api/models';
 import { ToastService } from '../../../../core/ui/toast.service';
 import { formatInr } from '../../../../core/util/money';
-import { errorMessage } from '../../shared/form-errors';
+import { errorMessage } from '../../../../shared/util/form-errors';
 import {
   applyPriceChange,
   diffPriceChange,

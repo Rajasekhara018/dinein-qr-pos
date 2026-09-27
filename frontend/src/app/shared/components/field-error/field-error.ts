@@ -7,7 +7,7 @@ import {
   signal,
 } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
-import { describeError, ErrorMessages } from '../form-errors';
+import { describeError, ErrorMessages } from '../../util/form-errors';
 
 /**
  * Shows the first validation message of a control once it was touched or edited. Give it an `id` and reference it

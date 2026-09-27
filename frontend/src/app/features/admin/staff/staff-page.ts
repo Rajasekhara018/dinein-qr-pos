@@ -5,8 +5,8 @@ import { DeviceResponse, StaffResponse } from '../../../core/api/models';
 import { AuthStore } from '../../../core/auth/auth.store';
 import { SheetService } from '../../../core/ui/sheet.service';
 import { ToastService } from '../../../core/ui/toast.service';
-import { ConfirmService } from '../shared/confirm.service';
-import { errorMessage } from '../shared/form-errors';
+import { ConfirmService } from '../../../shared/services/confirm.service';
+import { errorMessage } from '../../../shared/util/form-errors';
 import { ROLE_OPTIONS, StaffDialog, StaffDialogData } from './staff-dialog';
 
 /** OWNER: staff users and kitchen devices. */

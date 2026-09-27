@@ -6,7 +6,7 @@ import { ADMIN_PATHS } from '../../../core/auth/auth-paths';
 import { AuthStore } from '../../../core/auth/auth.store';
 import { RealtimeService } from '../../../core/realtime/realtime.service';
 import { ToastService } from '../../../core/ui/toast.service';
-import { errorMessage, setServerError } from '../shared/form-errors';
+import { errorMessage, setServerError } from '../../../shared/util/form-errors';
 import { PASSWORD_MESSAGES, passwordChangeRules, passwordPolicy } from './password-validators';
 
 interface ChangePasswordForm {

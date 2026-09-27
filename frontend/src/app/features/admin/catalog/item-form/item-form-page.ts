@@ -22,8 +22,8 @@ import {
   UploadResult,
 } from '../../../../core/api/models';
 import { ToastService } from '../../../../core/ui/toast.service';
-import { ConfirmService } from '../../shared/confirm.service';
-import { applyServerErrors, errorMessage, setServerError } from '../../shared/form-errors';
+import { ConfirmService } from '../../../../shared/services/confirm.service';
+import { applyServerErrors, errorMessage, setServerError } from '../../../../shared/util/form-errors';
 import {
   ADDONS_MESSAGES,
   addAddon,

@@ -5,7 +5,7 @@ import { firstValueFrom } from 'rxjs';
 import { ApiError } from '../../../core/api/api-error';
 import { AdminTablesApi } from '../../../core/api/admin.api';
 import { TableResponse } from '../../../core/api/models';
-import { applyServerErrors, errorMessage, setServerError } from '../shared/form-errors';
+import { applyServerErrors, errorMessage, setServerError } from '../../../shared/util/form-errors';
 
 export interface TableDialogData {
   table: TableResponse | null;

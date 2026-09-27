@@ -106,8 +106,8 @@ test.describe('kitchen board', () => {
     await expect(page).toHaveURL(/\/kitchen$/);
     await expect(page.getByText('Pass screen')).toBeVisible();
 
-    page.once('dialog', (dialog) => void dialog.accept());
     await page.getByRole('button', { name: 'Sign out this screen' }).click();
+    await page.getByTestId('confirm-dialog-confirm').click();
     await expect(page).toHaveURL(/\/kitchen\/login$/);
     expect(await page.evaluate(() => localStorage.getItem('dinein.kitchen.device.v1'))).toBeNull();
   });

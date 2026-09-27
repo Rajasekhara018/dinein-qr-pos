@@ -6,7 +6,7 @@ import { AdminSettingsApi } from '../../../core/api/admin.api';
 import { SettingsResponse, UploadResult } from '../../../core/api/models';
 import { ToastService } from '../../../core/ui/toast.service';
 import { brandPalette } from '../../../core/util/color';
-import { applyServerErrors, errorMessage } from '../shared/form-errors';
+import { applyServerErrors, errorMessage } from '../../../shared/util/form-errors';
 import { createSettingsForm, patchSettingsForm, toSettingsRequest } from './settings-form';
 
 /** OWNER-only restaurant settings. */

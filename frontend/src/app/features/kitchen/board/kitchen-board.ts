@@ -11,6 +11,7 @@ import { Router } from '@angular/router';
 import { KitchenOrderView } from '../../../core/api/models';
 import { KITCHEN_PATHS } from '../../../core/auth/auth-paths';
 import { DeviceAuthStore } from '../../../core/auth/device-auth.store';
+import { ConfirmService } from '../../../shared/services/confirm.service';
 import { COLUMN_LABELS, KITCHEN_COLUMNS, KitchenColumn } from '../data/board-state';
 import { KitchenBoardStore } from '../data/kitchen-board.store';
 import { KitchenClock } from '../data/kitchen-clock';
@@ -43,6 +44,7 @@ export class KitchenBoard {
   private readonly devices = inject(DeviceAuthStore);
   private readonly router = inject(Router);
   private readonly document = inject(DOCUMENT);
+  private readonly confirmSvc = inject(ConfirmService);
 
   protected readonly columns = KITCHEN_COLUMNS;
   protected readonly labels = COLUMN_LABELS;
@@ -89,15 +91,14 @@ export class KitchenBoard {
   }
 
   async signOut(): Promise<void> {
-    const confirmFn = this.document.defaultView?.confirm?.bind(this.document.defaultView);
-    if (
-      confirmFn &&
-      !confirmFn(
+    const result = await this.confirmSvc.confirm({
+      title: 'Sign out this screen?',
+      message:
         'Sign out this kitchen screen? You will need a username and PIN or password to sign in again.',
-      )
-    ) {
-      return;
-    }
+      confirmLabel: 'Sign out',
+      tone: 'primary',
+    });
+    if (!result) return;
     // Don't wait for the socket to close (deactivate can take a while on a flaky network).
     void this.store.stopRealtime();
     this.fullscreen.exit();

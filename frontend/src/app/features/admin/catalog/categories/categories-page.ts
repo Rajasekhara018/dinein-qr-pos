@@ -6,7 +6,7 @@ import { AdminMenuApi } from '../../../../core/api/admin.api';
 import { CategoryResponse } from '../../../../core/api/models';
 import { SheetService } from '../../../../core/ui/sheet.service';
 import { ToastService } from '../../../../core/ui/toast.service';
-import { errorMessage } from '../../shared/form-errors';
+import { errorMessage } from '../../../../shared/util/form-errors';
 import { canMove, moveItem, orderChanged, sortByDisplayOrder } from '../data/reorder';
 import { CategoryDialog, CategoryDialogData } from './category-dialog';
 

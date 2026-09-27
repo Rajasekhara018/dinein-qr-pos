@@ -1,11 +1,11 @@
 import { inject, Injectable } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
-import { SheetService } from '../../../core/ui/sheet.service';
+import { SheetService } from '../../core/ui/sheet.service';
 import {
   ConfirmDialog,
   ConfirmDialogData,
   ConfirmDialogResult,
-} from './confirm-dialog/confirm-dialog';
+} from '../components/confirm-dialog/confirm-dialog';
 
 /** Promise-based confirmation (dialog on desktop, bottom sheet on phones). Resolves null when dismissed. */
 @Injectable({ providedIn: 'root' })

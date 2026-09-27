@@ -23,8 +23,8 @@ import { SheetService } from '../../../core/ui/sheet.service';
 import { ToastService } from '../../../core/ui/toast.service';
 import { paymentChannelLabel, staffPaymentMethodLabel } from '../../../core/util/order-labels';
 import { orderRefreshSignals } from '../data/live-refresh';
-import { ConfirmService } from '../shared/confirm.service';
-import { errorMessage } from '../shared/form-errors';
+import { ConfirmService } from '../../../shared/services/confirm.service';
+import { errorMessage } from '../../../shared/util/form-errors';
 import { MarkPaidDialog, MarkPaidDialogData } from './mark-paid-dialog';
 import {
   canCancel,

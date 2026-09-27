@@ -7,7 +7,7 @@ import { ToastService } from '../../../core/ui/toast.service';
 import { formatInr } from '../../../core/util/money';
 import { orderTypeLabel, staffPaymentMethodLabel } from '../../../core/util/order-labels';
 import { saveBlob } from '../shared/browser';
-import { errorMessage } from '../shared/form-errors';
+import { errorMessage } from '../../../shared/util/form-errors';
 import { formatIsoDate, istDate } from '../shared/ist-date';
 import { BarDatum } from './bar-chart';
 import {

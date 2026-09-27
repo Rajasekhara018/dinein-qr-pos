@@ -1,5 +1,5 @@
 import { AbstractControl, FormGroup, ValidationErrors } from '@angular/forms';
-import { ApiError } from '../../../core/api/api-error';
+import { ApiError } from '../../core/api/api-error';
 
 /** Custom messages per error key; a function receives the error value (e.g. `{ requiredLength }`). */
 export type ErrorMessages = Record<string, string | ((value: unknown) => string)>;

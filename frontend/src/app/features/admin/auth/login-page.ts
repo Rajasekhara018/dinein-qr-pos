@@ -5,7 +5,7 @@ import { ADMIN_PATHS } from '../../../core/auth/auth-paths';
 import { AuthStore } from '../../../core/auth/auth.store';
 import { ApiError } from '../../../core/api/api-error';
 import { AuthShellBenefit } from '../../../shared/components/auth-shell/auth-shell';
-import { errorMessage } from '../shared/form-errors';
+import { errorMessage } from '../../../shared/util/form-errors';
 
 interface LoginForm {
   username: FormControl<string>;

@@ -1,16 +1,10 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  DestroyRef,
-  DOCUMENT,
-  effect,
-  inject,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import { WAITER_PATHS } from '../../../core/auth/auth-paths';
 import { AuthStore } from '../../../core/auth/auth.store';
 import { RealtimeService } from '../../../core/realtime/realtime.service';
+import { ConfirmService } from '../../../shared/services/confirm.service';
 import { WaiterAlerts } from '../data/waiter-alerts';
 import { WaiterBoardStore } from '../data/waiter-board.store';
 import { WaiterNotificationsStore } from '../data/waiter-notifications.store';
@@ -74,7 +68,7 @@ export class WaiterShell {
   private readonly auth = inject(AuthStore);
   private readonly realtime = inject(RealtimeService);
   private readonly router = inject(Router);
-  private readonly document = inject(DOCUMENT);
+  private readonly confirmSvc = inject(ConfirmService);
 
   protected readonly nav = WAITER_NAV;
   private loggingOut = false;
@@ -124,8 +118,13 @@ export class WaiterShell {
   }
 
   async signOut(): Promise<void> {
-    const confirmFn = this.document.defaultView?.confirm?.bind(this.document.defaultView);
-    if (confirmFn && !confirmFn('Sign out of the waiter screen?')) return;
+    const result = await this.confirmSvc.confirm({
+      title: 'Sign out?',
+      message: 'Sign out of the waiter screen?',
+      confirmLabel: 'Sign out',
+      tone: 'primary',
+    });
+    if (!result) return;
     this.loggingOut = true;
     this.notifications.stop();
     void this.realtime.disconnect();
