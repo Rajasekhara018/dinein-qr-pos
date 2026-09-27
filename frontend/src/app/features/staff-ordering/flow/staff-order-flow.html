@@ -1,0 +1,304 @@
+<p class="sr-only" aria-live="polite">{{ announcement() }}</p>
+
+@if (loadState() === 'loading') {
+  <div class="space-y-3" aria-busy="true" aria-label="Loading">
+    <app-skeleton class="h-7 w-48" />
+    <div class="grid grid-cols-2 gap-3 md:grid-cols-4">
+      @for (i of [1, 2, 3, 4]; track i) {
+        <app-skeleton shape="block" class="h-24" />
+      }
+    </div>
+  </div>
+} @else if (loadState() === 'error') {
+  <app-error-state title="Couldn't load the menu and tables" [error]="loadError()" (retry)="load()" />
+} @else if (step() === 'done' && placed(); as done) {
+  <app-staff-order-success
+    [response]="done"
+    [whereLabel]="whereLabel()"
+    [methodLabel]="methodLabel()"
+    [orderLink]="orderLink(done.orderId)"
+    [backLink]="backLink()"
+    [backLabel]="backLabel()"
+    (newOrder)="newOrder()"
+  />
+} @else {
+  @if (closedMessage(); as closed) {
+    <p
+      class="mb-3 rounded-card border border-amber-300 bg-amber-50 p-3 text-sm font-medium text-amber-950 dark:border-amber-700 dark:bg-amber-950 dark:text-amber-50"
+      role="status"
+    >
+      {{ closed }}
+    </p>
+  }
+
+  @if (step() === 'where') {
+    <section aria-labelledby="where-title">
+      <h2 id="where-title" class="mb-3 font-display text-xl font-semibold">
+        Where is this order for?
+      </h2>
+      @if (errorMessage(); as message) {
+        <p
+          class="mb-3 rounded-control bg-red-50 p-3 text-sm text-red-900 dark:bg-red-950 dark:text-red-100"
+          role="alert"
+          data-testid="staff-order-error"
+        >
+          {{ message }}
+        </p>
+      }
+      @if (tables().length === 0 && !takeawayEnabled()) {
+        <app-empty-state
+          title="No active tables"
+          message="Add tables in the admin panel (Tables & QR)."
+        />
+      } @else {
+        <app-table-grid
+          [tables]="tables()"
+          [takeawayEnabled]="takeawayEnabled()"
+          [selectedTableId]="orderType() === 'DINE_IN' ? tableId() : null"
+          [takeawaySelected]="orderType() === 'TAKEAWAY'"
+          (pickTable)="pickTable($event)"
+          (pickTakeaway)="pickTakeaway()"
+        />
+      }
+    </section>
+  } @else {
+    <div class="mb-3 flex flex-wrap items-center gap-2">
+      <span
+        class="inline-flex min-h-touch min-w-0 items-center gap-2 rounded-full bg-surface-muted px-4 font-display text-lg font-bold"
+        data-testid="staff-order-where"
+      >
+        @if (orderType() === 'TAKEAWAY') {
+          <app-order-type-badge type="TAKEAWAY" />
+        }
+        <span class="min-w-0 truncate">{{ whereLabel() }}</span>
+      </span>
+      <button appButton type="button" variant="ghost" size="sm" (click)="changeWhere()">
+        Change
+      </button>
+    </div>
+
+    @if (failure(); as f) {
+      <section
+        class="mb-3 rounded-card border border-amber-300 bg-amber-50 p-4 text-amber-950 dark:border-amber-700 dark:bg-amber-950 dark:text-amber-50"
+        role="alert"
+        data-testid="staff-payment-failed"
+      >
+        <h2 class="font-display text-lg font-semibold">Payment not completed</h2>
+        <p class="mt-1 text-sm">
+          @switch (f.reason) {
+            @case ('dismissed') {
+              The payment window was closed before paying.
+            }
+            @case ('verification-failed') {
+              The payment could not be confirmed yet. If money was taken it will be confirmed
+              automatically. Check the order.
+            }
+            @default {
+              {{ f.message }}
+            }
+          }
+          The order is saved and waits for payment for about 15 minutes.
+        </p>
+        <div class="mt-3 flex flex-wrap gap-2">
+          <button appButton type="button" [loading]="phase() === 'retrying'" (click)="retryPayment()">
+            Retry payment
+          </button>
+          <a appButton variant="outline" [routerLink]="orderLink(f.orderId)">View order</a>
+        </div>
+      </section>
+    }
+
+    <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_24rem] lg:items-start">
+      <section
+        class="min-w-0 lg:block"
+        [class.hidden]="view() === 'cart'"
+        aria-label="Menu"
+      >
+        <app-staff-menu
+          [categories]="menu()?.categories ?? []"
+          [quantities]="cart.quantityByItem()"
+          (add)="addItem($event)"
+        />
+        <!-- Phones: jump to the order. Sticks above the waiter's bottom navigation. -->
+        <div
+          class="sticky bottom-[var(--staff-bottom-offset,0px)] z-20 -mb-2 mt-4 pb-2 pt-2 lg:hidden"
+        >
+          <button
+            appButton
+            type="button"
+            size="lg"
+            block
+            class="shadow-raised"
+            [disabled]="cart.isEmpty()"
+            data-testid="staff-review-order"
+            (click)="view.set('cart')"
+          >
+            @if (cart.isEmpty()) {
+              <span>Add items to start</span>
+            } @else {
+              <span class="truncate">Review order · {{ cart.itemCount() }}</span>
+              <span class="tabular-nums">{{ cart.bill().grandTotal | inr: 'paise' }}*</span>
+            }
+          </button>
+          @if (!cart.isEmpty()) {
+            <p class="mt-1 text-center text-xs text-ink-muted">* estimate</p>
+          }
+        </div>
+      </section>
+
+      <aside
+        class="min-w-0 lg:sticky lg:top-4 lg:block"
+        [class.hidden]="view() === 'menu'"
+        aria-labelledby="staff-order-title"
+      >
+        <app-card>
+          <div class="mb-2 flex items-center gap-2">
+            <button
+              appIconButton
+              type="button"
+              class="-ml-2 lg:hidden"
+              aria-label="Back to the menu"
+              (click)="view.set('menu')"
+            >
+              <svg viewBox="0 0 20 20" class="size-5 fill-current" aria-hidden="true">
+                <path d="M12.7 4.3 7 10l5.7 5.7 1.4-1.4L9.8 10l4.3-4.3-1.4-1.4Z" />
+              </svg>
+            </button>
+            <h2 id="staff-order-title" class="font-display text-lg font-semibold">
+              Order
+              @if (!cart.isEmpty()) {
+                <span class="text-sm font-normal text-ink-muted">· {{ cart.itemCount() }} items</span>
+              }
+            </h2>
+          </div>
+
+          <app-staff-cart-panel
+            [lines]="cart.lines()"
+            [bill]="cart.bill()"
+            [pricesIncludeGst]="cart.pricesIncludeGst()"
+            (quantityChange)="setQuantity($event)"
+            (edit)="editLine($event)"
+            (removeUnavailable)="cart.removeUnavailable()"
+          />
+
+          <form
+            class="mt-4 space-y-4 border-t border-line pt-4"
+            [formGroup]="form"
+            novalidate
+            (ngSubmit)="place()"
+          >
+            <div>
+              <label for="staff-note" class="mb-1 block font-semibold"
+                >Note for the kitchen
+                <span class="font-normal text-ink-muted">(optional)</span></label
+              >
+              <textarea
+                id="staff-note"
+                formControlName="note"
+                rows="2"
+                [maxLength]="maxNote"
+                placeholder="Allergies, spice level, serve together…"
+                class="block w-full resize-none rounded-control border border-line-strong bg-surface px-3 py-2 text-base placeholder:text-ink-subtle"
+              ></textarea>
+            </div>
+            <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
+              <div class="min-w-0">
+                <label for="staff-customer-name" class="mb-1 block font-semibold"
+                  >Guest name <span class="font-normal text-ink-muted">(optional)</span></label
+                >
+                <input
+                  id="staff-customer-name"
+                  type="text"
+                  formControlName="customerName"
+                  autocomplete="off"
+                  [maxLength]="maxName"
+                  class="block min-h-touch w-full rounded-control border border-line-strong bg-surface px-3 text-base"
+                />
+              </div>
+              <div class="min-w-0">
+                <label for="staff-customer-phone" class="mb-1 block font-semibold"
+                  >Guest mobile <span class="font-normal text-ink-muted">(optional)</span></label
+                >
+                <div class="flex min-w-0 items-stretch">
+                  <span
+                    class="inline-flex items-center rounded-l-control border border-r-0 border-line-strong bg-surface-muted px-3 text-base text-ink-muted"
+                    aria-hidden="true"
+                    >+91</span
+                  >
+                  <input
+                    id="staff-customer-phone"
+                    type="tel"
+                    inputmode="numeric"
+                    autocomplete="off"
+                    formControlName="customerPhone"
+                    maxlength="10"
+                    class="block min-h-touch w-full min-w-0 rounded-r-control border border-line-strong bg-surface px-3 text-base"
+                    [attr.aria-invalid]="
+                      form.controls.customerPhone.invalid && form.controls.customerPhone.touched
+                        ? 'true'
+                        : null
+                    "
+                    aria-describedby="staff-customer-phone-help"
+                    (input)="onPhoneInput($event)"
+                  />
+                </div>
+                @if (form.controls.customerPhone.invalid && form.controls.customerPhone.touched) {
+                  <p id="staff-customer-phone-help" class="mt-1 text-sm text-danger">
+                    Enter a valid 10-digit Indian mobile number.
+                  </p>
+                } @else {
+                  <p id="staff-customer-phone-help" class="mt-1 text-xs text-ink-subtle">
+                    For the "order ready" SMS, if set up.
+                  </p>
+                }
+              </div>
+            </div>
+
+            <app-payment-method-picker
+              [value]="paymentMethod()"
+              (valueChange)="paymentMethod.set($event)"
+              [onlineAvailable]="onlineAvailable()"
+            />
+
+            @if (errorMessage(); as message) {
+              <p
+                class="rounded-control bg-red-50 p-3 text-sm text-red-900 dark:bg-red-950 dark:text-red-100"
+                role="alert"
+                data-testid="staff-order-error"
+              >
+                {{ message }}
+              </p>
+            } @else if (problem(); as p) {
+              <p class="text-sm text-ink-muted" role="status">{{ p }}</p>
+            }
+
+            <button
+              appButton
+              type="submit"
+              size="lg"
+              block
+              [disabled]="!canPlace()"
+              [loading]="busy()"
+              data-testid="staff-place-order"
+            >
+              @if (busy()) {
+                <app-spinner [size]="18" />
+                <span>{{ phase() === 'placing' ? 'Placing order…' : 'Opening payment…' }}</span>
+              } @else if (paymentMethod() === 'ONLINE') {
+                <span>Continue to payment</span>
+              } @else {
+                <span class="truncate">Place order · {{ methodLabel() }}</span>
+              }
+            </button>
+            @if (!cart.isEmpty() && !busy()) {
+              <p class="text-center text-xs text-ink-muted">
+                About {{ cart.bill().grandTotal | inr: 'paise' }} (estimate). The final amount is
+                shown after placing.
+              </p>
+            }
+          </form>
+        </app-card>
+      </aside>
+    </div>
+  }
+}

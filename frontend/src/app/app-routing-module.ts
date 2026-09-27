@@ -14,6 +14,10 @@ const routes: Routes = [
     loadChildren: () => import('./features/kitchen/kitchen-module').then((m) => m.KitchenModule),
   },
   {
+    path: 'waiter',
+    loadChildren: () => import('./features/waiter/waiter-module').then((m) => m.WaiterModule),
+  },
+  {
     path: 'admin',
     loadChildren: () => import('./features/admin/admin-module').then((m) => m.AdminModule),
   },

@@ -1,0 +1,4 @@
+<h1 class="sr-only">New order</h1>
+@for (key of [flowKey()]; track key) {
+  <app-staff-order-flow mode="waiter" [initialTableId]="tableId()" [initialType]="orderType()" />
+}

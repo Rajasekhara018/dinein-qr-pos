@@ -1,0 +1,72 @@
+<div class="mb-3 flex flex-wrap items-baseline justify-between gap-2">
+  <h1 class="font-display text-2xl font-semibold">Active orders</h1>
+  <p class="text-sm text-ink-muted" aria-live="polite">
+    {{ counts().confirmed }} new · {{ counts().preparing }} cooking · {{ counts().ready }} ready
+  </p>
+</div>
+
+@if (board.filterOptions().tables.length || board.filterOptions().takeaway) {
+  <div class="mb-4 flex gap-2 overflow-x-auto pb-1" role="group" aria-label="Filter by table">
+    <button
+      type="button"
+      class="min-h-touch shrink-0 rounded-full border px-4 text-sm font-semibold"
+      [class]="filter() === null ? 'border-brand bg-brand-soft text-brand-ink' : 'border-line-strong bg-surface'"
+      [attr.aria-pressed]="filter() === null"
+      (click)="select(null)"
+    >
+      All
+    </button>
+    @for (label of board.filterOptions().tables; track label) {
+      <button
+        type="button"
+        class="min-h-touch shrink-0 whitespace-nowrap rounded-full border px-4 text-sm font-semibold"
+        [class]="filter() === label ? 'border-brand bg-brand-soft text-brand-ink' : 'border-line-strong bg-surface'"
+        [attr.aria-pressed]="filter() === label"
+        [attr.data-testid]="'active-filter-' + label"
+        (click)="select(label)"
+      >
+        {{ label }}
+      </button>
+    }
+    @if (board.filterOptions().takeaway) {
+      <button
+        type="button"
+        class="min-h-touch shrink-0 rounded-full border px-4 text-sm font-semibold"
+        [class]="filter() === takeawayFilter ? 'border-brand bg-brand-soft text-brand-ink' : 'border-line-strong bg-surface'"
+        [attr.aria-pressed]="filter() === takeawayFilter"
+        (click)="select(takeawayFilter)"
+      >
+        Takeaway
+      </button>
+    }
+  </div>
+}
+
+@if (board.loading() && board.orders().length === 0) {
+  <div class="grid gap-3 md:grid-cols-2" aria-busy="true">
+    <app-skeleton shape="block" class="h-48" />
+    <app-skeleton shape="block" class="h-48" />
+  </div>
+} @else if (board.error(); as error) {
+  <app-error-state title="Couldn't load orders" [error]="error" (retry)="board.refresh()" />
+} @else if (orders().length === 0) {
+  <app-empty-state
+    [title]="filter() ? 'No open orders here' : 'No open orders'"
+    message="Paid orders show up here until they are served."
+  />
+} @else {
+  <ul class="grid gap-3 md:grid-cols-2 xl:grid-cols-3" role="list" aria-label="Active orders">
+    @for (order of orders(); track order.id) {
+      <li class="min-w-0">
+        <app-waiter-order-card
+          [order]="order"
+          [now]="board.now()"
+          [pending]="board.pending().has(order.id)"
+          [highlighted]="board.highlighted().has(order.id)"
+          showStatus
+          (serve)="serve($event)"
+        />
+      </li>
+    }
+  </ul>
+}

@@ -1,0 +1,59 @@
+<a
+  href="#waiter-main"
+  class="sr-only z-[1200] rounded-control bg-surface px-4 py-2 font-semibold text-ink shadow-raised focus:not-sr-only focus:fixed focus:left-2 focus:top-2"
+>
+  Skip to content
+</a>
+
+<app-waiter-header (signOut)="signOut()" />
+<app-reconnecting-banner />
+
+<nav
+  class="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-surface pb-[env(safe-area-inset-bottom)] md:sticky md:top-0 md:border-b md:border-t-0 md:pb-0"
+  aria-label="Waiter"
+>
+  <ul class="mx-auto grid max-w-3xl grid-cols-4" role="list">
+    @for (item of nav; track item.path) {
+      <li class="min-w-0">
+        <a
+          [routerLink]="item.path"
+          routerLinkActive="text-brand-ink bg-brand-soft font-bold"
+          [routerLinkActiveOptions]="{ exact: item.exact }"
+          ariaCurrentWhenActive="page"
+          class="relative flex min-h-14 min-w-0 flex-col items-center justify-center gap-0.5 px-1 text-xs font-semibold text-ink-muted md:flex-row md:gap-2 md:text-sm"
+          [attr.data-testid]="item.testId"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            class="size-6 shrink-0"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path [attr.d]="item.icon" />
+          </svg>
+          <span class="max-w-full truncate">{{ item.label }}</span>
+          @if (item.testId === 'nav-ready' && board.readyCount() > 0) {
+            <span
+              class="absolute right-[calc(50%-1.75rem)] top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-emerald-600 px-1 text-xs font-bold text-white md:static"
+              data-testid="nav-ready-count"
+            >
+              {{ board.readyCount() }}<span class="sr-only"> ready</span>
+            </span>
+          }
+        </a>
+      </li>
+    }
+  </ul>
+</nav>
+
+<main
+  id="waiter-main"
+  tabindex="-1"
+  class="mx-auto w-full max-w-6xl px-4 pb-[calc(5.5rem+env(safe-area-inset-bottom))] pt-4 outline-none [--staff-bottom-offset:calc(4rem+env(safe-area-inset-bottom))] md:pb-8 md:[--staff-bottom-offset:0px] md:[--staff-top-offset:3.5rem]"
+>
+  <router-outlet />
+</main>

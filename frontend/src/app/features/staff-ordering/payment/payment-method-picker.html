@@ -1,0 +1,40 @@
+<fieldset class="min-w-0">
+  <legend class="mb-2 font-semibold">{{ legend() }}</legend>
+  <div class="grid grid-cols-2 gap-2">
+    @for (method of methods(); track method) {
+      <label
+        class="flex min-h-touch min-w-0 cursor-pointer items-start gap-2 rounded-control border-2 p-3 has-[:checked]:border-brand has-[:checked]:bg-brand-soft has-[:disabled]:cursor-not-allowed has-[:disabled]:opacity-50"
+        [class.border-line-strong]="value() !== method"
+        [attr.data-testid]="'pay-method-' + method"
+      >
+        <input
+          type="radio"
+          class="mt-1 size-5 shrink-0 accent-[var(--brand)]"
+          [name]="name()"
+          [value]="method"
+          [checked]="value() === method"
+          [disabled]="isDisabled(method)"
+          (change)="value.set(method)"
+        />
+        <span class="min-w-0">
+          <span class="flex items-center gap-1.5 font-semibold">
+            <svg
+              viewBox="0 0 24 24"
+              class="size-5 shrink-0"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+              aria-hidden="true"
+            >
+              <path [attr.d]="option(method).icon" />
+            </svg>
+            <span class="min-w-0 break-words">{{ option(method).label }}</span>
+          </span>
+          <span class="block text-xs text-ink-muted">
+            {{ isDisabled(method) ? 'Not set up' : option(method).hint }}
+          </span>
+        </span>
+      </label>
+    }
+  </div>
+</fieldset>

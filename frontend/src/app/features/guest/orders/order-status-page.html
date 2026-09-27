@@ -24,9 +24,13 @@
       >
         {{ o.displayToken }}
       </p>
-      @if (o.tableLabel) {
-        <p class="mt-2 text-base opacity-90">
-          Table <strong>{{ o.tableLabel }}</strong>
+      @if (o.orderType === 'TAKEAWAY') {
+        <p class="mt-2 text-base font-semibold uppercase tracking-wide" data-testid="order-type">
+          Takeaway · packed to go
+        </p>
+      } @else if (o.tableLabel) {
+        <p class="mt-2 text-base opacity-90" data-testid="order-type">
+          Dine-in · Table <strong>{{ o.tableLabel }}</strong>
         </p>
       }
     </section>

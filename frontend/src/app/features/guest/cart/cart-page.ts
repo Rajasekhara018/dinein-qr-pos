@@ -12,7 +12,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import { ApiError } from '../../../core/api/api-error';
-import { CheckoutResponse } from '../../../core/api/models';
+import { CheckoutResponse, OrderType } from '../../../core/api/models';
 import { PublicApi } from '../../../core/api/public.api';
 import { CheckoutService, orderPagePath } from '../../../core/payments/checkout.service';
 import {
@@ -84,6 +84,11 @@ export class CartPage {
   protected readonly serverTotal = signal<number | null>(null);
 
   protected readonly payTotal = computed(() => this.serverTotal() ?? this.cart.total());
+  /** Dine-in / Takeaway is offered only when the restaurant enabled takeaway. */
+  protected readonly takeawayEnabled = computed(
+    () => this.session.restaurant()?.takeawayEnabled === true,
+  );
+  protected readonly orderType = signal<OrderType>('DINE_IN');
   protected readonly canPay = computed(
     () =>
       this.session.canOrder() &&
@@ -139,6 +144,11 @@ export class CartPage {
     this.serverTotal.set(null);
   }
 
+  protected setOrderType(type: OrderType): void {
+    this.orderType.set(type);
+    this.errorMessage.set(null);
+  }
+
   protected dismissFailure(): void {
     this.failure.set(null);
   }
@@ -154,7 +164,9 @@ export class CartPage {
     }
     if (!this.canPay()) return;
 
-    const { request, keys } = this.cart.toOrderRequest();
+    const { request: base, keys } = this.cart.toOrderRequest();
+    // `orderType` is sent only when the guest could choose (older backends and "takeaway off" get the old body).
+    const request = this.takeawayEnabled() ? { ...base, orderType: this.orderType() } : base;
     // Same payload → same key (a retried/double-submitted attempt returns the same order).
     const key = this.idempotency.keyFor(JSON.stringify(request));
     this.failure.set(null);
@@ -234,6 +246,13 @@ export class CartPage {
         break;
       case 'RATE_LIMITED':
         this.errorMessage.set('Too many attempts. Please wait a minute and try again.');
+        break;
+      case 'TAKEAWAY_DISABLED':
+        this.orderType.set('DINE_IN');
+        this.errorMessage.set(
+          'Takeaway is not available right now, so we switched your order to dine-in. Tap Pay to continue.',
+        );
+        void this.session.refresh();
         break;
       case 'VALIDATION_FAILED': {
         const fields = error.fieldErrors.map((f) => f.message).filter(Boolean);

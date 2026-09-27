@@ -1,0 +1,151 @@
+<main class="mx-auto flex min-h-dvh w-full max-w-md flex-col justify-center px-4 py-8">
+  <div class="mb-6 flex items-center gap-3">
+    <span
+      class="flex size-12 shrink-0 items-center justify-center rounded-card bg-brand text-brand-contrast"
+      aria-hidden="true"
+    >
+      <svg viewBox="0 0 24 24" class="size-7" fill="none" stroke="currentColor" stroke-width="1.8">
+        <path d="M4 15h16M5 15a7 7 0 0 1 14 0M12 8V6M3 19h18" />
+      </svg>
+    </span>
+    <div class="min-w-0">
+      <h1 class="font-display text-2xl font-semibold">Waiter sign-in</h1>
+      <p class="text-sm text-ink-muted">Take orders, serve ready food, collect payment.</p>
+    </div>
+  </div>
+
+  @if (reason() === 'role') {
+    <p
+      class="mb-4 rounded-control border border-amber-300 bg-amber-50 px-3 py-2 text-sm font-medium text-amber-950 dark:border-amber-700 dark:bg-amber-950 dark:text-amber-50"
+      role="status"
+      data-testid="waiter-login-role"
+    >
+      That account can't use the waiter screen. Kitchen accounts sign in on the kitchen screen.
+    </p>
+  }
+
+  <form
+    class="rounded-card border border-line bg-surface p-4 shadow-card sm:p-6"
+    [formGroup]="form"
+    (ngSubmit)="submit()"
+    novalidate
+  >
+    <div
+      class="mb-5 grid grid-cols-2 gap-1 rounded-control bg-surface-muted p-1"
+      role="group"
+      aria-label="Sign in with"
+    >
+      <button
+        type="button"
+        class="min-h-touch rounded-control px-3 text-sm font-semibold transition-colors"
+        [class]="
+          mode() === 'pin' ? 'bg-surface text-ink shadow-card' : 'text-ink-muted hover:text-ink'
+        "
+        [attr.aria-pressed]="mode() === 'pin'"
+        (click)="setMode('pin')"
+      >
+        PIN
+      </button>
+      <button
+        type="button"
+        class="min-h-touch rounded-control px-3 text-sm font-semibold transition-colors"
+        [class]="
+          mode() === 'password'
+            ? 'bg-surface text-ink shadow-card'
+            : 'text-ink-muted hover:text-ink'
+        "
+        [attr.aria-pressed]="mode() === 'password'"
+        (click)="setMode('password')"
+      >
+        Password
+      </button>
+    </div>
+
+    <div class="space-y-4">
+      <div>
+        <label for="w-username" class="mb-1 block text-sm font-semibold">Username</label>
+        <input
+          id="w-username"
+          type="text"
+          formControlName="username"
+          autocomplete="username"
+          autocapitalize="none"
+          spellcheck="false"
+          class="block min-h-touch w-full rounded-control border border-line-strong bg-surface px-3 text-ink"
+          [attr.aria-invalid]="showError('username')"
+          [attr.aria-describedby]="showError('username') ? 'w-username-error' : null"
+        />
+        @if (showError('username')) {
+          <p id="w-username-error" class="mt-1 text-sm text-red-700 dark:text-red-300">
+            Enter your username.
+          </p>
+        }
+      </div>
+
+      @if (mode() === 'pin') {
+        <div>
+          <label for="w-pin" class="mb-1 block text-sm font-semibold">PIN (4–6 digits)</label>
+          <input
+            id="w-pin"
+            type="password"
+            formControlName="pin"
+            inputmode="numeric"
+            pattern="[0-9]*"
+            maxlength="6"
+            autocomplete="current-password"
+            class="block min-h-touch w-full rounded-control border border-line-strong bg-surface px-3 font-mono tracking-[0.4em] text-ink"
+            [attr.aria-invalid]="showError('pin')"
+            [attr.aria-describedby]="showError('pin') ? 'w-pin-error' : null"
+          />
+          @if (showError('pin')) {
+            <p id="w-pin-error" class="mt-1 text-sm text-red-700 dark:text-red-300">
+              The PIN must be 4 to 6 digits.
+            </p>
+          }
+        </div>
+      } @else {
+        <div>
+          <label for="w-password" class="mb-1 block text-sm font-semibold">Password</label>
+          <input
+            id="w-password"
+            type="password"
+            formControlName="password"
+            autocomplete="current-password"
+            class="block min-h-touch w-full rounded-control border border-line-strong bg-surface px-3 text-ink"
+            [attr.aria-invalid]="showError('password')"
+            [attr.aria-describedby]="showError('password') ? 'w-password-error' : null"
+          />
+          @if (showError('password')) {
+            <p id="w-password-error" class="mt-1 text-sm text-red-700 dark:text-red-300">
+              Enter your password.
+            </p>
+          }
+        </div>
+      }
+    </div>
+
+    <div aria-live="assertive">
+      @if (errorMessage(); as message) {
+        <p
+          class="mt-4 rounded-control border border-red-300 bg-red-50 px-3 py-2 text-sm font-medium text-red-900 dark:border-red-800 dark:bg-red-950 dark:text-red-100"
+          role="alert"
+          data-testid="waiter-login-error"
+        >
+          {{ message }}
+        </p>
+      }
+    </div>
+
+    <button appButton type="submit" size="lg" block class="mt-6" [loading]="submitting()">
+      @if (submitting()) {
+        <app-spinner [size]="18" />
+        Signing in…
+      } @else {
+        Sign in
+      }
+    </button>
+    <p class="mt-3 text-center text-xs text-ink-subtle">
+      Owners and managers can sign in here with their password.
+    </p>
+  </form>
+</main>

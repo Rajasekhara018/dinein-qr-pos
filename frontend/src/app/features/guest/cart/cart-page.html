@@ -103,6 +103,54 @@
           </a>
         </app-card>
 
+        @if (takeawayEnabled()) {
+          <app-card>
+            <fieldset>
+              <legend class="mb-2 font-semibold">How would you like your order?</legend>
+              <div
+                class="grid grid-cols-2 gap-1 rounded-control bg-surface-muted p-1"
+                data-testid="order-type-toggle"
+              >
+                <label
+                  class="flex min-h-touch cursor-pointer items-center justify-center gap-2 rounded-control px-3 text-sm font-semibold transition-colors has-[:checked]:bg-surface has-[:checked]:text-ink has-[:checked]:shadow-card has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-focus"
+                  [class.text-ink-muted]="orderType() !== 'DINE_IN'"
+                >
+                  <input
+                    type="radio"
+                    name="order-type"
+                    class="sr-only"
+                    value="DINE_IN"
+                    [checked]="orderType() === 'DINE_IN'"
+                    (change)="setOrderType('DINE_IN')"
+                    data-testid="order-type-DINE_IN"
+                  />
+                  Dine-in
+                </label>
+                <label
+                  class="flex min-h-touch cursor-pointer items-center justify-center gap-2 rounded-control px-3 text-sm font-semibold transition-colors has-[:checked]:bg-surface has-[:checked]:text-ink has-[:checked]:shadow-card has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-focus"
+                  [class.text-ink-muted]="orderType() !== 'TAKEAWAY'"
+                >
+                  <input
+                    type="radio"
+                    name="order-type"
+                    class="sr-only"
+                    value="TAKEAWAY"
+                    [checked]="orderType() === 'TAKEAWAY'"
+                    (change)="setOrderType('TAKEAWAY')"
+                    data-testid="order-type-TAKEAWAY"
+                  />
+                  Takeaway
+                </label>
+              </div>
+              @if (orderType() === 'TAKEAWAY') {
+                <p class="mt-2 text-sm text-ink-muted">
+                  We'll pack your order. Collect it at the counter when it's ready.
+                </p>
+              }
+            </fieldset>
+          </app-card>
+        }
+
         <app-card>
           <form [formGroup]="form" class="space-y-4" novalidate (ngSubmit)="pay()">
             <div>

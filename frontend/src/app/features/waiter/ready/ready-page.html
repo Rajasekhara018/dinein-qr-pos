@@ -1,0 +1,65 @@
+@if (alerts.needsPrompt()) {
+  <div
+    class="mb-4 flex flex-wrap items-center gap-x-4 gap-y-2 rounded-card border border-sky-300 bg-sky-50 p-3 text-sky-950 dark:border-sky-800 dark:bg-sky-950 dark:text-sky-50"
+    role="region"
+    aria-label="Sound"
+  >
+    <p class="min-w-0 flex-1 text-sm font-medium">
+      @if (alerts.preference() === 'on') {
+        Sound is paused by the browser. Tap to hear a chime when an order is ready.
+      } @else {
+        Turn on sound to hear a chime when an order is ready.
+      }
+    </p>
+    <div class="flex flex-wrap gap-2">
+      <button appButton type="button" size="sm" data-testid="waiter-enable-sound" (click)="alerts.enable()">
+        Enable sound
+      </button>
+      @if (alerts.preference() === null) {
+        <button appButton type="button" size="sm" variant="ghost" (click)="alerts.disable()">
+          Not now
+        </button>
+      }
+    </div>
+  </div>
+}
+
+<div class="mb-3 flex items-baseline justify-between gap-2">
+  <h1 class="font-display text-2xl font-semibold">Ready to serve</h1>
+  @if (!board.loading() || board.orders().length) {
+    <span class="text-sm text-ink-muted" aria-live="polite" data-testid="ready-count">
+      {{ board.readyCount() }} {{ board.readyCount() === 1 ? 'order' : 'orders' }}
+    </span>
+  }
+</div>
+
+@if (board.loading() && board.orders().length === 0) {
+  <div class="grid gap-3 md:grid-cols-2" aria-busy="true">
+    <app-skeleton shape="block" class="h-56" />
+    <app-skeleton shape="block" class="h-56" />
+  </div>
+} @else if (board.error(); as error) {
+  <app-error-state title="Couldn't load orders" [error]="error" (retry)="board.refresh()" />
+} @else if (board.ready().length === 0) {
+  <app-empty-state
+    title="Nothing to serve right now"
+    message="Orders appear here the moment the kitchen marks them ready."
+  >
+    <a appButton variant="outline" routerLink="/waiter/tables">Tables</a>
+    <a appButton routerLink="/waiter/new">New order</a>
+  </app-empty-state>
+} @else {
+  <ul class="grid gap-3 md:grid-cols-2 xl:grid-cols-3" role="list" aria-label="Ready orders">
+    @for (order of board.ready(); track order.id) {
+      <li class="min-w-0">
+        <app-waiter-order-card
+          [order]="order"
+          [now]="board.now()"
+          [pending]="board.pending().has(order.id)"
+          [highlighted]="board.highlighted().has(order.id)"
+          (serve)="serve($event)"
+        />
+      </li>
+    }
+  </ul>
+}

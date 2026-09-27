@@ -24,6 +24,10 @@
     <dd class="text-right font-medium">{{ order().orderNumber }}</dd>
     <dt class="text-ink-muted">Token</dt>
     <dd class="text-right font-medium">{{ order().displayToken }}</dd>
+    @if (order().orderType === 'TAKEAWAY') {
+      <dt class="text-ink-muted">Type</dt>
+      <dd class="text-right font-medium">Takeaway</dd>
+    }
     @if (order().tableLabel) {
       <dt class="text-ink-muted">Table</dt>
       <dd class="text-right font-medium">{{ order().tableLabel }}</dd>

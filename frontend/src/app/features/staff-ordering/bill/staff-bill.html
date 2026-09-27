@@ -1,0 +1,70 @@
+<app-card padding="none">
+  <h2 class="border-b border-line px-4 py-3 font-display text-lg font-semibold">Bill</h2>
+  <ul class="divide-y divide-line" role="list">
+    @for (line of order().items; track $index) {
+      <li class="flex gap-3 px-4 py-3">
+        <span class="w-8 shrink-0 font-display text-lg font-semibold tabular-nums"
+          >{{ line.quantity }}×</span
+        >
+        <div class="min-w-0 flex-1">
+          <p class="flex min-w-0 items-center gap-2 font-semibold">
+            @if (line.foodType) {
+              <app-veg-marker [type]="line.foodType" />
+            }
+            <span class="min-w-0 break-words">{{ line.name }}</span>
+          </p>
+          @if (line.variantName) {
+            <p class="text-sm text-ink-muted">{{ line.variantName }}</p>
+          }
+          @for (addon of line.addons; track $index) {
+            <p class="text-sm text-ink-muted">+ {{ addon.name }} ({{ addon.price | inr }})</p>
+          }
+          @if (line.notes) {
+            <p class="text-sm italic text-ink-subtle">“{{ line.notes }}”</p>
+          }
+        </div>
+        <span class="shrink-0 font-semibold tabular-nums">{{ line.lineTotal | inr }}</span>
+      </li>
+    }
+  </ul>
+  @if (order().notes) {
+    <p class="border-t border-line px-4 py-3 text-sm">
+      <strong>Order note:</strong> {{ order().notes }}
+    </p>
+  }
+  <dl class="border-t border-line px-4 py-3 text-sm">
+    <div class="flex justify-between gap-4 py-0.5">
+      <dt class="text-ink-muted">Subtotal</dt>
+      <dd class="tabular-nums">{{ order().bill.subtotal | inr }}</dd>
+    </div>
+    <div class="flex justify-between gap-4 py-0.5">
+      <dt class="text-ink-muted">CGST</dt>
+      <dd class="tabular-nums">{{ order().bill.cgst | inr }}</dd>
+    </div>
+    <div class="flex justify-between gap-4 py-0.5">
+      <dt class="text-ink-muted">SGST</dt>
+      <dd class="tabular-nums">{{ order().bill.sgst | inr }}</dd>
+    </div>
+    <div class="mt-1 flex justify-between gap-4 border-t border-line pt-2 text-base font-bold">
+      <dt>Total</dt>
+      <dd class="tabular-nums" data-testid="staff-bill-total">
+        {{ order().bill.grandTotal | inr }}
+      </dd>
+    </div>
+  </dl>
+  @if (paidWith() || order().paidAt) {
+    <p class="border-t border-line px-4 py-3 text-sm text-ink-muted">
+      @if (order().paidAt) {
+        Paid
+      } @else {
+        Payment
+      }
+      @if (paidWith()) {
+        · <span class="font-medium text-ink">{{ paidWith() }}</span>
+      }
+      @if (order().paidAt) {
+        · {{ order().paidAt | date }}
+      }
+    </p>
+  }
+</app-card>

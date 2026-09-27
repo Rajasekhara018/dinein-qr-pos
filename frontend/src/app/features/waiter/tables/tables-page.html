@@ -1,0 +1,23 @@
+<div class="mb-3 flex flex-wrap items-baseline justify-between gap-2">
+  <h1 class="font-display text-2xl font-semibold">Tables</h1>
+  <p class="text-sm text-ink-muted">Tap a table to take an order.</p>
+</div>
+
+@if (loading() && tables().length === 0) {
+  <div class="grid grid-cols-2 gap-3 min-[480px]:grid-cols-3 md:grid-cols-4" aria-busy="true">
+    @for (i of [1, 2, 3, 4, 5, 6]; track i) {
+      <app-skeleton shape="block" class="h-24" />
+    }
+  </div>
+} @else if (error(); as e) {
+  <app-error-state title="Couldn't load tables" [error]="e" (retry)="load()" />
+} @else if (tables().length === 0 && !board.config()?.takeawayEnabled) {
+  <app-empty-state title="No active tables" message="Tables are added in the admin panel." />
+} @else {
+  <app-table-grid
+    [tables]="tables()"
+    [takeawayEnabled]="board.config()?.takeawayEnabled ?? false"
+    (pickTable)="openTable($event)"
+    (pickTakeaway)="openTakeaway()"
+  />
+}

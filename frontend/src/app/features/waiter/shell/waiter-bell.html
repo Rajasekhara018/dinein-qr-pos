@@ -1,0 +1,122 @@
+<button
+  #trigger
+  appIconButton
+  type="button"
+  class="relative"
+  cdkOverlayOrigin
+  #origin="cdkOverlayOrigin"
+  aria-haspopup="dialog"
+  [attr.aria-expanded]="open()"
+  [attr.aria-label]="label()"
+  data-testid="waiter-bell"
+  (click)="toggle()"
+>
+  <svg viewBox="0 0 24 24" class="size-6" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+    <path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9Zm4.3 13a1.9 1.9 0 0 0 3.4 0" />
+  </svg>
+  @if (store.hasUnread()) {
+    <span
+      class="absolute right-0.5 top-0.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-danger px-1 text-xs font-bold leading-none text-white"
+      aria-hidden="true"
+      data-testid="waiter-bell-badge"
+    >
+      {{ badge() }}
+    </span>
+  }
+</button>
+
+<ng-template
+  cdkConnectedOverlay
+  [cdkConnectedOverlayOrigin]="origin"
+  [cdkConnectedOverlayOpen]="open()"
+  [cdkConnectedOverlayPositions]="positions"
+  [cdkConnectedOverlayViewportMargin]="8"
+  (overlayOutsideClick)="onOutside($event, trigger)"
+  (detach)="close()"
+  (overlayKeydown)="$event.key === 'Escape' && close()"
+>
+  <section
+    class="flex max-h-[min(32rem,calc(100dvh-5rem))] w-[min(24rem,calc(100vw-1rem))] animate-pop flex-col overflow-hidden rounded-card border border-line bg-surface shadow-raised"
+    role="dialog"
+    aria-labelledby="waiter-notifications-title"
+    cdkTrapFocus
+    [cdkTrapFocusAutoCapture]="true"
+  >
+    <header class="flex items-center justify-between gap-2 border-b border-line px-4 py-2">
+      <h2 id="waiter-notifications-title" class="font-display text-lg font-semibold">Notifications</h2>
+      <button
+        appButton
+        variant="ghost"
+        size="sm"
+        type="button"
+        [disabled]="!store.hasUnread()"
+        (click)="store.markAllRead()"
+      >
+        Mark all read
+      </button>
+    </header>
+    <div class="min-h-0 flex-1 overflow-y-auto overscroll-contain" aria-live="polite">
+      @if (store.loading() && !store.loaded()) {
+        <div class="space-y-3 p-4">
+          <app-skeleton class="h-4 w-3/4" />
+          <app-skeleton class="h-4 w-1/2" />
+          <app-skeleton class="h-4 w-2/3" />
+        </div>
+      } @else if (store.error() && !store.loaded()) {
+        <div class="p-4 text-center">
+          <p class="text-sm text-ink-muted">Could not load notifications.</p>
+          <button appButton variant="outline" size="sm" type="button" class="mt-2" (click)="store.load()">
+            Try again
+          </button>
+        </div>
+      } @else if (store.items().length === 0) {
+        <p class="p-6 text-center text-sm text-ink-muted">You're all caught up.</p>
+      } @else {
+        <ul role="list" class="divide-y divide-line">
+          @for (n of store.items(); track n.id) {
+            <li class="flex items-stretch">
+              <button
+                type="button"
+                class="flex min-h-touch min-w-0 flex-1 gap-3 px-4 py-3 text-left hover:bg-surface-muted"
+                [class.bg-brand-soft]="!n.read"
+                (click)="select(n)"
+              >
+                <span
+                  class="mt-1.5 size-2.5 shrink-0 rounded-full"
+                  [class.bg-danger]="!n.read && n.severity === 'HIGH'"
+                  [class.bg-brand]="!n.read && n.severity !== 'HIGH'"
+                  aria-hidden="true"
+                ></span>
+                <span class="min-w-0 flex-1">
+                  <span class="block text-sm text-ink" [class.font-semibold]="!n.read">
+                    @if (!n.read) {
+                      <span class="sr-only">Unread: </span>
+                    }
+                    {{ n.title }}
+                  </span>
+                  @if (n.body) {
+                    <span class="mt-0.5 block text-sm text-ink-muted">{{ n.body }}</span>
+                  }
+                  <span class="mt-0.5 block text-xs text-ink-subtle">{{ n.createdAt | date: 'd MMM, h:mm a' }}</span>
+                </span>
+              </button>
+              @if (!n.read) {
+                <button
+                  appIconButton
+                  type="button"
+                  class="m-1 self-center"
+                  [attr.aria-label]="'Mark “' + n.title + '” as read'"
+                  (click)="store.markRead(n)"
+                >
+                  <svg viewBox="0 0 24 24" class="size-5" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <path d="m5 12 5 5L20 7" />
+                  </svg>
+                </button>
+              }
+            </li>
+          }
+        </ul>
+      }
+    </div>
+  </section>
+</ng-template>

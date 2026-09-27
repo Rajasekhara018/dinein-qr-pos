@@ -1,0 +1,164 @@
+<div class="mx-auto max-w-3xl">
+  @if (order(); as o) {
+    <div class="flex items-center gap-2">
+      <a appIconButton routerLink="/waiter/active" aria-label="Back to active orders" class="-ml-2">
+        <svg viewBox="0 0 20 20" class="size-5 fill-current" aria-hidden="true">
+          <path d="M12.7 4.3 7 10l5.7 5.7 1.4-1.4L9.8 10l4.3-4.3-1.4-1.4Z" />
+        </svg>
+      </a>
+      <h1 class="min-w-0 truncate font-display text-xl font-semibold">Order {{ o.orderNumber }}</h1>
+      <app-order-status-badge class="ml-auto" [status]="o.status" />
+    </div>
+
+    <section
+      class="mt-4 flex flex-wrap items-center justify-between gap-4 rounded-sheet bg-brand p-5 text-brand-contrast shadow-raised"
+      aria-label="Token"
+    >
+      <div>
+        <p class="text-sm font-semibold uppercase tracking-widest opacity-90">Token</p>
+        <p
+          class="font-display text-[clamp(3rem,16vw,5rem)] font-bold leading-none tabular-nums"
+          data-testid="waiter-order-page-token"
+        >
+          {{ o.displayToken }}
+        </p>
+      </div>
+      <div class="flex flex-col items-end gap-2 text-right">
+        @if (o.tableLabel) {
+          <p class="text-lg">
+            Table <strong>{{ o.tableLabel }}</strong>
+          </p>
+        }
+        <app-order-type-badge [type]="o.orderType" />
+        @if (o.customerName) {
+          <p class="text-sm opacity-90">{{ o.customerName }}</p>
+        }
+      </div>
+    </section>
+
+    <section class="mt-4" aria-live="polite">
+      @switch (o.status) {
+        @case ('PENDING_PAYMENT') {
+          @if (checkingPayment()) {
+            <app-card>
+              <div class="flex items-start gap-3">
+                <app-spinner [size]="22" class="mt-0.5 text-brand-ink" />
+                <div class="min-w-0">
+                  <h2 class="font-semibold">Checking the payment…</h2>
+                  <p class="mt-1 text-sm text-ink-muted">This usually takes a few seconds.</p>
+                </div>
+              </div>
+            </app-card>
+          } @else {
+            <app-card
+              class="border-amber-300 bg-amber-50 text-amber-950 dark:border-amber-700 dark:bg-amber-950 dark:text-amber-50"
+            >
+              <h2 class="font-display text-lg font-semibold" [attr.role]="showPaymentFailed() ? 'alert' : null">
+                {{ showPaymentFailed() ? 'Payment not completed' : 'Waiting for payment' }}
+              </h2>
+              <p class="mt-1 text-sm">
+                {{
+                  paymentMessage() ??
+                    (showPaymentFailed()
+                      ? 'The online payment did not go through. The order is saved; try again.'
+                      : 'The order goes to the kitchen once it is paid. Unpaid orders expire after about 15 minutes.')
+                }}
+              </p>
+              <div class="mt-3 flex flex-wrap gap-2">
+                <button
+                  appButton
+                  type="button"
+                  [loading]="retrying()"
+                  data-testid="waiter-retry-payment"
+                  (click)="retryPayment()"
+                >
+                  Retry payment
+                </button>
+                <button appButton type="button" variant="outline" (click)="refetch()">
+                  Check again
+                </button>
+              </div>
+            </app-card>
+          }
+        }
+        @case ('EXPIRED') {
+          <app-card>
+            <h2 class="font-display text-lg font-semibold">This order expired</h2>
+            <p class="mt-1 text-sm text-ink-muted">
+              It was not paid in time, so it never reached the kitchen. Take a new order (cash, UPI or
+              card), or ask a manager to settle it at the counter.
+            </p>
+            <a appButton routerLink="/waiter/new" class="mt-3">New order</a>
+          </app-card>
+        }
+        @case ('PAYMENT_FAILED') {
+          <app-card>
+            <h2 class="font-display text-lg font-semibold text-danger">Payment failed</h2>
+            <p class="mt-1 text-sm text-ink-muted">
+              {{ o.payment?.failureReason || 'The payment could not be completed, so the order was not sent to the kitchen.' }}
+            </p>
+            <a appButton routerLink="/waiter/new" class="mt-3">New order</a>
+          </app-card>
+        }
+        @case ('CANCELLED') {
+          <app-card>
+            <h2 class="font-display text-lg font-semibold text-danger">Order cancelled</h2>
+            @if (o.payment?.refundStatus === 'MANUAL') {
+              <p class="mt-1 text-sm font-semibold">
+                Paid at the counter: hand the money back to the guest ({{ o.bill.grandTotal | inr }}).
+              </p>
+            }
+          </app-card>
+        }
+        @case ('READY') {
+          <app-card class="border-emerald-400">
+            <p class="font-semibold text-emerald-800 dark:text-emerald-200">
+              Ready: take it to the {{ o.orderType === 'TAKEAWAY' ? 'guest (packed)' : 'table' }}.
+            </p>
+            <button
+              type="button"
+              class="mt-3 flex min-h-14 w-full items-center justify-center gap-2 rounded-control bg-emerald-600 px-4 text-lg font-bold text-white hover:bg-emerald-700 disabled:opacity-60 dark:bg-emerald-500 dark:text-emerald-950"
+              [disabled]="serving()"
+              data-testid="waiter-order-serve"
+              (click)="serve()"
+            >
+              @if (serving()) {
+                <app-spinner [size]="20" />
+              }
+              Served
+            </button>
+          </app-card>
+        }
+        @case ('COMPLETED') {
+          <app-card>
+            <p class="font-semibold">Served. Nothing left to do.</p>
+          </app-card>
+        }
+        @default {
+          <app-card>
+            <p class="font-semibold">
+              {{ o.status === 'PREPARING' ? 'The kitchen is cooking this order.' : 'Paid and waiting for the kitchen.' }}
+            </p>
+          </app-card>
+        }
+      }
+    </section>
+
+    <app-staff-bill class="mt-4" [order]="o" />
+
+    <div class="mt-4 flex flex-wrap gap-2">
+      <a appButton variant="secondary" routerLink="/waiter/new">New order</a>
+      <a appButton variant="ghost" routerLink="/waiter">Ready orders</a>
+    </div>
+  } @else if (error()) {
+    <app-error-state title="Couldn't load this order" [error]="error()" (retry)="refetch()">
+      <a appButton variant="outline" routerLink="/waiter/active">Active orders</a>
+    </app-error-state>
+  } @else {
+    <div aria-busy="true" aria-label="Loading order">
+      <app-skeleton class="h-7 w-48" />
+      <app-skeleton shape="block" class="mt-4 h-32" />
+      <app-skeleton shape="block" class="mt-4 h-56" />
+    </div>
+  }
+</div>
