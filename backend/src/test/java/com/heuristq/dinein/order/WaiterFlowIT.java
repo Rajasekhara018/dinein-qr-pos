@@ -397,10 +397,21 @@ class WaiterFlowIT extends AbstractIntegrationTest {
 
     // ----- table occupancy -------------------------------------------------------------------------
 
+    /** Confirms a guest checkout via the Razorpay webhook, the same way {@code reportsBreakDownByPaymentChannelAndOrderType} does. */
+    private void confirmGuestPayment(JsonNode checkout, String paymentId) throws Exception {
+        String payload = capturedWebhook(checkout.get("checkout").get("order_id").asText(), paymentId, 81900L);
+        mvc.perform(post("/api/v1/webhooks/razorpay").contentType(MediaType.APPLICATION_JSON).content(payload)
+                        .header("X-Razorpay-Signature", webhookSignature(payload))
+                        .header("X-Razorpay-Event-Id", "evt_" + UUID.randomUUID()))
+                .andExpect(status().isOk());
+    }
+
     @Test
-    void aFreshScanIsRefusedWhileTheTableHasAnActiveOrderButTheSeatedGuestIsNotAffected() throws Exception {
+    void aFreshScanIsRefusedWhileAGuestOrderIsActiveButTheSeatedGuestIsNotAffected() throws Exception {
         var seated = guestCookie();
-        long orderId = body(placeOrder(seated, UUID.randomUUID().toString(), simpleCart())).get("orderId").asLong();
+        JsonNode checkout = body(placeOrder(seated, UUID.randomUUID().toString(), simpleCart()));
+        long orderId = checkout.get("orderId").asLong();
+        confirmGuestPayment(checkout, "pay_occ1");
         assertThat(orderRepository.findById(orderId).orElseThrow().getStatus()).isEqualTo(OrderStatus.CONFIRMED);
 
         // A different device scanning the same table's QR for the first time is refused.
@@ -414,31 +425,22 @@ class WaiterFlowIT extends AbstractIntegrationTest {
         long secondRound = body(placeOrder(seated, UUID.randomUUID().toString(), simpleCart())).get("orderId").asLong();
         assertThat(secondRound).isNotEqualTo(orderId);
 
-        // Once the order is no longer active, the table is free for a fresh scan again.
+        // Once the order is no longer active, the table is free for a fresh scan again (the unpaid second round
+        // never occupied it in the first place).
         kitchenStatus(token(StaffRole.KITCHEN), orderId, "PREPARING");
         kitchenStatus(token(StaffRole.KITCHEN), orderId, "READY");
-        String waiter = token(StaffRole.WAITER);
-        mvc.perform(patch("/api/v1/waiter/orders/" + orderId + "/serve").header("Authorization", waiter))
-                .andExpect(status().isOk());
-        kitchenStatus(token(StaffRole.KITCHEN), secondRound, "PREPARING");
-        kitchenStatus(token(StaffRole.KITCHEN), secondRound, "READY");
-        mvc.perform(patch("/api/v1/waiter/orders/" + secondRound + "/serve").header("Authorization", waiter))
+        mvc.perform(patch("/api/v1/waiter/orders/" + orderId + "/serve").header("Authorization", token(StaffRole.WAITER)))
                 .andExpect(status().isOk());
         mvc.perform(get("/api/v1/public/session").param("t", table.getQrToken()))
                 .andExpect(status().isOk());
     }
 
     @Test
-    void aFreshScanIsAllowedWhenTheOnlyOrderForTheTableIsNotYetPaid() throws Exception {
-        var first = guestCookie();
-        // A guest order placed without a payment gateway configured never leaves PENDING_PAYMENT in this test setup
-        // once checkout is invoked, but simply not placing an order at all is the simplest way to assert the table
-        // starts free; this test instead asserts a cash order in CONFIRMED occupies it (paired with the test above)
-        // and that COMPLETED/CANCELLED never occupy it.
+    void aFreshScanIsAllowedWhileOnlyStaffPlacedOrdersAreActiveOnTheTable() throws Exception {
+        // A waiter already at the table placing a cash order doesn't block a guest's own phone from scanning fresh
+        // -- staff being present already rules out the "two unattended guest groups collide" case this guards.
         long orderId = cashOrder(token(StaffRole.WAITER));
-        mvc.perform(post("/api/v1/admin/orders/" + orderId + "/cancel").header("Authorization", token(StaffRole.OWNER))
-                        .contentType(MediaType.APPLICATION_JSON).content("{\"reason\":\"Guest left\"}"))
-                .andExpect(status().isOk());
+        assertThat(orderRepository.findById(orderId).orElseThrow().getStatus()).isEqualTo(OrderStatus.CONFIRMED);
         mvc.perform(get("/api/v1/public/session").param("t", table.getQrToken()))
                 .andExpect(status().isOk());
     }

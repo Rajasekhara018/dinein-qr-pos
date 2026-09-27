@@ -63,11 +63,14 @@ public class PublicSessionController {
         if (qrToken != null && !qrToken.isBlank()) {
             table = tableService.findActiveByToken(qrToken.trim()).orElseThrow(PublicSessionController::invalidTable);
             boolean alreadySeatedHere = existing.isPresent() && existing.get().tableId().equals(table.getId());
-            // A device that hasn't already got a session for THIS table is a fresh arrival: if the table already
-            // has an active order (someone else is mid-meal there), refuse rather than start a second, colliding
-            // session for the same physical table. A device that already holds this table's session (adding a
-            // second round, or reloading) is unaffected -- it's not a "fresh" scan.
-            if (!alreadySeatedHere && orderRepository.existsByTableIdAndStatusIn(table.getId(), OrderStatus.KITCHEN_VISIBLE)) {
+            // A device without a session for THIS table is a fresh arrival: if another guest session already has
+            // an active order there, refuse rather than start a second, colliding self-service session for the same
+            // physical table. Staff-placed orders don't count (see the repository method) -- a waiter is already
+            // at the table, so a guest's own phone joining in isn't the "two different groups" case this guards
+            // against. A device that already holds this table's session (adding a second round, or reloading) is
+            // unaffected -- it's not a "fresh" scan.
+            if (!alreadySeatedHere
+                    && orderRepository.existsByTableIdAndStatusInAndGuestSessionIdIsNotNull(table.getId(), OrderStatus.KITCHEN_VISIBLE)) {
                 throw new ApiException(HttpStatus.CONFLICT, "TABLE_OCCUPIED",
                         "This table is currently occupied. Please ask a staff member for help.");
             }

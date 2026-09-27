@@ -20,8 +20,12 @@ public interface OrderRepository extends JpaRepository<OrderEntity, Long>, JpaSp
 
     boolean existsByIdAndGuestSessionId(Long id, String guestSessionId);
 
-    /** Used to decide whether a table is currently occupied (see {@code PublicSessionController}). */
-    boolean existsByTableIdAndStatusIn(Long tableId, Collection<OrderStatus> statuses);
+    /**
+     * Used to decide whether a table is currently occupied by a self-service guest (see
+     * {@code PublicSessionController}). Staff-placed orders (no {@code guestSessionId}) don't count: a staff member
+     * is already present at the table, so there's no risk of two unattended guest sessions colliding there.
+     */
+    boolean existsByTableIdAndStatusInAndGuestSessionIdIsNotNull(Long tableId, Collection<OrderStatus> statuses);
 
     /** Row lock used by every status change so concurrent verify/webhook/kitchen calls serialise. */
     @Lock(LockModeType.PESSIMISTIC_WRITE)
