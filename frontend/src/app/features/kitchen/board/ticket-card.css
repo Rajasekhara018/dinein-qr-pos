@@ -46,6 +46,40 @@
   letter-spacing: 0.04em;
 }
 
+/* Order type / origin: TAKEAWAY is loud (it changes how the food is packed), "Staff" is quiet. */
+.ticket-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  border-radius: 0.5rem;
+  padding: 0.1rem 0.55rem;
+  font-weight: 800;
+  font-size: clamp(0.9rem, 0.72rem + 0.55vw, 1.4rem);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+.ticket-chip--takeaway {
+  background: #6d28d9;
+  color: #fff;
+  box-shadow: 0 0 0 2px #c4b5fd;
+}
+.ticket-chip--staff {
+  background: #e0f2fe;
+  color: #075985;
+  font-weight: 700;
+  font-size: clamp(0.75rem, 0.65rem + 0.35vw, 1rem);
+}
+:host-context(.dark) .ticket-chip--takeaway {
+  background: #8b5cf6;
+  color: #1e1b4b;
+  box-shadow: 0 0 0 2px #4c1d95;
+}
+:host-context(.dark) .ticket-chip--staff {
+  background: #0c4a6e;
+  color: #e0f2fe;
+}
+
 /* Variant = indigo chip, add-on = teal chip, notes = yellow callout: all distinct from the age colours. */
 .ticket-mod--variant {
   background: #e0e7ff;

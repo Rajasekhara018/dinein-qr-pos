@@ -43,6 +43,7 @@ export class TicketCard {
   readonly advance = output<KitchenOrderView>();
 
   protected readonly action = computed(() => nextAction(this.order().status));
+  protected readonly isTakeaway = computed(() => this.order().orderType === 'TAKEAWAY');
   protected readonly elapsed = computed(() => elapsedMs(this.order(), this.now()));
   protected readonly elapsedText = computed(() => formatElapsed(this.elapsed()));
   protected readonly elapsedLabel = computed(() => describeElapsed(this.elapsed()));

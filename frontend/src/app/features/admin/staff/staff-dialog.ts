@@ -30,6 +30,7 @@ export const ROLE_OPTIONS: { value: StaffRole; label: string; hint: string }[] =
   { value: 'OWNER', label: 'Owner', hint: 'Everything, incl. staff, settings and reports' },
   { value: 'MANAGER', label: 'Manager', hint: 'Menu, tables and orders' },
   { value: 'KITCHEN', label: 'Kitchen', hint: 'Kitchen screen only (password or PIN)' },
+  { value: 'WAITER', label: 'Waiter', hint: 'Waiter screen only: take orders, serve (password or PIN)' },
 ];
 
 /** Create a staff user, or edit one (role, active, contact, password reset, PIN). */

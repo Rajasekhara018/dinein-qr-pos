@@ -21,7 +21,7 @@
       @if (isSelf) {
         <p class="text-xs text-ink-subtle">You can't change your own role.</p>
       }
-      <div class="mt-1 grid grid-cols-1 gap-2 sm:grid-cols-3">
+      <div class="mt-1 grid grid-cols-1 gap-2 sm:grid-cols-2">
         @for (r of roles; track r.value) {
           <label class="flex min-h-touch cursor-pointer items-start gap-2 rounded-control border border-line-strong p-3 has-[:checked]:border-brand has-[:checked]:bg-brand-soft has-[:disabled]:cursor-not-allowed has-[:disabled]:opacity-60">
             <input type="radio" class="mt-1 size-4 accent-[var(--brand)]" formControlName="role" [value]="r.value" />
@@ -59,13 +59,14 @@
         <button appButton variant="outline" type="button" class="shrink-0" (click)="generatePassword()">Generate</button>
       </div>
       <p id="staff-password-hint" class="mt-1 text-xs text-ink-subtle">
-        8–72 characters with a letter and a digit. Owners and managers must change it at their next sign-in.
+        8–72 characters with a letter and a digit. Owners and managers must change it at their next sign-in;
+        kitchen and waiter accounts keep it.
       </p>
       <app-field-error id="staff-password-error" [control]="form.controls.password" [messages]="passwordMessages" />
     </div>
 
     <fieldset>
-      <legend class="text-sm font-medium text-ink">Kitchen PIN <span class="font-normal text-ink-subtle">(optional, for the kitchen screen)</span></legend>
+      <legend class="text-sm font-medium text-ink">PIN <span class="font-normal text-ink-subtle">(optional, 4–6 digits, for the kitchen or waiter screen)</span></legend>
       @if (isEdit) {
         <div class="mt-1 flex flex-wrap gap-x-4">
           <label class="flex min-h-touch items-center gap-2 text-sm">

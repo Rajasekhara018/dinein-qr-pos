@@ -19,6 +19,7 @@ export interface SettingsForm {
   closingTime: FormControl<string>;
   acceptingOrders: FormControl<boolean>;
   pricesIncludeGst: FormControl<boolean>;
+  takeawayEnabled: FormControl<boolean>;
   brandColor: FormControl<string>;
   kitchenWarnMinutes: FormControl<number>;
   kitchenAlertMinutes: FormControl<number>;
@@ -58,6 +59,7 @@ export function createSettingsForm(): FormGroup<SettingsForm> {
       closingTime: new FormControl('', { nonNullable: true }),
       acceptingOrders: new FormControl(true, { nonNullable: true }),
       pricesIncludeGst: new FormControl(false, { nonNullable: true }),
+      takeawayEnabled: new FormControl(true, { nonNullable: true }),
       brandColor: new FormControl('#c2410c', { nonNullable: true, validators: [Validators.pattern(COLOR_PATTERN)] }),
       kitchenWarnMinutes: new FormControl(10, { nonNullable: true, validators: minutes }),
       kitchenAlertMinutes: new FormControl(20, { nonNullable: true, validators: minutes }),
@@ -82,6 +84,8 @@ export function patchSettingsForm(form: FormGroup<SettingsForm>, s: SettingsResp
     closingTime: toTimeInput(s.closingTime),
     acceptingOrders: s.acceptingOrders,
     pricesIncludeGst: s.pricesIncludeGst,
+    // Older backends do not send it; takeaway defaults to on there.
+    takeawayEnabled: s.takeawayEnabled ?? true,
     brandColor: s.brandColor ?? '#c2410c',
     kitchenWarnMinutes: s.kitchenWarnMinutes,
     kitchenAlertMinutes: s.kitchenAlertMinutes,
@@ -103,6 +107,7 @@ export function toSettingsRequest(form: FormGroup<SettingsForm>): UpdateSettings
     closingTime: v.closingTime || null,
     acceptingOrders: v.acceptingOrders,
     pricesIncludeGst: v.pricesIncludeGst,
+    takeawayEnabled: v.takeawayEnabled,
     brandColor: v.brandColor || null,
     kitchenWarnMinutes: Number(v.kitchenWarnMinutes),
     kitchenAlertMinutes: Number(v.kitchenAlertMinutes),
