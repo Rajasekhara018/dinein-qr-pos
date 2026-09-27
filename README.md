@@ -42,6 +42,8 @@ from an admin panel.
 - Stack: Spring Security with stateless JWT, JPA/Hibernate, Flyway, STOMP WebSocket.
 - Packages are feature-first under `com.heuristq.dinein`: `auth`, `staff`, `image`, `menu`, `table`, `guest`,
   `order`, `payment`, `notification`, `report`, `settings`, `realtime`, `shared`.
+- **API:** every REST endpoint is versioned under `/api/v1/...` (declared on each controller's `@RequestMapping`).
+  The STOMP endpoint `/ws` is not versioned. See "API versioning" in [docs/DECISIONS.md](docs/DECISIONS.md).
 - **Money:** `BigDecimal` everywhere; paise (`long`) only at the payment-gateway edge.
 - **Prices are computed on the server only.** Order lines snapshot name, price and GST, so later menu edits never
   change a past bill.
@@ -105,7 +107,7 @@ docker run -d --name dinein-pg -e POSTGRES_DB=dinein -e POSTGRES_USER=dinein -e 
 # 2. Backend on :8080 – the dev profile is the default: sample data, Swagger UI, relaxed cookies.
 cd backend
 ./gradlew bootRun
-#   Swagger UI:  http://localhost:8080/swagger-ui.html
+#   Swagger UI:  http://localhost:8080/swagger-ui.html (lists the /api/v1/... endpoints; Swagger itself is unversioned)
 #   First owner: owner / ChangeMe@123 (dev default; change it on first login)
 
 # 3. Frontend on :4200 – proxy.conf.json forwards /api and /ws to :8080, so no CORS setup is needed.
@@ -371,8 +373,9 @@ IST after a 24-hour grace period. Copy dumps off the server (object storage or a
   `frontend/nginx/default.conf`.
 - Nginx sends a CSP that allows only Razorpay's checkout/API and PayU form targets (Pine Labs is a top-level redirect and needs no entry), plus `frame-ancestors 'none'` and
   `nosniff`.
-- Staff access tokens last 15 minutes. The refresh token is an HttpOnly, `SameSite=Strict` cookie that rotates on
-  every use; reusing an old one revokes the whole session family.
+- Staff access tokens last 15 minutes. The refresh token is an HttpOnly, `SameSite=Strict` cookie scoped to
+  `/api/v1/auth` that rotates on every use; reusing an old one revokes the whole session family. (It used to be scoped
+  to `/api/auth`, so staff signed in before the move to `/api/v1` have to log in again once.)
 - Guests get a signed HttpOnly cookie (12 h) and can only read their own orders.
 - CSRF protection covers the cookie-authenticated endpoints: refresh, logout and all guest `POST`s.
 - Rate limits: login 5/min/IP, order placement 10/min/guest, image upload 30/min/user.

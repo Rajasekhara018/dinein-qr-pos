@@ -116,9 +116,9 @@ brief left a choice open, it is recorded here.
 - Every REST endpoint is URL-path versioned under `/api/v1` (e.g. `/api/v1/admin/items`,
   `/api/v1/public/payments/{provider}/callback`, `/api/v1/webhooks/{provider}`). Path versioning is visible in logs,
   cache keys and proxy rules, and needs nothing from clients beyond the URL.
-- The version is declared literally on each controller's class-level `@RequestMapping` (`@RequestMapping("/api/v1/admin/tables")`),
-  so a controller's full path is readable where it is defined; method-level mappings stay relative. Non-controller code
-  that needs a full path (security matchers, CSRF matchers, rate-limit rules, the refresh cookie path, image URLs,
+- The version is declared literally on each controller's class-level `@RequestMapping`
+  (`@RequestMapping("/api/v1/admin/tables")`), so a controller's full path is readable where it is defined;
+  method-level mappings stay relative. Non-controller code that needs a full path (security matchers, CSRF matchers, rate-limit rules, the refresh cookie path, image URLs,
   payment callback URLs) uses `ApiPaths.V1`. The SPA builds every URL from `API_BASE` in `core/api/api-base.ts`.
 - A v2 is added as new controllers (or new mappings) under `/api/v2`, next to the v1 ones, plus matching security rules;
   v1 keeps working until clients have moved.
