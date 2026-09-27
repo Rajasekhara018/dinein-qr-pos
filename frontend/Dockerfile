@@ -6,7 +6,7 @@ FROM node:22-alpine AS build
 WORKDIR /app
 
 # Copy dependency files first for better Docker layer caching
-COPY package.json package-lock.json ./
+COPY package.json ./
 
 # Install exact versions from package-lock.json
 RUN npm ci --no-audit --no-fund

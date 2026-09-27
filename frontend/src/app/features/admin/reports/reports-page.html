@@ -55,9 +55,22 @@
         <app-stat-card label="GST collected" [value]="s.tax | inr" [hint]="'CGST ' + (s.cgst | inr) + ' · SGST ' + (s.sgst | inr)" />
         <app-stat-card label="Average order value" [value]="s.averageOrderValue | inr" />
       </div>
-      <div class="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
+      <div class="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
+        <app-stat-card
+          class="border-2! border-emerald-600! bg-emerald-50! dark:bg-emerald-950!"
+          label="Cash taken"
+          [value]="cashAmount() | inr"
+          [hint]="(s.manualRefundAmount ?? 0) > 0 ? 'Drawer after manual refunds: ' + (cashAmount() - (s.manualRefundAmount ?? 0) | inr) : 'What the cash drawer should hold'"
+          testId="report-cash"
+        />
         <app-stat-card label="Cancelled orders" [value]="s.cancelledCount" />
-        <app-stat-card label="Refunded" [value]="s.refundedAmount | inr" />
+        <app-stat-card label="Refunded (gateway)" [value]="s.refundedAmount | inr" />
+        <app-stat-card
+          label="Manual refunds (handed back)"
+          [value]="(s.manualRefundAmount ?? 0) | inr"
+          hint="Counter payments of cancelled orders"
+          testId="report-manual-refunds"
+        />
       </div>
     </section>
 
@@ -68,6 +81,77 @@
     </section>
 
     <div class="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-2">
+      <section class="min-w-0 rounded-card border border-line bg-surface p-4 shadow-card" aria-labelledby="channels-heading" data-testid="report-channels">
+        <h2 id="channels-heading" class="font-display text-lg font-semibold">Payment channels</h2>
+        <p class="text-sm text-ink-muted">Online payments vs. money taken at the counter.</p>
+        @if (channelRows().length === 0) {
+          <p class="mt-2 text-sm text-ink-muted">No payments in this range.</p>
+        } @else {
+          <table class="mt-2 w-full text-left text-sm">
+            <caption class="sr-only">Payment channel split</caption>
+            <thead class="text-xs uppercase text-ink-muted">
+              <tr>
+                <th scope="col" class="py-2">Channel</th>
+                <th scope="col" class="py-2 text-right">Orders</th>
+                <th scope="col" class="py-2 text-right">Amount</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-line">
+              @for (c of channelRows(); track c.channel) {
+                <tr [class]="c.cash ? 'bg-emerald-50 font-semibold dark:bg-emerald-950' : ''" [attr.data-testid]="'channel-' + c.channel">
+                  <th scope="row" class="py-2 pl-1 font-medium">
+                    <span class="flex items-center gap-2">
+                      {{ c.label }}
+                      @if (c.cash) {
+                        <span class="rounded-full bg-emerald-600 px-2 py-0.5 text-xs font-bold text-white">Drawer</span>
+                      }
+                    </span>
+                    <span class="mt-1 block h-1.5 overflow-hidden rounded-full bg-surface-sunken" aria-hidden="true">
+                      <span class="block h-full rounded-full" [class]="c.cash ? 'bg-emerald-600' : 'bg-brand'" [style.width.%]="c.share"></span>
+                    </span>
+                  </th>
+                  <td class="py-2 text-right tabular-nums">{{ c.count }}</td>
+                  <td class="py-2 pr-1 text-right tabular-nums">{{ c.amount | inr }} <span class="text-ink-subtle">({{ c.share }}%)</span></td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        }
+      </section>
+
+      <section class="min-w-0 rounded-card border border-line bg-surface p-4 shadow-card" aria-labelledby="types-heading" data-testid="report-order-types">
+        <h2 id="types-heading" class="font-display text-lg font-semibold">Order types</h2>
+        <p class="text-sm text-ink-muted">Dine-in vs. takeaway (paid orders).</p>
+        @if (typeRows().length === 0) {
+          <p class="mt-2 text-sm text-ink-muted">No orders in this range.</p>
+        } @else {
+          <table class="mt-2 w-full text-left text-sm">
+            <caption class="sr-only">Order type split</caption>
+            <thead class="text-xs uppercase text-ink-muted">
+              <tr>
+                <th scope="col" class="py-2">Type</th>
+                <th scope="col" class="py-2 text-right">Orders</th>
+                <th scope="col" class="py-2 text-right">Amount</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-line">
+              @for (t of typeRows(); track t.type) {
+                <tr [attr.data-testid]="'order-type-' + t.type">
+                  <th scope="row" class="py-2 font-medium">
+                    {{ t.label }}
+                    <span class="mt-1 block h-1.5 overflow-hidden rounded-full bg-surface-sunken" aria-hidden="true">
+                      <span class="block h-full rounded-full bg-brand" [style.width.%]="t.share"></span>
+                    </span>
+                  </th>
+                  <td class="py-2 text-right tabular-nums">{{ t.count }}</td>
+                  <td class="py-2 text-right tabular-nums">{{ t.amount | inr }} <span class="text-ink-subtle">({{ t.share }}%)</span></td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        }
+      </section>
+
       <section class="min-w-0 rounded-card border border-line bg-surface p-4 shadow-card" aria-labelledby="methods-heading">
         <h2 id="methods-heading" class="font-display text-lg font-semibold">Payment methods</h2>
         @if (methodRows().length === 0) {

@@ -1,0 +1,11 @@
+<nav class="mb-2" aria-label="Breadcrumb">
+  <a routerLink="/admin/orders" class="inline-flex min-h-touch items-center gap-1 text-sm font-medium text-brand-ink hover:underline">
+    <svg viewBox="0 0 20 20" class="size-4 fill-current" aria-hidden="true"><path d="m12.7 4.3 1.4 1.4L9.8 10l4.3 4.3-1.4 1.4L7 10z" /></svg>
+    Orders
+  </a>
+</nav>
+<app-page-header title="New order" subtitle="Counter or phone order: paid in cash, UPI or card at the counter, or online." />
+<!-- The menu search sticks below the 4rem admin header. -->
+<div class="[--staff-top-offset:4rem]">
+  <app-staff-order-flow mode="admin" />
+</div>

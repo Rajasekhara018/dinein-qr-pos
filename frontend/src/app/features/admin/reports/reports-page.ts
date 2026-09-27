@@ -5,6 +5,7 @@ import { AdminReportsApi } from '../../../core/api/admin.api';
 import { SalesSummary } from '../../../core/api/models';
 import { ToastService } from '../../../core/ui/toast.service';
 import { formatInr } from '../../../core/util/money';
+import { orderTypeLabel, staffPaymentMethodLabel } from '../../../core/util/order-labels';
 import { saveBlob } from '../shared/browser';
 import { errorMessage } from '../shared/form-errors';
 import { formatIsoDate, istDate } from '../shared/ist-date';
@@ -24,7 +25,10 @@ interface RangeForm {
   to: FormControl<string>;
 }
 
-/** OWNER sales report: presets/custom range, totals, GST split, payment methods, top items, daily chart, CSV. */
+/**
+ * OWNER sales report: presets/custom range, totals, GST split, payment channels (cash highlighted: it is what the
+ * drawer should hold), order types, manual refunds, payment methods, top items, daily chart, CSV.
+ */
 @Component({
   selector: 'app-admin-reports-page',
   standalone: false,
@@ -65,6 +69,37 @@ export class ReportsPage {
       count: m.count,
       amount: m.amount,
       share: total > 0 ? Math.round((m.amount / total) * 100) : 0,
+    }));
+  });
+
+  /** Paid orders per channel: Online, Cash, UPI at counter, Card at counter. */
+  protected readonly channelRows = computed(() => {
+    const channels = this.summary()?.paymentChannels ?? [];
+    const total = channels.reduce((sum, c) => sum + c.amount, 0);
+    return channels.map((c) => ({
+      channel: c.channel,
+      label: c.channel === 'ONLINE' ? 'Online (gateway)' : staffPaymentMethodLabel(c.channel),
+      count: c.count,
+      amount: c.amount,
+      share: total > 0 ? Math.round((c.amount / total) * 100) : 0,
+      cash: c.channel === 'CASH',
+    }));
+  });
+
+  /** Cash taken in the range (what should be in the drawer, before manual refunds). */
+  protected readonly cashAmount = computed(
+    () => this.summary()?.paymentChannels?.find((c) => c.channel === 'CASH')?.amount ?? 0,
+  );
+
+  protected readonly typeRows = computed(() => {
+    const types = this.summary()?.orderTypes ?? [];
+    const total = types.reduce((sum, t) => sum + t.amount, 0);
+    return types.map((t) => ({
+      type: t.orderType,
+      label: orderTypeLabel(t.orderType === 'TAKEAWAY' ? 'TAKEAWAY' : 'DINE_IN'),
+      count: t.count,
+      amount: t.amount,
+      share: total > 0 ? Math.round((t.amount / total) * 100) : 0,
     }));
   });
 
