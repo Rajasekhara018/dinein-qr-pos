@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { AdminSettingsApi } from '../../../core/api/admin.api';
 import { DeviceResponse, StaffResponse } from '../../../core/api/models';
@@ -31,6 +31,28 @@ export class StaffPage {
   protected readonly revoking = signal<number | null>(null);
   protected readonly showRevoked = signal(false);
 
+  /** Client-side paging: both lists are fetched in full (there's no filtering to page around), so only the
+   *  on-screen slice changes per page, not the request. */
+  protected readonly staffPage = signal(1);
+  protected readonly devicesPage = signal(1);
+  private readonly pageSize = 10;
+
+  protected readonly staffPageCount = computed(() => Math.max(1, Math.ceil(this.staff().length / this.pageSize)));
+  protected readonly pagedStaff = computed(() => {
+    const start = (this.staffPage() - 1) * this.pageSize;
+    return this.staff().slice(start, start + this.pageSize);
+  });
+
+  protected readonly devicesPageCount = computed(() =>
+    Math.max(1, Math.ceil(this.visibleDevices().length / this.pageSize)),
+  );
+  /** Clamped so toggling "show revoked" (which can shrink the list) never points past the last page. */
+  protected readonly devicesPageView = computed(() => Math.min(this.devicesPage(), this.devicesPageCount()));
+  protected readonly pagedDevices = computed(() => {
+    const start = (this.devicesPageView() - 1) * this.pageSize;
+    return this.visibleDevices().slice(start, start + this.pageSize);
+  });
+
   constructor() {
     void this.load();
   }
@@ -44,16 +66,26 @@ export class StaffPage {
     if (staff.status === 'fulfilled') {
       this.staff.set([...staff.value].sort((a, b) => a.username.localeCompare(b.username)));
       this.error.set(null);
+      this.staffPage.set(1);
     } else {
       this.error.set(staff.reason);
     }
     if (devices.status === 'fulfilled') {
       this.devices.set(devices.value);
       this.devicesError.set(null);
+      this.devicesPage.set(1);
     } else {
       this.devicesError.set(devices.reason);
     }
     this.loading.set(false);
+  }
+
+  protected goToStaffPage(page: number): void {
+    this.staffPage.set(Math.min(Math.max(1, page), this.staffPageCount()));
+  }
+
+  protected goToDevicesPage(page: number): void {
+    this.devicesPage.set(Math.min(Math.max(1, page), this.devicesPageCount()));
   }
 
   protected roleLabel(role: string): string {

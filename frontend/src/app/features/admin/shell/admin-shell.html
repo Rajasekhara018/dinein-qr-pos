@@ -128,9 +128,6 @@
           [class.rotate-180]="collapsed()"
           aria-hidden="true"
         ></svg>
-        @if (!collapsed()) {
-          <span class="text-sm">Collapse</span>
-        }
       </button>
     </div>
     <ng-container *ngTemplateOutlet="userFooter; context: { compact: collapsed() }" />

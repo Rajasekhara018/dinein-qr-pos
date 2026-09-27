@@ -51,7 +51,7 @@
         </tr>
       </thead>
       <tbody class="divide-y divide-line">
-        @for (t of tables(); track t.id) {
+        @for (t of pagedTables(); track t.id) {
           <tr [attr.data-testid]="'table-row-' + t.id">
             <td class="px-4 py-2">
               <label class="flex size-touch items-center justify-center">
@@ -80,7 +80,7 @@
       Select all
     </label>
     <ul class="flex flex-col gap-3" role="list" aria-label="Tables">
-      @for (t of tables(); track t.id) {
+      @for (t of pagedTables(); track t.id) {
         <li class="rounded-card border border-line bg-surface p-3 shadow-card" [attr.data-testid]="'table-card-' + t.id">
           <div class="flex items-center gap-3">
             <label class="flex size-touch shrink-0 items-center justify-center">
@@ -98,4 +98,12 @@
       }
     </ul>
   </div>
+
+  @if (pageCount() > 1) {
+    <nav class="mt-4 flex items-center justify-between gap-2" aria-label="Pagination">
+      <button appButton variant="outline" size="sm" type="button" [disabled]="page() === 1" (click)="goToPage(page() - 1)">Previous</button>
+      <span class="text-sm text-ink-muted">Page {{ page() }} of {{ pageCount() }}</span>
+      <button appButton variant="outline" size="sm" type="button" [disabled]="page() >= pageCount()" (click)="goToPage(page() + 1)">Next</button>
+    </nav>
+  }
 }

@@ -30,11 +30,21 @@ export class TablesPage {
   protected readonly busyIds = signal<ReadonlySet<number>>(new Set());
   protected readonly downloading = signal(false);
 
+  /** Client-side paging: the full active table list already has to be fetched at once for "select all" /
+   *  "download PDF (all)" to work, so only the on-screen slice changes per page, not the request. */
+  protected readonly page = signal(1);
+  protected readonly pageSize = 20;
+
   protected readonly allSelected = computed(
     () => this.tables().length > 0 && this.tables().every((t) => this.selected().has(t.id)),
   );
   protected readonly someSelected = computed(() => this.selected().size > 0 && !this.allSelected());
   protected readonly activeCount = computed(() => this.tables().filter((t) => t.active).length);
+  protected readonly pageCount = computed(() => Math.max(1, Math.ceil(this.tables().length / this.pageSize)));
+  protected readonly pagedTables = computed(() => {
+    const start = (this.page() - 1) * this.pageSize;
+    return this.tables().slice(start, start + this.pageSize);
+  });
 
   constructor() {
     void this.load();
@@ -48,6 +58,7 @@ export class TablesPage {
       this.error.set(null);
       const ids = new Set(tables.map((t) => t.id));
       this.selected.update((set) => new Set([...set].filter((id) => ids.has(id))));
+      this.page.set(1);
     } catch (error) {
       this.error.set(error);
     } finally {
@@ -66,6 +77,10 @@ export class TablesPage {
 
   protected toggleAll(checked: boolean): void {
     this.selected.set(checked ? new Set(this.tables().map((t) => t.id)) : new Set());
+  }
+
+  protected goToPage(page: number): void {
+    this.page.set(Math.min(Math.max(1, page), this.pageCount()));
   }
 
   protected open(table: TableResponse | null): void {
