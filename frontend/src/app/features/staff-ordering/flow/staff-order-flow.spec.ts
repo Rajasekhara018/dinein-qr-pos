@@ -134,7 +134,9 @@ describe('StaffOrderFlow', () => {
     expect(checkout.pay).not.toHaveBeenCalled();
     expect(byTestId('staff-success-token')!.textContent).toContain('17');
     expect(byTestId('staff-success-amount')!.textContent).toContain('₹252.00');
-  });
+    // The first spec in this file walks the whole flow and also pays the module's first render; under a full parallel
+    // run that exceeds Vitest's 5 s default.
+  }, 20_000);
 
   it('online: hands the checkout to CheckoutService with the waiter context', async () => {
     create('waiter', 2);
