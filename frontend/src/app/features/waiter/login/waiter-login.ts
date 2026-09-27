@@ -5,6 +5,7 @@ import { ApiError } from '../../../core/api/api-error';
 import { ADMIN_PATHS, WAITER_PATHS } from '../../../core/auth/auth-paths';
 import { WAITER_SCREEN_ROLES } from '../../../core/auth/auth.guards';
 import { AuthStore } from '../../../core/auth/auth.store';
+import { AuthShellBenefit } from '../../../shared/components/auth-shell/auth-shell';
 
 export type WaiterLoginMode = 'pin' | 'password';
 
@@ -63,6 +64,12 @@ export class WaiterLogin {
   private readonly auth = inject(AuthStore);
   private readonly router = inject(Router);
   private readonly fb = inject(FormBuilder).nonNullable;
+
+  protected readonly benefits: AuthShellBenefit[] = [
+    { title: 'Take orders at the table', description: 'Add items and send them straight to the kitchen, no counter trip needed.' },
+    { title: 'Know the moment food is ready', description: 'A notification lands here as soon as the kitchen marks a ticket ready.' },
+    { title: 'Collect payment on the spot', description: 'Cash, UPI or card — close out a table without leaving it.' },
+  ];
 
   /** `?returnUrl=` (bound by the router). */
   readonly returnUrl = input<string | undefined>();

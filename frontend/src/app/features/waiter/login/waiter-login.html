@@ -1,18 +1,14 @@
-<main class="mx-auto flex min-h-dvh w-full max-w-md flex-col justify-center px-4 py-8">
-  <div class="mb-6 flex items-center gap-3">
-    <span
-      class="flex size-12 shrink-0 items-center justify-center rounded-card bg-brand text-brand-contrast"
-      aria-hidden="true"
-    >
-      <svg viewBox="0 0 24 24" class="size-7" fill="none" stroke="currentColor" stroke-width="1.8">
-        <path d="M4 15h16M5 15a7 7 0 0 1 14 0M12 8V6M3 19h18" />
-      </svg>
-    </span>
-    <div class="min-w-0">
-      <h1 class="font-display text-2xl font-semibold">Waiter sign-in</h1>
-      <p class="text-sm text-ink-muted">Take orders, serve ready food, collect payment.</p>
-    </div>
-  </div>
+<app-auth-shell
+  theme="light"
+  eyebrow="Table service"
+  headline="Everything the floor needs, in your pocket."
+  description="Take orders at the table, see the moment food is ready, and collect payment — all from one screen."
+  [benefits]="benefits"
+  mobileTitle="Waiter sign-in"
+  mobileSubtitle="Take orders, serve ready food, collect payment."
+>
+  <svg authShellIcon lucideBell class="size-4" aria-hidden="true"></svg>
+  <svg authShellMobileIcon lucideBell class="size-7" aria-hidden="true"></svg>
 
   @if (reason() === 'role') {
     <p
@@ -25,7 +21,7 @@
   }
 
   <form
-    class="rounded-card border border-line bg-surface p-4 shadow-card sm:p-6"
+    class="rounded-card border border-line bg-surface p-4 shadow-md sm:p-6"
     [formGroup]="form"
     (ngSubmit)="submit()"
     novalidate
@@ -39,7 +35,7 @@
         type="button"
         class="min-h-touch rounded-control px-3 text-sm font-semibold transition-colors"
         [class]="
-          mode() === 'pin' ? 'bg-surface text-ink shadow-card' : 'text-ink-muted hover:text-ink'
+          mode() === 'pin' ? 'bg-surface text-ink shadow-sm' : 'text-ink-muted hover:text-ink'
         "
         [attr.aria-pressed]="mode() === 'pin'"
         (click)="setMode('pin')"
@@ -51,7 +47,7 @@
         class="min-h-touch rounded-control px-3 text-sm font-semibold transition-colors"
         [class]="
           mode() === 'password'
-            ? 'bg-surface text-ink shadow-card'
+            ? 'bg-surface text-ink shadow-sm'
             : 'text-ink-muted hover:text-ink'
         "
         [attr.aria-pressed]="mode() === 'password'"
@@ -148,4 +144,4 @@
       Owners and managers can sign in here with their password.
     </p>
   </form>
-</main>
+</app-auth-shell>

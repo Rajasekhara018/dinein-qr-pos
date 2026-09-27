@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { ApiError } from '../../../core/api/api-error';
 import { KITCHEN_PATHS } from '../../../core/auth/auth-paths';
 import { DeviceAuthStore } from '../../../core/auth/device-auth.store';
+import { AuthShellBenefit } from '../../../shared/components/auth-shell/auth-shell';
 
 export type KitchenLoginMode = 'pin' | 'password';
 
@@ -48,6 +49,12 @@ export class KitchenLogin {
   private readonly devices = inject(DeviceAuthStore);
   private readonly router = inject(Router);
   private readonly fb = inject(FormBuilder).nonNullable;
+
+  protected readonly benefits: AuthShellBenefit[] = [
+    { title: 'Live tickets, sorted by wait time', description: 'Every paid order appears the instant it comes in, oldest first.' },
+    { title: 'Aging alerts', description: 'Tickets that are running long stand out, so nothing slips past.' },
+    { title: 'One tap through the line', description: 'Start, Ready, Served — move a ticket on without leaving the board.' },
+  ];
 
   protected readonly mode = signal<KitchenLoginMode>('pin');
   protected readonly submitting = signal(false);

@@ -238,7 +238,7 @@
       </div>
 
       <aside class="min-w-0 lg:sticky lg:top-4" aria-label="Bill">
-        <app-card>
+        <app-card [elevated]="true">
           <h2 class="mb-3 font-display text-lg font-semibold">Bill details</h2>
           <app-bill-summary [bill]="cart.bill()" [pricesIncludeGst]="cart.pricesIncludeGst()" />
           @if (serverTotal() !== null) {

@@ -1,22 +1,17 @@
-<main class="mx-auto flex min-h-dvh w-full max-w-md flex-col justify-center px-4 py-8">
-  <div class="mb-6 flex items-center gap-3">
-    <span
-      class="flex size-12 shrink-0 items-center justify-center rounded-card bg-brand text-brand-contrast"
-      aria-hidden="true"
-    >
-      <svg viewBox="0 0 24 24" class="size-7" fill="none" stroke="currentColor" stroke-width="1.8">
-        <path d="M6 14h12v5a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1v-5Z" />
-        <path d="M6 14a4 4 0 0 1 1.5-7.7A4.5 4.5 0 0 1 16 6a4 4 0 0 1 2 8" />
-      </svg>
-    </span>
-    <div class="min-w-0">
-      <h1 class="font-display text-2xl font-semibold">Kitchen display</h1>
-      <p class="text-sm text-ink-muted">Sign in once — this screen stays signed in for 30 days.</p>
-    </div>
-  </div>
+<app-auth-shell
+  theme="dark"
+  eyebrow="Kitchen display"
+  headline="See every order the moment it's placed."
+  description="Paid orders land on this screen instantly, sorted by how long they've waited — nothing to refresh, nothing to miss."
+  [benefits]="benefits"
+  mobileTitle="Kitchen display"
+  mobileSubtitle="Sign in once — this screen stays signed in for 30 days."
+>
+  <svg authShellIcon lucideUtensilsCrossed class="size-4" aria-hidden="true"></svg>
+  <svg authShellMobileIcon lucideUtensilsCrossed class="size-7" aria-hidden="true"></svg>
 
   <form
-    class="rounded-card border border-line bg-surface p-4 shadow-card sm:p-6"
+    class="rounded-card border border-line bg-surface p-4 shadow-md sm:p-6"
     [formGroup]="form"
     (ngSubmit)="submit()"
     novalidate
@@ -30,7 +25,7 @@
         type="button"
         class="min-h-touch rounded-control px-3 text-sm font-semibold transition-colors"
         [class]="
-          mode() === 'pin' ? 'bg-surface text-ink shadow-card' : 'text-ink-muted hover:text-ink'
+          mode() === 'pin' ? 'bg-surface text-ink shadow-sm' : 'text-ink-muted hover:text-ink'
         "
         [attr.aria-pressed]="mode() === 'pin'"
         (click)="setMode('pin')"
@@ -42,7 +37,7 @@
         class="min-h-touch rounded-control px-3 text-sm font-semibold transition-colors"
         [class]="
           mode() === 'password'
-            ? 'bg-surface text-ink shadow-card'
+            ? 'bg-surface text-ink shadow-sm'
             : 'text-ink-muted hover:text-ink'
         "
         [attr.aria-pressed]="mode() === 'password'"
@@ -151,4 +146,4 @@
       }
     </button>
   </form>
-</main>
+</app-auth-shell>

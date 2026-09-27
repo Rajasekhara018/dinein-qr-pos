@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { ADMIN_PATHS } from '../../../core/auth/auth-paths';
 import { AuthStore } from '../../../core/auth/auth.store';
 import { ApiError } from '../../../core/api/api-error';
+import { AuthShellBenefit } from '../../../shared/components/auth-shell/auth-shell';
 import { errorMessage } from '../shared/form-errors';
 
 interface LoginForm {
@@ -29,6 +30,12 @@ export function safeAdminReturnUrl(url: string | null | undefined): string {
 export class LoginPage {
   private readonly auth = inject(AuthStore);
   private readonly router = inject(Router);
+
+  protected readonly benefits: AuthShellBenefit[] = [
+    { title: 'Update the menu in seconds', description: 'Prices, photos and availability, live the moment you save.' },
+    { title: 'Track every order as it moves', description: 'From payment to the kitchen to the table, in real time.' },
+    { title: 'See how the day is going', description: 'Sales, top items and payment mix, whenever you need them.' },
+  ];
 
   /** `?returnUrl=` (bound by the router). */
   readonly returnUrl = input<string | undefined>();

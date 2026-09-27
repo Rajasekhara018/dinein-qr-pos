@@ -7,6 +7,7 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { LayoutModule } from '@angular/cdk/layout';
 import { OverlayModule } from '@angular/cdk/overlay';
 
+import { AuthShell } from './components/auth-shell/auth-shell';
 import { BottomSheet } from './components/bottom-sheet';
 import { Card } from './components/card';
 import { Chip } from './components/chip';
@@ -27,6 +28,7 @@ import { APP_ICONS } from './icons';
 import { InrPipe } from './pipes/inr-pipe';
 
 const COMPONENTS = [
+  AuthShell,
   BottomSheet,
   Card,
   Chip,

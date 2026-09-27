@@ -4,12 +4,12 @@ export type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'ghost' | 'dan
 export type ButtonSize = 'sm' | 'md' | 'lg';
 
 const BASE =
-  'inline-flex min-w-0 select-none items-center justify-center gap-2 rounded-control font-semibold transition-colors ' +
+  'inline-flex min-w-0 select-none items-center justify-center gap-2 rounded-control font-semibold transition-colors transition-shadow ' +
   'disabled:cursor-not-allowed disabled:opacity-50 aria-disabled:cursor-not-allowed aria-disabled:opacity-50 ' +
   'focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-focus';
 
 const VARIANTS: Record<ButtonVariant, string> = {
-  primary: 'bg-brand text-brand-contrast hover:bg-brand-strong shadow-card',
+  primary: 'bg-brand text-brand-contrast shadow-sm hover:bg-brand-strong hover:shadow-md active:shadow-sm',
   secondary: 'bg-surface-muted text-ink hover:bg-surface-sunken',
   outline: 'border border-line-strong bg-surface text-ink hover:bg-surface-muted',
   ghost: 'bg-transparent text-ink hover:bg-surface-muted',

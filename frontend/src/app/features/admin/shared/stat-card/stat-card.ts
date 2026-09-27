@@ -6,7 +6,7 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
   standalone: false,
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
-    class: 'block min-w-0 rounded-card border border-line bg-surface p-4 shadow-card',
+    class: 'block min-w-0 rounded-card border border-line bg-surface p-4 shadow-md',
   },
   templateUrl: './stat-card.html',
 })

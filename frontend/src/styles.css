@@ -306,8 +306,17 @@
   --radius-card: var(--radius-lg);
   --radius-sheet: var(--radius-xl);
 
-  --shadow-card: 0 1px 2px rgb(28 25 23 / 0.06), 0 1px 3px rgb(28 25 23 / 0.08);
-  --shadow-raised: 0 8px 24px rgb(28 25 23 / 0.14);
+  /* Three elevation levels (subtle, not heavy) — the only shadow depths used anywhere in the app.
+     --shadow-sm: resting depth for ordinary bordered surfaces (buttons, list rows, tab pills).
+     --shadow-md: a touch more weight for primary content cards the eye should land on (menu item cards, the
+       bill summary, KPI/stat cards, auth form cards) — still a border first, a soft shadow second.
+     --shadow-lg: floating layers only (dialogs, sheets, dropdowns, toasts, sticky bars). */
+  --shadow-sm: 0 1px 2px rgb(28 25 23 / 0.06), 0 1px 3px rgb(28 25 23 / 0.08);
+  --shadow-md: 0 2px 6px rgb(28 25 23 / 0.08), 0 6px 16px rgb(28 25 23 / 0.1);
+  --shadow-lg: 0 8px 24px rgb(28 25 23 / 0.14);
+  /* Legacy names kept so existing call sites (buttons, tab pills, list rows, dropdowns, toasts…) are unaffected. */
+  --shadow-card: var(--shadow-sm);
+  --shadow-raised: var(--shadow-lg);
 
   --spacing-touch: 2.75rem; /* 44px minimum touch target: min-h-touch / min-w-touch / size-touch */
   --spacing-touch-lg: 3.5rem; /* 56px — kitchen-facing controls */

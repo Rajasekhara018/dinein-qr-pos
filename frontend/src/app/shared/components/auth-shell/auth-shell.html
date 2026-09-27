@@ -1,0 +1,56 @@
+<main class="grid min-h-dvh grid-cols-1 lg:grid-cols-2">
+  <!-- Story panel — desktop only (≥ 1024px); collapses away below that, no horizontal scroll at any width. -->
+  <section class="hidden flex-col p-10 xl:p-14 lg:flex" [class]="panelClasses()" aria-hidden="true">
+    <div>
+      @if (eyebrow()) {
+        <span class="inline-flex w-fit items-center gap-2 rounded-full px-3 py-1 text-overline" [class]="badgeClasses()">
+          <ng-content select="[authShellIcon]" />
+          {{ eyebrow() }}
+        </span>
+      }
+      <h2 class="mt-6 max-w-md text-3xl font-bold leading-tight xl:text-4xl" [class]="headingFontClass()">
+        {{ headline() }}
+      </h2>
+      <p class="mt-3 max-w-sm" [class]="mutedClasses()">{{ description() }}</p>
+    </div>
+    @if (benefits().length) {
+      <ol class="flex flex-col gap-5">
+        @for (benefit of benefits(); track benefit.title; let i = $index) {
+          <li class="flex gap-4">
+            <span [class]="headingFontClass() + ' ' + numberClasses()">{{ pad(i + 1) }}</span>
+            <div>
+              <p class="font-semibold">{{ benefit.title }}</p>
+              <p class="text-sm" [class]="mutedClasses()">{{ benefit.description }}</p>
+            </div>
+          </li>
+        }
+      </ol>
+    }
+  </section>
+
+  <!-- Form panel -->
+  <section class="flex items-center justify-center bg-bg px-4 py-10">
+    <div class="w-full max-w-sm">
+      <div class="mb-6 text-center lg:hidden">
+        <div class="mx-auto mb-3 flex size-12 items-center justify-center rounded-card" [class]="mobileIconWrapClasses()">
+          <ng-content select="[authShellMobileIcon]" />
+        </div>
+        <h1 class="text-2xl font-semibold text-ink" [class]="headingFontClass()">{{ mobileTitle() }}</h1>
+        @if (mobileSubtitle()) {
+          <p class="mt-1 text-sm text-ink-muted">{{ mobileSubtitle() }}</p>
+        }
+      </div>
+
+      <div class="mb-6 hidden text-left lg:block">
+        <h1 class="text-2xl font-semibold text-ink" [class]="headingFontClass()">
+          {{ desktopTitle() || mobileTitle() }}
+        </h1>
+        @if (desktopSubtitle() || mobileSubtitle()) {
+          <p class="mt-1 text-sm text-ink-muted">{{ desktopSubtitle() || mobileSubtitle() }}</p>
+        }
+      </div>
+
+      <ng-content />
+    </div>
+  </section>
+</main>
