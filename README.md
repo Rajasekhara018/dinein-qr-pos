@@ -32,7 +32,7 @@ from an admin panel.
 
 ```
  phone / tablet / TV ──HTTPS──▶  Nginx (frontend container)
-                                  ├─ /            Angular SPA (guest, kitchen, admin – lazy-loaded modules)
+                                  ├─ /            Angular SPA (guest, kitchen, waiter, admin – lazy-loaded modules)
                                   ├─ /api/**  ──▶ Spring Boot backend :8080 ──▶ PostgreSQL 16
                                   └─ /ws      ──▶ STOMP over WebSocket (same backend)
  Razorpay / PayU / Pine Labs ──webhooks──▶ /api/v1/webhooks/{provider}
@@ -139,7 +139,7 @@ Jenkins `dinein_bootstrap_owner` credential, and QR links point at `http://35.15
 | `cd backend && ./gradlew test` | Unit tests: pricing/GST rounding, state machine, Razorpay/PayU/Pine Labs signatures, Pine Labs API client (mocked HTTP), image validation, guest-session tampering, notifications |
 | `cd backend && ./gradlew integrationTest` | Testcontainers (needs Docker): place → verify → kitchen; duplicate webhooks; webhook/verify in either order; amount mismatch; unavailable items; idempotent placement; price-change snapshot; expiry reconciliation; auth lockout, refresh rotation/reuse, CSRF, roles, kitchen PIN devices; waiter PIN login and role access; cash orders straight to the kitchen; takeaway switch; serve; manual refunds of offline payments; counter settlement of expired orders; payment-channel and order-type reports |
 | `cd frontend && npx ng test --watch=false` | Vitest unit/component tests |
-| `cd frontend && npx playwright test` | Guest happy path end to end (backend and checkout are mocked) |
+| `cd frontend && npx playwright test` | Guest happy path (incl. the takeaway choice), kitchen board, admin and waiter app end to end (backend, STOMP and checkout are mocked) |
 
 ---
 
@@ -337,6 +337,27 @@ Waiters open `https://<host>/waiter` on their phone and sign in with username + 
 (`POST /api/v1/auth/login` with `{"username","pin"}`); they get the normal 15-minute access token and refresh cookie.
 Owners and managers can use the waiter screen too; kitchen accounts and devices cannot.
 
+#### Using the waiter app
+
+1. Create a **Waiter** account in **Admin → Staff & devices** and give it a 4–6 digit PIN.
+2. On the phone, open `/waiter`, tap **PIN**, and sign in with the username and PIN. Tap **Enable sound** once so
+   the phone chimes (and vibrates, where supported) when an order is ready. Add the page to the home screen for a
+   full-screen app.
+3. The tabs at the bottom of the screen:
+   - **Ready** (default): orders the kitchen has marked ready, the one waiting longest first. Tap **Served** when it
+     is at the table. New ready orders appear live.
+   - **Active**: every paid order that has not been served (new, cooking, ready), filterable by table or takeaway.
+   - **Tables**: every table with its new / cooking / ready counts. Tap a table (or **Takeaway**) to take an order.
+   - **New order**: pick the table or takeaway, add dishes (unavailable ones are greyed out), check the estimate,
+     optionally add the guest's name and mobile, and choose **Cash**, **UPI at counter**, **Card at counter** or
+     **Online**. Offline payments go straight to the kitchen and show the token and the confirmed amount. **Online**
+     opens the payment gateway on the waiter's phone for the guest; redirect gateways come back to
+     `/waiter/orders/{id}`, which re-checks the payment and offers **Retry payment**.
+4. The bell shows "order ready" notifications; the header shows the connection state and the sign-out button.
+
+Owners and managers can also take counter orders in **Admin → Orders → New order** (the same screen), and settle an
+unpaid or expired order paid at the counter with **Mark paid (offline)** on the order's page.
+
 | Endpoint | Purpose |
 |---|---|
 | `GET /api/v1/waiter/config` | Restaurant name, ordering/takeaway switches, whether online payment is available, the signed-in staff member |
@@ -402,14 +423,14 @@ IST after a 24-hour grace period. Copy dumps off the server (object storage or a
 Check every page at these widths in browser devtools. There must be no horizontal scroll, touch targets must be at
 least 44 px, and inputs at least 16 px.
 
-| Width | Guest `/menu` | Cart & pay | Order status | Kitchen | Admin |
-|---|---|---|---|---|---|
-| 360 (small phone) | ☐ chips scroll, cards 1-col | ☐ sticky Pay bar clears the home indicator | ☐ token readable | ☐ tabs instead of columns | ☐ drawer nav, tables → cards |
-| 390 / 414 (phones) | ☐ | ☐ | ☐ | ☐ | ☐ |
-| 768 (tablet portrait) | ☐ 2-col grid | ☐ | ☐ | ☐ 3 columns fit | ☐ real tables, dialogs centred |
-| 1024 (tablet landscape) | ☐ grid + cart sidebar | ☐ | ☐ | ☐ primary layout | ☐ sidebar nav |
-| 1280 | ☐ | ☐ | ☐ | ☐ | ☐ |
-| 1920 (TV / desktop) | ☐ content max-width, not stretched | ☐ | ☐ | ☐ readable from 2 m | ☐ |
+| Width | Guest `/menu` | Cart & pay | Order status | Kitchen | Waiter | Admin |
+|---|---|---|---|---|---|---|
+| 360 (small phone) | ☐ chips scroll, cards 1-col | ☐ sticky Pay bar clears the home indicator | ☐ token readable | ☐ tabs instead of columns | ☐ bottom tab bar, menu and order as two views | ☐ drawer nav, tables → cards |
+| 390 / 414 (phones) | ☐ | ☐ | ☐ | ☐ | ☐ | ☐ |
+| 768 (tablet portrait) | ☐ 2-col grid | ☐ | ☐ | ☐ 3 columns fit | ☐ top tab bar, 2-col cards | ☐ real tables, dialogs centred |
+| 1024 (tablet landscape) | ☐ grid + cart sidebar | ☐ | ☐ | ☐ primary layout | ☐ menu and order side by side | ☐ sidebar nav |
+| 1280 | ☐ | ☐ | ☐ | ☐ | ☐ | ☐ |
+| 1920 (TV / desktop) | ☐ content max-width, not stretched | ☐ | ☐ | ☐ readable from 2 m | ☐ content max-width | ☐ |
 
 Also check:
 - ☐ Portrait and landscape

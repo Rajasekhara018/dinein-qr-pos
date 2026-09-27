@@ -11,7 +11,7 @@ brief left a choice open, it is recorded here.
 
 ## Frontend uses NgModules (`standalone: false`)
 - At the owner's request the Angular app is NgModule-based, like the reference `gateway-frontend`: `AppModule` +
-  `AppRoutingModule`, lazy feature modules (`GuestModule`, `KitchenModule`, `AdminModule`) each with a
+  `AppRoutingModule`, lazy feature modules (`GuestModule`, `KitchenModule`, `WaiterModule`, `AdminModule`) each with a
   `*-routing-module.ts`, and a `SharedModule` exporting the UI kit. This overrides the brief's "standalone components
   only". Signals, zoneless change detection, OnPush, built-in control flow, functional guards/interceptors and lazy
   loading are kept.
@@ -180,6 +180,66 @@ brief left a choice open, it is recorded here.
 - Reports: the summary adds `paymentChannels` (`ONLINE`, `CASH`, `UPI_AT_COUNTER`, `CARD_AT_COUNTER`), `orderTypes`
   and `manualRefundAmount`; the CSV adds `order_type`, `refund_status` and `placed_by`; the admin order list takes an
   `orderType` filter.
+
+## Frontend: waiter app, staff ordering and order types
+- **Waiter app** is a fourth lazy module, `WaiterModule` (`/waiter`, `waiter-routing-module.ts`), mobile first: a
+  bottom tab bar on phones (Ready / Active / Tables / New order) that moves to the top from 768px.
+- **One staff session.** Waiters use the same `AuthStore` as the admin panel (in-memory JWT, refresh cookie). There
+  is no separate "waiter store": the backend issues the same token for both apps.
+  - `authInterceptor` attaches the staff JWT to `/api/v1/waiter/**`. When a refresh fails, it sends the user to the
+    login of the app they are in (`/waiter/login` or `/admin/login`).
+  - `waiterAuthGuard` allows WAITER, MANAGER and OWNER. Any other role (a kitchen account) is signed out and sent to
+    `/waiter/login?reason=role`.
+  - `adminAuthGuard` sends WAITER accounts to `/waiter`, because they have no admin access.
+  - An owner or manager who still has to change the bootstrap password is sent to the admin change-password page.
+  - Signing out of either app ends the shared session in that browser.
+- **Live data.** `WaiterBoardStore` is provided by the waiter shell, so it lives as long as the shell. It follows the
+  kitchen pattern: REST is the source of truth, and STOMP events are hints followed by a single-flight refetch.
+  - It reuses the kitchen's pure `board-state` helpers.
+  - `ORDER_STATUS_CHANGED → READY` inserts the pushed order at once, with vibration and a chime. Each order alerts only
+    once, whether it arrives by event or by refetch.
+  - "Served" is optimistic and rolls back on error. A 409 refreshes the list.
+  - The sound preference is per device (`dinein.waiter.sound.v1`), with the kitchen's "Enable sound" prompt.
+- **Staff ordering is a shared, non-routed module**, `StaffOrderingModule` (`features/staff-ordering`). It holds the
+  new-order flow: table grid, menu, cart, payment method picker, success screen and bill.
+  - Both `WaiterModule` (`/waiter/new`) and the admin `OrdersModule` (`/admin/orders/new`) import it.
+  - The flow's `mode` input only changes the place endpoint (`/waiter/orders` or `/admin/orders`) and where the order
+    page is. Menu, tables, config, retry and verify use `/api/v1/waiter/**`, which owners and managers may call.
+  - We did not route admin to the waiter screen, so a counter order stays inside the admin layout.
+- **Guest item sheet reuse.** `ItemSheet` moved into its own small `ItemOptionsModule`; the file stays in
+  `features/guest/item-sheet`, and `GuestModule` imports the module. The staff flow uses the same sheet for variants,
+  add-ons, notes and quantity.
+  - The staff cart (`StaffCartStore`) is in memory only and provided per flow. It reuses the guest cart's line model,
+    `buildLine` / `validate` and `estimateBill`, so its estimate matches the guest app.
+  - Estimates are labelled as such. The success screen shows the server's `amountPaise`.
+- **Idempotency.** The key goes in the body (`idempotencyKey`). It stays the same while the payload is unchanged
+  (retries, double taps) and is renewed after a successful order or on `IDEMPOTENCY_KEY_REUSED`.
+- **Payment branching**:
+  - `provider = OFFLINE` → success screen with the token.
+  - `PENDING_PAYMENT` → `CheckoutService`.
+  - Anything else (an idempotent replay of a paid order) → the order page.
+- **Online staff payments reuse `core/payments`.** `CheckoutService.pay(response, context?)` takes an optional
+  `CheckoutContext` with its own `verify` (`POST /api/v1/waiter/payments/verify`) and order page. Guest calls pass no
+  context and behave exactly as before.
+  - `/waiter/orders/:id` is the return page for redirect gateways. With `?payment=return` it polls briefly (the
+    callback already verified the payment with the provider). With `?payment=failed`, or while the order is unpaid, it
+    offers "Retry payment".
+- **Waiter notifications.** A waiter-topic message counts for the waiter screen when its role recipient is `WAITER`
+  or the user's own role, or its user recipient is the user. Owners and managers on the waiter screen therefore see
+  "order ready" toasts. The unread count still comes from `/api/v1/waiter/notifications/unread-count`, which counts
+  only what the backend lets that role see.
+- **Guest order type.** The Dine-in / Takeaway choice appears on the cart page only when `restaurant.takeawayEnabled`
+  is true, with Dine-in as the default. `orderType` is sent only when the choice is shown, so an older backend, or
+  one with takeaway switched off, gets the unchanged body. On `TAKEAWAY_DISABLED` the cart switches back to dine-in
+  and asks the guest to tap Pay again.
+- **Labels.** Order-type and payment-channel labels ("Cash at counter", "UPI at counter", "Card at counter", or the
+  gateway) live in `core/util/order-labels.ts`. `OrderTypeBadge` is in `SharedModule`. The kitchen ticket has its own
+  TAKEAWAY and Staff chips, sized like the rest of the ticket.
+- **Admin.**
+  - "Mark paid (offline)" opens a method picker (the staff `PaymentMethodPicker` without Online) that shows the
+    amount to collect. It appears for PENDING_PAYMENT, EXPIRED and PAYMENT_FAILED orders that are not flagged.
+  - The manual refund banner uses the offline payment's amount, or the bill total when that is missing.
+  - The orders list keeps the type filter in the URL (`type=`).
 
 ## Images
 - Uploads are re-encoded to JPEG (opaque) or PNG (with alpha) — WEBP is accepted as input but not produced, because
