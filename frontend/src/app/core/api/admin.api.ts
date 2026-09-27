@@ -9,6 +9,7 @@ import {
   AdminOrderView,
   CategoryRequest,
   CategoryResponse,
+  CheckoutResponse,
   CreateStaffRequest,
   Dashboard,
   DeviceResponse,
@@ -18,11 +19,13 @@ import {
   ItemSearchParams,
   NotificationSearchParams,
   NotificationView,
+  OfflinePaymentMethod,
   OrderStatus,
   PageResponse,
   PriceRequest,
   SalesSummary,
   SettingsResponse,
+  StaffPlaceOrderRequest,
   StaffResponse,
   TableRequest,
   TableResponse,
@@ -163,6 +166,25 @@ export class AdminOrdersApi {
 
   changeStatus(id: number, status: OrderStatus): Observable<AdminOrderView> {
     return this.http.patch<AdminOrderView>(`${API_BASE}/admin/orders/${id}/status`, { status });
+  }
+
+  /** Counter order placed by an owner/manager (same contract as `POST /api/v1/waiter/orders`). */
+  place(body: StaffPlaceOrderRequest): Observable<CheckoutResponse> {
+    return this.http.post<CheckoutResponse>(`${API_BASE}/admin/orders`, body, {
+      context: silentErrors(),
+    });
+  }
+
+  /**
+   * Settles a PENDING_PAYMENT / EXPIRED / PAYMENT_FAILED order at the counter and sends it to the kitchen.
+   * 409 ALREADY_PAID / ORDER_NOT_PAYABLE / PAYMENT_FLAGGED are handled by the caller (silent).
+   */
+  markPaidOffline(id: number, method: OfflinePaymentMethod): Observable<AdminOrderView> {
+    return this.http.post<AdminOrderView>(
+      `${API_BASE}/admin/orders/${id}/mark-paid-offline`,
+      { method },
+      { context: silentErrors() },
+    );
   }
 
   /**

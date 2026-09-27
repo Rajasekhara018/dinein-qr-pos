@@ -82,6 +82,10 @@
             },
             "development": {
               "buildTarget": "dinein:build:development"
+            },
+            "uat": {
+              "buildTarget": "dinein:build:development",
+              "proxyConfig": "proxy.uat.conf.mjs"
             }
           },
           "defaultConfiguration": "development",

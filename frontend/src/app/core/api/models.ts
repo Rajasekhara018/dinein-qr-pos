@@ -36,19 +36,41 @@ export const PAID_STATUSES: readonly OrderStatus[] = [
 ];
 export const KITCHEN_STATUSES: readonly OrderStatus[] = ['CONFIRMED', 'PREPARING', 'READY'];
 
-export type StaffRole = 'OWNER' | 'MANAGER' | 'KITCHEN';
+export type StaffRole = 'OWNER' | 'MANAGER' | 'KITCHEN' | 'WAITER';
+
+/** How the guest eats. Missing on older payloads means `DINE_IN`. */
+export type OrderType = 'DINE_IN' | 'TAKEAWAY';
+export const ORDER_TYPES: readonly OrderType[] = ['DINE_IN', 'TAKEAWAY'];
+
+/** Counter / waiter payment taken by staff (`payment.method` when `provider === 'OFFLINE'`). */
+export type OfflinePaymentMethod = 'CASH' | 'UPI_AT_COUNTER' | 'CARD_AT_COUNTER';
+export const OFFLINE_PAYMENT_METHODS: readonly OfflinePaymentMethod[] = [
+  'CASH',
+  'UPI_AT_COUNTER',
+  'CARD_AT_COUNTER',
+];
+
+/** How a staff-assisted order is paid (`OrderDtos.StaffPaymentMethod`). */
+export type StaffPaymentMethod = OfflinePaymentMethod | 'ONLINE';
+export const STAFF_PAYMENT_METHODS: readonly StaffPaymentMethod[] = [
+  ...OFFLINE_PAYMENT_METHODS,
+  'ONLINE',
+];
+
+/** `payment.provider` of payments taken at the counter (not a gateway). */
+export const OFFLINE_PROVIDER = 'OFFLINE';
 
 export type CheckoutMode = 'SDK' | 'FORM_POST' | 'REDIRECT';
 
 /** `payment.provider` codes (RAZORPAY, PAYU, PINELABS…); kept open for new providers. */
-export type PaymentProviderCode = 'RAZORPAY' | 'PAYU' | 'PINELABS' | (string & {});
+export type PaymentProviderCode = 'RAZORPAY' | 'PAYU' | 'PINELABS' | 'OFFLINE' | (string & {});
 
 /** `PaymentStatus` enum as a string: CREATED | AUTHORIZED | CAPTURED | FAILED | REFUNDED (open for additions). */
 export type PaymentStatusCode =
   'CREATED' | 'AUTHORIZED' | 'CAPTURED' | 'FAILED' | 'REFUNDED' | (string & {});
 
-/** `RefundStatus` enum as a string. */
-export type RefundStatusCode = 'PENDING' | 'PROCESSED' | 'FAILED' | (string & {});
+/** `RefundStatus` enum as a string. MANUAL = offline payment of a cancelled order: staff hand the money back. */
+export type RefundStatusCode = 'PENDING' | 'PROCESSED' | 'FAILED' | 'MANUAL' | (string & {});
 
 // ─── Errors ──────────────────────────────────────────────────────────────────────────────────────
 
@@ -118,6 +140,13 @@ export type ApiErrorCode =
   | 'UNSUPPORTED_IMAGE'
   | 'INTERNAL_ERROR'
   | 'NETWORK_ERROR'
+  | 'CREDENTIALS_REQUIRED'
+  | 'PIN_LOGIN_NOT_ALLOWED'
+  | 'TAKEAWAY_DISABLED'
+  | 'TABLE_REQUIRED'
+  | 'NOT_STAFF_ORDER'
+  | 'ALREADY_PAID'
+  | 'PAYMENT_FLAGGED'
   | (string & {});
 
 // ─── Shared ──────────────────────────────────────────────────────────────────────────────────────
@@ -133,9 +162,11 @@ export interface PageResponse<T> {
 
 // ─── Auth (`auth.dto.AuthDtos`) ──────────────────────────────────────────────────────────────────
 
+/** Either `password` or `pin` (WAITER accounts only) must be provided. */
 export interface LoginRequest {
   username: string;
-  password: string;
+  password?: string;
+  pin?: string;
 }
 
 export interface ChangePasswordRequest {
@@ -196,6 +227,7 @@ export interface SettingsResponse {
   kitchenWarnMinutes: number;
   kitchenAlertMinutes: number;
   readyAutoHideMinutes: number;
+  takeawayEnabled?: boolean;
 }
 
 export interface UpdateSettingsRequest {
@@ -216,6 +248,8 @@ export interface UpdateSettingsRequest {
   kitchenWarnMinutes: number;
   kitchenAlertMinutes: number;
   readyAutoHideMinutes: number;
+  /** Null/omitted keeps the current value. */
+  takeawayEnabled?: boolean | null;
 }
 
 /** What guests see: branding and whether ordering is possible right now. */
@@ -232,6 +266,8 @@ export interface PublicRestaurantInfo {
   openingTime?: IsoLocalTime;
   closingTime?: IsoLocalTime;
   pricesIncludeGst: boolean;
+  /** Whether guests may choose TAKEAWAY (missing on older backends = no). */
+  takeawayEnabled?: boolean;
 }
 
 // ─── Guest session (`guest.PublicSessionController`) ─────────────────────────────────────────────
@@ -514,6 +550,28 @@ export interface PlaceOrderRequest {
   customerName?: string | null;
   /** `^$|^[6-9]\d{9}$` */
   customerPhone?: string | null;
+  /** Optional; the server defaults to DINE_IN (400 TAKEAWAY_DISABLED when takeaway is off). */
+  orderType?: OrderType;
+}
+
+/** Staff-assisted order (`POST /api/v1/waiter/orders`, `POST /api/v1/admin/orders`). */
+export interface StaffPlaceOrderRequest {
+  /** Required for DINE_IN (400 TABLE_REQUIRED), optional for TAKEAWAY. */
+  tableId: number | null;
+  orderType: OrderType;
+  /** 1–50 lines, same shape as the guest cart. */
+  items: CartLineRequest[];
+  /** ≤ 300 chars (the backend also accepts `notes`). */
+  note: string | null;
+  customerName: string | null;
+  customerPhone: string | null;
+  paymentMethod: StaffPaymentMethod;
+  /** `^[A-Za-z0-9_-]{8,64}$`; a replay returns the same order. */
+  idempotencyKey: string;
+}
+
+export interface MarkPaidOfflineRequest {
+  method: OfflinePaymentMethod;
 }
 
 export interface AddonView {
@@ -555,6 +613,8 @@ export interface PaymentView {
   failureReason?: string;
   refundStatus?: RefundStatusCode;
   providerRefundId?: string;
+  /** Staff member who recorded an OFFLINE payment. */
+  recordedByStaffId?: number;
   updatedAt?: IsoInstant;
 }
 
@@ -563,6 +623,7 @@ export interface GuestOrderView {
   orderNumber: string;
   displayToken: number;
   status: OrderStatus;
+  orderType?: OrderType;
   tableLabel?: string;
   customerName?: string;
   notes?: string;
@@ -583,6 +644,7 @@ export interface GuestOrderSummary {
   orderNumber: string;
   displayToken: number;
   status: OrderStatus;
+  orderType?: OrderType;
   grandTotal: Money;
   itemCount: number;
   placedAt?: IsoInstant;
@@ -602,9 +664,13 @@ export interface KitchenOrderView {
   orderNumber: string;
   displayToken: number;
   status: OrderStatus;
+  orderType?: OrderType;
+  tableId?: number;
   tableLabel?: string;
   notes?: string;
   items: KitchenLineView[];
+  /** Taken by a waiter or at the counter. */
+  placedByStaff?: boolean;
   paidAt?: IsoInstant;
   preparingAt?: IsoInstant;
   readyAt?: IsoInstant;
@@ -623,12 +689,16 @@ export interface AdminOrderSummary {
   orderNumber: string;
   displayToken: number;
   status: OrderStatus;
+  orderType?: OrderType;
   tableLabel?: string;
   customerName?: string;
   grandTotal: Money;
   itemCount: number;
+  /** Gateway code or OFFLINE (then `paymentMethod` is CASH, UPI_AT_COUNTER or CARD_AT_COUNTER). */
+  paymentProvider?: PaymentProviderCode;
   paymentMethod?: string;
   paymentFlagged: boolean;
+  placedByStaffId?: number;
   placedAt?: IsoInstant;
   paidAt?: IsoInstant;
 }
@@ -648,6 +718,11 @@ export interface AdminOrderView {
   paymentFlagged: boolean;
   flagReason?: string;
   cancelReason?: string;
+  orderType?: OrderType;
+  placedByStaffId?: number;
+  placedByStaffName?: string;
+  /** Cancelled after an OFFLINE payment: the money has to be handed back (refundStatus MANUAL). */
+  manualRefundDue?: boolean;
   placedAt?: IsoInstant;
   paidAt?: IsoInstant;
   preparingAt?: IsoInstant;
@@ -658,6 +733,7 @@ export interface AdminOrderView {
 
 export interface AdminOrderSearchParams {
   status?: OrderStatus[];
+  orderType?: OrderType;
   /** IST business date `YYYY-MM-DD`. */
   date?: IsoLocalDate;
   q?: string;
@@ -678,6 +754,19 @@ export interface CancelRequest {
 
 export interface MethodSplit {
   method?: string;
+  count: number;
+  amount: Money;
+}
+
+/** Paid orders per channel: ONLINE or an offline method (CASH, UPI_AT_COUNTER, CARD_AT_COUNTER). */
+export interface PaymentChannelSplit {
+  channel: StaffPaymentMethod | (string & {});
+  count: number;
+  amount: Money;
+}
+
+export interface OrderTypeSplit {
+  orderType: OrderType | (string & {});
   count: number;
   amount: Money;
 }
@@ -707,7 +796,11 @@ export interface SalesSummary {
   averageOrderValue: Money;
   cancelledCount: number;
   refundedAmount: Money;
+  /** Offline money of cancelled orders that staff handed back. */
+  manualRefundAmount?: Money;
   paymentMethods: MethodSplit[];
+  paymentChannels?: PaymentChannelSplit[];
+  orderTypes?: OrderTypeSplit[];
   topItems: TopItem[];
   daily: DailyPoint[];
 }
@@ -795,6 +888,7 @@ export type KitchenRealtimeEvent = RealtimeEvent<KitchenOrderView>;
 
 export const TOPICS = {
   kitchenOrders: '/topic/kitchen/orders',
+  waiterNotifications: '/topic/waiter/notifications',
   menu: '/topic/menu',
   order: (orderId: number) => `/topic/orders/${orderId}`,
 } as const;
@@ -849,3 +943,31 @@ export interface NotificationSearchParams {
 export const ADMIN_TOPICS = {
   staffNotifications: '/topic/staff/notifications',
 } as const;
+
+// ─── Waiter screen (`order.WaiterController`) ────────────────────────────────────────────────────
+
+/** `GET /api/v1/waiter/config` */
+export interface WaiterConfig {
+  restaurantName: string;
+  currency?: string;
+  acceptingOrders: boolean;
+  openNow: boolean;
+  takeawayEnabled: boolean;
+  pricesIncludeGst: boolean;
+  /** Whether `paymentMethod: ONLINE` can be offered (a gateway is configured). */
+  onlinePaymentsAvailable: boolean;
+  kitchenWarnMinutes: number;
+  kitchenAlertMinutes: number;
+  staff: StaffInfo;
+}
+
+/** One active table with counts of its open (paid, not yet served) orders. */
+export interface WaiterTableView {
+  id: number;
+  label: string;
+  openOrders: number;
+  confirmed: number;
+  preparing: number;
+  ready: number;
+  oldestOpenSince?: IsoInstant;
+}

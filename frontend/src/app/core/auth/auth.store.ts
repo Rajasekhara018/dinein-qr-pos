@@ -1,10 +1,10 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { AuthApi } from '../api/auth.api';
-import { StaffInfo, StaffRole, TokenResponse } from '../api/models';
+import { LoginRequest, StaffInfo, StaffRole, TokenResponse } from '../api/models';
 
 /**
- * Admin (OWNER / MANAGER) session.
+ * Staff user session: admin panel (OWNER / MANAGER) and waiter screen (WAITER / MANAGER / OWNER) share it.
  *
  * - The access JWT lives in memory only (a signal) — never in storage. The refresh token is an HttpOnly cookie
  *   (`dinein_rt`, path `/api/v1/auth`) the browser sends to `/api/v1/auth/refresh`.
@@ -34,7 +34,12 @@ export class AuthStore {
   private refreshInFlight: Promise<boolean> | null = null;
 
   async login(username: string, password: string): Promise<StaffInfo> {
-    const response = await firstValueFrom(this.api.login({ username, password }));
+    return this.signIn({ username, password });
+  }
+
+  /** Password or PIN sign-in (`POST /api/v1/auth/login`; PIN is accepted for WAITER accounts only). */
+  async signIn(credentials: LoginRequest): Promise<StaffInfo> {
+    const response = await firstValueFrom(this.api.login(credentials));
     this.applyTokens(response);
     return response.user;
   }
