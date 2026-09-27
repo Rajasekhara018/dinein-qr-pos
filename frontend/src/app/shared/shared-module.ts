@@ -23,7 +23,7 @@ import { Skeleton } from './components/skeleton';
 import { Spinner } from './components/spinner';
 import { VegMarker } from './components/veg-marker';
 import { ButtonDirective, IconButtonDirective } from './directives/button';
-import { AppIconsModule } from './icons';
+import { APP_ICONS } from './icons';
 import { InrPipe } from './pipes/inr-pipe';
 
 const COMPONENTS = [
@@ -56,7 +56,7 @@ const REEXPORTS = [
   DragDropModule,
   LayoutModule,
   OverlayModule,
-  AppIconsModule,
+  ...APP_ICONS,
 ];
 
 /**

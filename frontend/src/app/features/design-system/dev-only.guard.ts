@@ -1,5 +1,5 @@
-import { isDevMode } from '@angular/core';
-import { CanActivateFn } from '@angular/router';
+import { inject, isDevMode } from '@angular/core';
+import { CanActivateFn, Router } from '@angular/router';
 
 /**
  * Keeps `/design-system` out of production. `isDevMode()` is Angular's own dev/prod signal — it is `false` once the
@@ -11,5 +11,5 @@ import { CanActivateFn } from '@angular/router';
 export const devOnlyGuard: CanActivateFn = () => {
   if (isDevMode()) return true;
   // Production: bounce to the guest menu, the app's default route.
-  return '/menu';
+  return inject(Router).parseUrl('/menu');
 };
