@@ -93,6 +93,33 @@ export function patchSettingsForm(form: FormGroup<SettingsForm>, s: SettingsResp
   });
 }
 
+/** Maps a `SettingsResponse` straight to an `UpdateSettingsRequest` (same field mapping as `toSettingsRequest`,
+ *  without going through the form) — used by the admin shell's quick "Accepting orders" switch, which must send a
+ *  full settings body like the settings page does, just with one field flipped. */
+export function settingsResponseToRequest(
+  s: SettingsResponse,
+  overrides: Partial<UpdateSettingsRequest> = {},
+): UpdateSettingsRequest {
+  return {
+    name: s.name,
+    address: s.address ?? null,
+    phone: s.phone ?? null,
+    gstin: s.gstin ?? null,
+    fssaiNo: s.fssaiNo ?? null,
+    logoImageId: s.logoImageId ?? null,
+    openingTime: s.openingTime ?? null,
+    closingTime: s.closingTime ?? null,
+    acceptingOrders: s.acceptingOrders,
+    pricesIncludeGst: s.pricesIncludeGst,
+    takeawayEnabled: s.takeawayEnabled ?? true,
+    brandColor: s.brandColor ?? null,
+    kitchenWarnMinutes: s.kitchenWarnMinutes,
+    kitchenAlertMinutes: s.kitchenAlertMinutes,
+    readyAutoHideMinutes: s.readyAutoHideMinutes,
+    ...overrides,
+  };
+}
+
 export function toSettingsRequest(form: FormGroup<SettingsForm>): UpdateSettingsRequest {
   const v = form.getRawValue();
   const orNull = (s: string) => s.trim() || null;

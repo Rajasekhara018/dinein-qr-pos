@@ -1,82 +1,146 @@
-<main class="flex min-h-dvh items-center justify-center bg-bg px-4 py-10">
-  <div class="w-full max-w-sm">
-    <div class="mb-6 text-center">
-      <div
-        class="mx-auto mb-3 flex size-12 items-center justify-center rounded-card bg-brand text-brand-contrast"
-        aria-hidden="true"
+<main class="admin-scope font-admin-sans grid min-h-dvh grid-cols-1 lg:grid-cols-2">
+  <!-- Story panel — desktop only (≥ 1024px); collapses away below that, no horizontal scroll at any width. -->
+  <section
+    class="hidden flex-col justify-between bg-admin-brand p-10 text-admin-brand-contrast lg:flex xl:p-14"
+    aria-hidden="true"
+  >
+    <div>
+      <span
+        class="inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1 text-overline text-admin-brand-contrast"
       >
-        <svg viewBox="0 0 24 24" class="size-7" fill="none" stroke="currentColor" stroke-width="1.8">
-          <path d="M3 11h18M5 11a7 7 0 0 1 14 0M12 4V3M4 15h16l-1 3H5l-1-3Z" />
-        </svg>
-      </div>
-      <h1 class="font-display text-2xl font-semibold text-ink">DineIn admin</h1>
-      <p class="mt-1 text-sm text-ink-muted">Sign in to manage your restaurant.</p>
+        <svg lucideChefHat class="size-4" aria-hidden="true"></svg>
+        Restaurant back-office
+      </span>
+      <h2 class="font-admin-heading mt-6 max-w-md text-3xl font-bold leading-tight xl:text-4xl">
+        Run the whole restaurant from one panel.
+      </h2>
+      <p class="mt-3 max-w-sm text-admin-brand-contrast/85">
+        Menu, orders, tables and reports — everything your team needs to keep the floor and kitchen moving.
+      </p>
     </div>
+    <ol class="flex flex-col gap-5">
+      <li class="flex gap-4">
+        <span class="font-admin-heading text-lg font-bold text-admin-accent">01</span>
+        <div>
+          <p class="font-semibold">Update the menu in seconds</p>
+          <p class="text-sm text-admin-brand-contrast/80">Prices, photos and availability, live the moment you save.</p>
+        </div>
+      </li>
+      <li class="flex gap-4">
+        <span class="font-admin-heading text-lg font-bold text-admin-accent">02</span>
+        <div>
+          <p class="font-semibold">Track every order as it moves</p>
+          <p class="text-sm text-admin-brand-contrast/80">From payment to the kitchen to the table, in real time.</p>
+        </div>
+      </li>
+      <li class="flex gap-4">
+        <span class="font-admin-heading text-lg font-bold text-admin-accent">03</span>
+        <div>
+          <p class="font-semibold">See how the day is going</p>
+          <p class="text-sm text-admin-brand-contrast/80">Sales, top items and payment mix, whenever you need them.</p>
+        </div>
+      </li>
+    </ol>
+  </section>
 
-    <form
-      class="rounded-card border border-line bg-surface p-5 shadow-card sm:p-6"
-      [formGroup]="form"
-      (ngSubmit)="submit()"
-      novalidate
-    >
-      @if (error()) {
-        <p
-          class="mb-4 rounded-control bg-red-50 px-3 py-2 text-sm font-medium text-red-900 dark:bg-red-950 dark:text-red-100"
-          role="alert"
-          data-testid="login-error"
+  <!-- Form panel -->
+  <section class="flex items-center justify-center bg-bg px-4 py-10">
+    <div class="w-full max-w-sm">
+      <div class="mb-6 text-center lg:hidden">
+        <div
+          class="mx-auto mb-3 flex size-12 items-center justify-center rounded-card bg-admin-brand text-admin-brand-contrast"
+          aria-hidden="true"
         >
-          {{ error() }}
-        </p>
-      }
-      <label for="login-username" class="block text-sm font-medium text-ink">Username</label>
-      <input
-        id="login-username"
-        appInput
-        class="mt-1"
-        formControlName="username"
-        autocomplete="username"
-        autocapitalize="none"
-        spellcheck="false"
-        aria-describedby="login-username-error"
-      />
-      <app-field-error id="login-username-error" [control]="form.controls.username" />
-
-      <label for="login-password" class="mt-4 block text-sm font-medium text-ink">Password</label>
-      <div class="relative mt-1">
-        <input
-          id="login-password"
-          appInput
-          class="pr-12"
-          [type]="showPassword() ? 'text' : 'password'"
-          formControlName="password"
-          autocomplete="current-password"
-          aria-describedby="login-password-error"
-        />
-        <button
-          appIconButton
-          type="button"
-          class="absolute right-0 top-0"
-          [attr.aria-label]="showPassword() ? 'Hide password' : 'Show password'"
-          [attr.aria-pressed]="showPassword()"
-          (click)="showPassword.set(!showPassword())"
-        >
-          <svg viewBox="0 0 24 24" class="size-5" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-            <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z" />
-            <circle cx="12" cy="12" r="3" />
-            @if (showPassword()) {
-              <path d="M4 4l16 16" />
-            }
-          </svg>
-        </button>
+          <svg lucideChefHat class="size-7" aria-hidden="true"></svg>
+        </div>
+        <h1 class="font-admin-heading text-2xl font-semibold text-ink">DineIn admin</h1>
       </div>
-      <app-field-error id="login-password-error" [control]="form.controls.password" />
 
-      <button appButton type="submit" size="lg" block class="mt-6" [loading]="submitting()">
-        @if (submitting()) {
-          <app-spinner [size]="18" />
+      <div class="mb-6 hidden text-left lg:block">
+        <h1 class="font-admin-heading text-2xl font-semibold text-ink">Welcome back</h1>
+        <p class="mt-1 text-sm text-ink-muted">Sign in to manage your restaurant.</p>
+      </div>
+
+      <form
+        class="rounded-card border border-line bg-surface p-5 shadow-card sm:p-6"
+        [formGroup]="form"
+        (ngSubmit)="submit()"
+        novalidate
+      >
+        @if (error()) {
+          <p
+            class="mb-4 rounded-control bg-danger-bg px-3 py-2 text-sm font-medium text-danger-fg"
+            role="alert"
+            data-testid="login-error"
+          >
+            {{ error() }}
+          </p>
         }
-        Sign in
-      </button>
-    </form>
-  </div>
+        <label for="login-username" class="block text-sm font-medium text-ink">Username</label>
+        <div class="relative mt-1">
+          <svg
+            lucideUser
+            class="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-ink-subtle"
+            aria-hidden="true"
+          ></svg>
+          <input
+            id="login-username"
+            appInput
+            class="pl-9"
+            formControlName="username"
+            autocomplete="username"
+            autocapitalize="none"
+            spellcheck="false"
+            aria-describedby="login-username-error"
+          />
+        </div>
+        <app-field-error id="login-username-error" [control]="form.controls.username" />
+
+        <div class="mt-4 flex items-baseline justify-between">
+          <label for="login-password" class="block text-sm font-medium text-ink">Password</label>
+          <a routerLink="/admin/forgot-password" class="text-sm font-medium text-admin-brand-ink hover:underline">
+            Forgot password?
+          </a>
+        </div>
+        <div class="relative mt-1">
+          <svg
+            lucideLock
+            class="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-ink-subtle"
+            aria-hidden="true"
+          ></svg>
+          <input
+            id="login-password"
+            appInput
+            class="pl-9 pr-12"
+            [type]="showPassword() ? 'text' : 'password'"
+            formControlName="password"
+            autocomplete="current-password"
+            aria-describedby="login-password-error"
+          />
+          <button
+            appIconButton
+            type="button"
+            class="absolute right-0 top-0"
+            [attr.aria-label]="showPassword() ? 'Hide password' : 'Show password'"
+            [attr.aria-pressed]="showPassword()"
+            (click)="showPassword.set(!showPassword())"
+          >
+            @if (showPassword()) {
+              <svg lucideEyeOff class="size-5" aria-hidden="true"></svg>
+            } @else {
+              <svg lucideEye class="size-5" aria-hidden="true"></svg>
+            }
+          </button>
+        </div>
+        <app-field-error id="login-password-error" [control]="form.controls.password" />
+
+        <button appButton type="submit" size="lg" block class="mt-6" [loading]="submitting()">
+          @if (submitting()) {
+            <app-spinner [size]="18" />
+          }
+          Sign in
+        </button>
+      </form>
+    </div>
+  </section>
 </main>

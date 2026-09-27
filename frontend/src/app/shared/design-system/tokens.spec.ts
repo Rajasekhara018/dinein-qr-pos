@@ -140,6 +140,21 @@ describe('design tokens: contrast (dark theme)', () => {
   });
 });
 
+describe('design tokens: admin-only accent palette (phase 4, features/admin/** only)', () => {
+  const adminBrand = '#0b6e4f';
+  const adminBrandContrast = '#ffffff';
+  const adminAccent = '#d4a017';
+  const adminAccentContrast = '#1c1917';
+
+  it('admin-brand-contrast text on admin-brand passes 4.5:1', () => {
+    expect(contrastRatio(adminBrandContrast, adminBrand)).toBeGreaterThanOrEqual(AA_TEXT);
+  });
+
+  it('admin-accent-contrast text on admin-accent passes 4.5:1', () => {
+    expect(contrastRatio(adminAccentContrast, adminAccent)).toBeGreaterThanOrEqual(AA_TEXT);
+  });
+});
+
 describe('contrastRatio helper', () => {
   it('matches known WCAG reference values', () => {
     expect(contrastRatio('#000000', '#ffffff')).toBeCloseTo(21, 0);

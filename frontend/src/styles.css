@@ -392,6 +392,15 @@
     cursor: pointer;
   }
 
+  /* Admin-only heading font (phase 4) — `.admin-scope` is the host class on AdminShell, LoginPage,
+     ChangePasswordPage and ForgotPasswordPage; every other app keeps Inter (`--font-display`) unchanged. */
+  .admin-scope h1,
+  .admin-scope h2,
+  .admin-scope h3,
+  .admin-scope .font-display {
+    font-family: var(--font-admin-heading);
+  }
+
   @media (prefers-reduced-motion: reduce) {
     *,
     *::before,

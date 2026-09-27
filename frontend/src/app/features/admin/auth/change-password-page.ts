@@ -49,6 +49,7 @@ export class ChangePasswordPage {
   protected readonly submitting = signal(false);
   protected readonly error = signal('');
   protected readonly attempted = signal(false);
+  protected readonly showPasswords = signal(false);
 
   async submit(): Promise<void> {
     this.attempted.set(true);

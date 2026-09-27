@@ -6,40 +6,89 @@
 </a>
 
 <ng-template #navList let-compact="compact">
-  <ul class="flex flex-col gap-1" role="list">
-    @for (item of nav(); track item.path) {
-      <li>
-        <a
-          [routerLink]="item.path"
-          routerLinkActive="bg-brand-soft text-brand-ink font-semibold"
-          [routerLinkActiveOptions]="{ exact: !!item.exact }"
-          ariaCurrentWhenActive="page"
-          class="flex min-h-touch items-center gap-3 rounded-control px-3 text-ink hover:bg-surface-muted"
-          [class.justify-center]="compact"
-          [attr.title]="compact ? item.label : null"
-          [attr.data-testid]="'nav-' + item.path"
-        >
-          <svg
-            viewBox="0 0 24 24"
-            class="size-5 shrink-0"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="1.8"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            aria-hidden="true"
-          >
-            <path [attr.d]="item.icon" />
-          </svg>
-          @if (compact) {
-            <span class="sr-only">{{ item.label }}</span>
-          } @else {
-            <span class="min-w-0 truncate">{{ item.label }}</span>
+  <nav class="flex flex-col gap-4" aria-label="Admin sections">
+    @for (group of navGroups(); track group.label) {
+      <div>
+        @if (!compact) {
+          <p class="mb-1 px-3 text-overline text-ink-subtle">{{ group.label }}</p>
+        }
+        <ul class="flex flex-col gap-1" role="list">
+          @for (item of group.items; track item.path) {
+            <li>
+              <a
+                [routerLink]="item.path"
+                routerLinkActive="bg-admin-brand-soft text-admin-brand-ink font-semibold"
+                [routerLinkActiveOptions]="{ exact: !!item.exact }"
+                ariaCurrentWhenActive="page"
+                class="flex min-h-touch items-center gap-3 rounded-control px-3 text-ink hover:bg-surface-muted"
+                [class.justify-center]="compact"
+                [attr.title]="compact ? item.label : null"
+                [attr.data-testid]="'nav-' + item.path"
+              >
+                @switch (item.icon) {
+                  @case ('dashboard') {
+                    <svg lucideLayoutDashboard class="size-5 shrink-0" aria-hidden="true"></svg>
+                  }
+                  @case ('orders') {
+                    <svg lucideClipboardList class="size-5 shrink-0" aria-hidden="true"></svg>
+                  }
+                  @case ('categories') {
+                    <svg lucideFolderTree class="size-5 shrink-0" aria-hidden="true"></svg>
+                  }
+                  @case ('items') {
+                    <svg lucideUtensilsCrossed class="size-5 shrink-0" aria-hidden="true"></svg>
+                  }
+                  @case ('tables') {
+                    <svg lucideQrCode class="size-5 shrink-0" aria-hidden="true"></svg>
+                  }
+                  @case ('reports') {
+                    <svg lucideBarChart3 class="size-5 shrink-0" aria-hidden="true"></svg>
+                  }
+                  @case ('settings') {
+                    <svg lucideSettings class="size-5 shrink-0" aria-hidden="true"></svg>
+                  }
+                  @case ('staff') {
+                    <svg lucideUsers class="size-5 shrink-0" aria-hidden="true"></svg>
+                  }
+                }
+                @if (compact) {
+                  <span class="sr-only">{{ item.label }}</span>
+                } @else {
+                  <span class="min-w-0 truncate">{{ item.label }}</span>
+                }
+              </a>
+            </li>
           }
-        </a>
-      </li>
+        </ul>
+      </div>
     }
-  </ul>
+  </nav>
+</ng-template>
+
+<ng-template #userFooter let-compact="compact">
+  <div class="flex items-center gap-3 border-t border-line p-3" [class.justify-center]="compact">
+    <span
+      class="flex size-9 shrink-0 items-center justify-center rounded-full bg-admin-brand-soft text-sm font-bold text-admin-brand-ink"
+      aria-hidden="true"
+    >
+      {{ initials() || '?' }}
+    </span>
+    @if (!compact) {
+      <span class="min-w-0 flex-1 text-left">
+        <span class="block truncate text-sm font-semibold text-ink">{{ displayName() }}</span>
+        <span class="block text-xs text-ink-muted">{{ roleLabel() }}</span>
+      </span>
+      <button
+        appIconButton
+        type="button"
+        aria-label="Sign out"
+        data-testid="sidebar-logout"
+        (click)="logout()"
+      >
+        <svg lucideLogOut class="size-5" aria-hidden="true"></svg>
+      </button>
+    }
+  </div>
 </ng-template>
 
 <div class="min-h-dvh lg:flex">
@@ -52,21 +101,19 @@
   >
     <div class="flex h-16 items-center gap-2 border-b border-line px-3" [class.justify-center]="collapsed()">
       <span
-        class="flex size-10 shrink-0 items-center justify-center rounded-control bg-brand text-brand-contrast"
+        class="flex size-10 shrink-0 items-center justify-center rounded-control bg-admin-brand text-admin-brand-contrast"
         aria-hidden="true"
       >
-        <svg viewBox="0 0 24 24" class="size-6" fill="none" stroke="currentColor" stroke-width="1.8">
-          <path d="M3 11h18M5 11a7 7 0 0 1 14 0M12 4V3M4 15h16l-1 3H5l-1-3Z" />
-        </svg>
+        <svg lucideChefHat class="size-6" aria-hidden="true"></svg>
       </span>
       @if (!collapsed()) {
-        <span class="min-w-0 truncate font-display text-lg font-semibold">DineIn admin</span>
+        <span class="min-w-0 truncate font-admin-heading text-lg font-semibold">DineIn admin</span>
       }
     </div>
-    <nav class="min-h-0 flex-1 overflow-y-auto p-3" aria-label="Admin sections">
+    <div class="min-h-0 flex-1 overflow-y-auto p-3">
       <ng-container *ngTemplateOutlet="navList; context: { compact: collapsed() }" />
-    </nav>
-    <div class="border-t border-line p-3">
+    </div>
+    <div class="p-3 pt-0">
       <button
         type="button"
         class="flex min-h-touch w-full items-center gap-3 rounded-control px-3 text-ink-muted hover:bg-surface-muted"
@@ -76,21 +123,17 @@
         (click)="toggleCollapsed()"
       >
         <svg
-          viewBox="0 0 24 24"
+          lucideChevronLeft
           class="size-5 shrink-0 transition-transform"
           [class.rotate-180]="collapsed()"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="1.8"
           aria-hidden="true"
-        >
-          <path d="m15 6-6 6 6 6" />
-        </svg>
+        ></svg>
         @if (!collapsed()) {
           <span class="text-sm">Collapse</span>
         }
       </button>
     </div>
+    <ng-container *ngTemplateOutlet="userFooter; context: { compact: collapsed() }" />
   </aside>
 
   <!-- Drawer (< 1024px) -->
@@ -107,109 +150,186 @@
         (keydown.escape)="closeDrawer()"
       >
         <div class="flex h-16 items-center justify-between border-b border-line px-3">
-          <span class="font-display text-lg font-semibold">DineIn admin</span>
+          <span class="flex items-center gap-2 font-admin-heading text-lg font-semibold">
+            <span
+              class="flex size-8 shrink-0 items-center justify-center rounded-control bg-admin-brand text-admin-brand-contrast"
+              aria-hidden="true"
+            >
+              <svg lucideChefHat class="size-4" aria-hidden="true"></svg>
+            </span>
+            DineIn admin
+          </span>
           <button appIconButton type="button" aria-label="Close navigation" (click)="closeDrawer()">
-            <svg viewBox="0 0 20 20" class="size-5 fill-current" aria-hidden="true">
-              <path d="M5.3 4 10 8.6 14.7 4 16 5.3 11.4 10l4.6 4.7-1.3 1.3-4.7-4.6L5.3 16 4 14.7 8.6 10 4 5.3 5.3 4Z" />
-            </svg>
+            <svg lucideX class="size-5" aria-hidden="true"></svg>
           </button>
         </div>
-        <nav class="min-h-0 flex-1 overflow-y-auto p-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))]" aria-label="Admin sections">
+        <div class="min-h-0 flex-1 overflow-y-auto p-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))]">
           <ng-container *ngTemplateOutlet="navList; context: { compact: false }" />
-        </nav>
+        </div>
+        <ng-container *ngTemplateOutlet="userFooter; context: { compact: false }" />
       </div>
     </div>
   }
 
   <div class="flex min-h-dvh min-w-0 flex-1 flex-col">
     <header
-      class="sticky top-0 z-[800] flex h-16 items-center gap-2 border-b border-line bg-surface/95 px-2 backdrop-blur sm:px-4"
+      class="sticky top-0 z-[800] flex min-h-16 flex-col justify-center gap-1 border-b border-line bg-surface/95 px-2 py-2 backdrop-blur sm:px-4"
     >
-      <button
-        appIconButton
-        type="button"
-        class="lg:hidden"
-        aria-label="Open navigation"
-        [attr.aria-expanded]="drawerOpen()"
-        data-testid="nav-toggle"
-        (click)="drawerOpen.set(true)"
-      >
-        <svg viewBox="0 0 24 24" class="size-6" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-          <path d="M4 7h16M4 12h16M4 17h16" />
-        </svg>
-      </button>
-      <span class="min-w-0 truncate font-display text-lg font-semibold lg:hidden">DineIn admin</span>
-      <div class="flex-1"></div>
-
-      <app-notification-bell />
-
-      <div class="relative">
+      <div class="flex items-center gap-2">
         <button
-          #userTrigger
+          appIconButton
           type="button"
-          cdkOverlayOrigin
-          #userOrigin="cdkOverlayOrigin"
-          class="flex min-h-touch max-w-[14rem] items-center gap-2 rounded-control px-2 hover:bg-surface-muted"
-          aria-haspopup="menu"
-          [attr.aria-expanded]="userMenuOpen()"
-          data-testid="user-menu"
-          (click)="userMenuOpen.set(!userMenuOpen())"
+          class="lg:hidden"
+          aria-label="Open navigation"
+          [attr.aria-expanded]="drawerOpen()"
+          data-testid="nav-toggle"
+          (click)="drawerOpen.set(true)"
         >
-          <span
-            class="flex size-9 shrink-0 items-center justify-center rounded-full bg-surface-sunken text-sm font-bold text-ink"
-            aria-hidden="true"
-          >
-            {{ initials() || '?' }}
-          </span>
-          <span class="hidden min-w-0 text-left sm:block">
-            <span class="block truncate text-sm font-semibold text-ink">{{ displayName() }}</span>
-            <span class="block text-xs text-ink-muted">{{ roleLabel() }}</span>
-          </span>
-          <span class="sr-only sm:hidden">Account menu for {{ displayName() }} ({{ roleLabel() }})</span>
+          <svg lucideMenu class="size-6" aria-hidden="true"></svg>
         </button>
-        <ng-template
-          cdkConnectedOverlay
-          [cdkConnectedOverlayOrigin]="userOrigin"
-          [cdkConnectedOverlayOpen]="userMenuOpen()"
-          [cdkConnectedOverlayPositions]="[
-            { originX: 'end', originY: 'bottom', overlayX: 'end', overlayY: 'top', offsetY: 6 },
-          ]"
-          [cdkConnectedOverlayViewportMargin]="8"
-          (overlayOutsideClick)="onUserMenuOutside($event, userTrigger)"
-          (detach)="userMenuOpen.set(false)"
-          (overlayKeydown)="$event.key === 'Escape' && userMenuOpen.set(false)"
+        <span class="min-w-0 truncate font-admin-heading text-lg font-semibold lg:hidden">DineIn admin</span>
+
+        @if (breadcrumbs().length) {
+          <ol class="hidden min-w-0 items-center gap-1.5 text-sm text-ink-muted lg:flex" aria-label="Breadcrumb">
+            @for (crumb of breadcrumbs(); track crumb; let last = $last) {
+              <li class="truncate" [class.font-medium]="last" [class.text-ink]="last">{{ crumb }}</li>
+              @if (!last) {
+                <li aria-hidden="true">·</li>
+              }
+            }
+          </ol>
+        }
+
+        <div class="flex-1"></div>
+
+        <!-- Quick navigate / command palette trigger -->
+        <button
+          type="button"
+          class="hidden min-h-touch w-56 items-center gap-2 rounded-control border border-line bg-surface-muted px-3 text-sm text-ink-muted hover:bg-surface-sunken sm:flex"
+          data-testid="quick-navigate"
+          (click)="paletteOpen.set(true)"
         >
-          <div
-            class="w-64 max-w-[calc(100vw-1rem)] animate-pop rounded-card border border-line bg-surface p-2 shadow-raised"
-            role="menu"
-            aria-label="Account"
-            cdkTrapFocus
-            [cdkTrapFocusAutoCapture]="true"
+          <svg lucideSearch class="size-4 shrink-0" aria-hidden="true"></svg>
+          <span class="flex-1 truncate text-left">Quick navigate…</span>
+          <kbd class="flex items-center gap-0.5 rounded-sm border border-line-strong px-1 text-xs">
+            <svg lucideCommand class="size-3" aria-hidden="true"></svg>K
+          </kbd>
+        </button>
+        <button
+          appIconButton
+          type="button"
+          class="sm:hidden"
+          aria-label="Quick navigate"
+          (click)="paletteOpen.set(true)"
+        >
+          <svg lucideSearch class="size-5" aria-hidden="true"></svg>
+        </button>
+
+        @if (acceptingOrders(); as accepting) {
+          <button
+            type="button"
+            role="switch"
+            [attr.aria-checked]="accepting"
+            aria-label="Accepting orders"
+            class="hidden min-h-touch items-center gap-2 rounded-control px-2 text-sm font-medium sm:flex"
+            [class.text-success]="accepting"
+            [class.text-ink-muted]="!accepting"
+            [disabled]="acceptingOrdersBusy()"
+            data-testid="accepting-orders-switch"
+            (click)="toggleAcceptingOrders()"
           >
-            <div class="border-b border-line px-3 pb-2 pt-1">
-              <p class="truncate font-semibold text-ink">{{ displayName() }}</p>
-              <p class="text-sm text-ink-muted">
-                {{ roleLabel() }} · {{ auth.user()?.username }}
-              </p>
+            <span
+              class="relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors"
+              [class.bg-success]="accepting"
+              [class.bg-surface-sunken]="!accepting"
+            >
+              <span
+                class="inline-block size-4 translate-x-1 rounded-full bg-white transition-transform"
+                [class.translate-x-6]="accepting"
+              ></span>
+            </span>
+            <span class="hidden xl:inline">{{ accepting ? 'Accepting orders' : 'Ordering paused' }}</span>
+          </button>
+        }
+
+        <button appIconButton type="button" [attr.aria-label]="prefs.theme() === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'" data-testid="theme-toggle" (click)="prefs.toggleTheme()">
+          @if (prefs.theme() === 'dark') {
+            <svg lucideSun class="size-5" aria-hidden="true"></svg>
+          } @else {
+            <svg lucideMoon class="size-5" aria-hidden="true"></svg>
+          }
+        </button>
+
+        <app-notification-bell />
+
+        <div class="relative">
+          <button
+            #userTrigger
+            type="button"
+            cdkOverlayOrigin
+            #userOrigin="cdkOverlayOrigin"
+            class="flex min-h-touch max-w-[14rem] items-center gap-2 rounded-control px-2 hover:bg-surface-muted"
+            aria-haspopup="menu"
+            [attr.aria-expanded]="userMenuOpen()"
+            data-testid="user-menu"
+            (click)="userMenuOpen.set(!userMenuOpen())"
+          >
+            <span
+              class="flex size-9 shrink-0 items-center justify-center rounded-full bg-surface-sunken text-sm font-bold text-ink"
+              aria-hidden="true"
+            >
+              {{ initials() || '?' }}
+            </span>
+            <span class="hidden min-w-0 text-left sm:block">
+              <span class="block truncate text-sm font-semibold text-ink">{{ displayName() }}</span>
+              <span class="block text-xs text-ink-muted">{{ roleLabel() }}</span>
+            </span>
+            <span class="sr-only sm:hidden">Account menu for {{ displayName() }} ({{ roleLabel() }})</span>
+          </button>
+          <ng-template
+            cdkConnectedOverlay
+            [cdkConnectedOverlayOrigin]="userOrigin"
+            [cdkConnectedOverlayOpen]="userMenuOpen()"
+            [cdkConnectedOverlayPositions]="[
+              { originX: 'end', originY: 'bottom', overlayX: 'end', overlayY: 'top', offsetY: 6 },
+            ]"
+            [cdkConnectedOverlayViewportMargin]="8"
+            (overlayOutsideClick)="onUserMenuOutside($event, userTrigger)"
+            (detach)="userMenuOpen.set(false)"
+            (overlayKeydown)="$event.key === 'Escape' && userMenuOpen.set(false)"
+          >
+            <div
+              class="w-64 max-w-[calc(100vw-1rem)] animate-pop rounded-card border border-line bg-surface p-2 shadow-raised"
+              role="menu"
+              aria-label="Account"
+              cdkTrapFocus
+              [cdkTrapFocusAutoCapture]="true"
+            >
+              <div class="border-b border-line px-3 pb-2 pt-1">
+                <p class="truncate font-semibold text-ink">{{ displayName() }}</p>
+                <p class="text-sm text-ink-muted">
+                  {{ roleLabel() }} · {{ auth.user()?.username }}
+                </p>
+              </div>
+              <a
+                role="menuitem"
+                routerLink="/admin/change-password"
+                class="mt-1 flex min-h-touch items-center rounded-control px-3 text-ink hover:bg-surface-muted"
+              >
+                Change password
+              </a>
+              <button
+                role="menuitem"
+                type="button"
+                class="flex min-h-touch w-full items-center rounded-control px-3 text-left font-semibold text-danger hover:bg-surface-muted"
+                data-testid="logout"
+                (click)="logout()"
+              >
+                Sign out
+              </button>
             </div>
-            <a
-              role="menuitem"
-              routerLink="/admin/change-password"
-              class="mt-1 flex min-h-touch items-center rounded-control px-3 text-ink hover:bg-surface-muted"
-            >
-              Change password
-            </a>
-            <button
-              role="menuitem"
-              type="button"
-              class="flex min-h-touch w-full items-center rounded-control px-3 text-left font-semibold text-danger hover:bg-surface-muted"
-              data-testid="logout"
-              (click)="logout()"
-            >
-              Sign out
-            </button>
-          </div>
-        </ng-template>
+          </ng-template>
+        </div>
       </div>
     </header>
 
@@ -224,3 +344,5 @@
     </main>
   </div>
 </div>
+
+<app-command-palette [(open)]="paletteOpen" />

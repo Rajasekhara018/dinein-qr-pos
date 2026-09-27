@@ -6,10 +6,25 @@ import { ItemsPage } from './items/items-page';
 
 const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'items' },
-  { path: 'categories', component: CategoriesPage, title: 'Categories · DineIn admin' },
-  { path: 'items', component: ItemsPage, title: 'Items · DineIn admin' },
-  { path: 'items/new', component: ItemFormPage, title: 'New item · DineIn admin' },
-  { path: 'items/:id', component: ItemFormPage, title: 'Edit item · DineIn admin' },
+  {
+    path: 'categories',
+    component: CategoriesPage,
+    title: 'Categories · DineIn admin',
+    data: { breadcrumb: 'Categories' },
+  },
+  { path: 'items', component: ItemsPage, title: 'Items · DineIn admin', data: { breadcrumb: 'Items' } },
+  {
+    path: 'items/new',
+    component: ItemFormPage,
+    title: 'New item · DineIn admin',
+    data: { breadcrumb: 'New item' },
+  },
+  {
+    path: 'items/:id',
+    component: ItemFormPage,
+    title: 'Edit item · DineIn admin',
+    data: { breadcrumb: 'Edit item' },
+  },
 ];
 
 @NgModule({
