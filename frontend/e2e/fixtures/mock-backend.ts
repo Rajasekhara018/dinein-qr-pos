@@ -129,8 +129,20 @@ export interface MockBackend {
 const json = (route: Route, body: unknown, status = 200) =>
   route.fulfill({ status, contentType: 'application/json', body: JSON.stringify(body) });
 
+export interface MockBackendOptions {
+  /** Session `restaurant.takeawayEnabled` (omitted by default, like an older backend). */
+  takeawayEnabled?: boolean;
+  /** Order type echoed by the order views. */
+  orderType?: 'DINE_IN' | 'TAKEAWAY';
+}
+
 /** Installs API + WebSocket mocks on the page. */
-export async function mockBackend(page: Page): Promise<MockBackend> {
+export async function mockBackend(page: Page, options: MockBackendOptions = {}): Promise<MockBackend> {
+  const sessionBody =
+    options.takeawayEnabled === undefined
+      ? session
+      : { ...session, restaurant: { ...session.restaurant, takeawayEnabled: options.takeawayEnabled } };
+  const orderBody = options.orderType ? { ...paidOrder, orderType: options.orderType } : paidOrder;
   const state: MockBackend = { placeOrderRequests: [], verifyRequests: [] };
 
   // Minimal STOMP broker: acknowledge CONNECT so the realtime service reports "connected".
@@ -162,7 +174,7 @@ export async function mockBackend(page: Page): Promise<MockBackend> {
           404,
         );
       }
-      return json(route, session);
+      return json(route, sessionBody);
     }
     if (path === '/api/v1/public/menu') return json(route, menu);
     if (path === '/api/v1/public/orders' && method === 'POST') {
@@ -191,9 +203,9 @@ export async function mockBackend(page: Page): Promise<MockBackend> {
     }
     if (path === '/api/v1/public/payments/verify') {
       state.verifyRequests.push(request.postDataJSON());
-      return json(route, paidOrder);
+      return json(route, orderBody);
     }
-    if (path === '/api/v1/public/orders/42') return json(route, paidOrder);
+    if (path === '/api/v1/public/orders/42') return json(route, orderBody);
     if (path === '/api/v1/public/orders')
       return json(route, [
         {

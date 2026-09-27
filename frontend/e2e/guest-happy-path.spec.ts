@@ -85,6 +85,42 @@ test.describe('guest happy path', () => {
     await expect(page.getByTestId('cart-bar')).toHaveCount(0);
   });
 
+  test('guest chooses Takeaway: the order is placed with orderType TAKEAWAY', async ({
+    page,
+    isMobile,
+  }) => {
+    await page.addInitScript(razorpayStub);
+    const backend = await mockBackend(page, { takeawayEnabled: true, orderType: 'TAKEAWAY' });
+
+    await page.goto('/menu?t=abc');
+    await page.getByRole('button', { name: 'Add Masala Dosa' }).click();
+    if (isMobile) await page.getByTestId('cart-bar').click();
+    else await page.getByRole('link', { name: /Checkout/ }).click();
+    await expect(page).toHaveURL(/\/menu\/cart$/);
+
+    // Dine-in is the default; choose Takeaway.
+    const toggle = page.getByTestId('order-type-toggle');
+    await expect(toggle.getByLabel('Dine-in')).toBeChecked();
+    await toggle.getByText('Takeaway').click();
+    await expect(toggle.getByLabel('Takeaway')).toBeChecked();
+
+    await page.getByTestId('pay-button').click();
+    await expect(page).toHaveURL(/\/menu\/orders\/42$/);
+    expect(backend.placeOrderRequests).toHaveLength(1);
+    expect(backend.placeOrderRequests[0].body).toMatchObject({ orderType: 'TAKEAWAY' });
+    await expect(page.getByTestId('order-type')).toContainText('Takeaway');
+  });
+
+  test('the Dine-in / Takeaway choice is hidden when takeaway is off', async ({ page, isMobile }) => {
+    await mockBackend(page, { takeawayEnabled: false });
+    await page.goto('/menu?t=abc');
+    await page.getByRole('button', { name: 'Add Masala Dosa' }).click();
+    if (isMobile) await page.getByTestId('cart-bar').click();
+    else await page.getByRole('link', { name: /Checkout/ }).click();
+    await expect(page.getByTestId('bill-total')).toBeVisible();
+    await expect(page.getByTestId('order-type-toggle')).toHaveCount(0);
+  });
+
   test('invalid QR shows the friendly scan page', async ({ page }) => {
     await mockBackend(page);
     await page.goto('/menu?t=wrong');

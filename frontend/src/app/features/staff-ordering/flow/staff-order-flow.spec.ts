@@ -79,19 +79,23 @@ describe('StaffOrderFlow', () => {
     fixture.detectChanges();
   }
 
+  async function settle() {
+    await new Promise((resolve) => setTimeout(resolve));
+    await fixture.whenStable();
+    fixture.detectChanges();
+  }
+
   async function load() {
     http.expectOne('/api/v1/waiter/config').flush(config);
     http.expectOne('/api/v1/waiter/tables').flush(tables);
     http.expectOne('/api/v1/waiter/menu').flush(menu());
-    await fixture.whenStable();
-    fixture.detectChanges();
+    await settle();
   }
 
   const byTestId = (id: string) => el.querySelector<HTMLElement>(`[data-testid="${id}"]`);
   const click = async (element: HTMLElement | null) => {
     element!.click();
-    await fixture.whenStable();
-    fixture.detectChanges();
+    await settle();
   };
   const addButton = (name: string) =>
     el.querySelector<HTMLButtonElement>(`button[aria-label="Add ${name}"]`);
@@ -198,8 +202,7 @@ describe('StaffOrderFlow', () => {
     http.expectOne('/api/v1/waiter/config').flush(config);
     http.expectOne('/api/v1/waiter/tables').flush(tables);
     http.expectOne('/api/v1/waiter/menu').flush(soldOut);
-    await fixture.whenStable();
-    fixture.detectChanges();
+    await settle();
     const row = byTestId('staff-item-9')!;
     expect(row.textContent).toContain('Not available');
     expect(row.querySelector<HTMLButtonElement>('button')!.disabled).toBe(true);

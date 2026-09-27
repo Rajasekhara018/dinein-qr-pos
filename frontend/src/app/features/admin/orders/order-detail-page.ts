@@ -181,7 +181,7 @@ export class OrderDetailPage implements OnInit {
         `Order #${order.displayToken} marked paid (${staffPaymentMethodLabel(method)}) and sent to the kitchen.`,
       );
     } catch (error) {
-      const code = error instanceof ApiError ? error.code : '';
+      const code = ApiError.from(error).code;
       if (code === 'ALREADY_PAID') {
         this.toasts.warning('This order has already been paid. Showing the latest status.');
       } else if (code === 'ORDER_NOT_PAYABLE') {
