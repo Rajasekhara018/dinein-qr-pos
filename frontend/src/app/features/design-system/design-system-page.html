@@ -1,0 +1,148 @@
+<div class="min-h-dvh bg-bg text-ink" [class.dark]="dark()">
+  <header class="sticky top-0 z-sticky flex flex-wrap items-center gap-3 border-b border-line bg-surface px-4 py-3">
+    <h1 class="font-display text-h2 font-semibold">Design system</h1>
+    <p class="text-body-sm text-ink-muted">Dev-only — not reachable in production builds.</p>
+    <div class="ml-auto flex gap-2">
+      <button type="button" appButton variant="outline" size="sm" (click)="toggleAudience()">
+        Audience: {{ audience() }}
+      </button>
+      <button type="button" appButton variant="secondary" size="sm" (click)="toggleTheme()">
+        {{ dark() ? 'Light' : 'Dark' }} theme
+      </button>
+    </div>
+  </header>
+
+  <main class="mx-auto flex max-w-5xl flex-col gap-12 px-4 py-8">
+    <!-- Colour tokens -->
+    <section>
+      <h2 class="font-display text-h3 font-semibold">Colour</h2>
+      <div class="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4">
+        @for (step of [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950]; track step) {
+          <div class="overflow-hidden rounded-md border border-line">
+            <div class="h-12" [style.background]="'var(--color-brand-' + step + ')'"></div>
+            <div class="px-2 py-1 text-caption">brand-{{ step }}</div>
+          </div>
+        }
+      </div>
+      <div class="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
+        @for (tone of tones; track tone.name) {
+          <div class="rounded-md border p-3" [class]="tone.box">
+            <p class="text-body-sm font-semibold" [class]="tone.text">{{ tone.name }}</p>
+          </div>
+        }
+      </div>
+      <div class="mt-4 flex gap-4">
+        <span class="inline-flex items-center gap-1 text-body-sm"
+          ><app-veg-marker type="VEG" />veg</span
+        >
+        <span class="inline-flex items-center gap-1 text-body-sm"
+          ><app-veg-marker type="NON_VEG" />non-veg</span
+        >
+        <span class="inline-flex items-center gap-1 text-body-sm"
+          ><app-veg-marker type="EGG" />egg</span
+        >
+      </div>
+    </section>
+
+    <!-- Typography -->
+    <section>
+      <h2 class="font-display text-h3 font-semibold">Typography</h2>
+      <div class="mt-3 flex flex-col gap-2">
+        <p class="text-display font-display">Display</p>
+        <p class="text-h1 font-display">Heading 1</p>
+        <p class="text-h2 font-display">Heading 2</p>
+        <p class="text-h3 font-display">Heading 3</p>
+        <p class="text-body-lg">Body large</p>
+        <p class="text-body">Body — the quick brown fox jumps over the lazy dog.</p>
+        <p class="text-body-sm text-ink-muted">Body small</p>
+        <p class="text-caption text-ink-subtle">Caption</p>
+        <p class="text-overline uppercase text-ink-subtle">Overline</p>
+        <p class="text-body tabular-nums">₹ 12,345.00 tabular numerals</p>
+      </div>
+    </section>
+
+    <!-- Buttons -->
+    <section>
+      <h2 class="font-display text-h3 font-semibold">Button</h2>
+      <div class="mt-3 flex flex-wrap items-center gap-3">
+        <button appButton variant="primary">Primary</button>
+        <button appButton variant="secondary">Secondary</button>
+        <button appButton variant="outline">Outline</button>
+        <button appButton variant="ghost">Ghost</button>
+        <button appButton variant="danger">Danger</button>
+        <button appButton variant="primary" disabled>Disabled</button>
+        <button appButton variant="primary" loading>Loading</button>
+        <button appIconButton aria-label="Search"><svg lucideSearch class="size-5"></svg></button>
+        <button appIconButton variant="solid" aria-label="Filter"><svg lucideFilter class="size-5"></svg></button>
+      </div>
+    </section>
+
+    <!-- Chip -->
+    <section>
+      <h2 class="font-display text-h3 font-semibold">Chip</h2>
+      <div class="mt-3 flex flex-wrap gap-2">
+        <app-chip label="Veg only" [(selected)]="chipSelected" />
+        <app-chip label="Spicy" />
+        <app-chip label="Under ₹200" />
+        <app-chip label="Paneer tikka" [removable]="true" />
+      </div>
+    </section>
+
+    <!-- Quantity stepper -->
+    <section>
+      <h2 class="font-display text-h3 font-semibold">Quantity stepper</h2>
+      <div class="mt-3">
+        <app-quantity-stepper [(quantity)]="qty" itemName="demo item" />
+      </div>
+    </section>
+
+    <!-- Order status -->
+    <section>
+      <h2 class="font-display text-h3 font-semibold">Order status ({{ audience() }} wording)</h2>
+      <div class="mt-3 flex flex-wrap gap-2">
+        @for (status of statuses; track status) {
+          <app-order-status-badge [status]="status" [audience]="audience()" />
+        }
+      </div>
+    </section>
+
+    <!-- States -->
+    <section>
+      <h2 class="font-display text-h3 font-semibold">States</h2>
+      <div class="mt-3 grid gap-4 sm:grid-cols-3">
+        <app-card><app-empty-state title="No orders yet" message="New orders will show up here." /></app-card>
+        <app-card><app-error-state title="Couldn't load orders" /></app-card>
+        <app-card>
+          <app-skeleton class="mb-2 h-4 w-2/3" />
+          <app-skeleton class="mb-2 h-4 w-full" />
+          <app-skeleton shape="block" class="h-24 w-full" />
+        </app-card>
+      </div>
+      <div class="mt-4 flex items-center gap-3">
+        <app-spinner label="Loading" />
+        <app-price [amount]="249" [original]="349" />
+        <app-price [amount]="149" [from]="true" [whole]="true" />
+      </div>
+    </section>
+
+    <!-- Data table -->
+    <section>
+      <h2 class="font-display text-h3 font-semibold">Data table</h2>
+      <p class="text-body-sm text-ink-muted">
+        Sortable, selectable, paginated; resize the window below 768px to see the stacked-card layout.
+      </p>
+      <div class="mt-3">
+        <app-data-table
+          [columns]="columns"
+          [rows]="rows()"
+          rowIdKey="id"
+          [selectable]="true"
+          [(selected)]="selectedRows"
+          [(sort)]="sort"
+          [(page)]="page"
+          [pageSize]="8"
+        />
+      </div>
+    </section>
+  </main>
+</div>

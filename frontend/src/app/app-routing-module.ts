@@ -21,6 +21,13 @@ const routes: Routes = [
     path: 'admin',
     loadChildren: () => import('./features/admin/admin-module').then((m) => m.AdminModule),
   },
+  {
+    // Dev-only UI kit showcase; guarded by devOnlyGuard (see design-system/dev-only.guard.ts) and lazy, so it
+    // never reaches the production initial bundle.
+    path: 'design-system',
+    loadChildren: () =>
+      import('./features/design-system/design-system-module').then((m) => m.DesignSystemModule),
+  },
   { path: '**', component: NotFound, title: 'Page not found' },
 ];
 

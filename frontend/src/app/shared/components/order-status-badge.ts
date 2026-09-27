@@ -1,46 +1,11 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { OrderStatus } from '../../core/api/models';
+import { orderStatusLabel, orderStatusToneClasses, StatusAudience } from '../order-status';
 
-const META: Record<OrderStatus, { label: string; classes: string }> = {
-  PENDING_PAYMENT: {
-    label: 'Awaiting payment',
-    classes: 'bg-amber-100 text-amber-900 dark:bg-amber-900 dark:text-amber-50',
-  },
-  CONFIRMED: {
-    label: 'Paid',
-    classes: 'bg-blue-100 text-blue-900 dark:bg-blue-900 dark:text-blue-50',
-  },
-  PREPARING: {
-    label: 'Preparing',
-    classes: 'bg-orange-100 text-orange-900 dark:bg-orange-900 dark:text-orange-50',
-  },
-  READY: {
-    label: 'Ready',
-    classes: 'bg-green-100 text-green-900 dark:bg-green-900 dark:text-green-50',
-  },
-  COMPLETED: {
-    label: 'Served',
-    classes: 'bg-stone-200 text-stone-800 dark:bg-stone-700 dark:text-stone-100',
-  },
-  EXPIRED: {
-    label: 'Expired',
-    classes: 'bg-stone-200 text-stone-700 dark:bg-stone-700 dark:text-stone-200',
-  },
-  PAYMENT_FAILED: {
-    label: 'Payment failed',
-    classes: 'bg-red-100 text-red-900 dark:bg-red-900 dark:text-red-50',
-  },
-  CANCELLED: {
-    label: 'Cancelled',
-    classes: 'bg-red-100 text-red-900 dark:bg-red-900 dark:text-red-50',
-  },
-};
+/** Re-exported for existing call sites (`orderStatusLabel` from this module); prefer importing from `shared/order-status`. */
+export { orderStatusLabel };
 
-export function orderStatusLabel(status: OrderStatus): string {
-  return META[status]?.label ?? status;
-}
-
-/** Pill showing an order status (text + colour). */
+/** Pill showing an order status (text + colour), from the `shared/order-status` single source of truth. */
 @Component({
   selector: 'app-order-status-badge',
   standalone: false,
@@ -50,10 +15,12 @@ export function orderStatusLabel(status: OrderStatus): string {
 })
 export class OrderStatusBadge {
   readonly status = input.required<OrderStatus>();
+  /** Who is reading this badge — changes wording (not just colour). Defaults to `staff` (kitchen/waiter/admin). */
+  readonly audience = input<StatusAudience>('staff');
 
-  protected readonly label = computed(() => orderStatusLabel(this.status()));
+  protected readonly label = computed(() => orderStatusLabel(this.status(), this.audience()));
   protected readonly classes = computed(
     () =>
-      `inline-flex items-center whitespace-nowrap rounded-full px-2.5 py-0.5 text-xs font-semibold ${META[this.status()]?.classes ?? ''}`,
+      `inline-flex items-center whitespace-nowrap rounded-full px-2.5 py-0.5 text-xs font-semibold ${orderStatusToneClasses(this.status(), this.audience())}`,
   );
 }

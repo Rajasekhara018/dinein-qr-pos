@@ -9,6 +9,8 @@ import { OverlayModule } from '@angular/cdk/overlay';
 
 import { BottomSheet } from './components/bottom-sheet';
 import { Card } from './components/card';
+import { Chip } from './components/chip';
+import { DataTable } from './components/data-table';
 import { EmptyState } from './components/empty-state';
 import { ErrorState } from './components/error-state';
 import { ImageBox } from './components/image-box';
@@ -21,11 +23,14 @@ import { Skeleton } from './components/skeleton';
 import { Spinner } from './components/spinner';
 import { VegMarker } from './components/veg-marker';
 import { ButtonDirective, IconButtonDirective } from './directives/button';
+import { AppIconsModule } from './icons';
 import { InrPipe } from './pipes/inr-pipe';
 
 const COMPONENTS = [
   BottomSheet,
   Card,
+  Chip,
+  DataTable,
   EmptyState,
   ErrorState,
   ImageBox,
@@ -51,6 +56,7 @@ const REEXPORTS = [
   DragDropModule,
   LayoutModule,
   OverlayModule,
+  AppIconsModule,
 ];
 
 /**
