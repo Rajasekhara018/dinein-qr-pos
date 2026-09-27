@@ -1,6 +1,7 @@
 package com.heuristq.dinein.table;
 
 import com.heuristq.dinein.settings.SettingsService;
+import com.heuristq.dinein.shared.exception.ApiException;
 import com.heuristq.dinein.table.domain.DiningTableEntity;
 import com.heuristq.dinein.table.dto.TableDtos.TableRequest;
 import com.heuristq.dinein.table.dto.TableDtos.TableResponse;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequestMapping("/api/v1/admin/tables")
@@ -74,12 +76,21 @@ public class AdminTableController {
         return tableService.regenerateQr(id);
     }
 
+    /**
+     * {@code v} is the fingerprint {@link TableService#qrImageUrl} embeds in the URL it hands out (see there for
+     * why): given, it must match the table's *current* token, or the QR was regenerated since that URL was handed
+     * out and this response would otherwise get cached under a now-stale link forever. A request without it (an
+     * older client, or a manual fetch) always gets the current QR, uncached.
+     */
     @GetMapping(value = "/{id}/qr.png", produces = MediaType.IMAGE_PNG_VALUE)
-    public ResponseEntity<byte[]> qrPng(@PathVariable Long id) {
+    public ResponseEntity<byte[]> qrPng(@PathVariable Long id, @RequestParam(required = false) String v) {
         DiningTableEntity table = tableService.get(id);
-        return ResponseEntity.ok()
-                .contentType(MediaType.IMAGE_PNG)
-                .cacheControl(CacheControl.noStore())
-                .body(qrCodeService.png(tableService.menuUrl(table), 512));
+        if (v != null && !v.equals(tableService.qrVersion(table))) {
+            throw ApiException.notFound("QR code");
+        }
+        ResponseEntity.BodyBuilder response = ResponseEntity.ok().contentType(MediaType.IMAGE_PNG);
+        response = (v != null) ? response.cacheControl(CacheControl.maxAge(365, TimeUnit.DAYS).cachePublic().immutable())
+                                : response.cacheControl(CacheControl.noStore());
+        return response.body(qrCodeService.png(tableService.menuUrl(table), 512));
     }
 }

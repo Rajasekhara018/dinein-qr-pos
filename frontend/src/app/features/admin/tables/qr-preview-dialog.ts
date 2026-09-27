@@ -40,7 +40,7 @@ export class QrPreviewDialog {
   protected async load(): Promise<void> {
     this.error.set(false);
     try {
-      const blob = await firstValueFrom(this.api.qrPng(this.data.table.id));
+      const blob = await firstValueFrom(this.api.qrPng(this.data.table.qrImageUrl));
       const previous = this.src();
       if (previous) URL.revokeObjectURL(previous);
       this.src.set(URL.createObjectURL(blob));

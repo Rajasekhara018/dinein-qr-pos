@@ -110,6 +110,22 @@ public class TableService {
 
     private TableResponse toResponse(DiningTableEntity t) {
         return new TableResponse(t.getId(), t.getLabel(), t.isActive(), menuUrl(t),
-                ApiPaths.V1 + "/admin/tables/" + t.getId() + "/qr.png", t.getCreatedAt(), t.getUpdatedAt());
+                qrImageUrl(t), t.getCreatedAt(), t.getUpdatedAt());
+    }
+
+    /**
+     * The QR image is generated fresh on every request (see {@link AdminTableController#qrPng}), but its URL is
+     * versioned by a short fingerprint of the table's current {@code qrToken}, so it can still be cached by the
+     * browser as immutable: the URL only ever repeats while the token it encodes is unchanged, and
+     * {@link #regenerateQr} always changes the token. That also means a browser can never keep serving a stale
+     * response under this URL after the QR is regenerated, the way it could when the URL was id-only.
+     */
+    private String qrImageUrl(DiningTableEntity t) {
+        return ApiPaths.V1 + "/admin/tables/" + t.getId() + "/qr.png?v=" + qrVersion(t);
+    }
+
+    /** Short, non-secret fingerprint of the table's current QR token; changes exactly when the token does. */
+    public String qrVersion(DiningTableEntity t) {
+        return SecureTokens.sha256Hex(t.getQrToken()).substring(0, 10);
     }
 }

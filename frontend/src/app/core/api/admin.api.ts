@@ -144,8 +144,11 @@ export class AdminTablesApi {
     });
   }
 
-  qrPng(id: number): Observable<Blob> {
-    return this.http.get(`${API_BASE}/admin/tables/${id}/qr.png`, { responseType: 'blob' });
+  /** `path` is a table's `qrImageUrl` as the list/create/update response gives it: already relative, already
+   *  versioned by the table's current QR token so the browser can cache it immutably and a regenerate always
+   *  gets a fresh URL instead of risking a stale cached response under the old one. */
+  qrPng(path: string): Observable<Blob> {
+    return this.http.get(path, { responseType: 'blob' });
   }
 }
 
