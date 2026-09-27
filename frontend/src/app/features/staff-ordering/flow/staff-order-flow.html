@@ -167,7 +167,9 @@
             <h2 id="staff-order-title" class="font-display text-lg font-semibold">
               Order
               @if (!cart.isEmpty()) {
-                <span class="text-sm font-normal text-ink-muted">· {{ cart.itemCount() }} items</span>
+                <span class="text-sm font-normal text-ink-muted"
+                  >· {{ cart.itemCount() }} {{ cart.itemCount() === 1 ? 'item' : 'items' }}</span
+                >
               }
             </h2>
           </div>
