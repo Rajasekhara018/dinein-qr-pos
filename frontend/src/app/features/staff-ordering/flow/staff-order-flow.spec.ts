@@ -3,7 +3,7 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
 import { of } from 'rxjs';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { CheckoutResponse, GuestOrderView, WaiterConfig, WaiterTableView } from '../../../core/api/models';
 import { CheckoutService } from '../../../core/payments/checkout.service';
 import { CheckoutContext, PaymentNotCompletedError } from '../../../core/payments/checkout.types';
