@@ -107,7 +107,10 @@
             </p>
           }
           @if (line.notes) {
-            <p class="ticket-note mt-1"><span class="font-bold">Note:</span> {{ line.notes }}</p>
+            <p class="ticket-note mt-1">
+              <svg lucideStickyNote class="ticket-note-icon" aria-hidden="true"></svg>
+              <span class="font-bold">Note:</span> {{ line.notes }}
+            </p>
           }
         </div>
       </li>
@@ -116,6 +119,7 @@
 
   @if (order().notes) {
     <p class="ticket-note ticket-note--order mx-3 mb-2 sm:mx-4">
+      <svg lucideStickyNote class="ticket-note-icon" aria-hidden="true"></svg>
       <span class="font-bold">Order note:</span> {{ order().notes }}
     </p>
   }

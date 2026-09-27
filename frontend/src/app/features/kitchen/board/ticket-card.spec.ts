@@ -58,6 +58,7 @@ describe('TicketCard', () => {
     expect(el.textContent).toContain('No onion');
     expect(el.textContent).toContain('Less spicy please');
     expect(el.querySelector('app-veg-marker')).not.toBeNull();
+    expect(el.querySelectorAll('svg[lucideStickyNote]')).toHaveLength(2); // item note + order note
   });
 
   it.each([

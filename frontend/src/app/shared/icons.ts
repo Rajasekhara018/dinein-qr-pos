@@ -14,6 +14,7 @@ import {
   LucideLayoutGrid,
   LucideRows3,
   LucideSearch,
+  LucideStickyNote,
   LucideTimerOff,
   LucideX,
 } from '@lucide/angular';
@@ -29,7 +30,8 @@ import {
  * accessible name by themselves.
  *
  * This set covers `shared/order-status.ts` (Clock, CircleCheck, ChefHat, Bell, CheckCheck, TimerOff, CircleX, Ban)
- * plus common chrome (chevrons, search, filter, density toggle). Add more icons here as components need them.
+ * plus common chrome (chevrons, search, filter, density toggle) and `StickyNote` (kitchen ticket notes callout).
+ * Add more icons here as components need them.
  */
 export const APP_ICONS = [
   LucideBan,
@@ -47,6 +49,7 @@ export const APP_ICONS = [
   LucideLayoutGrid,
   LucideRows3,
   LucideSearch,
+  LucideStickyNote,
   LucideTimerOff,
   LucideX,
 ] as const;

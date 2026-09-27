@@ -31,6 +31,14 @@ import { KitchenClock } from './kitchen-clock';
 export const NEW_ORDER_HIGHLIGHT_MS = 10_000;
 
 /**
+ * How long a tap on the action button stays reversible. The card moves immediately (so the board always shows
+ * "what the kitchen believes right now"), but the PATCH that actually commits the move to the server — and to
+ * every other screen watching the order — is held for this long, so a mis-tap can be taken back with no backend
+ * support needed for reverse transitions (the state machine is forward-only: CONFIRMED→PREPARING→READY→COMPLETED).
+ */
+export const UNDO_WINDOW_MS = 5_000;
+
+/**
  * Kitchen board state. REST is the source of truth; STOMP events are hints:
  * - `ORDER_CONFIRMED` inserts the pushed order immediately (chime + flash), then reconciles with a refetch;
  * - any other event triggers a refetch; every (re)connect triggers a full refetch.
@@ -89,10 +97,18 @@ export class KitchenBoardStore {
   private started = false;
   private destroyed = false;
 
+  /** One entry per order with a tap still inside its undo window; `undo()` resolves the wait with `true`. */
+  private readonly undoable = new Map<
+    number,
+    { timer: ReturnType<typeof setTimeout>; undo: () => void }
+  >();
+
   constructor() {
     this.destroyRef.onDestroy(() => {
       this.destroyed = true;
       this.arrivedSubject.complete();
+      for (const { timer } of this.undoable.values()) clearTimeout(timer);
+      this.undoable.clear();
     });
   }
 
@@ -147,45 +163,78 @@ export class KitchenBoardStore {
     return this.inflight;
   }
 
-  /** Start / Ready / Served with an optimistic move, rollback + toast on failure, refetch on conflicts. */
+  /**
+   * Start / Ready / Served. The card moves right away, but the tap stays reversible for `UNDO_WINDOW_MS`: an
+   * "Undo" toast lets the kitchen take back a mis-tap before anything is sent to the server. If it isn't undone,
+   * the move commits (PATCH), with the usual rollback + toast on failure / refetch on conflicts.
+   */
   async advance(order: KitchenOrderView): Promise<void> {
     const action = nextAction(order.status);
     if (!action || this._pending().has(order.id)) return;
-    const original = this._orders().find((o) => o.id === order.id) ?? order;
+    const id = order.id;
+    const original = this._orders().find((o) => o.id === id) ?? order;
 
-    this.setPending(order.id, true);
-    this._orders.update((list) => applyStatus(list, order.id, action.target, Date.now()));
+    this.setPending(id, true);
+    this._orders.update((list) => applyStatus(list, id, action.target, Date.now()));
+
+    const undone = await this.waitForUndo(id, order.displayToken, action.label);
+    if (this.destroyed) return;
+    if (undone) {
+      this._orders.update((list) => upsertOrder(removeOrder(list, id), original));
+      this.setPending(id, false);
+      return;
+    }
+
     try {
-      const updated = await firstValueFrom(
-        this.api.changeStatus(order.id, action.target, silentErrors()),
-      );
+      const updated = await firstValueFrom(this.api.changeStatus(id, action.target, silentErrors()));
       if (this.destroyed) return;
       this._orders.update((list) =>
-        isKitchenStatus(updated.status)
-          ? upsertOrder(list, updated)
-          : removeOrder(list, updated.id),
+        isKitchenStatus(updated.status) ? upsertOrder(list, updated) : removeOrder(list, updated.id),
       );
     } catch (e) {
       if (this.destroyed) return;
       const error = ApiError.from(e);
       // Roll back to what we had before the tap.
-      this._orders.update((list) => upsertOrder(removeOrder(list, order.id), original));
+      this._orders.update((list) => upsertOrder(removeOrder(list, id), original));
       if (error.status === 401) return; // revoked device: the interceptor sends us to the login page
       if (error.status === 409 || error.status === 404) {
         this.toasts.info(`Token #${order.displayToken} was updated elsewhere — board refreshed.`, {
-          key: `kitchen-conflict-${order.id}`,
+          key: `kitchen-conflict-${id}`,
         });
-        this.setPending(order.id, false);
+        this.setPending(id, false);
         void this.refresh();
         return;
       }
       this.toasts.error(
         `Couldn't mark token #${order.displayToken} as ${action.label.toLowerCase()}. ${error.message}`,
-        { key: `kitchen-advance-${order.id}` },
+        { key: `kitchen-advance-${id}` },
       );
     } finally {
-      if (!this.destroyed) this.setPending(order.id, false);
+      if (!this.destroyed) this.setPending(id, false);
     }
+  }
+
+  /** Shows the Undo toast and resolves once the window elapses (`false`) or Undo is tapped (`true`). */
+  private waitForUndo(id: number, displayToken: number, actionLabel: string): Promise<boolean> {
+    return new Promise<boolean>((resolve) => {
+      const timer = setTimeout(() => {
+        this.undoable.delete(id);
+        resolve(false);
+      }, UNDO_WINDOW_MS);
+      this.undoable.set(id, {
+        timer,
+        undo: () => {
+          clearTimeout(timer);
+          this.undoable.delete(id);
+          resolve(true);
+        },
+      });
+      this.toasts.success(`Token #${displayToken}: ${actionLabel.toLowerCase()}.`, {
+        key: `kitchen-advance-${id}`,
+        durationMs: UNDO_WINDOW_MS,
+        action: { label: 'Undo', run: () => this.undoable.get(id)?.undo() },
+      });
+    });
   }
 
   /** Visible for tests. */

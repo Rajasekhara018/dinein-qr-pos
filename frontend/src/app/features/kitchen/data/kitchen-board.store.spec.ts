@@ -9,11 +9,14 @@ import { KitchenOrderView, KitchenRealtimeEvent } from '../../../core/api/models
 import { DeviceAuthStore } from '../../../core/auth/device-auth.store';
 import { RealtimeService } from '../../../core/realtime/realtime.service';
 import { ToastService } from '../../../core/ui/toast.service';
-import { KitchenBoardStore, NEW_ORDER_HIGHLIGHT_MS } from './kitchen-board.store';
+import { KitchenBoardStore, NEW_ORDER_HIGHLIGHT_MS, UNDO_WINDOW_MS } from './kitchen-board.store';
 import { KitchenClock } from './kitchen-clock';
 import { kOrder, MIN, T0, testConfig } from './test-fixtures';
 
-const tick = () => new Promise((resolve) => setTimeout(resolve));
+// Fake timers so the 5s undo window (`advance()`'s setTimeout) can be fast-forwarded instead of really waited out.
+const tick = () => vi.advanceTimersByTimeAsync(0);
+/** Lets the undo window elapse. */
+const passUndoWindow = () => vi.advanceTimersByTimeAsync(UNDO_WINDOW_MS + 5);
 
 describe('KitchenBoardStore', () => {
   let store: KitchenBoardStore;
@@ -30,6 +33,7 @@ describe('KitchenBoardStore', () => {
   };
 
   beforeEach(() => {
+    vi.useFakeTimers();
     now = signal(T0);
     events = new Subject();
     connected = new Subject();
@@ -59,6 +63,7 @@ describe('KitchenBoardStore', () => {
   afterEach(() => {
     toasts.clear();
     TestBed.resetTestingModule();
+    vi.useRealTimers();
   });
 
   const flushOrders = async (orders: KitchenOrderView[]) => {
@@ -147,13 +152,20 @@ describe('KitchenBoardStore', () => {
     http.verify();
   });
 
-  it('moves optimistically, marks pending, then applies the server response', async () => {
+  it('moves optimistically, marks pending, offers a 5s Undo, then applies the server response', async () => {
     const order = kOrder({ id: 1 });
     await start([order]);
     const done = store.advance(order);
     expect(store.columns().PREPARING.map((o) => o.id)).toEqual([1]);
     expect(store.pending().has(1)).toBe(true);
+    expect(http.match('/api/v1/kitchen/orders/1/status')).toHaveLength(0); // not sent yet
 
+    const toast = toasts.toasts().find((t) => t.key === 'kitchen-advance-1')!;
+    expect(toast.message).toContain('#1');
+    expect(toast.action?.label).toBe('Undo');
+    expect(toast.durationMs).toBe(UNDO_WINDOW_MS);
+
+    await passUndoWindow();
     const req = http.expectOne('/api/v1/kitchen/orders/1/status');
     expect(req.request.method).toBe('PATCH');
     expect(req.request.body).toEqual({ status: 'PREPARING' });
@@ -163,6 +175,23 @@ describe('KitchenBoardStore', () => {
     expect(store.orders()[0].preparingAt).toBe('2026-09-26T07:00:05Z');
   });
 
+  it('Undo reverts the optimistic move and never calls the API', async () => {
+    const order = kOrder({ id: 1 });
+    await start([order]);
+    const done = store.advance(order);
+    expect(store.columns().PREPARING.map((o) => o.id)).toEqual([1]);
+
+    const toast = toasts.toasts().find((t) => t.key === 'kitchen-advance-1')!;
+    toast.action!.run();
+    await done;
+
+    expect(store.columns().CONFIRMED.map((o) => o.id)).toEqual([1]);
+    expect(store.pending().has(1)).toBe(false);
+    // Undo dismisses the window; waiting it out afterwards must not fire a PATCH.
+    await passUndoWindow();
+    expect(http.match('/api/v1/kitchen/orders/1/status')).toHaveLength(0);
+  });
+
   it('keeps the optimistic version when a refetch lands mid-flight', async () => {
     const order = kOrder({ id: 1 });
     await start([order]);
@@ -170,6 +199,7 @@ describe('KitchenBoardStore', () => {
     connected.next();
     await flushOrders([order]);
     expect(store.orders()[0].status).toBe('PREPARING');
+    await passUndoWindow();
     http.expectOne('/api/v1/kitchen/orders/1/status').flush({ ...order, status: 'PREPARING' });
     await done;
   });
@@ -179,6 +209,7 @@ describe('KitchenBoardStore', () => {
     await start([order]);
     const done = store.advance(order);
     expect(store.visible()).toEqual([]);
+    await passUndoWindow();
     http.expectOne('/api/v1/kitchen/orders/1/status').flush({ ...order, status: 'COMPLETED' });
     await done;
     expect(store.orders()).toEqual([]);
@@ -188,6 +219,7 @@ describe('KitchenBoardStore', () => {
     const order = kOrder({ id: 1 });
     await start([order]);
     const done = store.advance(order);
+    await passUndoWindow();
     http
       .expectOne('/api/v1/kitchen/orders/1/status')
       .flush({ code: 'INTERNAL_ERROR', message: 'Boom' }, { status: 500, statusText: 'Error' });
@@ -201,6 +233,7 @@ describe('KitchenBoardStore', () => {
     const order = kOrder({ id: 1 });
     await start([order]);
     const done = store.advance(order);
+    await passUndoWindow();
     http
       .expectOne('/api/v1/kitchen/orders/1/status')
       .flush(
@@ -218,6 +251,7 @@ describe('KitchenBoardStore', () => {
     await start([order]);
     void store.advance(order);
     void store.advance(store.orders()[0]);
+    await passUndoWindow();
     expect(http.match('/api/v1/kitchen/orders/1/status')).toHaveLength(1);
   });
 

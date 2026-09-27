@@ -38,6 +38,25 @@
     </div>
   } @else if (store.error(); as error) {
     <app-error-state title="Couldn't load orders" [error]="error" (retry)="store.refresh()" />
+  } @else if (store.visible().length === 0) {
+    <app-empty-state
+      class="flex flex-1 flex-col items-center justify-center"
+      title="All caught up"
+      message="New orders will appear here."
+      data-testid="board-empty"
+    >
+      <svg
+        emptyIcon
+        viewBox="0 0 24 24"
+        class="size-8"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.6"
+        aria-hidden="true"
+      >
+        <path d="m5 12 5 5L20 7" />
+      </svg>
+    </app-empty-state>
   } @else {
     <div
       class="mb-3 grid grid-cols-3 gap-1 rounded-control bg-surface-muted p-1 md:hidden"

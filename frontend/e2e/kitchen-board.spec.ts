@@ -52,24 +52,29 @@ test.describe('kitchen board', () => {
     await expect((await column(page, isMobile, 'PREPARING')).getByTestId('ticket-3')).toBeVisible();
     await expect((await column(page, isMobile, 'READY')).getByTestId('ticket-4')).toBeVisible();
 
-    // Start → Preparing.
+    // Start → Preparing: the card moves immediately, but the tap stays undoable for 5s before it's sent.
     await (
       await column(page, isMobile, 'CONFIRMED')
     )
       .getByRole('button', { name: 'Start token 101' })
       .click();
-    await expect.poll(() => mock.statusRequests.length).toBe(1);
-    expect(mock.statusRequests[0]).toMatchObject({
-      id: 1,
-      body: { status: 'PREPARING' },
-      auth: 'Bearer dvc_test_token',
-    });
     const prepCol = await column(page, isMobile, 'PREPARING');
     await expect(prepCol.getByTestId('ticket-1')).toBeVisible();
     await expect(prepCol.getByRole('button', { name: 'Ready token 101' })).toBeVisible();
     await expect((await column(page, isMobile, 'CONFIRMED')).getByTestId('ticket-1')).toHaveCount(
       0,
     );
+    await expect(page.getByText('Token #101: start.')).toBeVisible();
+    expect(mock.statusRequests).toHaveLength(0); // not sent yet — still inside the undo window
+
+    await expect
+      .poll(() => mock.statusRequests.length, { timeout: 7000 })
+      .toBe(1);
+    expect(mock.statusRequests[0]).toMatchObject({
+      id: 1,
+      body: { status: 'PREPARING' },
+      auth: 'Bearer dvc_test_token',
+    });
 
     // Realtime: a new order pushed over STOMP appears in New immediately.
     const pushed = {
@@ -105,6 +110,36 @@ test.describe('kitchen board', () => {
     await page.getByRole('button', { name: 'Sign out this screen' }).click();
     await expect(page).toHaveURL(/\/kitchen\/login$/);
     expect(await page.evaluate(() => localStorage.getItem('dinein.kitchen.device.v1'))).toBeNull();
+  });
+
+  test('Undo reverts a mis-tap before it reaches the server', async ({ page, isMobile }) => {
+    const mock = await mockKitchenBackend(page);
+    await page.addInitScript(rememberDevice, deviceSession);
+    await page.goto('/kitchen');
+
+    await (
+      await column(page, isMobile, 'CONFIRMED')
+    )
+      .getByRole('button', { name: 'Start token 101' })
+      .click();
+    await expect((await column(page, isMobile, 'PREPARING')).getByTestId('ticket-1')).toBeVisible();
+
+    await page.getByRole('button', { name: 'Undo' }).click();
+
+    await expect((await column(page, isMobile, 'CONFIRMED')).getByTestId('ticket-1')).toBeVisible();
+    // Give the (cancelled) undo window time to elapse, then confirm nothing was ever sent.
+    await page.waitForTimeout(5200);
+    expect(mock.statusRequests).toHaveLength(0);
+  });
+
+  test('an empty board shows the designed empty state', async ({ page }) => {
+    const mock = await mockKitchenBackend(page);
+    mock.orders = [];
+    await page.addInitScript(rememberDevice, deviceSession);
+    await page.goto('/kitchen');
+    await expect(page.getByTestId('board-empty')).toBeVisible();
+    await expect(page.getByTestId('board-empty')).toContainText('All caught up');
+    await expect(page.getByTestId('board-empty')).toContainText('New orders will appear here.');
   });
 
   test('shows the Enable sound prompt until chosen', async ({ page }) => {
