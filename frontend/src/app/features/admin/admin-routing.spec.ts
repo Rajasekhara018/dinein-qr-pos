@@ -34,12 +34,20 @@ describe('admin routes – owner-only sections', () => {
     user.set({ id: 7, username: 'sam', role, mustChangePassword });
 
   for (const section of ['reports', 'settings', 'staff']) {
-    it(`redirects a manager away from /admin/${section}`, async () => {
-      signIn('MANAGER');
-      const router = TestBed.inject(Router);
-      await router.navigateByUrl(`/admin/${section}`);
-      expect(router.url).toBe('/admin');
-    });
+    // The first lazy child module loaded in this whole file (usually 'reports', since it's first in the array)
+    // pays a one-off cold dynamic-import cost. Isolated, that's ~1-2s; running alongside every other spec file's
+    // own concurrent dynamic imports (28 files, each its own worker) it has measured up to ~35s here. The redirect
+    // itself is fast once the guard runs -- a longer timeout, not a different assertion, is the right fix.
+    it(
+      `redirects a manager away from /admin/${section}`,
+      async () => {
+        signIn('MANAGER');
+        const router = TestBed.inject(Router);
+        await router.navigateByUrl(`/admin/${section}`);
+        expect(router.url).toBe('/admin');
+      },
+      60_000,
+    );
 
     it(`lets an owner open /admin/${section}`, async () => {
       signIn('OWNER');

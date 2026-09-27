@@ -79,6 +79,7 @@ export class OrderStatusPage {
 
   private pollTimer: ReturnType<typeof setTimeout> | null = null;
   private previousStatus: OrderStatus | null = null;
+  private readonly originalTitle = typeof document !== 'undefined' ? document.title : '';
 
   constructor() {
     // Load whenever the id changes; subscribe to that order's topic.
@@ -110,7 +111,10 @@ export class OrderStatusPage {
       }
     });
 
-    this.destroyRef.onDestroy(() => this.stopPolling());
+    this.destroyRef.onDestroy(() => {
+      this.stopPolling();
+      this.restoreTitle();
+    });
   }
 
   protected async refetch(id: number = this.id()): Promise<void> {
@@ -172,7 +176,20 @@ export class OrderStatusPage {
       void playChime({ tones: [784, 1047, 1319] });
       vibrate([250, 120, 250, 120, 400]);
     }
+    if (order.status === 'READY') {
+      this.setTitle(`🔔 Order ready · Token ${order.displayToken}`);
+    } else {
+      this.restoreTitle();
+    }
     if (order.status !== 'PENDING_PAYMENT') this.stopPolling();
+  }
+
+  private setTitle(title: string): void {
+    if (typeof document !== 'undefined') document.title = title;
+  }
+
+  private restoreTitle(): void {
+    this.setTitle(this.originalTitle);
   }
 
   /** After returning from a provider the webhook/callback may lag a little: poll a few times with backoff. */

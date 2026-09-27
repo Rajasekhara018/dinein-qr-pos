@@ -33,27 +33,35 @@ export class MenuPage {
   private readonly breakpoints = inject(BreakpointService);
 
   protected readonly query = signal('');
+  protected readonly vegOnly = signal(false);
   protected readonly activeCategoryId = signal<number | null>(null);
 
   private readonly sections = viewChildren<ElementRef<HTMLElement>>('section');
   private readonly chipScroller = viewChild<ElementRef<HTMLElement>>('chips');
   private suppressSpyUntil = 0;
 
-  /** Categories filtered by the search query (empty categories hidden). */
+  /** Categories filtered by the search query and quick filters (empty categories hidden). */
   protected readonly visibleCategories = computed<MenuCategory[]>(() => {
     const q = this.query().trim().toLowerCase();
+    const vegOnly = this.vegOnly();
     const categories = this.menu.categories().filter((c) => c.items.length > 0);
-    if (!q) return categories;
+    if (!q && !vegOnly) return categories;
     return categories
       .map((c) => ({
         ...c,
-        items: c.items.filter(
-          (i) =>
-            i.name.toLowerCase().includes(q) || (i.description ?? '').toLowerCase().includes(q),
-        ),
+        items: c.items.filter((i) => {
+          if (vegOnly && i.foodType !== 'VEG') return false;
+          if (!q) return true;
+          return (
+            i.name.toLowerCase().includes(q) || (i.description ?? '').toLowerCase().includes(q)
+          );
+        }),
       }))
       .filter((c) => c.items.length > 0);
   });
+
+  /** Whether any quick filter or search is currently narrowing the menu. */
+  protected readonly isFiltered = computed(() => !!this.query().trim() || this.vegOnly());
 
   protected readonly resultCount = computed(() =>
     this.visibleCategories().reduce((n, c) => n + c.items.length, 0),
@@ -125,6 +133,15 @@ export class MenuPage {
 
   protected clearSearch(): void {
     this.query.set('');
+  }
+
+  protected clearFilters(): void {
+    this.query.set('');
+    this.vegOnly.set(false);
+  }
+
+  protected toggleVegOnly(value: boolean): void {
+    this.vegOnly.set(value);
   }
 
   protected retry(): void {

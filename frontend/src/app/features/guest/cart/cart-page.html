@@ -283,11 +283,21 @@
             >
               @if (busy()) {
                 <app-spinner [size]="18" />
-                <span>{{ phase() === 'placing' ? 'Placing order…' : 'Opening payment…' }}</span>
+                <span>{{ phase() === 'placing' ? 'Placing order…' : 'Opening secure payment…' }}</span>
               } @else {
                 <span>Pay {{ payTotal() | inr: 'paise' }}</span>
               }
             </button>
+            <p
+              class="mx-auto mt-2 flex max-w-3xl items-center justify-center gap-1.5 text-xs text-ink-subtle"
+            >
+              <svg viewBox="0 0 20 20" class="size-3.5 shrink-0 fill-current" aria-hidden="true">
+                <path
+                  d="M10 2a4 4 0 0 0-4 4v2H5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V9a1 1 0 0 0-1-1h-1V6a4 4 0 0 0-4-4Zm-2 6V6a2 2 0 1 1 4 0v2H8Z"
+                />
+              </svg>
+              Secure payment · your card and bank details are never shared with the restaurant
+            </p>
           </div>
         </app-card>
       </aside>

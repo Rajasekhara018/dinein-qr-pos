@@ -56,6 +56,13 @@
           role="list"
           class="flex snap-x gap-2 overflow-x-auto px-4 py-2.5 [scrollbar-width:none] lg:px-0 [&::-webkit-scrollbar]:hidden"
         >
+          <li class="shrink-0 snap-start">
+            <app-chip
+              label="Veg only"
+              [selected]="vegOnly()"
+              (selectedChange)="toggleVegOnly($event)"
+            />
+          </li>
           @for (category of visibleCategories(); track category.id) {
             <li class="shrink-0 snap-start">
               <button
@@ -79,8 +86,9 @@
     </div>
 
     <p class="sr-only" aria-live="polite">
-      @if (query()) {
-        {{ resultCount() }} dishes match “{{ query() }}”
+      @if (isFiltered()) {
+        {{ resultCount() }} dishes match
+        {{ query() ? '“' + query() + '”' : 'the selected filters' }}
       }
     </p>
 
@@ -126,13 +134,19 @@
             </div>
           </section>
         } @empty {
-          @if (query()) {
+          @if (isFiltered()) {
             <app-empty-state
               title="No dishes found"
-              [message]="'Nothing matches “' + query() + '”.'"
+              [message]="
+                query() && vegOnly()
+                  ? 'No veg dishes match “' + query() + '”.'
+                  : query()
+                    ? 'Nothing matches “' + query() + '”.'
+                    : 'No veg dishes in this menu right now.'
+              "
             >
-              <button appButton variant="outline" type="button" (click)="clearSearch()">
-                Clear search
+              <button appButton variant="outline" type="button" (click)="clearFilters()">
+                Clear filters
               </button>
             </app-empty-state>
           } @else {
