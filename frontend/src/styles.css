@@ -43,7 +43,56 @@
   src: url('/fonts/inter/inter-latin-700-normal.woff2') format('woff2');
 }
 
+/*
+ * Admin-only self-hosted fonts (phase 4): Poppins for admin headings/brand, Outfit for admin body/UI text.
+ * Same approach as Inter above (OFL-1.1, see public/fonts/{poppins,outfit}/LICENSE.txt) — Latin subset, only the
+ * static weights actually used, swap. Exposed as `--font-admin-heading`/`--font-admin-sans` (below) so only
+ * `features/admin/**` templates opt in via the `font-admin-heading`/`font-admin-sans` utilities; guest/kitchen/
+ * waiter keep Inter (`--font-sans`/`--font-display`) untouched.
+ */
+@font-face {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('/fonts/poppins/poppins-latin-600-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/poppins/poppins-latin-700-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Outfit';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/outfit/outfit-latin-400-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Outfit';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('/fonts/outfit/outfit-latin-500-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Outfit';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('/fonts/outfit/outfit-latin-600-normal.woff2') format('woff2');
+}
+
 :root {
+  /* Admin-only accent palette (phase 4) — a deep green "admin brand" and a gold "admin accent", separate from and
+     layered on top of the semantic success/warning/danger/info tokens and the per-restaurant --brand. Used only by
+     features/admin/** (e.g. the login story panel, an accent button variant, admin brand chips). Ramp derived via
+     color-mix like --brand, but these are fixed (not overridden at runtime per restaurant). */
+  --admin-brand: #0b6e4f;
+  --admin-accent: #d4a017;
   /* Brand (overridden at runtime). #c2410c on white = 5.2:1 (WCAG AA). Ramp is derived via color-mix so any
      runtime brand colour still gets a full 50-950 scale without recomputation. */
   --brand: #c2410c;
@@ -153,6 +202,17 @@
   --color-brand-900: color-mix(in oklab, var(--brand) 46%, black);
   --color-brand-950: color-mix(in oklab, var(--brand) 32%, black);
 
+  /* Admin-only accent palette (phase 4) — see --admin-brand/--admin-accent above. */
+  --color-admin-brand: var(--admin-brand);
+  --color-admin-brand-contrast: #ffffff;
+  --color-admin-brand-ink: color-mix(in oklab, var(--admin-brand) 88%, black);
+  --color-admin-brand-soft: color-mix(in oklab, var(--admin-brand) 12%, var(--app-surface));
+  --color-admin-brand-strong: color-mix(in oklab, var(--admin-brand) 82%, black);
+  --color-admin-accent: var(--admin-accent);
+  --color-admin-accent-contrast: #1c1917;
+  --color-admin-accent-ink: color-mix(in oklab, var(--admin-accent) 78%, black);
+  --color-admin-accent-soft: color-mix(in oklab, var(--admin-accent) 16%, var(--app-surface));
+
   --color-neutral-50: var(--neutral-50);
   --color-neutral-100: var(--neutral-100);
   --color-neutral-200: var(--neutral-200);
@@ -196,6 +256,9 @@
   --font-display: 'Inter', ui-rounded, 'SF Pro Rounded', system-ui, -apple-system, 'Segoe UI',
     Roboto, 'Noto Sans', sans-serif;
   --font-mono: ui-monospace, 'SF Mono', 'Cascadia Mono', Consolas, monospace;
+  /* Admin-only (phase 4): `font-admin-heading`/`font-admin-sans` utilities, used only under features/admin/**. */
+  --font-admin-heading: 'Poppins', var(--font-display);
+  --font-admin-sans: 'Outfit', var(--font-sans);
 
   /* Food-type markers (FSSAI convention) — always paired with a shape. */
   --color-veg: #15803d;
