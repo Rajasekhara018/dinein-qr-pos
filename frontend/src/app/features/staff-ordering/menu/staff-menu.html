@@ -1,0 +1,97 @@
+<div class="sticky top-0 z-10 bg-bg/95 pb-2 pt-1 backdrop-blur">
+  <label for="staff-menu-search" class="sr-only">Search the menu</label>
+  <div class="relative">
+    <svg
+      viewBox="0 0 20 20"
+      class="pointer-events-none absolute left-3 top-1/2 size-5 -translate-y-1/2 fill-current text-ink-subtle"
+      aria-hidden="true"
+    >
+      <path d="M8.5 3a5.5 5.5 0 0 1 4.4 8.8l3.7 3.7-1.4 1.4-3.7-3.7A5.5 5.5 0 1 1 8.5 3Zm0 2a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Z" />
+    </svg>
+    <input
+      id="staff-menu-search"
+      type="search"
+      class="block min-h-touch w-full rounded-control border border-line-strong bg-surface pl-10 pr-3 text-base text-ink placeholder:text-ink-subtle"
+      placeholder="Search dishes"
+      autocomplete="off"
+      [value]="query()"
+      (input)="onSearch($any($event.target).value)"
+      data-testid="staff-menu-search"
+    />
+  </div>
+  <div class="mt-2 flex gap-2 overflow-x-auto pb-1" role="group" aria-label="Categories">
+    <button
+      type="button"
+      class="min-h-touch shrink-0 rounded-full border px-4 text-sm font-semibold"
+      [class]="categoryId() === null ? 'border-brand bg-brand-soft text-brand-ink' : 'border-line-strong bg-surface'"
+      [attr.aria-pressed]="categoryId() === null"
+      (click)="selectCategory(null)"
+    >
+      All
+    </button>
+    @for (c of categories(); track c.id) {
+      <button
+        type="button"
+        class="min-h-touch shrink-0 whitespace-nowrap rounded-full border px-4 text-sm font-semibold"
+        [class]="categoryId() === c.id ? 'border-brand bg-brand-soft text-brand-ink' : 'border-line-strong bg-surface'"
+        [attr.aria-pressed]="categoryId() === c.id"
+        (click)="selectCategory(c.id)"
+      >
+        {{ c.name }}
+      </button>
+    }
+  </div>
+</div>
+
+@for (section of sections(); track section.id) {
+  <section class="mt-3" [attr.aria-labelledby]="'staff-cat-' + section.id">
+    <h3 [id]="'staff-cat-' + section.id" class="mb-2 font-display text-lg font-semibold">{{ section.name }}</h3>
+    <ul class="divide-y divide-line overflow-hidden rounded-card border border-line bg-surface shadow-card" role="list">
+      @for (item of section.items; track item.id) {
+        <li
+          class="flex min-w-0 items-center gap-3 px-3 py-2"
+          [class.opacity-55]="!item.available"
+          [attr.data-testid]="'staff-item-' + item.id"
+        >
+          <app-veg-marker [type]="item.foodType" />
+          <div class="min-w-0 flex-1">
+            <p class="break-words font-semibold leading-tight" [class.line-through]="!item.available">{{ item.name }}</p>
+            <p class="mt-0.5 flex flex-wrap items-center gap-x-2 text-sm text-ink-muted">
+              <app-price [amount]="startingPrice(item)" [from]="item.variants.length > 1" whole />
+              @if (customizable(item)) {
+                <span>· options</span>
+              }
+              @if (!item.available) {
+                <span class="font-semibold text-danger">Not available</span>
+              }
+            </p>
+          </div>
+          @if (quantities().get(item.id); as qty) {
+            <span
+              class="inline-flex min-w-7 items-center justify-center rounded-full bg-brand px-2 py-0.5 text-sm font-bold text-brand-contrast tabular-nums"
+              [attr.aria-label]="qty + ' in the order'"
+              >{{ qty }}</span
+            >
+          }
+          <button
+            appButton
+            type="button"
+            size="sm"
+            [variant]="item.available ? 'outline' : 'ghost'"
+            class="shrink-0"
+            [disabled]="!item.available"
+            [attr.aria-label]="(item.available ? 'Add ' : 'Not available: ') + item.name"
+            (click)="add.emit(item)"
+          >
+            <svg viewBox="0 0 20 20" class="size-4 fill-current" aria-hidden="true">
+              <path d="M9 4h2v5h5v2h-5v5H9v-5H4V9h5z" />
+            </svg>
+            Add
+          </button>
+        </li>
+      }
+    </ul>
+  </section>
+} @empty {
+  <app-empty-state title="No dishes found" message="Try another search or category." />
+}

@@ -8,7 +8,15 @@ import {
 } from '@angular/router';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { AuthStore } from './auth.store';
-import { adminAuthGuard, kitchenAuthGuard, ownerGuard, passwordChangeGuard } from './auth.guards';
+import { StaffRole } from '../api/models';
+import {
+  adminAuthGuard,
+  kitchenAuthGuard,
+  ownerGuard,
+  passwordChangeGuard,
+  waiterAuthGuard,
+  waiterGuestOnlyGuard,
+} from './auth.guards';
 import { DeviceAuthStore } from './device-auth.store';
 
 const route = {} as ActivatedRouteSnapshot;
@@ -19,6 +27,8 @@ describe('auth guards', () => {
     ensureSession: vi.fn<() => Promise<boolean>>(),
     mustChangePassword: signal(false),
     isOwner: signal(false),
+    role: signal<StaffRole | null>(null),
+    logout: vi.fn<() => Promise<void>>(),
   };
   const deviceMock = { isRegistered: signal(false) };
 
@@ -26,6 +36,9 @@ describe('auth guards', () => {
     authMock.ensureSession.mockReset();
     authMock.mustChangePassword.set(false);
     authMock.isOwner.set(false);
+    authMock.role.set(null);
+    authMock.logout.mockReset();
+    authMock.logout.mockResolvedValue(undefined);
     deviceMock.isRegistered.set(false);
     TestBed.configureTestingModule({
       providers: [
@@ -49,6 +62,12 @@ describe('auth guards', () => {
       authMock.ensureSession.mockResolvedValue(false);
       const result = await run(() => adminAuthGuard(route, state('/admin/items')));
       expect(asUrl(result)).toBe('/admin/login?returnUrl=%2Fadmin%2Fitems');
+    });
+
+    it('sends waiter accounts to the waiter screen', async () => {
+      authMock.ensureSession.mockResolvedValue(true);
+      authMock.role.set('WAITER');
+      expect(asUrl(await run(() => adminAuthGuard(route, state('/admin'))))).toBe('/waiter');
     });
   });
 
@@ -79,6 +98,48 @@ describe('auth guards', () => {
       expect(asUrl(run(() => kitchenAuthGuard(route, state('/kitchen'))))).toBe('/kitchen/login');
       deviceMock.isRegistered.set(true);
       expect(run(() => kitchenAuthGuard(route, state('/kitchen')))).toBe(true);
+    });
+  });
+
+  describe('waiterAuthGuard', () => {
+    it.each(['WAITER', 'MANAGER', 'OWNER'] as const)('allows %s', async (role) => {
+      authMock.ensureSession.mockResolvedValue(true);
+      authMock.role.set(role);
+      expect(await run(() => waiterAuthGuard(route, state('/waiter')))).toBe(true);
+      expect(authMock.logout).not.toHaveBeenCalled();
+    });
+
+    it('signs a KITCHEN account out and redirects to the waiter login', async () => {
+      authMock.ensureSession.mockResolvedValue(true);
+      authMock.role.set('KITCHEN');
+      const result = await run(() => waiterAuthGuard(route, state('/waiter/tables')));
+      expect(authMock.logout).toHaveBeenCalledTimes(1);
+      expect(asUrl(result)).toBe('/waiter/login?reason=role');
+    });
+
+    it('redirects to the waiter login with a returnUrl without a session', async () => {
+      authMock.ensureSession.mockResolvedValue(false);
+      const result = await run(() => waiterAuthGuard(route, state('/waiter/tables')));
+      expect(asUrl(result)).toBe('/waiter/login?returnUrl=%2Fwaiter%2Ftables');
+    });
+
+    it('sends an owner who must change the password to the admin page', async () => {
+      authMock.ensureSession.mockResolvedValue(true);
+      authMock.role.set('OWNER');
+      authMock.mustChangePassword.set(true);
+      expect(asUrl(await run(() => waiterAuthGuard(route, state('/waiter'))))).toBe(
+        '/admin/change-password',
+      );
+    });
+
+    it('skips the login page when a waiter session exists', async () => {
+      authMock.ensureSession.mockResolvedValue(true);
+      authMock.role.set('WAITER');
+      expect(asUrl(await run(() => waiterGuestOnlyGuard(route, state('/waiter/login'))))).toBe(
+        '/waiter',
+      );
+      authMock.ensureSession.mockResolvedValue(false);
+      expect(await run(() => waiterGuestOnlyGuard(route, state('/waiter/login')))).toBe(true);
     });
   });
 });

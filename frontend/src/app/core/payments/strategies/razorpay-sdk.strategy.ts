@@ -4,10 +4,18 @@ import { ApiError } from '../../api/api-error';
 import { CheckoutResponse, RazorpayCheckoutPayload } from '../../api/models';
 import { PublicApi } from '../../api/public.api';
 import { BreakpointService } from '../../ui/breakpoint.service';
-import { CheckoutOutcome, CheckoutStrategy, PaymentNotCompletedError } from '../checkout.types';
+import {
+  CheckoutContext,
+  CheckoutOutcome,
+  CheckoutStrategy,
+  PaymentNotCompletedError,
+} from '../checkout.types';
 import { RazorpayCheckoutError, RazorpayOptions, RazorpayService } from '../razorpay.service';
 
-/** `mode: SDK` + `provider: RAZORPAY` — opens Checkout.js, then verifies server-side. */
+/**
+ * `mode: SDK` + `provider: RAZORPAY` — opens Checkout.js, then verifies server-side (guest endpoint by default, or
+ * the context's `verify` for staff checkouts).
+ */
 @Injectable({ providedIn: 'root' })
 export class RazorpaySdkStrategy implements CheckoutStrategy {
   private readonly razorpay = inject(RazorpayService);
@@ -18,7 +26,7 @@ export class RazorpaySdkStrategy implements CheckoutStrategy {
     return response.mode === 'SDK' && (response.provider ?? 'RAZORPAY') === 'RAZORPAY';
   }
 
-  async start(response: CheckoutResponse): Promise<CheckoutOutcome> {
+  async start(response: CheckoutResponse, context?: CheckoutContext): Promise<CheckoutOutcome> {
     const payload = response.checkout as RazorpayCheckoutPayload | undefined;
     if (!payload?.key || !payload.order_id) {
       throw new PaymentNotCompletedError(
@@ -39,7 +47,8 @@ export class RazorpaySdkStrategy implements CheckoutStrategy {
     }
 
     try {
-      const order = await firstValueFrom(this.api.verifyPayment({ ...success }));
+      const verify = context?.verify ?? ((body) => this.api.verifyPayment(body));
+      const order = await firstValueFrom(verify({ ...success }));
       return { kind: 'paid', order };
     } catch (error) {
       // The webhook may still confirm it; the order page polls/listens, so surface a retryable state.

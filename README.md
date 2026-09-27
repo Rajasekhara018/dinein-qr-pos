@@ -119,6 +119,19 @@ npm start
 Guest menu for the sample table T1: open `/admin` → **Tables** and click the table's link. You can also read the token
 with `psql` (`select label, qr_token from dining_table;`) and open `http://localhost:4200/menu?t=<qr_token>`.
 
+**Frontend against the deployed UAT backend** (no local backend or database needed):
+
+```bash
+cd frontend
+npm run start:uat            # proxies /api and /ws to http://35.154.15.238:9030 (see proxy.uat.conf.mjs)
+# another backend: DINEIN_API_TARGET=http://<host>:<port> npm run start:uat
+```
+
+The UAT backend only accepts its public origin, so `proxy.uat.conf.mjs` rewrites the `Origin` header to the
+backend's own address. Your IP must be allowed on port 9030 in the EC2 security group (see
+[docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)). UAT runs the `prod` profile: there's no sample data, the owner is the
+Jenkins `dinein_bootstrap_owner` credential, and QR links point at `http://35.154.15.238:85`, not localhost.
+
 ### Tests
 
 | Command | What it runs |

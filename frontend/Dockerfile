@@ -2,17 +2,35 @@
 
 # ---- Build ----
 FROM node:22-alpine AS build
+
 WORKDIR /app
-COPY package*.json ./
+
+# Copy dependency files first for better Docker layer caching
+COPY package.json package-lock.json ./
+
+# Install exact versions from package-lock.json
 RUN npm ci --no-audit --no-fund
+
+# Copy application source
 COPY . .
+
+# Build Angular application
 RUN npx ng build --configuration production
+
 
 # ---- Serve ----
 FROM nginx:1.27-alpine
+
+# Nginx configuration
 COPY nginx/default.conf /etc/nginx/conf.d/default.conf
+
+# Angular production build
 COPY --from=build /app/dist/dinein/browser /usr/share/nginx/html
+
 EXPOSE 80
+
+# Container health check
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-  CMD wget -q -O /dev/null http://127.0.0.1/ || exit 1
+    CMD wget -q -O /dev/null http://127.0.0.1/ || exit 1
+
 CMD ["nginx", "-g", "daemon off;"]

@@ -311,7 +311,8 @@ function clampQty(quantity: number): number {
   return Math.max(1, Math.min(MAX_LINE_QUANTITY, Math.floor(quantity)));
 }
 
-function buildLine(item: MenuItem, selection: ItemSelection | CartLine): CartLine {
+/** Builds a priced cart line from a menu item and a selection (also used by the staff ordering cart). */
+export function buildLine(item: MenuItem, selection: ItemSelection | CartLine): CartLine {
   const variant =
     selection.variantId != null
       ? item.variants.find((v) => v.id === selection.variantId)
@@ -342,7 +343,8 @@ function buildLine(item: MenuItem, selection: ItemSelection | CartLine): CartLin
   };
 }
 
-function validate(line: CartLine, item: MenuItem | undefined): CartProblemReason | null {
+/** Why a line can no longer be ordered against the current menu, or null (also used by the staff ordering cart). */
+export function validate(line: CartLine, item: MenuItem | undefined): CartProblemReason | null {
   if (!item) return 'ITEM_NOT_FOUND';
   if (!item.available) return 'ITEM_UNAVAILABLE';
   if (line.variantId != null && !item.variants.some((v) => v.id === line.variantId))

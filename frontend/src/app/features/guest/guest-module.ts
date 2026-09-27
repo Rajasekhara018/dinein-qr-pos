@@ -4,7 +4,7 @@ import { BillSummary } from './cart/bill-summary';
 import { CartLines } from './cart/cart-lines';
 import { CartPage } from './cart/cart-page';
 import { GuestRoutingModule } from './guest-routing-module';
-import { ItemSheet } from './item-sheet/item-sheet';
+import { ItemOptionsModule } from './item-sheet/item-options-module';
 import { CartBar } from './menu/cart-bar';
 import { CartSidebar } from './menu/cart-sidebar';
 import { MenuItemCard } from './menu/menu-item-card';
@@ -27,7 +27,6 @@ import { GuestShell } from './shell/guest-shell';
     MenuItemCard,
     CartBar,
     CartSidebar,
-    ItemSheet,
     CartPage,
     CartLines,
     BillSummary,
@@ -36,6 +35,6 @@ import { GuestShell } from './shell/guest-shell';
     OrderBill,
     MyOrdersPage,
   ],
-  imports: [SharedModule, GuestRoutingModule],
+  imports: [SharedModule, ItemOptionsModule, GuestRoutingModule],
 })
 export class GuestModule {}

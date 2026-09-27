@@ -51,12 +51,18 @@ describe('authInterceptor', () => {
     localStorage.clear();
   });
 
-  it('attaches the admin bearer token to /api/v1/admin/**, /api/v1/auth/me and change-password', async () => {
+  it('attaches the staff bearer token to /api/v1/admin/**, /api/v1/waiter/**, /api/v1/auth/me and change-password', async () => {
     await signIn();
     http.get('/api/v1/admin/categories').subscribe();
+    http.get('/api/v1/waiter/tables').subscribe();
     http.get('/api/v1/auth/me').subscribe();
     http.post('/api/v1/auth/change-password', {}).subscribe();
-    for (const url of ['/api/v1/admin/categories', '/api/v1/auth/me', '/api/v1/auth/change-password']) {
+    for (const url of [
+      '/api/v1/admin/categories',
+      '/api/v1/waiter/tables',
+      '/api/v1/auth/me',
+      '/api/v1/auth/change-password',
+    ]) {
       const req = controller.expectOne(url);
       expect(req.request.headers.get('Authorization')).toBe('Bearer jwt-1');
       req.flush({});

@@ -1,0 +1,91 @@
+@if (lines().length === 0) {
+  <p
+    class="rounded-card border border-dashed border-line-strong p-4 text-center text-sm text-ink-muted"
+  >
+    No items yet. Add dishes from the menu.
+  </p>
+} @else {
+  @if (hasIssues()) {
+    <div
+      class="mb-3 flex flex-wrap items-center justify-between gap-2 rounded-card border border-red-200 bg-red-50 p-3 text-sm text-red-900 dark:border-red-800 dark:bg-red-950 dark:text-red-100"
+      role="alert"
+    >
+      <p class="min-w-0">Some items can no longer be ordered.</p>
+      <button appButton type="button" size="sm" variant="outline" (click)="removeUnavailable.emit()">
+        Remove them
+      </button>
+    </div>
+  }
+  <ul class="divide-y divide-line" role="list" data-testid="staff-cart-lines">
+    @for (line of lines(); track line.key) {
+      <li class="py-3" [attr.data-testid]="'staff-line-' + line.itemId">
+        <div class="flex min-w-0 items-start gap-2">
+          <app-veg-marker class="mt-1" [type]="line.foodType" />
+          <div class="min-w-0 flex-1">
+            <p class="break-words font-semibold leading-tight">{{ line.name }}</p>
+            @if (line.variantName || line.addonNames.length) {
+              <p class="mt-0.5 break-words text-sm text-ink-muted">
+                @if (line.variantName) {
+                  <span>{{ line.variantName }}</span>
+                }
+                @if (line.variantName && line.addonNames.length) {
+                  <span aria-hidden="true"> · </span>
+                }
+                @if (line.addonNames.length) {
+                  <span>+ {{ line.addonNames.join(', ') }}</span>
+                }
+              </p>
+            }
+            @if (line.notes) {
+              <p class="mt-0.5 break-words text-sm italic text-ink-subtle">“{{ line.notes }}”</p>
+            }
+            @if (line.issue) {
+              <p class="mt-1 text-sm font-semibold text-danger" role="status">
+                {{ line.issue.message }}
+              </p>
+            }
+          </div>
+          <span class="shrink-0 text-sm font-semibold tabular-nums">{{
+            lineTotal(line) | inr: 'paise'
+          }}</span>
+        </div>
+        <div class="mt-2 flex flex-wrap items-center justify-between gap-2 pl-6">
+          <app-quantity-stepper
+            [quantity]="line.quantity"
+            (quantityChange)="quantityChange.emit({ line, quantity: $event })"
+            [min]="0"
+            [itemName]="line.name"
+          />
+          @if (!line.issue) {
+            <button appButton type="button" size="sm" variant="ghost" (click)="edit.emit(line)">
+              Edit<span class="sr-only"> {{ line.name }}</span>
+            </button>
+          }
+        </div>
+      </li>
+    }
+  </ul>
+
+  <dl class="mt-2 space-y-1 border-t border-line pt-3 text-sm">
+    <div class="flex justify-between gap-4">
+      <dt class="text-ink-muted">Subtotal</dt>
+      <dd class="tabular-nums">{{ bill().subtotal | inr: 'paise' }}</dd>
+    </div>
+    <div class="flex justify-between gap-4">
+      <dt class="text-ink-muted">GST (CGST + SGST)</dt>
+      <dd class="tabular-nums">{{ bill().taxTotal | inr: 'paise' }}</dd>
+    </div>
+    <div
+      class="flex items-baseline justify-between gap-4 border-t border-line pt-2 text-base font-bold"
+    >
+      <dt>Estimated total</dt>
+      <dd class="tabular-nums" data-testid="staff-estimate-total">
+        {{ bill().grandTotal | inr: 'paise' }}
+      </dd>
+    </div>
+  </dl>
+  <p class="mt-1 text-xs text-ink-subtle">
+    {{ pricesIncludeGst() ? 'Prices include GST.' : 'GST is added to menu prices.' }}
+    This is an estimate: the final amount is confirmed when the order is placed.
+  </p>
+}

@@ -1,5 +1,17 @@
 import { InjectionToken } from '@angular/core';
-import { CheckoutResponse, GuestOrderView } from '../api/models';
+import { Observable } from 'rxjs';
+import { CheckoutResponse, GuestOrderView, PaymentVerifyRequest } from '../api/models';
+
+/**
+ * Where a checkout runs. The guest flow uses the defaults; staff flows (waiter screen, admin counter orders) verify
+ * SDK payments with `POST /api/v1/waiter/payments/verify` and land on their own order page.
+ */
+export interface CheckoutContext {
+  /** Server-side verification of an SDK success response. Default: `POST /api/v1/public/payments/verify`. */
+  verify?: (body: PaymentVerifyRequest) => Observable<GuestOrderView>;
+  /** Router commands of the order page (used for `not-payable`). Default: `/menu/orders/{id}`. */
+  orderPage?: (orderId: number) => unknown[];
+}
 
 /** Result of handing a CheckoutResponse to CheckoutService. */
 export type CheckoutOutcome =
@@ -44,7 +56,7 @@ export interface CheckoutStrategy {
   /** Whether this strategy handles the response (by `mode` and optionally `provider`). */
   supports(response: CheckoutResponse): boolean;
   /** Starts the payment. Rejects with {@link PaymentNotCompletedError} when the guest did not complete it. */
-  start(response: CheckoutResponse): Promise<CheckoutOutcome>;
+  start(response: CheckoutResponse, context?: CheckoutContext): Promise<CheckoutOutcome>;
 }
 
 /** Ordered list of strategies; the first one whose `supports()` returns true wins. */

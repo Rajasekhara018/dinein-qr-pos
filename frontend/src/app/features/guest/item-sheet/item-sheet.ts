@@ -10,10 +10,13 @@ import {
   MAX_LINE_QUANTITY,
 } from '../data/cart.models';
 
+/** What the sheet pre-fills when editing a line (a guest `CartLine` or a staff cart line). */
+export type ItemSheetPrefill = Pick<CartLine, 'variantId' | 'addonIds' | 'notes' | 'quantity'>;
+
 export interface ItemSheetData {
   item: MenuItem;
   /** Editing an existing cart line (pre-fills the selection). */
-  line?: CartLine;
+  line?: ItemSheetPrefill;
 }
 
 /** Variant (radio) / add-ons (checkboxes) / notes / quantity picker with a live price. Closes with an ItemSelection. */

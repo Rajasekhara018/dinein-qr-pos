@@ -13,6 +13,7 @@ import { EmptyState } from './components/empty-state';
 import { ErrorState } from './components/error-state';
 import { ImageBox } from './components/image-box';
 import { OrderStatusBadge } from './components/order-status-badge';
+import { OrderTypeBadge } from './components/order-type-badge';
 import { Price } from './components/price';
 import { QuantityStepper } from './components/quantity-stepper';
 import { ReconnectingBanner } from './components/reconnecting-banner';
@@ -29,6 +30,7 @@ const COMPONENTS = [
   ErrorState,
   ImageBox,
   OrderStatusBadge,
+  OrderTypeBadge,
   Price,
   QuantityStepper,
   ReconnectingBanner,
@@ -52,7 +54,7 @@ const REEXPORTS = [
 ];
 
 /**
- * UI kit shared by the guest, kitchen and admin apps. Import it in every feature module. It declares/exports the
+ * UI kit shared by the guest, kitchen, waiter and admin apps. Import it in every feature module. It declares/exports the
  * components, directives and pipes above and re-exports CommonModule, ReactiveFormsModule, NgOptimizedImage and the
  * CDK modules used across the apps.
  */

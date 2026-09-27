@@ -3,7 +3,7 @@ import { inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { catchError, from, switchMap, throwError } from 'rxjs';
 import { API_BASE } from '../api/api-base';
-import { ADMIN_PATHS, KITCHEN_PATHS } from '../auth/auth-paths';
+import { ADMIN_PATHS, KITCHEN_PATHS, WAITER_PATHS } from '../auth/auth-paths';
 import { AuthStore } from '../auth/auth.store';
 import { DeviceAuthStore } from '../auth/device-auth.store';
 import { AUTH_MODE, AuthMode, IS_RETRY, pathOf } from './http-context';
@@ -15,6 +15,7 @@ export function resolveAuthMode(req: HttpRequest<unknown>): Exclude<AuthMode, 'a
   const path = pathOf(req.url);
   if (
     path.startsWith(`${API_BASE}/admin/`) ||
+    path.startsWith(`${API_BASE}/waiter/`) ||
     path === `${API_BASE}/auth/me` ||
     path === `${API_BASE}/auth/change-password`
   ) {
@@ -29,9 +30,9 @@ const withBearer = (req: HttpRequest<unknown>, token: string | null) =>
 
 /**
  * Attaches `Authorization: Bearer …`:
- * - admin calls: the in-memory access JWT from {@link AuthStore}. On 401 it performs ONE single-flight
- *   `POST /api/v1/auth/refresh` (shared by all concurrent failures) and retries once; if refreshing fails the session
- *   is cleared and the user is sent to the admin login.
+ * - admin and waiter calls: the in-memory staff access JWT from {@link AuthStore}. On 401 it performs ONE
+ *   single-flight `POST /api/v1/auth/refresh` (shared by all concurrent failures) and retries once; if refreshing
+ *   fails the session is cleared and the user is sent to the login of the app they are in (waiter or admin).
  * - kitchen calls: the persisted device token from {@link DeviceAuthStore}; on 401 the device is forgotten and the
  *   kitchen login is shown.
  */
@@ -68,7 +69,10 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
         switchMap((ok) => {
           if (!ok) {
             auth.clearSession();
-            void router.navigate([ADMIN_PATHS.login], { queryParams: { returnUrl: router.url } });
+            const login = router.url.startsWith(WAITER_PATHS.home)
+              ? WAITER_PATHS.login
+              : ADMIN_PATHS.login;
+            void router.navigate([login], { queryParams: { returnUrl: router.url } });
             return throwError(() => error);
           }
           const retry = req.clone({ context: req.context.set(IS_RETRY, true) });
