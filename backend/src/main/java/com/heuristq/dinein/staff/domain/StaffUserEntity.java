@@ -49,6 +49,10 @@ public class StaffUserEntity extends BaseEntity {
     @Column(name = "must_change_password", nullable = false)
     private boolean mustChangePassword;
 
+    /** Can onboard/list restaurants on {@code /platform} with their own login, no shared key needed. */
+    @Column(name = "platform_admin", nullable = false)
+    private boolean platformAdmin;
+
     @Column(name = "failed_login_attempts", nullable = false)
     private int failedLoginAttempts;
 

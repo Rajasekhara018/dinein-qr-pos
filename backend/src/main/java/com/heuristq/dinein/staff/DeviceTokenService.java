@@ -73,7 +73,7 @@ public class DeviceTokenService {
                                 device.setLastSeenAt(now);
                             }
                             return new StaffPrincipal(user.getId(), user.getUsername(), StaffRole.KITCHEN,
-                                    user.getRestaurantId(), device.getId(), false);
+                                    user.getRestaurantId(), device.getId(), false, false);
                         }));
     }
 

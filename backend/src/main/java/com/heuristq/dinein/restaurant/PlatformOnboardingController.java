@@ -5,6 +5,8 @@ import com.heuristq.dinein.restaurant.dto.OnboardingDtos.OnboardRestaurantRespon
 import com.heuristq.dinein.restaurant.dto.OnboardingDtos.RestaurantSummary;
 import com.heuristq.dinein.shared.config.AppProperties;
 import com.heuristq.dinein.shared.exception.ApiException;
+import com.heuristq.dinein.shared.security.CurrentStaff;
+import com.heuristq.dinein.shared.security.StaffPrincipal;
 import com.heuristq.dinein.shared.util.SecureTokens;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -19,10 +21,11 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 /**
- * Onboards a new tenant. Not merchant-facing self-serve signup: there's no platform-admin login system yet, so this
- * is gated by a shared secret ({@code app.security.platform-admin-key}) meant for the platform operator's own tools,
- * not exposed to browsers. Permitted at {@code SecurityConfig} level (like the payment webhooks) and authenticated
- * here instead, the same pattern this codebase already uses for signature-verified callbacks.
+ * Onboards a new tenant. Not merchant-facing self-serve signup. Two ways in, checked here rather than in
+ * {@code SecurityConfig} (this path is {@code permitAll()} there, like the payment webhooks): a staff JWT whose
+ * account has {@code platformAdmin = true} (see {@code StaffUserEntity}/{@code BootstrapOwnerRunner}) -- the
+ * normal path once you're logged into the admin panel as the platform operator -- or the shared secret
+ * ({@code app.security.platform-admin-key}) for tooling/scripts that aren't logged in at all.
  */
 @RestController
 @RequestMapping("/api/v1/platform/restaurants")
@@ -40,21 +43,24 @@ public class PlatformOnboardingController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public OnboardRestaurantResponse onboard(@RequestHeader(KEY_HEADER) String key,
+    public OnboardRestaurantResponse onboard(@RequestHeader(value = KEY_HEADER, required = false) String key,
                                              @Valid @RequestBody OnboardRestaurantRequest request) {
-        requireValidKey(key);
+        requireAccess(key);
         return onboardingService.onboard(request);
     }
 
     /** Every restaurant on the platform with its owner account(s) — the platform operator's own view. */
     @GetMapping
-    public List<RestaurantSummary> list(@RequestHeader(KEY_HEADER) String key) {
-        requireValidKey(key);
+    public List<RestaurantSummary> list(@RequestHeader(value = KEY_HEADER, required = false) String key) {
+        requireAccess(key);
         return onboardingService.listRestaurants();
     }
 
-    private void requireValidKey(String key) {
-        if (platformAdminKey == null || platformAdminKey.isBlank()
+    private void requireAccess(String key) {
+        if (CurrentStaff.find().map(StaffPrincipal::platformAdmin).orElse(false)) {
+            return;
+        }
+        if (platformAdminKey == null || platformAdminKey.isBlank() || key == null
                 || !SecureTokens.constantTimeEquals(key, platformAdminKey)) {
             throw new ApiException(HttpStatus.UNAUTHORIZED, "UNAUTHORIZED", "Invalid platform admin key");
         }

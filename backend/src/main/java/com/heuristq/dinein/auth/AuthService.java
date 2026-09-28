@@ -204,7 +204,7 @@ public class AuthService {
 
     public static StaffInfo toInfo(StaffUserEntity user) {
         return new StaffInfo(user.getId(), user.getUsername(), user.getDisplayName(), user.getRole(),
-                user.isMustChangePassword());
+                user.isMustChangePassword(), user.isPlatformAdmin());
     }
 
     private ApiException invalidCredentials() {

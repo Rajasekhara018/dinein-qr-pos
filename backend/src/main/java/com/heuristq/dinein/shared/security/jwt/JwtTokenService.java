@@ -27,6 +27,7 @@ public class JwtTokenService {
     private static final String CLAIM_USERNAME = "usr";
     private static final String CLAIM_PWD_CHANGE = "pwc";
     private static final String CLAIM_RESTAURANT = "rid";
+    private static final String CLAIM_PLATFORM_ADMIN = "pfa";
 
     private final SecretKey signingKey;
     private final Duration accessTtl;
@@ -51,6 +52,7 @@ public class JwtTokenService {
                 .claim(CLAIM_USERNAME, user.getUsername())
                 .claim(CLAIM_PWD_CHANGE, user.isMustChangePassword())
                 .claim(CLAIM_RESTAURANT, user.getRestaurantId())
+                .claim(CLAIM_PLATFORM_ADMIN, user.isPlatformAdmin())
                 .issuedAt(Date.from(now))
                 .expiration(Date.from(now.plus(accessTtl)))
                 .signWith(signingKey)
@@ -76,7 +78,8 @@ public class JwtTokenService {
                     StaffRole.valueOf(claims.get(CLAIM_ROLE, String.class)),
                     claims.get(CLAIM_RESTAURANT, Long.class),
                     null,
-                    Boolean.TRUE.equals(claims.get(CLAIM_PWD_CHANGE, Boolean.class))));
+                    Boolean.TRUE.equals(claims.get(CLAIM_PWD_CHANGE, Boolean.class)),
+                    Boolean.TRUE.equals(claims.get(CLAIM_PLATFORM_ADMIN, Boolean.class))));
         } catch (JwtException | IllegalArgumentException ex) {
             return Optional.empty();
         }

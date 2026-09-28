@@ -14,7 +14,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Creates the first OWNER account from {@code BOOTSTRAP_OWNER_PASSWORD} when no owner exists yet.
- * The password is marked temporary, so the owner is forced to change it on first login.
+ * The password is marked temporary, so the owner is forced to change it on first login. This account is also
+ * the platform operator's own login (there's no separate platform-admin login system), so it's the one account
+ * seeded with {@code platformAdmin = true} -- every restaurant onboarded afterwards via {@code /platform} gets
+ * an ordinary (non-platform-admin) OWNER, see {@code RestaurantOnboardingService}.
  */
 @Slf4j
 @Component
@@ -51,6 +54,7 @@ public class BootstrapOwnerRunner implements ApplicationRunner {
         owner.setRole(StaffRole.OWNER);
         owner.setPasswordHash(passwordEncoder.encode(password));
         owner.setMustChangePassword(true);
+        owner.setPlatformAdmin(true);
         staffUserRepository.save(owner);
         log.info("bootstrap.owner_created username={} (password change required on first login)", username);
     }

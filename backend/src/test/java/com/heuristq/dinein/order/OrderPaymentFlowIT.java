@@ -283,7 +283,7 @@ class OrderPaymentFlowIT extends AbstractIntegrationTest {
      * would normally populate from the JWT — kitchenOrders() is restaurant-scoped and requires one.
      */
     private List<Long> kitchenIds() {
-        StaffPrincipal principal = new StaffPrincipal(0L, "test", StaffRole.OWNER, RestaurantEntity.DEFAULT_ID, null, false);
+        StaffPrincipal principal = new StaffPrincipal(0L, "test", StaffRole.OWNER, RestaurantEntity.DEFAULT_ID, null, false, false);
         SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(principal, null));
         try {
             return orderQueryService.kitchenOrders(OrderStatus.KITCHEN_VISIBLE).stream().map(KitchenOrderView::id).toList();
