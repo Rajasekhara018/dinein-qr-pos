@@ -92,13 +92,11 @@ describe('DataTable', () => {
     expect(el.textContent).toContain('No rows to show.');
   });
 
-  it('computes the "Showing X–Y of Z" row range for the current page', () => {
+  it('computes the total row count for the "Showing X–Y of Z" pager label', () => {
     const fixture = createTable(rows);
     const table = fixture.componentInstance;
 
-    expect(table['rowRange']()).toEqual({ from: 1, to: 2, total: 3 });
-    table['goToPage'](2);
-    expect(table['rowRange']()).toEqual({ from: 3, to: 3, total: 3 });
+    expect(table['totalCount']()).toBe(3);
   });
 
   it('changing the page size updates pageSize and resets to page 1', () => {
@@ -106,7 +104,7 @@ describe('DataTable', () => {
     const table = fixture.componentInstance;
 
     table['goToPage'](2);
-    table['onPageSizeChange']('50');
+    table['onPageSizeChange'](50);
 
     expect(table.pageSize()).toBe(50);
     expect(table.page()).toBe(1);
@@ -117,7 +115,7 @@ describe('DataTable', () => {
     const fixture = createTable(rows);
     const table = fixture.componentInstance;
 
-    table['onPageSizeChange']('not-a-number');
+    table['onPageSizeChange'](NaN);
     expect(table.pageSize()).toBe(2);
   });
 });

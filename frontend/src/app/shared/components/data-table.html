@@ -51,6 +51,18 @@
       </li>
     }
   </ul>
+  @if (totalCount() > 0) {
+    <app-pager
+      class="mt-3 block"
+      [page]="page()"
+      [pageCount]="pageCount()"
+      [total]="totalCount()"
+      [pageSize]="pageSize()"
+      [pageSizeOptions]="pageSizeOptions()"
+      (pageChange)="goToPage($event)"
+      (pageSizeChange)="onPageSizeChange($event)"
+    />
+  }
 } @else {
   <!-- Table layout, >= 768px. -->
   <div class="overflow-x-auto rounded-card border border-line">
@@ -138,77 +150,17 @@
         }
       </tbody>
     </table>
-  </div>
-}
-
-@if (rowRange().total > 0) {
-  <div class="mt-3 flex flex-col items-center gap-3 sm:flex-row sm:justify-between">
-    <p class="order-2 text-sm text-ink-muted tabular-nums sm:order-1" aria-live="polite">
-      Showing {{ rowRange().from }}–{{ rowRange().to }} of {{ rowRange().total }}
-    </p>
-
-    <div class="order-1 flex items-center gap-2 sm:order-2">
-      @if (pageCount() > 1) {
-        <nav class="flex items-center gap-1" aria-label="Pagination">
-          <button
-            type="button"
-            appIconButton
-            aria-label="First page"
-            [disabled]="page() <= 1"
-            (click)="goToPage(1)"
-          >
-            <svg lucideChevronLeft class="-mr-2 size-4" aria-hidden="true"></svg>
-            <svg lucideChevronLeft class="size-4" aria-hidden="true"></svg>
-          </button>
-          <button
-            type="button"
-            appButton
-            variant="ghost"
-            size="sm"
-            [disabled]="page() <= 1"
-            (click)="goToPage(page() - 1)"
-          >
-            Previous
-          </button>
-          <span class="px-2 text-sm text-ink-muted tabular-nums">Page {{ page() }} of {{ pageCount() }}</span>
-          <button
-            type="button"
-            appButton
-            variant="ghost"
-            size="sm"
-            [disabled]="page() >= pageCount()"
-            (click)="goToPage(page() + 1)"
-          >
-            Next
-          </button>
-          <button
-            type="button"
-            appIconButton
-            aria-label="Last page"
-            [disabled]="page() >= pageCount()"
-            (click)="goToPage(pageCount())"
-          >
-            <svg lucideChevronRight class="-mr-2 size-4" aria-hidden="true"></svg>
-            <svg lucideChevronRight class="size-4" aria-hidden="true"></svg>
-          </button>
-        </nav>
-      }
-
-      @if (pageSizeOptions().length) {
-        <label class="flex items-center gap-1.5 text-sm text-ink-muted">
-          Rows per page
-          <select
-            class="min-h-touch rounded-control border border-line-strong bg-surface px-2 text-sm text-ink"
-            aria-label="Rows per page"
-            [value]="pageSize()"
-            (change)="onPageSizeChange($any($event.target).value)"
-          >
-            @for (size of pageSizeOptions(); track size) {
-              <option [value]="size">{{ size }}</option>
-            }
-          </select>
-        </label>
-      }
-    </div>
+    @if (totalCount() > 0) {
+      <app-pager
+        flush
+        [page]="page()"
+        [pageCount]="pageCount()"
+        [total]="totalCount()"
+        [pageSize]="pageSize()"
+        [pageSizeOptions]="pageSizeOptions()"
+        (pageChange)="goToPage($event)"
+        (pageSizeChange)="onPageSizeChange($event)"
+      />
+    }
   </div>
 }

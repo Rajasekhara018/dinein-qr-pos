@@ -138,7 +138,7 @@
             @for (item of store.items(); track item.id) {
               <tr [attr.data-testid]="'item-row-' + item.id">
                 <td class="py-3 pl-4 align-top">
-                  <app-image-box [src]="item.thumbUrl" [alt]="''" sizes="48px" class="size-12 rounded-control" />
+                  <app-image-box [src]="item.thumbUrl" [alt]="''" sizes="3rem" class="size-12 rounded-control" />
                 </td>
                 <td class="min-w-0 px-4 py-3 align-top">
                   <div class="flex items-center gap-2">
@@ -186,6 +186,17 @@
             }
           </tbody>
         </table>
+        <app-pager
+          flush
+          [page]="store.page() + 1"
+          [pageCount]="store.totalPages()"
+          [total]="store.total()"
+          [pageSize]="store.pageSize()"
+          [pageSizeOptions]="store.pageSizeOptions"
+          entryNoun="items"
+          (pageChange)="store.load($event - 1)"
+          (pageSizeChange)="store.setPageSize($event)"
+        />
       </div>
 
       <!-- < 768px: cards -->
@@ -193,7 +204,7 @@
         @for (item of store.items(); track item.id) {
           <li class="rounded-card border border-line bg-surface p-3 shadow-card" [attr.data-testid]="'item-card-' + item.id">
             <div class="flex gap-3">
-              <app-image-box [src]="item.thumbUrl" [alt]="''" sizes="64px" class="size-16 shrink-0 rounded-control" />
+              <app-image-box [src]="item.thumbUrl" [alt]="''" sizes="4rem" class="size-16 shrink-0 rounded-control" />
               <div class="min-w-0 flex-1">
                 <div class="flex items-center gap-2">
                   <app-veg-marker [type]="item.foodType" />
@@ -235,17 +246,17 @@
         }
       </ul>
 
-      @if (store.totalPages() > 1) {
-        <nav class="mt-4 flex items-center justify-between gap-2" aria-label="Pagination">
-          <button appButton variant="outline" size="sm" type="button" [disabled]="store.page() === 0" (click)="store.load(store.page() - 1)">
-            Previous
-          </button>
-          <span class="text-sm text-ink-muted">Page {{ store.page() + 1 }} of {{ store.totalPages() }}</span>
-          <button appButton variant="outline" size="sm" type="button" [disabled]="store.page() + 1 >= store.totalPages()" (click)="store.load(store.page() + 1)">
-            Next
-          </button>
-        </nav>
-      }
+      <app-pager
+        class="mt-4 block md:hidden"
+        [page]="store.page() + 1"
+        [pageCount]="store.totalPages()"
+        [total]="store.total()"
+        [pageSize]="store.pageSize()"
+        [pageSizeOptions]="store.pageSizeOptions"
+        entryNoun="items"
+        (pageChange)="store.load($event - 1)"
+        (pageSizeChange)="store.setPageSize($event)"
+      />
     }
   </section>
 </div>

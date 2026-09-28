@@ -16,7 +16,8 @@ interface OrderFilterForm {
   q: FormControl<string>;
 }
 
-const PAGE_SIZE = 25;
+const DEFAULT_PAGE_SIZE = 10;
+const PAGE_SIZE_OPTIONS = [5, 10, 25, 50, 100] as const;
 
 /**
  * Orders: filter by IST date, status (multi), order type and search; table/cards; live refresh. Filters live in the
@@ -51,6 +52,8 @@ export class OrdersPage implements OnInit {
     { value: 'TAKEAWAY', label: 'Takeaway' },
   ];
   protected readonly page = signal(0);
+  protected readonly pageSize = signal(DEFAULT_PAGE_SIZE);
+  protected readonly pageSizeOptions = PAGE_SIZE_OPTIONS;
 
   protected readonly orders = signal<AdminOrderSummary[]>([]);
   protected readonly total = signal(0);
@@ -120,6 +123,13 @@ export class OrdersPage implements OnInit {
     void this.load();
   }
 
+  protected setPageSize(size: number): void {
+    this.pageSize.set(size);
+    this.page.set(0);
+    this.syncUrl();
+    void this.load();
+  }
+
   protected shiftDate(days: number): void {
     this.filters.controls.date.setValue(addDays(this.filters.controls.date.value || istDate(), days));
   }
@@ -157,7 +167,7 @@ export class OrdersPage implements OnInit {
           status: this.statuses().size ? [...this.statuses()] : undefined,
           orderType: this.orderType() ?? undefined,
           page: this.page(),
-          size: PAGE_SIZE,
+          size: this.pageSize(),
         }),
       );
       if (seq !== this.seq) return;

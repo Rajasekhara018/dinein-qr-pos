@@ -96,12 +96,15 @@
 } @else if (orders().length === 0) {
   <app-empty-state title="No orders found" message="Try another date, status or type." />
 } @else {
-  <app-order-list [orders]="orders()" caption="Orders" />
-  @if (totalPages() > 1) {
-    <nav class="mt-4 flex items-center justify-between gap-2" aria-label="Pagination">
-      <button appButton variant="outline" size="sm" type="button" [disabled]="page() === 0" (click)="goToPage(page() - 1)">Previous</button>
-      <span class="text-sm text-ink-muted">Page {{ page() + 1 }} of {{ totalPages() }}</span>
-      <button appButton variant="outline" size="sm" type="button" [disabled]="page() + 1 >= totalPages()" (click)="goToPage(page() + 1)">Next</button>
-    </nav>
-  }
+  <app-order-list
+    [orders]="orders()"
+    caption="Orders"
+    [page]="page() + 1"
+    [pageCount]="totalPages()"
+    [total]="total()"
+    [pageSize]="pageSize()"
+    [pageSizeOptions]="pageSizeOptions"
+    (pageChange)="goToPage($event - 1)"
+    (pageSizeChange)="setPageSize($event)"
+  />
 }

@@ -59,6 +59,19 @@
       }
     </tbody>
   </table>
+  @if (page(); as p) {
+    <app-pager
+      flush
+      [page]="p"
+      [pageCount]="pageCount()"
+      [total]="total()"
+      [pageSize]="pageSize()"
+      [pageSizeOptions]="pageSizeOptions()"
+      entryNoun="orders"
+      (pageChange)="pageChange.emit($event)"
+      (pageSizeChange)="pageSizeChange.emit($event)"
+    />
+  }
 </div>
 
 <!-- < 768px: stacked cards -->
@@ -100,3 +113,17 @@
     </li>
   }
 </ul>
+
+@if (page(); as p) {
+  <app-pager
+    class="mt-3 block md:hidden"
+    [page]="p"
+    [pageCount]="pageCount()"
+    [total]="total()"
+    [pageSize]="pageSize()"
+    [pageSizeOptions]="pageSizeOptions()"
+    entryNoun="orders"
+    (pageChange)="pageChange.emit($event)"
+    (pageSizeChange)="pageSizeChange.emit($event)"
+  />
+}

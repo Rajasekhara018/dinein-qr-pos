@@ -19,6 +19,7 @@ import { FieldError } from './components/field-error/field-error';
 import { ImageBox } from './components/image-box';
 import { OrderStatusBadge } from './components/order-status-badge';
 import { OrderTypeBadge } from './components/order-type-badge';
+import { Pager } from './components/pager/pager';
 import { Price } from './components/price';
 import { QuantityStepper } from './components/quantity-stepper';
 import { ReconnectingBanner } from './components/reconnecting-banner';
@@ -43,6 +44,7 @@ const COMPONENTS = [
   ImageBox,
   OrderStatusBadge,
   OrderTypeBadge,
+  Pager,
   Price,
   QuantityStepper,
   ReconnectingBanner,

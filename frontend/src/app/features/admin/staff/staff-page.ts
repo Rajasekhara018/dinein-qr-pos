@@ -9,6 +9,8 @@ import { ConfirmService } from '../../../shared/services/confirm.service';
 import { errorMessage } from '../../../shared/util/form-errors';
 import { ROLE_OPTIONS, StaffDialog, StaffDialogData } from './staff-dialog';
 
+const PAGE_SIZE_OPTIONS = [5, 10, 20, 50] as const;
+
 /** OWNER: staff users and kitchen devices. */
 @Component({
   selector: 'app-admin-staff-page',
@@ -35,22 +37,28 @@ export class StaffPage {
    *  on-screen slice changes per page, not the request. */
   protected readonly staffPage = signal(1);
   protected readonly devicesPage = signal(1);
-  private readonly pageSize = 10;
+  protected readonly staffPageSize = signal(10);
+  protected readonly devicesPageSize = signal(10);
+  protected readonly pageSizeOptions = PAGE_SIZE_OPTIONS;
 
-  protected readonly staffPageCount = computed(() => Math.max(1, Math.ceil(this.staff().length / this.pageSize)));
+  protected readonly staffPageCount = computed(() =>
+    Math.max(1, Math.ceil(this.staff().length / this.staffPageSize())),
+  );
   protected readonly pagedStaff = computed(() => {
-    const start = (this.staffPage() - 1) * this.pageSize;
-    return this.staff().slice(start, start + this.pageSize);
+    const size = this.staffPageSize();
+    const start = (this.staffPage() - 1) * size;
+    return this.staff().slice(start, start + size);
   });
 
   protected readonly devicesPageCount = computed(() =>
-    Math.max(1, Math.ceil(this.visibleDevices().length / this.pageSize)),
+    Math.max(1, Math.ceil(this.visibleDevices().length / this.devicesPageSize())),
   );
   /** Clamped so toggling "show revoked" (which can shrink the list) never points past the last page. */
   protected readonly devicesPageView = computed(() => Math.min(this.devicesPage(), this.devicesPageCount()));
   protected readonly pagedDevices = computed(() => {
-    const start = (this.devicesPageView() - 1) * this.pageSize;
-    return this.visibleDevices().slice(start, start + this.pageSize);
+    const size = this.devicesPageSize();
+    const start = (this.devicesPageView() - 1) * size;
+    return this.visibleDevices().slice(start, start + size);
   });
 
   constructor() {
@@ -64,7 +72,8 @@ export class StaffPage {
       firstValueFrom(this.api.devices()),
     ]);
     if (staff.status === 'fulfilled') {
-      this.staff.set([...staff.value].sort((a, b) => a.username.localeCompare(b.username)));
+      // Newest-created account first, so one you just added is on page 1 instead of wherever it sorts to.
+      this.staff.set([...staff.value].sort((a, b) => b.id - a.id));
       this.error.set(null);
       this.staffPage.set(1);
     } else {
@@ -86,6 +95,16 @@ export class StaffPage {
 
   protected goToDevicesPage(page: number): void {
     this.devicesPage.set(Math.min(Math.max(1, page), this.devicesPageCount()));
+  }
+
+  protected setStaffPageSize(size: number): void {
+    this.staffPageSize.set(size);
+    this.staffPage.set(1);
+  }
+
+  protected setDevicesPageSize(size: number): void {
+    this.devicesPageSize.set(size);
+    this.devicesPage.set(1);
   }
 
   protected roleLabel(role: string): string {

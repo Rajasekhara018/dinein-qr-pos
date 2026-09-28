@@ -10,6 +10,8 @@ import { errorMessage } from '../../../shared/util/form-errors';
 import { QrPreviewData, QrPreviewDialog } from './qr-preview-dialog';
 import { TableDialog, TableDialogData } from './table-dialog';
 
+const PAGE_SIZE_OPTIONS = [5, 10, 20, 50] as const;
+
 /** Tables & QR codes: add, rename, (de)activate, regenerate, preview, copy link, printable PDF. */
 @Component({
   selector: 'app-admin-tables-page',
@@ -33,17 +35,19 @@ export class TablesPage {
   /** Client-side paging: the full active table list already has to be fetched at once for "select all" /
    *  "download PDF (all)" to work, so only the on-screen slice changes per page, not the request. */
   protected readonly page = signal(1);
-  protected readonly pageSize = 20;
+  protected readonly pageSize = signal(10);
+  protected readonly pageSizeOptions = PAGE_SIZE_OPTIONS;
 
   protected readonly allSelected = computed(
     () => this.tables().length > 0 && this.tables().every((t) => this.selected().has(t.id)),
   );
   protected readonly someSelected = computed(() => this.selected().size > 0 && !this.allSelected());
   protected readonly activeCount = computed(() => this.tables().filter((t) => t.active).length);
-  protected readonly pageCount = computed(() => Math.max(1, Math.ceil(this.tables().length / this.pageSize)));
+  protected readonly pageCount = computed(() => Math.max(1, Math.ceil(this.tables().length / this.pageSize())));
   protected readonly pagedTables = computed(() => {
-    const start = (this.page() - 1) * this.pageSize;
-    return this.tables().slice(start, start + this.pageSize);
+    const size = this.pageSize();
+    const start = (this.page() - 1) * size;
+    return this.tables().slice(start, start + size);
   });
 
   constructor() {
@@ -54,7 +58,8 @@ export class TablesPage {
     this.loading.set(true);
     try {
       const tables = await firstValueFrom(this.api.list());
-      this.tables.set([...tables].sort((a, b) => a.label.localeCompare(b.label, 'en', { numeric: true })));
+      // Newest-created table first, so a table you just added is on page 1 instead of wherever it sorts to.
+      this.tables.set([...tables].sort((a, b) => b.id - a.id));
       this.error.set(null);
       const ids = new Set(tables.map((t) => t.id));
       this.selected.update((set) => new Set([...set].filter((id) => ids.has(id))));
@@ -81,6 +86,11 @@ export class TablesPage {
 
   protected goToPage(page: number): void {
     this.page.set(Math.min(Math.max(1, page), this.pageCount()));
+  }
+
+  protected setPageSize(size: number): void {
+    this.pageSize.set(size);
+    this.page.set(1);
   }
 
   protected open(table: TableResponse | null): void {

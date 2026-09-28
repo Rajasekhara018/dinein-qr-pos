@@ -1,0 +1,90 @@
+<div class="flex flex-col items-center gap-3 sm:flex-row sm:justify-between">
+  <p class="order-2 text-sm text-ink-muted tabular-nums sm:order-1" aria-live="polite">
+    @if (total()) {
+      Showing {{ range().from }}–{{ range().to }} of {{ total() }} {{ entryNoun() }}
+    } @else {
+      No {{ entryNoun() }}
+    }
+  </p>
+
+  <div class="order-1 flex flex-wrap items-center justify-center gap-2 sm:order-2">
+    @if (pageCount() > 1) {
+      <nav class="flex flex-wrap items-center gap-1" [attr.aria-label]="label()">
+        <button
+          type="button"
+          appIconButton
+          aria-label="First page"
+          [disabled]="page() <= 1"
+          (click)="go(1)"
+        >
+          <svg lucideChevronLeft class="-mr-2 size-4" aria-hidden="true"></svg>
+          <svg lucideChevronLeft class="size-4" aria-hidden="true"></svg>
+        </button>
+        <button
+          type="button"
+          appIconButton
+          aria-label="Previous page"
+          [disabled]="page() <= 1"
+          (click)="go(page() - 1)"
+        >
+          <svg lucideChevronLeft class="size-4" aria-hidden="true"></svg>
+        </button>
+
+        @for (t of tokens(); track $index) {
+          @if (t === '…') {
+            <span class="px-1.5 text-sm text-ink-subtle" aria-hidden="true">…</span>
+          } @else {
+            <button
+              type="button"
+              appButton
+              [variant]="t === page() ? 'primary' : 'ghost'"
+              size="sm"
+              class="min-w-touch px-0"
+              [attr.aria-current]="t === page() ? 'page' : null"
+              [attr.aria-label]="'Page ' + t"
+              (click)="go(t)"
+            >
+              {{ t }}
+            </button>
+          }
+        }
+
+        <button
+          type="button"
+          appIconButton
+          aria-label="Next page"
+          [disabled]="page() >= pageCount()"
+          (click)="go(page() + 1)"
+        >
+          <svg lucideChevronRight class="size-4" aria-hidden="true"></svg>
+        </button>
+        <button
+          type="button"
+          appIconButton
+          aria-label="Last page"
+          [disabled]="page() >= pageCount()"
+          (click)="go(pageCount())"
+        >
+          <svg lucideChevronRight class="-mr-2 size-4" aria-hidden="true"></svg>
+          <svg lucideChevronRight class="size-4" aria-hidden="true"></svg>
+        </button>
+      </nav>
+    }
+
+    @if (pageSizeOptions().length) {
+      <label class="flex items-center gap-1.5 text-sm text-ink-muted">
+        Rows
+        <select
+          class="min-h-touch rounded-control border border-line-strong bg-surface px-2 text-sm text-ink"
+          aria-label="Rows per page"
+          [value]="pageSize()"
+          (change)="onPageSizeChange($any($event.target).value)"
+        >
+          @for (size of pageSizeOptions(); track size) {
+            <option [value]="size">{{ size }}</option>
+          }
+        </select>
+      </label>
+    }
+  </div>
+</div>

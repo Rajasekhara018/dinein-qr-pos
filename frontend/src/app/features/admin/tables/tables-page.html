@@ -71,6 +71,17 @@
         }
       </tbody>
     </table>
+    <app-pager
+      flush
+      [page]="page()"
+      [pageCount]="pageCount()"
+      [total]="tables().length"
+      [pageSize]="pageSize()"
+      [pageSizeOptions]="pageSizeOptions"
+      entryNoun="tables"
+      (pageChange)="goToPage($event)"
+      (pageSizeChange)="setPageSize($event)"
+    />
   </div>
 
   <!-- < 768px: cards -->
@@ -99,11 +110,15 @@
     </ul>
   </div>
 
-  @if (pageCount() > 1) {
-    <nav class="mt-4 flex items-center justify-between gap-2" aria-label="Pagination">
-      <button appButton variant="outline" size="sm" type="button" [disabled]="page() === 1" (click)="goToPage(page() - 1)">Previous</button>
-      <span class="text-sm text-ink-muted">Page {{ page() }} of {{ pageCount() }}</span>
-      <button appButton variant="outline" size="sm" type="button" [disabled]="page() >= pageCount()" (click)="goToPage(page() + 1)">Next</button>
-    </nav>
-  }
+  <app-pager
+    class="mt-4 block md:hidden"
+    [page]="page()"
+    [pageCount]="pageCount()"
+    [total]="tables().length"
+    [pageSize]="pageSize()"
+    [pageSizeOptions]="pageSizeOptions"
+    entryNoun="tables"
+    (pageChange)="goToPage($event)"
+    (pageSizeChange)="setPageSize($event)"
+  />
 }

@@ -20,7 +20,8 @@ export interface ItemFilters {
   available: boolean | null;
 }
 
-const PAGE_SIZE = 50;
+const DEFAULT_PAGE_SIZE = 10;
+export const ITEMS_PAGE_SIZE_OPTIONS = [5, 10, 25, 50, 100] as const;
 
 /**
  * State of the items page: search/filter/paging, availability toggles and inline rate edits with optimistic
@@ -41,6 +42,9 @@ export class ItemsListStore {
   private readonly _busy = signal<ReadonlySet<number>>(new Set());
 
   readonly items = this._items.asReadonly();
+  private readonly _pageSize = signal(DEFAULT_PAGE_SIZE);
+  readonly pageSize = this._pageSize.asReadonly();
+  readonly pageSizeOptions = ITEMS_PAGE_SIZE_OPTIONS;
   readonly total = this._total.asReadonly();
   readonly page = this._page.asReadonly();
   readonly totalPages = this._totalPages.asReadonly();
@@ -65,7 +69,7 @@ export class ItemsListStore {
       q: f.q.trim() || undefined,
       available: f.available ?? undefined,
       page,
-      size: PAGE_SIZE,
+      size: this._pageSize(),
     };
     this._loading.set(true);
     try {
@@ -86,6 +90,11 @@ export class ItemsListStore {
 
   setFilters(patch: Partial<ItemFilters>): void {
     this.filters.update((f) => ({ ...f, ...patch }));
+    void this.load(0);
+  }
+
+  setPageSize(size: number): void {
+    this._pageSize.set(size);
     void this.load(0);
   }
 

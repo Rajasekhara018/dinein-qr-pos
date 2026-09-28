@@ -72,6 +72,18 @@
           }
         </tbody>
       </table>
+      <app-pager
+        flush
+        [page]="staffPage()"
+        [pageCount]="staffPageCount()"
+        [total]="staff().length"
+        [pageSize]="staffPageSize()"
+        [pageSizeOptions]="pageSizeOptions"
+        label="Staff users pagination"
+        entryNoun="staff"
+        (pageChange)="goToStaffPage($event)"
+        (pageSizeChange)="setStaffPageSize($event)"
+      />
     </div>
 
     <ul class="flex flex-col gap-3 md:hidden" role="list" aria-label="Staff users">
@@ -96,13 +108,18 @@
       }
     </ul>
 
-    @if (staffPageCount() > 1) {
-      <nav class="mt-4 flex items-center justify-between gap-2" aria-label="Staff users pagination">
-        <button appButton variant="outline" size="sm" type="button" [disabled]="staffPage() === 1" (click)="goToStaffPage(staffPage() - 1)">Previous</button>
-        <span class="text-sm text-ink-muted">Page {{ staffPage() }} of {{ staffPageCount() }}</span>
-        <button appButton variant="outline" size="sm" type="button" [disabled]="staffPage() >= staffPageCount()" (click)="goToStaffPage(staffPage() + 1)">Next</button>
-      </nav>
-    }
+    <app-pager
+      class="mt-4 block md:hidden"
+      [page]="staffPage()"
+      [pageCount]="staffPageCount()"
+      [total]="staff().length"
+      [pageSize]="staffPageSize()"
+      [pageSizeOptions]="pageSizeOptions"
+      label="Staff users pagination"
+      entryNoun="staff"
+      (pageChange)="goToStaffPage($event)"
+      (pageSizeChange)="setStaffPageSize($event)"
+    />
   </section>
 
   <section class="mt-8" aria-labelledby="devices-heading">
@@ -120,9 +137,74 @@
         No kitchen screens are signed in. Open <strong>/kitchen</strong> on the kitchen tablet to connect one.
       </p>
     } @else {
-      <ul class="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3" role="list">
+      <!-- ≥ 768px: table -->
+      <div class="hidden overflow-hidden rounded-card border border-line bg-surface shadow-md md:block">
+        <table class="w-full table-fixed text-left text-sm">
+          <caption class="sr-only">Kitchen devices</caption>
+          <thead class="bg-surface-muted text-xs uppercase tracking-wide text-ink-muted">
+            <tr>
+              <th scope="col" class="px-4 py-3 font-semibold">Device</th>
+              <th scope="col" class="w-28 px-4 py-3 font-semibold">Status</th>
+              <th scope="col" class="w-40 px-4 py-3 font-semibold">Last seen</th>
+              <th scope="col" class="hidden w-32 px-4 py-3 font-semibold xl:table-cell">Added</th>
+              <th scope="col" class="w-36 px-4 py-3 font-semibold">
+                <span class="sr-only">Expires/revoked, </span>Expires
+              </th>
+              <th scope="col" class="w-28 px-2 py-3 text-right"><span class="sr-only">Actions</span></th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-line">
+            @for (d of pagedDevices(); track d.id) {
+              <tr [attr.data-testid]="'device-' + d.id">
+                <td class="min-w-0 px-4 py-3">
+                  <p class="truncate font-semibold">{{ d.deviceName || 'Kitchen device' }}</p>
+                  <p class="truncate text-ink-muted">Signed in as {{ d.username }}</p>
+                </td>
+                <td class="px-4 py-3">
+                  <span
+                    class="inline-block rounded-full px-2 py-0.5 text-xs font-semibold"
+                    [class.bg-green-100]="d.active"
+                    [class.text-green-900]="d.active"
+                    [class.bg-stone-200]="!d.active"
+                    [class.text-stone-800]="!d.active"
+                  >
+                    {{ deviceState(d) }}
+                  </span>
+                </td>
+                <td class="px-4 py-3 text-ink-muted">{{ d.lastSeenAt ? (d.lastSeenAt | date: 'd MMM, h:mm a') : '—' }}</td>
+                <td class="hidden px-4 py-3 text-ink-muted xl:table-cell">{{ d.createdAt | date: 'd MMM y' }}</td>
+                <td class="px-4 py-3 text-ink-muted">
+                  {{ d.revokedAt ? 'Revoked ' : '' }}{{ (d.revokedAt ?? d.expiresAt) | date: 'd MMM y' }}
+                </td>
+                <td class="px-2 py-2 text-right">
+                  @if (d.active) {
+                    <button appButton variant="outline" size="sm" type="button" class="text-danger" [loading]="revoking() === d.id" (click)="revoke(d)">
+                      Revoke
+                    </button>
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+        <app-pager
+          flush
+          [page]="devicesPageView()"
+          [pageCount]="devicesPageCount()"
+          [total]="visibleDevices().length"
+          [pageSize]="devicesPageSize()"
+          [pageSizeOptions]="pageSizeOptions"
+          label="Devices pagination"
+          entryNoun="devices"
+          (pageChange)="goToDevicesPage($event)"
+          (pageSizeChange)="setDevicesPageSize($event)"
+        />
+      </div>
+
+      <!-- < 768px: cards -->
+      <ul class="flex flex-col gap-3 md:hidden" role="list">
         @for (d of pagedDevices(); track d.id) {
-          <li class="flex min-w-0 flex-col rounded-card border border-line bg-surface p-4 shadow-card" [attr.data-testid]="'device-' + d.id">
+          <li class="flex min-w-0 flex-col rounded-card border border-line bg-surface p-4 shadow-card" [attr.data-testid]="'device-card-' + d.id">
             <div class="flex items-start justify-between gap-2">
               <div class="min-w-0">
                 <p class="truncate font-semibold">{{ d.deviceName || 'Kitchen device' }}</p>
@@ -155,13 +237,18 @@
         }
       </ul>
 
-      @if (devicesPageCount() > 1) {
-        <nav class="mt-4 flex items-center justify-between gap-2" aria-label="Devices pagination">
-          <button appButton variant="outline" size="sm" type="button" [disabled]="devicesPageView() === 1" (click)="goToDevicesPage(devicesPageView() - 1)">Previous</button>
-          <span class="text-sm text-ink-muted">Page {{ devicesPageView() }} of {{ devicesPageCount() }}</span>
-          <button appButton variant="outline" size="sm" type="button" [disabled]="devicesPageView() >= devicesPageCount()" (click)="goToDevicesPage(devicesPageView() + 1)">Next</button>
-        </nav>
-      }
+      <app-pager
+        class="mt-4 block md:hidden"
+        [page]="devicesPageView()"
+        [pageCount]="devicesPageCount()"
+        [total]="visibleDevices().length"
+        [pageSize]="devicesPageSize()"
+        [pageSizeOptions]="pageSizeOptions"
+        label="Devices pagination"
+        entryNoun="devices"
+        (pageChange)="goToDevicesPage($event)"
+        (pageSizeChange)="setDevicesPageSize($event)"
+      />
     }
   </section>
 }

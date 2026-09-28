@@ -36,7 +36,7 @@ export class ImageBox {
   readonly alt = input('');
   readonly ratio = input<ImageRatio>('square');
   /** `sizes` attribute for the browser (the box's rendered width). */
-  readonly sizes = input('(min-width: 768px) 200px, 30vw');
+  readonly sizes = input('(min-width: 768px) 12.5rem, 30vw');
   readonly priority = input(false, { transform: booleanAttribute });
 
   protected readonly loaded = signal(false);
