@@ -968,11 +968,30 @@ export interface WaiterConfig {
 
 export type RestaurantStatus = 'ACTIVE' | 'SUSPENDED';
 
-/** `POST /api/v1/platform/restaurants` request; `slug` is derived from `restaurantName` when omitted. */
+/**
+ * `POST /api/v1/platform/restaurants` request; `slug` is derived from `restaurantName` when omitted. Every field
+ * past `slug` is optional and mirrors what the owner would otherwise set up themselves at `/admin/settings` or
+ * `/admin/staff` after their first login — left blank, `RestaurantSettingsEntity`'s own defaults apply.
+ */
 export interface OnboardRestaurantRequest {
   restaurantName: string;
   slug?: string | null;
+  address?: string | null;
+  phone?: string | null;
+  gstin?: string | null;
+  fssaiNo?: string | null;
+  pricesIncludeGst?: boolean | null;
+  openingTime?: IsoLocalTime | null;
+  closingTime?: IsoLocalTime | null;
+  brandColor?: string | null;
+  takeawayEnabled?: boolean | null;
   ownerDisplayName?: string | null;
+  /** Blank derives `{slug}.owner`, matching the previous behaviour. */
+  ownerUsername?: string | null;
+  ownerEmail?: string | null;
+  ownerPhone?: string | null;
+  /** Blank auto-generates one, matching the previous behaviour. */
+  ownerPassword?: string | null;
 }
 
 /** `temporaryPassword` is returned once, here, and never shown again — hand it to the merchant out of band. */

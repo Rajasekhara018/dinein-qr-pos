@@ -31,33 +31,108 @@
       </div>
     }
 
-    <fieldset class="rounded-card border border-line bg-surface p-4 shadow-card sm:p-5" [formGroup]="form">
-      <legend class="px-1 font-display text-lg font-semibold">Onboard a restaurant</legend>
+    <form [formGroup]="form" (ngSubmit)="onboard()" novalidate class="flex flex-col gap-5">
       @if (formError()) {
-        <p class="mb-3 rounded-control bg-danger-bg px-3 py-2 text-sm font-medium text-danger-fg" role="alert">{{ formError() }}</p>
+        <p class="rounded-control bg-danger-bg px-3 py-2 text-sm font-medium text-danger-fg" role="alert">{{ formError() }}</p>
       }
-      <form class="grid grid-cols-1 gap-4 sm:grid-cols-2" (ngSubmit)="onboard()" novalidate>
-        <div class="sm:col-span-2">
-          <label for="plat-name" class="block text-sm font-medium text-ink">Restaurant name</label>
-          <input id="plat-name" appInput class="mt-1" formControlName="restaurantName" maxlength="100" aria-describedby="plat-name-error" />
-          <app-field-error id="plat-name-error" [control]="form.controls.restaurantName" />
+
+      <fieldset class="rounded-card border border-line bg-surface p-4 shadow-card sm:p-5">
+        <legend class="px-1 font-display text-lg font-semibold">Restaurant</legend>
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div class="sm:col-span-2">
+            <label for="plat-name" class="block text-sm font-medium text-ink">Restaurant name</label>
+            <input id="plat-name" appInput class="mt-1" formControlName="restaurantName" maxlength="100" aria-describedby="plat-name-error" />
+            <app-field-error id="plat-name-error" [control]="form.controls.restaurantName" />
+          </div>
+          <div>
+            <label for="plat-slug" class="block text-sm font-medium text-ink">Slug <span class="font-normal text-ink-subtle">(optional)</span></label>
+            <input id="plat-slug" appInput class="mt-1" formControlName="slug" maxlength="60" placeholder="derived from the name" aria-describedby="plat-slug-error" />
+            <app-field-error id="plat-slug-error" [control]="form.controls.slug" />
+            <p class="mt-1 text-xs text-ink-subtle">Used to build the owner's username: {{ '{slug}' }}.owner</p>
+          </div>
+          <div>
+            <label for="plat-phone" class="block text-sm font-medium text-ink">Phone <span class="font-normal text-ink-subtle">(optional)</span></label>
+            <input id="plat-phone" appInput type="tel" class="mt-1" formControlName="phone" autocomplete="tel" aria-describedby="plat-phone-error" />
+            <app-field-error id="plat-phone-error" [control]="form.controls.phone" [messages]="{ pattern: 'Use 6–15 digits (spaces, + and - allowed).' }" />
+          </div>
+          <div class="sm:col-span-2">
+            <label for="plat-address" class="block text-sm font-medium text-ink">Address <span class="font-normal text-ink-subtle">(optional)</span></label>
+            <textarea id="plat-address" appInput rows="2" class="mt-1" formControlName="address" maxlength="300"></textarea>
+            <app-field-error [control]="form.controls.address" />
+          </div>
+          <div>
+            <label for="plat-gstin" class="block text-sm font-medium text-ink">GSTIN <span class="font-normal text-ink-subtle">(optional)</span></label>
+            <input id="plat-gstin" appInput class="mt-1 uppercase" formControlName="gstin" maxlength="15" autocapitalize="characters" spellcheck="false" (blur)="uppercaseGstin()" aria-describedby="plat-gstin-error" />
+            <app-field-error id="plat-gstin-error" [control]="form.controls.gstin" [messages]="{ pattern: 'Enter a valid 15-character GSTIN, e.g. 29ABCDE1234F1Z5.' }" />
+          </div>
+          <div>
+            <label for="plat-fssai" class="block text-sm font-medium text-ink">FSSAI licence no. <span class="font-normal text-ink-subtle">(optional)</span></label>
+            <input id="plat-fssai" appInput inputmode="numeric" class="mt-1" formControlName="fssaiNo" maxlength="14" aria-describedby="plat-fssai-error" />
+            <app-field-error id="plat-fssai-error" [control]="form.controls.fssaiNo" [messages]="{ pattern: 'FSSAI number must be 14 digits.' }" />
+          </div>
+          <div>
+            <label for="plat-open" class="block text-sm font-medium text-ink">Opening time <span class="font-normal text-ink-subtle">(optional)</span></label>
+            <input id="plat-open" appInput type="time" class="mt-1" formControlName="openingTime" />
+          </div>
+          <div>
+            <label for="plat-close" class="block text-sm font-medium text-ink">Closing time <span class="font-normal text-ink-subtle">(optional)</span></label>
+            <input id="plat-close" appInput type="time" class="mt-1" formControlName="closingTime" />
+          </div>
+          <div>
+            <label for="plat-color" class="block text-sm font-medium text-ink">Brand colour <span class="font-normal text-ink-subtle">(optional)</span></label>
+            <input id="plat-color" appInput class="mt-1 font-mono" formControlName="brandColor" maxlength="7" placeholder="#C2410C" aria-describedby="plat-color-error" />
+            <app-field-error id="plat-color-error" [control]="form.controls.brandColor" [messages]="{ pattern: 'Use the #RRGGBB format.' }" />
+          </div>
         </div>
-        <div>
-          <label for="plat-slug" class="block text-sm font-medium text-ink">Slug (optional)</label>
-          <input id="plat-slug" appInput class="mt-1" formControlName="slug" maxlength="60" placeholder="derived from the name" aria-describedby="plat-slug-error" />
-          <app-field-error id="plat-slug-error" [control]="form.controls.slug" />
-          <p class="mt-1 text-xs text-ink-subtle">Used to build the owner's username: {{ '{slug}' }}.owner</p>
+        <div class="mt-4 flex flex-col gap-3">
+          <app-toggle-switch formControlName="pricesIncludeGst" label="Prices include GST" hint="Off: GST is added on top of menu prices at checkout." showLabel />
+          <app-toggle-switch formControlName="takeawayEnabled" label="Takeaway orders" hint="Off: dine-in only." showLabel />
         </div>
-        <div>
-          <label for="plat-owner-name" class="block text-sm font-medium text-ink">Owner display name (optional)</label>
-          <input id="plat-owner-name" appInput class="mt-1" formControlName="ownerDisplayName" maxlength="80" aria-describedby="plat-owner-name-error" />
-          <app-field-error id="plat-owner-name-error" [control]="form.controls.ownerDisplayName" />
+      </fieldset>
+
+      <fieldset class="rounded-card border border-line bg-surface p-4 shadow-card sm:p-5">
+        <legend class="px-1 font-display text-lg font-semibold">Owner account</legend>
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div>
+            <label for="plat-owner-name" class="block text-sm font-medium text-ink">Display name <span class="font-normal text-ink-subtle">(optional)</span></label>
+            <input id="plat-owner-name" appInput class="mt-1" formControlName="ownerDisplayName" maxlength="80" aria-describedby="plat-owner-name-error" />
+            <app-field-error id="plat-owner-name-error" [control]="form.controls.ownerDisplayName" />
+          </div>
+          <div>
+            <label for="plat-owner-username" class="block text-sm font-medium text-ink">Username <span class="font-normal text-ink-subtle">(optional)</span></label>
+            <input id="plat-owner-username" appInput class="mt-1" formControlName="ownerUsername" autocapitalize="none" spellcheck="false" autocomplete="off" placeholder="{slug}.owner" aria-describedby="plat-owner-username-error" />
+            <app-field-error id="plat-owner-username-error" [control]="form.controls.ownerUsername" [messages]="{ pattern: 'Letters, digits, dot, dash or underscore only.' }" />
+          </div>
+          <div>
+            <label for="plat-owner-email" class="block text-sm font-medium text-ink">E-mail <span class="font-normal text-ink-subtle">(optional)</span></label>
+            <input id="plat-owner-email" appInput type="email" class="mt-1" formControlName="ownerEmail" autocomplete="off" />
+            <app-field-error [control]="form.controls.ownerEmail" />
+          </div>
+          <div>
+            <label for="plat-owner-phone" class="block text-sm font-medium text-ink">Mobile <span class="font-normal text-ink-subtle">(optional)</span></label>
+            <input id="plat-owner-phone" appInput type="tel" inputmode="numeric" maxlength="10" class="mt-1" formControlName="ownerPhone" autocomplete="off" />
+            <app-field-error [control]="form.controls.ownerPhone" [messages]="{ pattern: 'Enter a 10-digit mobile number.' }" />
+          </div>
+          <div class="sm:col-span-2">
+            <label for="plat-owner-password" class="block text-sm font-medium text-ink">
+              Temporary password <span class="font-normal text-ink-subtle">(optional — leave blank to auto-generate one)</span>
+            </label>
+            <div class="mt-1 flex gap-2">
+              <input id="plat-owner-password" appInput [type]="showPassword() ? 'text' : 'password'" formControlName="ownerPassword" autocomplete="new-password" aria-describedby="plat-owner-password-hint plat-owner-password-error" />
+              <button appButton variant="outline" type="button" class="shrink-0" (click)="generatePassword()">Generate</button>
+            </div>
+            <p id="plat-owner-password-hint" class="mt-1 text-xs text-ink-subtle">
+              8–72 characters with a letter and a digit. The owner must change it at their next sign-in.
+            </p>
+            <app-field-error id="plat-owner-password-error" [control]="form.controls.ownerPassword" [messages]="passwordMessages" />
+          </div>
         </div>
-        <div class="sm:col-span-2">
-          <button appButton type="submit" [loading]="submitting()">Onboard restaurant</button>
-        </div>
-      </form>
-    </fieldset>
+      </fieldset>
+
+      <div>
+        <button appButton type="submit" [loading]="submitting()">Onboard restaurant</button>
+      </div>
+    </form>
 
     @if (result(); as r) {
       <div class="rounded-card border border-success-border bg-success-bg p-4 shadow-card" role="alert">

@@ -2,23 +2,26 @@ import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
-import { describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { AuthStore } from '../../core/auth/auth.store';
 import { authInterceptor } from '../../core/http/auth.interceptor';
 import { PlatformModule } from './platform-module';
 import { PlatformPage } from './platform-page';
 
-describe('PlatformPage onboarding (as a logged-in platform admin)', () => {
+describe('PlatformPage', () => {
   let fixture: ComponentFixture<PlatformPage>;
   let el: HTMLElement;
   let http: HttpTestingController;
-  let auth: AuthStore;
 
-  function setLoggedInPlatformAdmin() {
-    auth = TestBed.inject(AuthStore);
+  function signInAsPlatformAdmin() {
+    const auth = TestBed.inject(AuthStore);
     (auth as unknown as { _user: { set: (v: unknown) => void } })['_user'].set({
-      id: 1, username: 'owner', displayName: 'Owner', role: 'OWNER',
-      mustChangePassword: false, platformAdmin: true,
+      id: 1,
+      username: 'owner',
+      displayName: 'Owner',
+      role: 'OWNER',
+      mustChangePassword: false,
+      platformAdmin: true,
     });
     (auth as unknown as { _accessToken: { set: (v: unknown) => void } })['_accessToken'].set('fake-token');
   }
@@ -33,13 +36,13 @@ describe('PlatformPage onboarding (as a logged-in platform admin)', () => {
       ],
     });
     http = TestBed.inject(HttpTestingController);
-    setLoggedInPlatformAdmin();
+    signInAsPlatformAdmin();
     fixture = TestBed.createComponent(PlatformPage);
     el = fixture.nativeElement;
     fixture.detectChanges();
   });
 
-  it('shows the onboarding form immediately (no key prompt) and auto-loads restaurants with the bearer token', () => {
+  it('skips the key prompt and lists restaurants with the caller\'s own bearer token', () => {
     expect(el.querySelector('#platform-key')).toBeNull();
     const req = http.expectOne('/api/v1/platform/restaurants');
     expect(req.request.method).toBe('GET');
@@ -48,32 +51,36 @@ describe('PlatformPage onboarding (as a logged-in platform admin)', () => {
     req.flush([]);
   });
 
-  it('submits the onboard form with the bearer token and shows the result', async () => {
+  it('submits the onboard form on click and shows the returned owner credentials', async () => {
     http.expectOne('/api/v1/platform/restaurants').flush([]);
 
     const name: HTMLInputElement = el.querySelector('#plat-name')!;
-    name.value = 'RAJA';
+    name.value = 'Pizza Corner';
     name.dispatchEvent(new Event('input'));
-    const slug: HTMLInputElement = el.querySelector('#plat-slug')!;
-    slug.value = 'Test';
-    slug.dispatchEvent(new Event('input'));
     fixture.detectChanges();
 
-    const form: HTMLFormElement = el.querySelector('form')!;
-    form.dispatchEvent(new Event('submit'));
+    const submit: HTMLButtonElement = el.querySelector('button[type="submit"]')!;
+    submit.click();
     await fixture.whenStable();
     fixture.detectChanges();
 
     const req = http.expectOne('/api/v1/platform/restaurants');
     expect(req.request.method).toBe('POST');
     expect(req.request.headers.get('Authorization')).toBe('Bearer fake-token');
-    expect(req.request.body).toEqual({ restaurantName: 'RAJA', slug: 'Test', ownerDisplayName: null });
-    req.flush({ restaurantId: 5, restaurantName: 'RAJA', slug: 'test', ownerUsername: 'test.owner', temporaryPassword: 'abc123' });
-    http.expectOne('/api/v1/platform/restaurants').flush([{ id: 5, name: 'RAJA', slug: 'test', status: 'ACTIVE', createdAt: new Date().toISOString(), owners: [] }]);
+    expect(req.request.body).toEqual({ restaurantName: 'Pizza Corner', slug: null, ownerDisplayName: null });
+    req.flush({
+      restaurantId: 5,
+      restaurantName: 'Pizza Corner',
+      slug: 'pizza-corner',
+      ownerUsername: 'pizza-corner.owner',
+      temporaryPassword: 'abc123',
+    });
+    await fixture.whenStable();
+    http.expectOne('/api/v1/platform/restaurants').flush([]);
     await fixture.whenStable();
     fixture.detectChanges();
 
-    expect(el.textContent).toContain('RAJA onboarded');
-    expect(el.textContent).toContain('test.owner');
+    expect(el.textContent).toContain('Pizza Corner onboarded');
+    expect(el.textContent).toContain('pizza-corner.owner');
   });
 });

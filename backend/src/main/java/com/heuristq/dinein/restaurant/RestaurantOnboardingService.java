@@ -1,5 +1,6 @@
 package com.heuristq.dinein.restaurant;
 
+import com.heuristq.dinein.auth.PasswordPolicy;
 import com.heuristq.dinein.restaurant.domain.RestaurantEntity;
 import com.heuristq.dinein.restaurant.domain.RestaurantRepository;
 import com.heuristq.dinein.restaurant.dto.OnboardingDtos.OnboardRestaurantRequest;
@@ -21,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 /**
@@ -54,11 +56,20 @@ public class RestaurantOnboardingService {
         if (restaurantRepository.findBySlugIgnoreCase(slug).isPresent()) {
             throw ApiException.conflict("DUPLICATE_SLUG", "A restaurant with this slug already exists");
         }
-        // Login is not yet restaurant-aware, so the username itself must be globally unique; the slug prefix
-        // guarantees that without asking the operator to pick one.
-        String username = slug + ".owner";
+        // Login is not yet restaurant-aware, so the username itself must be globally unique. Defaulting to the
+        // slug prefix guarantees that without asking the operator to pick one, but they can still override it
+        // (e.g. to match a name the merchant already expects) as long as it's not already taken.
+        String username = request.ownerUsername() != null && !request.ownerUsername().isBlank()
+                ? request.ownerUsername().trim() : slug + ".owner";
         if (staffUserRepository.existsByUsernameIgnoreCase(username)) {
-            throw ApiException.conflict("DUPLICATE_SLUG", "A restaurant with this slug already exists");
+            throw ApiException.conflict("USERNAME_TAKEN", "Username is already in use");
+        }
+        String temporaryPassword;
+        if (request.ownerPassword() != null && !request.ownerPassword().isBlank()) {
+            PasswordPolicy.validate(request.ownerPassword());
+            temporaryPassword = request.ownerPassword();
+        } else {
+            temporaryPassword = SecureTokens.randomUrlSafe(9);
         }
 
         RestaurantEntity restaurant = new RestaurantEntity();
@@ -69,21 +80,36 @@ public class RestaurantOnboardingService {
         RestaurantSettingsEntity settings = new RestaurantSettingsEntity();
         settings.setRestaurantId(restaurant.getId());
         settings.setName(name);
+        applyIfPresent(request.address(), settings::setAddress);
+        applyIfPresent(request.phone(), settings::setPhone);
+        applyIfPresent(request.gstin(), v -> settings.setGstin(v.toUpperCase(Locale.ROOT)));
+        applyIfPresent(request.fssaiNo(), settings::setFssaiNo);
+        applyIfPresent(request.brandColor(), settings::setBrandColor);
+        if (request.pricesIncludeGst() != null) settings.setPricesIncludeGst(request.pricesIncludeGst());
+        if (request.takeawayEnabled() != null) settings.setTakeawayEnabled(request.takeawayEnabled());
+        if (request.openingTime() != null) settings.setOpeningTime(request.openingTime());
+        if (request.closingTime() != null) settings.setClosingTime(request.closingTime());
         settingsRepository.save(settings);
 
-        String temporaryPassword = SecureTokens.randomUrlSafe(9);
         StaffUserEntity owner = new StaffUserEntity();
         owner.setRestaurantId(restaurant.getId());
         owner.setUsername(username);
         owner.setDisplayName(request.ownerDisplayName() == null || request.ownerDisplayName().isBlank()
                 ? "Owner" : request.ownerDisplayName().trim());
         owner.setRole(StaffRole.OWNER);
+        applyIfPresent(request.ownerEmail(), v -> owner.setEmail(v.toLowerCase(Locale.ROOT)));
+        applyIfPresent(request.ownerPhone(), owner::setPhone);
         owner.setPasswordHash(passwordEncoder.encode(temporaryPassword));
         owner.setMustChangePassword(true);
         staffUserRepository.save(owner);
 
         log.info("restaurant.onboarded id={} slug={} ownerUsername={}", restaurant.getId(), slug, username);
         return new OnboardRestaurantResponse(restaurant.getId(), name, slug, username, temporaryPassword);
+    }
+
+    /** Runs `setter` only when `value` is non-blank, leaving the entity's own default otherwise. */
+    private static void applyIfPresent(String value, Consumer<String> setter) {
+        if (value != null && !value.isBlank()) setter.accept(value.trim());
     }
 
     /** Every restaurant on the platform with its owner accounts, for the platform operator's own view. */
