@@ -961,6 +961,44 @@ export interface WaiterConfig {
   staff: StaffInfo;
 }
 
+// ─── Platform onboarding (`restaurant.PlatformOnboardingController`) ─────────────────────────────
+// Key-authenticated (`X-Platform-Admin-Key`), not JWT/cookie: see core/api/platform.api.ts.
+
+export type RestaurantStatus = 'ACTIVE' | 'SUSPENDED';
+
+/** `POST /api/v1/platform/restaurants` request; `slug` is derived from `restaurantName` when omitted. */
+export interface OnboardRestaurantRequest {
+  restaurantName: string;
+  slug?: string | null;
+  ownerDisplayName?: string | null;
+}
+
+/** `temporaryPassword` is returned once, here, and never shown again — hand it to the merchant out of band. */
+export interface OnboardRestaurantResponse {
+  restaurantId: number;
+  restaurantName: string;
+  slug: string;
+  ownerUsername: string;
+  temporaryPassword: string;
+}
+
+export interface OwnerSummary {
+  id: number;
+  username: string;
+  displayName?: string;
+  active: boolean;
+}
+
+/** `GET /api/v1/platform/restaurants` list item. */
+export interface RestaurantSummary {
+  id: number;
+  name: string;
+  slug: string;
+  status: RestaurantStatus;
+  createdAt: IsoInstant;
+  owners: OwnerSummary[];
+}
+
 /** One active table with counts of its open (paid, not yet served) orders. */
 export interface WaiterTableView {
   id: number;

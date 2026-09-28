@@ -1,0 +1,136 @@
+<div class="mx-auto flex max-w-4xl flex-col gap-6 p-4 sm:p-6">
+  <header>
+    <h1 class="font-display text-xl font-semibold text-ink">Platform admin</h1>
+    <p class="text-sm text-ink-subtle">
+      Onboard a restaurant and see every restaurant on the platform. Not part of the staff admin panel — access is
+      by shared key, not login.
+    </p>
+  </header>
+
+  @if (!prefs.key()) {
+    <div class="max-w-sm rounded-card border border-line bg-surface p-4 shadow-card">
+      <label for="platform-key" class="block text-sm font-medium text-ink">Platform admin key</label>
+      <input
+        id="platform-key"
+        appInput
+        type="password"
+        class="mt-1"
+        autocomplete="off"
+        #keyField
+        (keydown.enter)="unlock(keyField.value)"
+      />
+      @if (keyError()) {
+        <p class="mt-2 text-sm font-medium text-danger">{{ keyError() }}</p>
+      }
+      <button appButton class="mt-3" type="button" [loading]="checkingKey()" (click)="unlock(keyField.value)">Continue</button>
+    </div>
+  } @else {
+    <div class="flex items-center justify-between">
+      <p class="text-sm text-ink-subtle">Unlocked for this tab.</p>
+      <button appButton variant="outline" type="button" (click)="lock()">Lock</button>
+    </div>
+
+    <fieldset class="rounded-card border border-line bg-surface p-4 shadow-card sm:p-5" [formGroup]="form">
+      <legend class="px-1 font-display text-lg font-semibold">Onboard a restaurant</legend>
+      @if (formError()) {
+        <p class="mb-3 rounded-control bg-danger-bg px-3 py-2 text-sm font-medium text-danger-fg" role="alert">{{ formError() }}</p>
+      }
+      <form class="grid grid-cols-1 gap-4 sm:grid-cols-2" (ngSubmit)="onboard()" novalidate>
+        <div class="sm:col-span-2">
+          <label for="plat-name" class="block text-sm font-medium text-ink">Restaurant name</label>
+          <input id="plat-name" appInput class="mt-1" formControlName="restaurantName" maxlength="100" aria-describedby="plat-name-error" />
+          <app-field-error id="plat-name-error" [control]="form.controls.restaurantName" />
+        </div>
+        <div>
+          <label for="plat-slug" class="block text-sm font-medium text-ink">Slug (optional)</label>
+          <input id="plat-slug" appInput class="mt-1" formControlName="slug" maxlength="60" placeholder="derived from the name" aria-describedby="plat-slug-error" />
+          <app-field-error id="plat-slug-error" [control]="form.controls.slug" />
+          <p class="mt-1 text-xs text-ink-subtle">Used to build the owner's username: {{ '{slug}' }}.owner</p>
+        </div>
+        <div>
+          <label for="plat-owner-name" class="block text-sm font-medium text-ink">Owner display name (optional)</label>
+          <input id="plat-owner-name" appInput class="mt-1" formControlName="ownerDisplayName" maxlength="80" aria-describedby="plat-owner-name-error" />
+          <app-field-error id="plat-owner-name-error" [control]="form.controls.ownerDisplayName" />
+        </div>
+        <div class="sm:col-span-2">
+          <button appButton type="submit" [loading]="submitting()">Onboard restaurant</button>
+        </div>
+      </form>
+    </fieldset>
+
+    @if (result(); as r) {
+      <div class="rounded-card border border-success-border bg-success-bg p-4 shadow-card" role="alert">
+        <p class="font-display text-lg font-semibold text-success-fg">{{ r.restaurantName }} onboarded</p>
+        <dl class="mt-2 grid grid-cols-1 gap-1 text-sm text-success-fg sm:grid-cols-2">
+          <div><dt class="inline font-medium">Slug:</dt> <dd class="inline">{{ r.slug }}</dd></div>
+          <div><dt class="inline font-medium">Restaurant id:</dt> <dd class="inline">{{ r.restaurantId }}</dd></div>
+          <div><dt class="inline font-medium">Owner username:</dt> <dd class="inline font-mono">{{ r.ownerUsername }}</dd></div>
+          <div><dt class="inline font-medium">Temporary password:</dt> <dd class="inline font-mono">{{ r.temporaryPassword }}</dd></div>
+        </dl>
+        <p class="mt-2 text-xs text-success-fg">
+          Shown once. Hand these to the merchant now — the password is forced to change on first login.
+        </p>
+        <button appButton variant="outline" class="mt-3" type="button" (click)="dismissResult()">Dismiss</button>
+      </div>
+    }
+
+    <section class="rounded-card border border-line bg-surface p-4 shadow-card sm:p-5">
+      <div class="mb-3 flex items-center justify-between">
+        <h2 class="font-display text-lg font-semibold">Restaurants</h2>
+        <button appButton variant="outline" type="button" [loading]="loading()" (click)="refresh()">Refresh</button>
+      </div>
+
+      @if (loading() && !restaurants()) {
+        <app-skeleton shape="block" class="h-40" />
+      } @else if (loadError() && !restaurants()) {
+        <app-error-state title="Could not load restaurants" [error]="loadError()" (retry)="refresh()" />
+      } @else if (restaurants(); as list) {
+        @if (list.length === 0) {
+          <app-empty-state title="No restaurants yet" message="Onboard the first one above." />
+        } @else {
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-sm">
+              <thead>
+                <tr class="border-b border-line text-ink-subtle">
+                  <th class="py-2 pr-3 font-medium">Restaurant</th>
+                  <th class="py-2 pr-3 font-medium">Slug</th>
+                  <th class="py-2 pr-3 font-medium">Status</th>
+                  <th class="py-2 pr-3 font-medium">Owner(s)</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (r of list; track r.id) {
+                  <tr class="border-b border-line last:border-0">
+                    <td class="py-2 pr-3 font-medium text-ink">{{ r.name }}</td>
+                    <td class="py-2 pr-3 font-mono text-ink-subtle">{{ r.slug }}</td>
+                    <td class="py-2 pr-3">
+                      <span
+                        class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium"
+                        [class]="r.status === 'ACTIVE' ? 'bg-success-bg text-success-fg' : 'bg-surface-muted text-ink-subtle'"
+                        >{{ r.status }}</span
+                      >
+                    </td>
+                    <td class="py-2 pr-3">
+                      @if (r.owners.length === 0) {
+                        <span class="text-ink-subtle">—</span>
+                      } @else {
+                        @for (owner of r.owners; track owner.id) {
+                          <div class="flex items-center gap-1">
+                            <span class="font-mono">{{ owner.username }}</span>
+                            @if (!owner.active) {
+                              <span class="rounded-full bg-surface-muted px-2 py-0.5 text-xs text-ink-subtle">inactive</span>
+                            }
+                          </div>
+                        }
+                      }
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        }
+      }
+    </section>
+  }
+</div>

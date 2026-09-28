@@ -8,11 +8,16 @@ import com.heuristq.dinein.order.dto.OrderDtos.KitchenOrderView;
 import com.heuristq.dinein.payment.PaymentExpiryJob;
 import com.heuristq.dinein.payment.domain.PaymentEventRepository;
 import com.heuristq.dinein.payment.gateway.ProviderPayment;
+import com.heuristq.dinein.restaurant.domain.RestaurantEntity;
+import com.heuristq.dinein.shared.security.StaffPrincipal;
+import com.heuristq.dinein.staff.domain.StaffRole;
 import com.heuristq.dinein.support.AbstractIntegrationTest;
 import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
@@ -273,7 +278,17 @@ class OrderPaymentFlowIT extends AbstractIntegrationTest {
         orderRepository.save(order);
     }
 
+    /**
+     * Calls the service directly (bypassing HTTP), so it must simulate the staff context TokenAuthenticationFilter
+     * would normally populate from the JWT — kitchenOrders() is restaurant-scoped and requires one.
+     */
     private List<Long> kitchenIds() {
-        return orderQueryService.kitchenOrders(OrderStatus.KITCHEN_VISIBLE).stream().map(KitchenOrderView::id).toList();
+        StaffPrincipal principal = new StaffPrincipal(0L, "test", StaffRole.OWNER, RestaurantEntity.DEFAULT_ID, null, false);
+        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(principal, null));
+        try {
+            return orderQueryService.kitchenOrders(OrderStatus.KITCHEN_VISIBLE).stream().map(KitchenOrderView::id).toList();
+        } finally {
+            SecurityContextHolder.clearContext();
+        }
     }
 }

@@ -22,6 +22,12 @@ const routes: Routes = [
     loadChildren: () => import('./features/admin/admin-module').then((m) => m.AdminModule),
   },
   {
+    // Internal restaurant onboarding + platform-wide restaurant list; key-authenticated, not staff login
+    // (see PlatformApi/PlatformPrefs). Lazy like every other feature module.
+    path: 'platform',
+    loadChildren: () => import('./features/platform/platform-module').then((m) => m.PlatformModule),
+  },
+  {
     // Dev-only UI kit showcase; guarded by devOnlyGuard (see design-system/dev-only.guard.ts) and lazy, so it
     // never reaches the production initial bundle.
     path: 'design-system',
