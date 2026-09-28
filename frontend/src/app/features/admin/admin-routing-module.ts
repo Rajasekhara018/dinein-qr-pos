@@ -5,6 +5,7 @@ import {
   adminGuestOnlyGuard,
   ownerGuard,
   passwordChangeGuard,
+  platformAdminGuard,
 } from '../../core/auth/auth.guards';
 import { ChangePasswordPage } from './auth/change-password-page';
 import { ForgotPasswordPage } from './auth/forgot-password-page';
@@ -81,6 +82,12 @@ export const ADMIN_ROUTES: Routes = [
         canActivate: [ownerGuard],
         data: { breadcrumb: 'Business' },
         loadChildren: () => import('./staff/staff-module').then((m) => m.StaffModule),
+      },
+      {
+        path: 'platform',
+        canActivate: [platformAdminGuard],
+        data: { breadcrumb: 'Platform' },
+        loadChildren: () => import('../platform/platform-module').then((m) => m.PlatformModule),
       },
       { path: '**', redirectTo: '' },
     ],

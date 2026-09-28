@@ -4,9 +4,11 @@ import { PlatformPage } from './platform-page';
 import { PlatformRoutingModule } from './platform-routing-module';
 
 /**
- * Restaurant onboarding + platform-wide restaurant list (`/platform`). Not part of the staff-authenticated
- * `AdminModule` — see `PlatformApi`/`PlatformPrefs` for its key-based auth. Reuses `AdminSharedModule` only for its
- * form/field/input pieces (which carry no admin-auth requirement themselves), not because this page is admin-only.
+ * Restaurant onboarding + platform-wide restaurant list. Reached two ways: nested under `AdminModule` at
+ * `/admin/platform` (inside `AdminShell`'s header/sidenav, guarded by `platformAdminGuard` — the normal path
+ * once signed in with a `platformAdmin` account) and standalone at the top-level `/platform` (no shell, no
+ * login, for the shared-key flow — see `PlatformApi`/`PlatformPrefs`). Reuses `AdminSharedModule` for its
+ * form/field/input pieces either way.
  */
 @NgModule({
   declarations: [PlatformPage],

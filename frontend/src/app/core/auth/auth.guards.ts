@@ -40,6 +40,13 @@ export const ownerGuard: CanActivateFn = () => {
   return auth.isOwner() ? true : router.createUrlTree([ADMIN_PATHS.home]);
 };
 
+/** Platform-admin-only pages (`/admin/platform`). Everyone else is sent to the admin home. */
+export const platformAdminGuard: CanActivateFn = () => {
+  const auth = inject(AuthStore);
+  const router = inject(Router);
+  return auth.isPlatformAdmin() ? true : router.createUrlTree([ADMIN_PATHS.home]);
+};
+
 /** Redirects an already signed-in admin away from the login page. */
 export const adminGuestOnlyGuard: CanActivateFn = async () => {
   const auth = inject(AuthStore);

@@ -111,7 +111,7 @@ export class CommandPalette {
 
   private matchPages(query: string): PaletteResult[] {
     const q = query.trim().toLowerCase();
-    const items = visibleNav(this.auth.isOwner());
+    const items = visibleNav(this.auth.isOwner(), this.auth.isPlatformAdmin());
     return items
       .filter((item) => !q || item.label.toLowerCase().includes(q))
       .map((item) => ({ id: `page-${item.path}`, label: item.label, section: 'Pages' as const, path: item.path }));

@@ -28,6 +28,7 @@ export class AuthStore {
   readonly isAuthenticated = computed(() => this._accessToken() !== null && this._user() !== null);
   readonly role = computed<StaffRole | null>(() => this._user()?.role ?? null);
   readonly isOwner = computed(() => this.role() === 'OWNER');
+  readonly isPlatformAdmin = computed(() => this._user()?.platformAdmin ?? false);
   /** The JWT only grants `/api/v1/auth/change-password` until this is false. */
   readonly mustChangePassword = computed(() => this._user()?.mustChangePassword ?? false);
 

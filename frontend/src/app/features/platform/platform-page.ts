@@ -1,6 +1,7 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { firstValueFrom } from 'rxjs';
+import { AuthStore } from '../../core/auth/auth.store';
 import { PlatformApi } from '../../core/api/platform.api';
 import { OnboardRestaurantResponse, RestaurantSummary } from '../../core/api/models';
 import { errorMessage } from '../../shared/util/form-errors';
@@ -14,7 +15,9 @@ interface OnboardForm {
 
 /**
  * Internal tool: onboard a new restaurant and see every restaurant on the platform with its owner account(s).
- * Gated by a shared secret (`X-Platform-Admin-Key`), not staff auth — see `PlatformApi` and `PlatformPrefs`.
+ * Two ways in, matching `PlatformApi`/the backend: already logged into the admin panel with a `platformAdmin`
+ * account (the normal path — no key prompt at all, calls go out with the staff JWT), or a shared secret
+ * (`X-Platform-Admin-Key`) entered by hand for use outside any login — see `PlatformPrefs`.
  */
 @Component({
   selector: 'app-platform-page',
@@ -25,9 +28,13 @@ interface OnboardForm {
 export class PlatformPage {
   private readonly api = inject(PlatformApi);
   protected readonly prefs = inject(PlatformPrefs);
+  protected readonly auth = inject(AuthStore);
 
   protected readonly checkingKey = signal(false);
   protected readonly keyError = signal('');
+
+  /** Already signed in as a platform admin, or unlocked with the shared key for this tab. */
+  protected readonly unlocked = computed(() => this.auth.isPlatformAdmin() || !!this.prefs.key());
 
   protected readonly restaurants = signal<RestaurantSummary[] | null>(null);
   protected readonly loading = signal(false);
@@ -43,7 +50,12 @@ export class PlatformPage {
   protected readonly result = signal<OnboardRestaurantResponse | null>(null);
 
   constructor() {
-    if (this.prefs.key()) void this.refresh();
+    if (this.unlocked()) void this.refresh();
+  }
+
+  /** `null` tells `PlatformApi` to use the caller's own staff JWT instead of the shared-key header. */
+  private currentKey(): string | null {
+    return this.auth.isPlatformAdmin() ? null : this.prefs.key();
   }
 
   protected async unlock(rawKey: string): Promise<void> {
@@ -71,7 +83,7 @@ export class PlatformPage {
     this.loading.set(true);
     this.loadError.set(null);
     try {
-      this.restaurants.set(await firstValueFrom(this.api.list(this.prefs.key())));
+      this.restaurants.set(await firstValueFrom(this.api.list(this.currentKey())));
     } catch (error) {
       this.loadError.set(error);
     } finally {
@@ -89,7 +101,7 @@ export class PlatformPage {
     try {
       const v = this.form.getRawValue();
       const response = await firstValueFrom(
-        this.api.onboard(this.prefs.key(), {
+        this.api.onboard(this.currentKey(), {
           restaurantName: v.restaurantName.trim(),
           slug: v.slug.trim() || null,
           ownerDisplayName: v.ownerDisplayName.trim() || null,

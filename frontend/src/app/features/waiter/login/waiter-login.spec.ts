@@ -13,6 +13,7 @@ const waiter: StaffInfo = {
   displayName: 'Ravi',
   role: 'WAITER',
   mustChangePassword: false,
+  platformAdmin: false,
 };
 
 describe('WaiterLogin', () => {

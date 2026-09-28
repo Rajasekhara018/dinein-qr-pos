@@ -188,6 +188,8 @@ export interface StaffInfo {
   displayName?: string;
   role: StaffRole;
   mustChangePassword: boolean;
+  /** Can use `/platform` (onboard/list restaurants) with this login, no shared key needed. */
+  platformAdmin: boolean;
 }
 
 export interface TokenResponse {

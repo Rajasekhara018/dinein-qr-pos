@@ -31,7 +31,7 @@ describe('admin routes – owner-only sections', () => {
   });
 
   const signIn = (role: 'OWNER' | 'MANAGER', mustChangePassword = false) =>
-    user.set({ id: 7, username: 'sam', role, mustChangePassword });
+    user.set({ id: 7, username: 'sam', role, mustChangePassword, platformAdmin: false });
 
   for (const section of ['reports', 'settings', 'staff']) {
     // The first lazy child module loaded in this whole file (usually 'reports', since it's first in the array)
@@ -79,12 +79,17 @@ describe('admin routes – owner-only sections', () => {
   });
 
   it('hides owner-only navigation for managers', () => {
-    expect(visibleNav(false).map((n) => n.label)).not.toContain('Reports');
-    expect(visibleNav(false).some((n) => n.ownerOnly)).toBe(false);
-    expect(visibleNav(true).filter((n) => n.ownerOnly).map((n) => n.label)).toEqual([
+    expect(visibleNav(false, false).map((n) => n.label)).not.toContain('Reports');
+    expect(visibleNav(false, false).some((n) => n.ownerOnly)).toBe(false);
+    expect(visibleNav(true, false).filter((n) => n.ownerOnly).map((n) => n.label)).toEqual([
       'Reports',
       'Settings',
       'Staff & devices',
     ]);
+  });
+
+  it('shows the Platform nav item only for platform-admin accounts', () => {
+    expect(visibleNav(true, false).map((n) => n.label)).not.toContain('Restaurants');
+    expect(visibleNav(true, true).map((n) => n.label)).toContain('Restaurants');
   });
 });

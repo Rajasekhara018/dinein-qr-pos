@@ -56,7 +56,9 @@ export class AdminShell {
   private readonly confirmSvc = inject(ConfirmService);
   protected readonly isDesktop = inject(BreakpointService).isDesktop;
 
-  protected readonly navGroups = computed(() => visibleNavGroups(this.auth.isOwner()));
+  protected readonly navGroups = computed(() =>
+    visibleNavGroups(this.auth.isOwner(), this.auth.isPlatformAdmin()),
+  );
   protected readonly drawerOpen = signal(false);
   protected readonly userMenuOpen = signal(false);
   protected readonly paletteOpen = signal(false);
