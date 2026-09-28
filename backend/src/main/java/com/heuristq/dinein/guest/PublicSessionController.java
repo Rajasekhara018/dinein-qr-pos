@@ -87,8 +87,8 @@ public class PublicSessionController {
                 .header(HttpHeaders.SET_COOKIE,
                         cookieFactory.guestCookie(guestSessionService.encode(session), guestSessionService.ttl()).toString())
                 .cacheControl(CacheControl.noStore())
-                .body(new SessionResponse(new TableInfo(table.getId(), table.getLabel()), settingsService.publicInfo(),
-                        session.expiresAt()));
+                .body(new SessionResponse(new TableInfo(table.getId(), table.getLabel()),
+                        settingsService.publicInfo(table.getRestaurantId()), session.expiresAt()));
     }
 
     private static ApiException invalidTable() {

@@ -3,6 +3,7 @@ package com.heuristq.dinein.staff;
 import com.heuristq.dinein.auth.PasswordPolicy;
 import com.heuristq.dinein.auth.domain.RefreshTokenRepository;
 import com.heuristq.dinein.shared.exception.ApiException;
+import com.heuristq.dinein.shared.security.CurrentStaff;
 import com.heuristq.dinein.shared.security.StaffPrincipal;
 import com.heuristq.dinein.staff.domain.StaffRole;
 import com.heuristq.dinein.staff.domain.StaffUserEntity;
@@ -40,7 +41,8 @@ public class StaffService {
 
     @Transactional(readOnly = true)
     public List<StaffResponse> list() {
-        return staffUserRepository.findAllByOrderByUsernameAsc().stream().map(StaffResponse::from).toList();
+        return staffUserRepository.findAllByRestaurantIdOrderByUsernameAsc(currentRestaurantId()).stream()
+                .map(StaffResponse::from).toList();
     }
 
     @Transactional
@@ -51,6 +53,7 @@ public class StaffService {
         }
         PasswordPolicy.validate(request.password());
         StaffUserEntity user = new StaffUserEntity();
+        user.setRestaurantId(currentRestaurantId());
         user.setUsername(username);
         user.setDisplayName(trimToNull(request.displayName()));
         user.setEmail(normalizeEmail(request.email()));
@@ -70,7 +73,8 @@ public class StaffService {
 
     @Transactional
     public StaffResponse update(Long id, UpdateStaff request, StaffPrincipal actor) {
-        StaffUserEntity user = staffUserRepository.findById(id).orElseThrow(() -> ApiException.notFound("Staff user"));
+        StaffUserEntity user = staffUserRepository.findByIdAndRestaurantId(id, actor.restaurantId())
+                .orElseThrow(() -> ApiException.notFound("Staff user"));
         boolean selfEdit = user.getId().equals(actor.userId());
         if (selfEdit && (!request.active() || request.role() != user.getRole())) {
             throw ApiException.badRequest("SELF_LOCKOUT", "You cannot deactivate yourself or change your own role");
@@ -98,11 +102,16 @@ public class StaffService {
             refreshTokenRepository.revokeAllForUser(user.getId(), clock.instant());
             deviceTokenService.revokeAllForUser(user.getId());
         }
-        if (user.getRole() != StaffRole.OWNER && !staffUserRepository.existsByRole(StaffRole.OWNER)) {
+        if (user.getRole() != StaffRole.OWNER
+                && !staffUserRepository.existsByRestaurantIdAndRole(actor.restaurantId(), StaffRole.OWNER)) {
             throw ApiException.badRequest("LAST_OWNER", "At least one owner account must remain");
         }
         log.info("staff.updated userId={} by={}", user.getId(), actor.userId());
         return StaffResponse.from(user);
+    }
+
+    private static Long currentRestaurantId() {
+        return CurrentStaff.require().restaurantId();
     }
 
     private static boolean usesPinSignIn(StaffRole role) {

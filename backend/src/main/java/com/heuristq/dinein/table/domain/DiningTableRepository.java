@@ -9,9 +9,11 @@ public interface DiningTableRepository extends JpaRepository<DiningTableEntity, 
 
     Optional<DiningTableEntity> findByQrToken(String qrToken);
 
-    boolean existsByLabelIgnoreCase(String label);
+    Optional<DiningTableEntity> findByIdAndRestaurantId(Long id, Long restaurantId);
 
-    boolean existsByLabelIgnoreCaseAndIdNot(String label, Long id);
+    boolean existsByRestaurantIdAndLabelIgnoreCase(Long restaurantId, String label);
 
-    List<DiningTableEntity> findAllByOrderByLabelAsc();
+    boolean existsByRestaurantIdAndLabelIgnoreCaseAndIdNot(Long restaurantId, String label, Long id);
+
+    List<DiningTableEntity> findAllByRestaurantIdOrderByLabelAsc(Long restaurantId);
 }

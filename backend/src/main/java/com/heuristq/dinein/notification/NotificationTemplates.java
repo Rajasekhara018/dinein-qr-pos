@@ -30,9 +30,9 @@ public class NotificationTemplates {
         this.baseUrl = url.endsWith("/") ? url.substring(0, url.length() - 1) : url;
     }
 
-    public String restaurantName() {
+    public String restaurantName(Long restaurantId) {
         try {
-            return settingsService.current().getName();
+            return settingsService.forRestaurant(restaurantId).getName();
         } catch (RuntimeException e) {
             log.warn("notification.restaurant_name_unavailable error={}", e.getMessage());
             return "Restaurant";

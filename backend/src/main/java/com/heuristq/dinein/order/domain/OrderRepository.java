@@ -34,7 +34,9 @@ public interface OrderRepository extends JpaRepository<OrderEntity, Long>, JpaSp
 
     List<OrderEntity> findByGuestSessionIdOrderByPlacedAtDesc(String guestSessionId);
 
-    List<OrderEntity> findByStatusInOrderByPaidAtAsc(Collection<OrderStatus> statuses);
+    Optional<OrderEntity> findByIdAndRestaurantId(Long id, Long restaurantId);
+
+    List<OrderEntity> findByRestaurantIdAndStatusInOrderByPaidAtAsc(Long restaurantId, Collection<OrderStatus> statuses);
 
     @Query("select o.id from OrderEntity o where o.status = :status and o.placedAt < :cutoff "
             + "and o.paymentFlagged = false order by o.placedAt")

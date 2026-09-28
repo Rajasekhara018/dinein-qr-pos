@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 public interface ItemRepository extends JpaRepository<ItemEntity, Long>, JpaSpecificationExecutor<ItemEntity> {
 
@@ -16,9 +17,13 @@ public interface ItemRepository extends JpaRepository<ItemEntity, Long>, JpaSpec
         long getCount();
     }
 
-    @Query("select i.categoryId as categoryId, count(i) as count from ItemEntity i where i.active = true group by i.categoryId")
-    List<CategoryCount> countActiveByCategory();
+    @Query("select i.categoryId as categoryId, count(i) as count from ItemEntity i "
+            + "where i.active = true and i.restaurantId = :restaurantId group by i.categoryId")
+    List<CategoryCount> countActiveByCategory(@Param("restaurantId") Long restaurantId);
 
+    Optional<ItemEntity> findByIdAndRestaurantId(Long id, Long restaurantId);
+
+    /** categoryIds is already restaurant-scoped by the caller (categories are owned one-per-restaurant). */
     List<ItemEntity> findByActiveTrueAndCategoryIdInOrderByDisplayOrderAscNameAsc(Collection<Long> categoryIds);
 
     boolean existsByCategoryIdAndNameIgnoreCaseAndIdNot(Long categoryId, String name, Long id);

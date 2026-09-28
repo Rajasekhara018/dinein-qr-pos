@@ -51,6 +51,10 @@ public class RateLimitFilter extends OncePerRequestFilter {
             } else if (path.equals(ApiPaths.V1 + "/admin/images")) {
                 rule = properties.upload();
                 key = "upload:" + CurrentStaff.find().map(p -> "u" + p.userId()).orElse(request.getRemoteAddr());
+            } else if (path.equals(ApiPaths.V1 + "/platform/restaurants")) {
+                // Reuses the login rule: same shape of risk (a secret guessed by brute force), no dedicated config.
+                rule = properties.login();
+                key = "platform:" + request.getRemoteAddr();
             }
             if (rule != null) {
                 RateLimitService.Decision decision = rateLimitService.allow(key, rule);

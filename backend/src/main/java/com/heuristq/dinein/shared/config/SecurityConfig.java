@@ -76,6 +76,8 @@ public class SecurityConfig {
                         .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .requestMatchers("/ws", "/ws/**").permitAll()
                         .requestMatchers(V1 + "/public/**", V1 + "/images/**", V1 + "/webhooks/**").permitAll()
+                        // Key-authenticated inside the controller, like the webhooks above; see PlatformOnboardingController.
+                        .requestMatchers(V1 + "/platform/**").permitAll()
                         .requestMatchers(V1 + "/auth/login", V1 + "/auth/refresh", V1 + "/auth/logout",
                                 V1 + "/auth/kitchen-device", V1 + "/auth/csrf").permitAll()
                         .requestMatchers(V1 + "/auth/**").authenticated()

@@ -2,6 +2,7 @@ package com.heuristq.dinein.table;
 
 import com.heuristq.dinein.shared.config.AppProperties;
 import com.heuristq.dinein.shared.exception.ApiException;
+import com.heuristq.dinein.shared.security.CurrentStaff;
 import com.heuristq.dinein.shared.util.SecureTokens;
 import com.heuristq.dinein.shared.web.ApiPaths;
 import com.heuristq.dinein.table.domain.DiningTableEntity;
@@ -40,12 +41,13 @@ public class TableService {
 
     @Transactional(readOnly = true)
     public List<TableResponse> list() {
-        return tableRepository.findAllByOrderByLabelAsc().stream().map(this::toResponse).toList();
+        return tableRepository.findAllByRestaurantIdOrderByLabelAsc(currentRestaurantId())
+                .stream().map(this::toResponse).toList();
     }
 
     @Transactional(readOnly = true)
     public List<DiningTableEntity> findForPrint(List<Long> ids) {
-        List<DiningTableEntity> all = tableRepository.findAllByOrderByLabelAsc();
+        List<DiningTableEntity> all = tableRepository.findAllByRestaurantIdOrderByLabelAsc(currentRestaurantId());
         if (ids == null || ids.isEmpty()) {
             return all.stream().filter(DiningTableEntity::isActive).toList();
         }
@@ -54,7 +56,12 @@ public class TableService {
 
     @Transactional(readOnly = true)
     public DiningTableEntity get(Long id) {
-        return tableRepository.findById(id).orElseThrow(() -> ApiException.notFound("Table"));
+        return tableRepository.findByIdAndRestaurantId(id, currentRestaurantId())
+                .orElseThrow(() -> ApiException.notFound("Table"));
+    }
+
+    private static Long currentRestaurantId() {
+        return CurrentStaff.require().restaurantId();
     }
 
     @Transactional(readOnly = true)
@@ -67,11 +74,13 @@ public class TableService {
 
     @Transactional
     public TableResponse create(TableRequest request) {
+        Long restaurantId = currentRestaurantId();
         String label = normalize(request.label());
-        if (tableRepository.existsByLabelIgnoreCase(label)) {
+        if (tableRepository.existsByRestaurantIdAndLabelIgnoreCase(restaurantId, label)) {
             throw ApiException.conflict("DUPLICATE_LABEL", "A table with this label already exists");
         }
         DiningTableEntity table = new DiningTableEntity();
+        table.setRestaurantId(restaurantId);
         table.setLabel(label);
         table.setQrToken(newQrToken());
         table.setActive(request.active() == null || request.active());
@@ -84,7 +93,7 @@ public class TableService {
     public TableResponse update(Long id, TableRequest request) {
         DiningTableEntity table = get(id);
         String label = normalize(request.label());
-        if (tableRepository.existsByLabelIgnoreCaseAndIdNot(label, id)) {
+        if (tableRepository.existsByRestaurantIdAndLabelIgnoreCaseAndIdNot(table.getRestaurantId(), label, id)) {
             throw ApiException.conflict("DUPLICATE_LABEL", "A table with this label already exists");
         }
         table.setLabel(label);

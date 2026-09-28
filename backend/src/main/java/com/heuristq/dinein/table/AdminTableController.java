@@ -2,6 +2,7 @@ package com.heuristq.dinein.table;
 
 import com.heuristq.dinein.settings.SettingsService;
 import com.heuristq.dinein.shared.exception.ApiException;
+import com.heuristq.dinein.shared.security.CurrentStaff;
 import com.heuristq.dinein.table.domain.DiningTableEntity;
 import com.heuristq.dinein.table.dto.TableDtos.TableRequest;
 import com.heuristq.dinein.table.dto.TableDtos.TableResponse;
@@ -57,7 +58,8 @@ public class AdminTableController {
     @GetMapping(value = "/qr.pdf", produces = MediaType.APPLICATION_PDF_VALUE)
     public ResponseEntity<byte[]> qrPdf(@RequestParam(required = false) List<Long> ids) {
         List<DiningTableEntity> tables = tableService.findForPrint(ids);
-        byte[] pdf = qrPdfService.render(tables, settingsService.current().getName(), tableService::menuUrl);
+        byte[] pdf = qrPdfService.render(tables,
+                settingsService.forRestaurant(CurrentStaff.require().restaurantId()).getName(), tableService::menuUrl);
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_PDF)
                 .header(HttpHeaders.CONTENT_DISPOSITION,

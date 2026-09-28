@@ -1,7 +1,10 @@
 package com.heuristq.dinein.settings.domain;
 
+import com.heuristq.dinein.restaurant.domain.RestaurantEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Getter;
@@ -12,17 +15,19 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.time.Instant;
 import java.time.LocalTime;
 
-/** Single-row table (id = 1). */
+/** One row per restaurant; {@link #getRestaurantId()} identifies which one. */
 @Getter
 @Setter
 @Entity
 @Table(name = "restaurant_settings")
 public class RestaurantSettingsEntity {
 
-    public static final long SINGLETON_ID = 1L;
-
     @Id
-    private Long id = SINGLETON_ID;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "restaurant_id", nullable = false)
+    private Long restaurantId = RestaurantEntity.DEFAULT_ID;
 
     @Column(nullable = false, length = 100)
     private String name;

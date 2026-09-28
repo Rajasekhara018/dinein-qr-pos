@@ -1,5 +1,6 @@
 package com.heuristq.dinein.menu.domain;
 
+import com.heuristq.dinein.restaurant.domain.RestaurantEntity;
 import com.heuristq.dinein.shared.persistence.BaseEntity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -22,6 +23,9 @@ import java.util.List;
 @Entity
 @Table(name = "item")
 public class ItemEntity extends BaseEntity {
+
+    @Column(name = "restaurant_id", nullable = false)
+    private Long restaurantId = RestaurantEntity.DEFAULT_ID;
 
     @Column(name = "category_id", nullable = false)
     private Long categoryId;

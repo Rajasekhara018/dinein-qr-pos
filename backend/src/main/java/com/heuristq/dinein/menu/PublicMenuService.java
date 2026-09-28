@@ -12,10 +12,14 @@ import com.heuristq.dinein.menu.dto.PublicMenuDtos.MenuCategory;
 import com.heuristq.dinein.menu.dto.PublicMenuDtos.MenuItem;
 import com.heuristq.dinein.menu.dto.PublicMenuDtos.MenuResponse;
 import com.heuristq.dinein.menu.dto.PublicMenuDtos.MenuVariant;
+import com.heuristq.dinein.guest.GuestSession;
 import com.heuristq.dinein.realtime.RealtimePublisher;
 import com.heuristq.dinein.settings.domain.RestaurantSettingsRepository;
 import com.heuristq.dinein.settings.domain.RestaurantSettingsEntity;
+import com.heuristq.dinein.shared.exception.ApiException;
 import com.heuristq.dinein.shared.util.SecureTokens;
+import com.heuristq.dinein.table.domain.DiningTableEntity;
+import com.heuristq.dinein.table.domain.DiningTableRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,8 +28,8 @@ import org.springframework.transaction.event.TransactionalEventListener;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 /**
@@ -42,33 +46,43 @@ public class PublicMenuService {
     private final CategoryRepository categoryRepository;
     private final ItemRepository itemRepository;
     private final RestaurantSettingsRepository settingsRepository;
+    private final DiningTableRepository tableRepository;
     private final RealtimePublisher realtimePublisher;
     private final ObjectMapper objectMapper;
-    private final AtomicReference<CachedMenu> cache = new AtomicReference<>();
+    private final Map<Long, CachedMenu> cache = new ConcurrentHashMap<>();
     /** Bumped on every invalidation so a build that started before a change is never cached. */
     private final AtomicLong generation = new AtomicLong();
 
     public PublicMenuService(CategoryRepository categoryRepository, ItemRepository itemRepository,
-                             RestaurantSettingsRepository settingsRepository, RealtimePublisher realtimePublisher,
-                             ObjectMapper objectMapper) {
+                             RestaurantSettingsRepository settingsRepository, DiningTableRepository tableRepository,
+                             RealtimePublisher realtimePublisher, ObjectMapper objectMapper) {
         this.categoryRepository = categoryRepository;
         this.itemRepository = itemRepository;
         this.settingsRepository = settingsRepository;
+        this.tableRepository = tableRepository;
         this.realtimePublisher = realtimePublisher;
         this.objectMapper = objectMapper;
     }
 
     @Transactional(readOnly = true)
-    public CachedMenu getMenu() {
-        CachedMenu cached = cache.get();
+    public CachedMenu getMenu(GuestSession guest) {
+        Long restaurantId = tableRepository.findById(guest.tableId())
+                .map(DiningTableEntity::getRestaurantId)
+                .orElseThrow(() -> ApiException.notFound("Table"));
+        return getMenu(restaurantId);
+    }
+
+    @Transactional(readOnly = true)
+    public CachedMenu getMenu(Long restaurantId) {
+        CachedMenu cached = cache.get(restaurantId);
         if (cached != null) {
             return cached;
         }
         long startedAt = generation.get();
-        CachedMenu built = build();
+        CachedMenu built = build(restaurantId);
         synchronized (cache) {
             if (generation.get() == startedAt) {
-                cache.set(built);
+                cache.put(restaurantId, built);
             }
         }
         return built;
@@ -78,16 +92,17 @@ public class PublicMenuService {
     public void onMenuChanged(MenuChangedEvent event) {
         synchronized (cache) {
             generation.incrementAndGet();
-            cache.set(null);
+            cache.clear();
         }
         log.debug("menu.cache.invalidated reason={}", event.reason());
         realtimePublisher.menuUpdated();
     }
 
-    private CachedMenu build() {
-        boolean pricesIncludeGst = settingsRepository.findById(RestaurantSettingsEntity.SINGLETON_ID)
+    private CachedMenu build(Long restaurantId) {
+        boolean pricesIncludeGst = settingsRepository.findByRestaurantId(restaurantId)
                 .map(RestaurantSettingsEntity::isPricesIncludeGst).orElse(false);
-        List<CategoryEntity> categories = categoryRepository.findByActiveTrueOrderByDisplayOrderAscNameAsc();
+        List<CategoryEntity> categories =
+                categoryRepository.findByActiveTrueAndRestaurantIdOrderByDisplayOrderAscNameAsc(restaurantId);
         Map<Long, List<ItemEntity>> itemsByCategory = categories.isEmpty() ? Map.of()
                 : itemRepository.findByActiveTrueAndCategoryIdInOrderByDisplayOrderAscNameAsc(
                         categories.stream().map(CategoryEntity::getId).toList())

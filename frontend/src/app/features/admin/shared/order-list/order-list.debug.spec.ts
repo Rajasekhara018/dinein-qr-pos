@@ -1,3 +1,4 @@
+import { provideRouter } from '@angular/router';
 import { TestBed } from '@angular/core/testing';
 import { describe, expect, it } from 'vitest';
 import { AdminSharedModule } from '../admin-shared-module';
@@ -24,7 +25,7 @@ const order: AdminOrderSummary = {
 
 describe('OrderList pager passthrough', () => {
   it('forwards pageSizeChange from the embedded desktop pager', () => {
-    TestBed.configureTestingModule({ imports: [AdminSharedModule] });
+    TestBed.configureTestingModule({ imports: [AdminSharedModule], providers: [provideRouter([])] });
     const fixture = TestBed.createComponent(OrderList);
     fixture.componentRef.setInput('orders', [order]);
     fixture.componentRef.setInput('page', 1);

@@ -1,5 +1,7 @@
 package com.heuristq.dinein.menu;
 
+import com.heuristq.dinein.guest.CurrentGuest;
+import com.heuristq.dinein.guest.GuestSession;
 import com.heuristq.dinein.menu.dto.PublicMenuDtos.MenuResponse;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpHeaders;
@@ -22,9 +24,9 @@ public class PublicMenuController {
 
     /** Revalidated on every load (no-cache) but cheap thanks to the menu-version ETag. */
     @GetMapping
-    public ResponseEntity<MenuResponse> menu(
+    public ResponseEntity<MenuResponse> menu(@CurrentGuest GuestSession guest,
             @RequestHeader(value = HttpHeaders.IF_NONE_MATCH, required = false) String ifNoneMatch) {
-        PublicMenuService.CachedMenu cached = publicMenuService.getMenu();
+        PublicMenuService.CachedMenu cached = publicMenuService.getMenu(guest);
         if (ifNoneMatch != null && ifNoneMatch.contains(cached.etag())) {
             return ResponseEntity.status(HttpStatus.NOT_MODIFIED).eTag(cached.etag())
                     .cacheControl(CacheControl.noCache()).build();

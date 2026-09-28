@@ -1,0 +1,110 @@
+package com.heuristq.dinein.restaurant;
+
+import com.heuristq.dinein.restaurant.domain.RestaurantEntity;
+import com.heuristq.dinein.restaurant.domain.RestaurantRepository;
+import com.heuristq.dinein.restaurant.dto.OnboardingDtos.OnboardRestaurantRequest;
+import com.heuristq.dinein.restaurant.dto.OnboardingDtos.OnboardRestaurantResponse;
+import com.heuristq.dinein.restaurant.dto.OnboardingDtos.OwnerSummary;
+import com.heuristq.dinein.restaurant.dto.OnboardingDtos.RestaurantSummary;
+import com.heuristq.dinein.settings.domain.RestaurantSettingsEntity;
+import com.heuristq.dinein.settings.domain.RestaurantSettingsRepository;
+import com.heuristq.dinein.shared.exception.ApiException;
+import com.heuristq.dinein.shared.util.SecureTokens;
+import com.heuristq.dinein.staff.domain.StaffRole;
+import com.heuristq.dinein.staff.domain.StaffUserEntity;
+import com.heuristq.dinein.staff.domain.StaffUserRepository;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+/**
+ * Creates a new tenant end to end: the {@link RestaurantEntity} row, its settings, and its first OWNER account.
+ * Not merchant self-serve: called by whoever operates the platform (see {@code PlatformOnboardingController}) after
+ * onboarding a restaurant offline. The owner then signs in with the returned temporary password and is forced to
+ * change it, same as {@code BootstrapOwnerRunner}'s first-ever owner.
+ */
+@Slf4j
+@Service
+public class RestaurantOnboardingService {
+
+    private final RestaurantRepository restaurantRepository;
+    private final RestaurantSettingsRepository settingsRepository;
+    private final StaffUserRepository staffUserRepository;
+    private final PasswordEncoder passwordEncoder;
+
+    public RestaurantOnboardingService(RestaurantRepository restaurantRepository,
+                                       RestaurantSettingsRepository settingsRepository,
+                                       StaffUserRepository staffUserRepository, PasswordEncoder passwordEncoder) {
+        this.restaurantRepository = restaurantRepository;
+        this.settingsRepository = settingsRepository;
+        this.staffUserRepository = staffUserRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
+
+    @Transactional
+    public OnboardRestaurantResponse onboard(OnboardRestaurantRequest request) {
+        String name = request.restaurantName().trim();
+        String slug = normalizeSlug(request.slug() != null && !request.slug().isBlank() ? request.slug() : name);
+        if (restaurantRepository.findBySlugIgnoreCase(slug).isPresent()) {
+            throw ApiException.conflict("DUPLICATE_SLUG", "A restaurant with this slug already exists");
+        }
+        // Login is not yet restaurant-aware, so the username itself must be globally unique; the slug prefix
+        // guarantees that without asking the operator to pick one.
+        String username = slug + ".owner";
+        if (staffUserRepository.existsByUsernameIgnoreCase(username)) {
+            throw ApiException.conflict("DUPLICATE_SLUG", "A restaurant with this slug already exists");
+        }
+
+        RestaurantEntity restaurant = new RestaurantEntity();
+        restaurant.setName(name);
+        restaurant.setSlug(slug);
+        restaurantRepository.save(restaurant);
+
+        RestaurantSettingsEntity settings = new RestaurantSettingsEntity();
+        settings.setRestaurantId(restaurant.getId());
+        settings.setName(name);
+        settingsRepository.save(settings);
+
+        String temporaryPassword = SecureTokens.randomUrlSafe(9);
+        StaffUserEntity owner = new StaffUserEntity();
+        owner.setRestaurantId(restaurant.getId());
+        owner.setUsername(username);
+        owner.setDisplayName(request.ownerDisplayName() == null || request.ownerDisplayName().isBlank()
+                ? "Owner" : request.ownerDisplayName().trim());
+        owner.setRole(StaffRole.OWNER);
+        owner.setPasswordHash(passwordEncoder.encode(temporaryPassword));
+        owner.setMustChangePassword(true);
+        staffUserRepository.save(owner);
+
+        log.info("restaurant.onboarded id={} slug={} ownerUsername={}", restaurant.getId(), slug, username);
+        return new OnboardRestaurantResponse(restaurant.getId(), name, slug, username, temporaryPassword);
+    }
+
+    /** Every restaurant on the platform with its owner accounts, for the platform operator's own view. */
+    @Transactional(readOnly = true)
+    public List<RestaurantSummary> listRestaurants() {
+        Map<Long, List<StaffUserEntity>> ownersByRestaurant = staffUserRepository
+                .findByRoleOrderByUsernameAsc(StaffRole.OWNER).stream()
+                .collect(Collectors.groupingBy(StaffUserEntity::getRestaurantId));
+        return restaurantRepository.findAll().stream()
+                .map(r -> new RestaurantSummary(r.getId(), r.getName(), r.getSlug(), r.getStatus(), r.getCreatedAt(),
+                        ownersByRestaurant.getOrDefault(r.getId(), List.of()).stream()
+                                .map(o -> new OwnerSummary(o.getId(), o.getUsername(), o.getDisplayName(), o.isActive()))
+                                .toList()))
+                .toList();
+    }
+
+    private static String normalizeSlug(String raw) {
+        String slug = raw.trim().toLowerCase(Locale.ROOT).replaceAll("[^a-z0-9]+", "-").replaceAll("^-+|-+$", "");
+        if (slug.isBlank()) {
+            throw ApiException.badRequest("INVALID_SLUG", "Provide a valid restaurant name or slug");
+        }
+        return slug;
+    }
+}

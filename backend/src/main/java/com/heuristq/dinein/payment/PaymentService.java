@@ -71,7 +71,7 @@ public class PaymentService {
             return new CheckoutResponse(order.getId(), order.getOrderNumber(), order.getDisplayToken(), order.getStatus(),
                     null, null, null, null, null, null);
         }
-        RestaurantSettingsEntity settings = settingsService.current();
+        RestaurantSettingsEntity settings = settingsService.forRestaurant(order.getRestaurantId());
         Optional<PaymentEntity> open = paymentRepository.findByOrderIdOrderByIdAsc(orderId).stream()
                 .filter(p -> !p.isOffline())
                 .filter(p -> p.getStatus() == PaymentStatus.CREATED || p.getStatus() == PaymentStatus.AUTHORIZED
@@ -120,7 +120,7 @@ public class PaymentService {
                 .findFirst()
                 .map(p -> new CheckoutResponse(order.getId(), order.getOrderNumber(), order.getDisplayToken(),
                         order.getStatus(), PaymentEntity.OFFLINE_PROVIDER, null, null, p.getAmountPaise(),
-                        p.getCurrency(), settingsService.current().getName()));
+                        p.getCurrency(), settingsService.forRestaurant(order.getRestaurantId()).getName()));
     }
 
     /** Whether online payment can be offered right now (the active gateway is configured). */

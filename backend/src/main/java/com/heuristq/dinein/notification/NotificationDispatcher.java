@@ -55,7 +55,7 @@ public class NotificationDispatcher {
 
     public void dispatch(NotificationRequest request) {
         try {
-            String restaurant = templates.restaurantName();
+            String restaurant = templates.restaurantName(request.restaurantId());
             NotificationRequest.Recipients to = request.recipients();
             to.staffRoles().forEach(role -> inApp(request, role, restaurant));
             to.emails().forEach(email -> email(request, email, restaurant));

@@ -53,7 +53,7 @@ class NotificationDispatcherTest {
         when(sms.provider()).thenReturn("TWILIO");
         when(email.provider()).thenReturn("SMTP");
         when(push.provider()).thenReturn("FCM");
-        when(templates.restaurantName()).thenReturn("Spice Garden");
+        when(templates.restaurantName(any())).thenReturn("Spice Garden");
         when(templates.render(any(), any(), any(), anyString())).thenReturn(new Message("Subject", "Body", "/x"));
         dispatcher = dispatcher(true);
     }
@@ -126,7 +126,7 @@ class NotificationDispatcherTest {
     }
 
     private static NotificationRequest request(Recipients recipients) {
-        return new NotificationRequest(NotificationEvent.ORDER_READY, 42L, Map.of("token", "17"), recipients);
+        return new NotificationRequest(NotificationEvent.ORDER_READY, 42L, 1L, Map.of("token", "17"), recipients);
     }
 
     private List<NotificationLogEntity> savedLogs() {

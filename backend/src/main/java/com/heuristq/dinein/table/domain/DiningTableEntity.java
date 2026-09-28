@@ -1,5 +1,6 @@
 package com.heuristq.dinein.table.domain;
 
+import com.heuristq.dinein.restaurant.domain.RestaurantEntity;
 import com.heuristq.dinein.shared.persistence.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -13,7 +14,11 @@ import lombok.Setter;
 @Table(name = "dining_table")
 public class DiningTableEntity extends BaseEntity {
 
-    @Column(nullable = false, unique = true, length = 20)
+    @Column(name = "restaurant_id", nullable = false)
+    private Long restaurantId = RestaurantEntity.DEFAULT_ID;
+
+    /** Unique per restaurant (see uq_dining_table_restaurant_label), not globally. */
+    @Column(nullable = false, length = 20)
     private String label;
 
     @Column(name = "qr_token", nullable = false, unique = true, length = 64)

@@ -9,7 +9,9 @@ public interface DeviceTokenRepository extends JpaRepository<DeviceTokenEntity, 
 
     Optional<DeviceTokenEntity> findByTokenHash(String tokenHash);
 
-    List<DeviceTokenEntity> findAllByOrderByCreatedAtDesc();
+    Optional<DeviceTokenEntity> findByIdAndRestaurantId(Long id, Long restaurantId);
+
+    List<DeviceTokenEntity> findAllByRestaurantIdOrderByCreatedAtDesc(Long restaurantId);
 
     List<DeviceTokenEntity> findByStaffUserIdAndRevokedAtIsNull(Long staffUserId);
 }

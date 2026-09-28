@@ -11,6 +11,7 @@ import com.heuristq.dinein.payment.domain.PaymentRepository;
 import com.heuristq.dinein.payment.domain.PaymentStatus;
 import com.heuristq.dinein.payment.domain.RefundStatus;
 import com.heuristq.dinein.payment.gateway.ProviderPayment;
+import com.heuristq.dinein.restaurant.domain.RestaurantEntity;
 import com.heuristq.dinein.settings.domain.RestaurantSettingsEntity;
 import com.heuristq.dinein.settings.domain.RestaurantSettingsRepository;
 import com.heuristq.dinein.staff.domain.StaffRole;
@@ -114,7 +115,7 @@ class WaiterFlowIT extends AbstractIntegrationTest {
     }
 
     private void setTakeaway(boolean enabled) {
-        RestaurantSettingsEntity s = settingsRepository.findById(RestaurantSettingsEntity.SINGLETON_ID).orElseThrow();
+        RestaurantSettingsEntity s = settingsRepository.findByRestaurantId(RestaurantEntity.DEFAULT_ID).orElseThrow();
         s.setTakeawayEnabled(enabled);
         settingsRepository.save(s);
     }

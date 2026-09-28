@@ -7,7 +7,7 @@ import com.heuristq.dinein.menu.domain.FoodType;
 import com.heuristq.dinein.menu.domain.ItemEntity;
 import com.heuristq.dinein.menu.domain.ItemRepository;
 import com.heuristq.dinein.menu.domain.ItemVariantEntity;
-import com.heuristq.dinein.settings.domain.RestaurantSettingsEntity;
+import com.heuristq.dinein.restaurant.domain.RestaurantEntity;
 import com.heuristq.dinein.settings.domain.RestaurantSettingsRepository;
 import com.heuristq.dinein.table.TableService;
 import com.heuristq.dinein.table.domain.DiningTableEntity;
@@ -53,7 +53,7 @@ public class DevSampleDataRunner implements ApplicationRunner {
         if (categoryRepository.count() > 0) {
             return;
         }
-        settingsRepository.findById(RestaurantSettingsEntity.SINGLETON_ID).ifPresent(s -> {
+        settingsRepository.findByRestaurantId(RestaurantEntity.DEFAULT_ID).ifPresent(s -> {
             s.setName("Spice Route Kitchen");
             s.setAddress("12 MG Road, Bengaluru 560001");
             s.setPhone("9876543210");

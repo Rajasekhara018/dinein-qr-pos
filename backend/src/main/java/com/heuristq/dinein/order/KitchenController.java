@@ -44,7 +44,7 @@ public class KitchenController {
 
     @GetMapping("/config")
     public KitchenConfig config() {
-        RestaurantSettingsEntity s = settingsService.current();
+        RestaurantSettingsEntity s = settingsService.forRestaurant(CurrentStaff.require().restaurantId());
         return new KitchenConfig(s.getName(), s.getKitchenWarnMinutes(), s.getKitchenAlertMinutes(),
                 s.getReadyAutoHideMinutes());
     }

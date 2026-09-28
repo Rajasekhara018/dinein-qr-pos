@@ -1,5 +1,6 @@
 package com.heuristq.dinein.staff.domain;
 
+import com.heuristq.dinein.restaurant.domain.RestaurantEntity;
 import com.heuristq.dinein.shared.persistence.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -15,6 +16,9 @@ import java.time.Instant;
 @Entity
 @Table(name = "device_token")
 public class DeviceTokenEntity extends BaseEntity {
+
+    @Column(name = "restaurant_id", nullable = false)
+    private Long restaurantId = RestaurantEntity.DEFAULT_ID;
 
     @Column(name = "staff_user_id", nullable = false)
     private Long staffUserId;

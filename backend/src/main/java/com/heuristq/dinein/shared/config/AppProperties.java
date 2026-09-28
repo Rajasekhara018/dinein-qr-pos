@@ -35,7 +35,8 @@ public record AppProperties(
             int maxFailedLogins,
             Duration lockoutDuration,
             String bootstrapOwnerUsername,
-            String bootstrapOwnerPassword) {
+            String bootstrapOwnerPassword,
+            String platformAdminKey) {
     }
 
     public record Orders(Duration paymentTimeout, long expiryCheckIntervalMs) {

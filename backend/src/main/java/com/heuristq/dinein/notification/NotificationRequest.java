@@ -11,8 +11,9 @@ import java.util.Set;
  * ({@code token}, {@code orderNumber}, {@code table}, {@code reason}). Channels are implied by the recipients.
  *
  * @param orderId related order, stored on the log and in-app rows; may be null
+ * @param restaurantId tenant the notification belongs to, used to look up its display name
  */
-public record NotificationRequest(NotificationEvent event, Long orderId, Map<String, String> data,
+public record NotificationRequest(NotificationEvent event, Long orderId, Long restaurantId, Map<String, String> data,
                                   Recipients recipients) {
 
     public NotificationRequest {

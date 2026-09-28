@@ -15,6 +15,7 @@ import com.heuristq.dinein.payment.domain.PaymentEntity;
 import com.heuristq.dinein.payment.domain.PaymentRepository;
 import com.heuristq.dinein.settings.SettingsService;
 import com.heuristq.dinein.shared.exception.ApiException;
+import com.heuristq.dinein.shared.security.CurrentStaff;
 import com.heuristq.dinein.shared.util.BusinessTime;
 import com.heuristq.dinein.shared.web.PageResponse;
 import com.heuristq.dinein.table.domain.DiningTableEntity;
@@ -82,8 +83,10 @@ public class OrderQueryService {
         if (wanted.isEmpty()) {
             return List.of();
         }
-        Instant hideBefore = clock.instant().minus(Duration.ofMinutes(settingsService.current().getReadyAutoHideMinutes()));
-        List<OrderEntity> orders = orderRepository.findByStatusInOrderByPaidAtAsc(wanted).stream()
+        Instant hideBefore = clock.instant()
+                .minus(Duration.ofMinutes(settingsService.forRestaurant(currentRestaurantId()).getReadyAutoHideMinutes()));
+        List<OrderEntity> orders = orderRepository
+                .findByRestaurantIdAndStatusInOrderByPaidAtAsc(currentRestaurantId(), wanted).stream()
                 .filter(o -> o.getStatus() != OrderStatus.READY || o.getReadyAt() == null || o.getReadyAt().isAfter(hideBefore))
                 .toList();
         Map<Long, String> labels = mapper.tableLabels(orders);
@@ -100,7 +103,8 @@ public class OrderQueryService {
         if (wanted.isEmpty()) {
             return List.of();
         }
-        List<OrderEntity> orders = orderRepository.findByStatusInOrderByPaidAtAsc(wanted);
+        List<OrderEntity> orders = orderRepository
+                .findByRestaurantIdAndStatusInOrderByPaidAtAsc(currentRestaurantId(), wanted);
         Map<Long, String> labels = mapper.tableLabels(orders);
         return orders.stream().map(o -> mapper.toKitchenView(o, labels.get(o.getTableId()))).toList();
     }
@@ -108,10 +112,12 @@ public class OrderQueryService {
     /** Active tables with counts of their open (paid, not yet served) orders. */
     @Transactional(readOnly = true)
     public List<WaiterTableView> waiterTables() {
-        Map<Long, List<OrderEntity>> open = orderRepository.findByStatusInOrderByPaidAtAsc(OrderStatus.KITCHEN_VISIBLE)
+        Long restaurantId = currentRestaurantId();
+        Map<Long, List<OrderEntity>> open = orderRepository
+                .findByRestaurantIdAndStatusInOrderByPaidAtAsc(restaurantId, OrderStatus.KITCHEN_VISIBLE)
                 .stream().filter(o -> o.getTableId() != null)
                 .collect(Collectors.groupingBy(OrderEntity::getTableId));
-        return tableRepository.findAllByOrderByLabelAsc().stream()
+        return tableRepository.findAllByRestaurantIdOrderByLabelAsc(restaurantId).stream()
                 .filter(DiningTableEntity::isActive)
                 .map(t -> {
                     List<OrderEntity> orders = open.getOrDefault(t.getId(), List.of());
@@ -127,7 +133,8 @@ public class OrderQueryService {
     /** Any order with its latest payment, in the guest-order shape (used by the waiter's order page). */
     @Transactional(readOnly = true)
     public GuestOrderView staffOrder(Long orderId) {
-        OrderEntity order = orderRepository.findById(orderId).orElseThrow(() -> ApiException.notFound("Order"));
+        OrderEntity order = orderRepository.findByIdAndRestaurantId(orderId, currentRestaurantId())
+                .orElseThrow(() -> ApiException.notFound("Order"));
         PaymentEntity latest = paymentRepository.findByOrderIdOrderByIdAsc(orderId).stream()
                 .max(Comparator.comparing(PaymentEntity::getId)).orElse(null);
         return mapper.toGuestView(order, latest, mapper.tableLabel(order));
@@ -142,6 +149,7 @@ public class OrderQueryService {
                                                        String q, int page, int size) {
         Specification<OrderEntity> spec = (root, query, cb) -> {
             List<Predicate> p = new ArrayList<>();
+            p.add(cb.equal(root.get("restaurantId"), currentRestaurantId()));
             if (statuses != null && !statuses.isEmpty()) {
                 p.add(root.get("status").in(statuses));
             }
@@ -169,8 +177,13 @@ public class OrderQueryService {
 
     @Transactional(readOnly = true)
     public AdminOrderView adminOrder(Long id) {
-        OrderEntity order = orderRepository.findById(id).orElseThrow(() -> ApiException.notFound("Order"));
+        OrderEntity order = orderRepository.findByIdAndRestaurantId(id, currentRestaurantId())
+                .orElseThrow(() -> ApiException.notFound("Order"));
         return mapper.toAdminView(order, paymentRepository.findByOrderIdOrderByIdAsc(id), mapper.tableLabel(order));
+    }
+
+    private static Long currentRestaurantId() {
+        return CurrentStaff.require().restaurantId();
     }
 
     private Map<Long, PaymentEntity> latestPayments(List<Long> orderIds) {

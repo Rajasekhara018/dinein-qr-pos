@@ -91,10 +91,21 @@ public class OrderPlacementService {
         this.clock = clock;
     }
 
-    /** What the core needs to create an order, whoever places it. */
-    record NewOrder(Long tableId, String guestSessionId, Long placedByStaffId, OrderType requestedType,
-                    List<CartLine> items, String notes, String customerName, String customerPhone,
-                    String idempotencyKey) {
+    /**
+     * What the core needs to create an order, whoever places it. {@code restaurantId} is only required when
+     * {@code tableId} is null (a staff-placed order with no table, e.g. takeaway): otherwise the table's own
+     * restaurant is authoritative.
+     */
+    record NewOrder(Long tableId, String guestSessionId, Long placedByStaffId, Long restaurantId,
+                    OrderType requestedType, List<CartLine> items, String notes, String customerName,
+                    String customerPhone, String idempotencyKey) {
+    }
+
+    private static Long requireStaffRestaurantId(NewOrder draft) {
+        if (draft.restaurantId() == null) {
+            throw new IllegalStateException("restaurantId missing for staff order without a table");
+        }
+        return draft.restaurantId();
     }
 
     // ----- Guest self-order ------------------------------------------------------------------------
@@ -107,8 +118,8 @@ public class OrderPlacementService {
         }
         // Fail before creating an order that could never be paid (e.g. gateway credentials missing).
         paymentService.activeProvider();
-        NewOrder draft = new NewOrder(guest.tableId(), guest.sessionId(), null, request.orderType(), request.items(),
-                request.notes(), request.customerName(), request.customerPhone(), idempotencyKey);
+        NewOrder draft = new NewOrder(guest.tableId(), guest.sessionId(), null, null, request.orderType(),
+                request.items(), request.notes(), request.customerName(), request.customerPhone(), idempotencyKey);
         Long orderId;
         try {
             orderId = tx.execute(status -> createOrder(draft));
@@ -149,8 +160,9 @@ public class OrderPlacementService {
             paymentService.activeProvider();
         }
         String actor = "user:" + staff.userId();
-        NewOrder draft = new NewOrder(request.tableId(), null, staff.userId(), request.orderType(), request.items(),
-                request.note(), request.customerName(), request.customerPhone(), idempotencyKey);
+        NewOrder draft = new NewOrder(request.tableId(), null, staff.userId(), staff.restaurantId(),
+                request.orderType(), request.items(), request.note(), request.customerName(),
+                request.customerPhone(), idempotencyKey);
         Long orderId;
         try {
             orderId = tx.execute(status -> {
@@ -191,18 +203,20 @@ public class OrderPlacementService {
     // ----- Shared core ------------------------------------------------------------------------------
 
     private Long createOrder(NewOrder draft) {
-        RestaurantSettingsEntity settings = settingsService.current();
-        settingsService.assertAcceptingOrders(settings);
         boolean byStaff = draft.placedByStaffId() != null;
-        OrderType orderType = OrderTypeRules.resolve(draft.requestedType(), settings.isTakeawayEnabled());
-        if (byStaff) {
-            OrderTypeRules.requireTableForDineIn(orderType, draft.tableId());
-        }
         DiningTableEntity table = null;
         if (draft.tableId() != null) {
             table = tableRepository.findById(draft.tableId()).filter(DiningTableEntity::isActive)
                     .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "INVALID_TABLE",
                             byStaff ? "This table does not exist or is inactive" : "Please scan the QR code on your table"));
+        }
+        Long restaurantId = table != null ? table.getRestaurantId() : requireStaffRestaurantId(draft);
+
+        RestaurantSettingsEntity settings = settingsService.forRestaurant(restaurantId);
+        settingsService.assertAcceptingOrders(settings);
+        OrderType orderType = OrderTypeRules.resolve(draft.requestedType(), settings.isTakeawayEnabled());
+        if (byStaff) {
+            OrderTypeRules.requireTableForDineIn(orderType, draft.tableId());
         }
 
         List<ResolvedLine> lines = resolveCart(draft.items());
@@ -215,6 +229,7 @@ public class OrderPlacementService {
 
         OrderNumberService.Allocated number = orderNumberService.next();
         OrderEntity order = new OrderEntity();
+        order.setRestaurantId(restaurantId);
         order.setOrderNumber(number.orderNumber());
         order.setDisplayToken(number.displayToken());
         order.setTableId(table == null ? null : table.getId());

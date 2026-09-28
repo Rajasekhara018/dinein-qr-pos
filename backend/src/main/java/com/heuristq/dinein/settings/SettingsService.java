@@ -36,25 +36,25 @@ public class SettingsService {
     }
 
     @Transactional(readOnly = true)
-    public RestaurantSettingsEntity current() {
-        return repository.findById(RestaurantSettingsEntity.SINGLETON_ID)
-                .orElseThrow(() -> new IllegalStateException("restaurant_settings row is missing"));
+    public RestaurantSettingsEntity forRestaurant(Long restaurantId) {
+        return repository.findByRestaurantId(restaurantId)
+                .orElseThrow(() -> new IllegalStateException("restaurant_settings row is missing for restaurant " + restaurantId));
     }
 
     @Transactional(readOnly = true)
-    public SettingsResponse get() {
-        return toResponse(current());
+    public SettingsResponse get(Long restaurantId) {
+        return toResponse(forRestaurant(restaurantId));
     }
 
     @Transactional
-    public SettingsResponse update(UpdateSettingsRequest r) {
+    public SettingsResponse update(Long restaurantId, UpdateSettingsRequest r) {
         if (r.logoImageId() != null) {
             imageService.requireExists(r.logoImageId());
         }
         if (r.kitchenAlertMinutes() <= r.kitchenWarnMinutes()) {
             throw ApiException.badRequest("INVALID_THRESHOLDS", "Alert threshold must be greater than warning threshold");
         }
-        RestaurantSettingsEntity s = current();
+        RestaurantSettingsEntity s = forRestaurant(restaurantId);
         s.setName(r.name().trim());
         s.setAddress(blankToNull(r.address()));
         s.setPhone(blankToNull(r.phone()));
@@ -83,8 +83,8 @@ public class SettingsService {
     }
 
     @Transactional(readOnly = true)
-    public PublicRestaurantInfo publicInfo() {
-        RestaurantSettingsEntity s = current();
+    public PublicRestaurantInfo publicInfo(Long restaurantId) {
+        RestaurantSettingsEntity s = forRestaurant(restaurantId);
         return new PublicRestaurantInfo(s.getName(), s.getAddress(), s.getPhone(), s.getGstin(), s.getFssaiNo(),
                 ImageUrls.full(s.getLogoImageId()), s.getBrandColor(), s.isAcceptingOrders(), isOpenNow(s),
                 s.getOpeningTime(), s.getClosingTime(), s.isPricesIncludeGst(), s.isTakeawayEnabled());

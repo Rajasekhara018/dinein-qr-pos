@@ -78,7 +78,7 @@ public class WaiterController {
 
     @GetMapping("/config")
     public WaiterConfig config() {
-        RestaurantSettingsEntity s = settingsService.current();
+        RestaurantSettingsEntity s = settingsService.forRestaurant(CurrentStaff.require().restaurantId());
         return new WaiterConfig(s.getName(), s.getCurrency(), s.isAcceptingOrders(), settingsService.isOpenNow(s),
                 s.isTakeawayEnabled(), s.isPricesIncludeGst(), paymentService.onlinePaymentsAvailable(),
                 s.getKitchenWarnMinutes(), s.getKitchenAlertMinutes(),
@@ -115,7 +115,7 @@ public class WaiterController {
     @GetMapping("/menu")
     public ResponseEntity<MenuResponse> menu(
             @RequestHeader(value = HttpHeaders.IF_NONE_MATCH, required = false) String ifNoneMatch) {
-        PublicMenuService.CachedMenu cached = menuService.getMenu();
+        PublicMenuService.CachedMenu cached = menuService.getMenu(CurrentStaff.require().restaurantId());
         if (ifNoneMatch != null && ifNoneMatch.contains(cached.etag())) {
             return ResponseEntity.status(HttpStatus.NOT_MODIFIED).eTag(cached.etag())
                     .cacheControl(CacheControl.noCache()).build();

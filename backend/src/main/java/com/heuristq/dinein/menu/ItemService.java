@@ -17,6 +17,7 @@ import com.heuristq.dinein.menu.dto.MenuAdminDtos.VariantPrice;
 import com.heuristq.dinein.menu.dto.MenuAdminDtos.VariantRequest;
 import com.heuristq.dinein.menu.dto.MenuAdminDtos.VariantResponse;
 import com.heuristq.dinein.shared.exception.ApiException;
+import com.heuristq.dinein.shared.security.CurrentStaff;
 import com.heuristq.dinein.shared.util.Money;
 import com.heuristq.dinein.shared.web.PageResponse;
 import jakarta.persistence.criteria.Predicate;
@@ -64,6 +65,7 @@ public class ItemService {
         Specification<ItemEntity> spec = (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
             predicates.add(cb.isTrue(root.get("active")));
+            predicates.add(cb.equal(root.get("restaurantId"), currentRestaurantId()));
             if (categoryId != null) {
                 predicates.add(cb.equal(root.get("categoryId"), categoryId));
             }
@@ -97,6 +99,7 @@ public class ItemService {
         }
         imageService.requireExists(request.imageId());
         ItemEntity item = new ItemEntity();
+        item.setRestaurantId(category.getRestaurantId());
         item.setDisplayOrder(itemRepository.maxDisplayOrder(category.getId()) + 1);
         applyFields(item, request, name);
         syncVariants(item, request.variants());
@@ -293,22 +296,26 @@ public class ItemService {
     }
 
     private CategoryEntity requireCategory(Long id) {
-        return categoryRepository.findById(id)
+        return categoryRepository.findByIdAndRestaurantId(id, currentRestaurantId())
                 .orElseThrow(() -> ApiException.badRequest("UNKNOWN_CATEGORY", "Category not found"));
     }
 
     private ItemEntity find(Long id) {
-        return itemRepository.findById(id).filter(ItemEntity::isActive)
+        return itemRepository.findByIdAndRestaurantId(id, currentRestaurantId()).filter(ItemEntity::isActive)
                 .orElseThrow(() -> ApiException.notFound("Item"));
     }
 
     private Map<Long, String> categoryNames() {
-        return categoryRepository.findAll().stream()
+        return categoryRepository.findAllByRestaurantIdOrderByDisplayOrderAscNameAsc(currentRestaurantId()).stream()
                 .collect(Collectors.toMap(CategoryEntity::getId, CategoryEntity::getName));
     }
 
     private String categoryName(Long id) {
-        return categoryRepository.findById(id).map(CategoryEntity::getName).orElse(null);
+        return categoryRepository.findByIdAndRestaurantId(id, currentRestaurantId()).map(CategoryEntity::getName).orElse(null);
+    }
+
+    private static Long currentRestaurantId() {
+        return CurrentStaff.require().restaurantId();
     }
 
     static BigDecimal displayPrice(ItemEntity item) {

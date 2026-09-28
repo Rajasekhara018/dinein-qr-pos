@@ -66,16 +66,17 @@ public class NotificationTriggers {
         try {
             switch (event.to()) {
                 case CONFIRMED -> withOrder(event.orderId(), (order, data) -> dispatcher.dispatch(new NotificationRequest(
-                        NotificationEvent.ORDER_CONFIRMED, order.getId(), data,
-                        new Recipients(OWNER_AND_MANAGER, null, null, staffPush(OWNER_AND_MANAGER)))));
+                        NotificationEvent.ORDER_CONFIRMED, order.getId(), order.getRestaurantId(), data,
+                        new Recipients(OWNER_AND_MANAGER, null, null,
+                                staffPush(order.getRestaurantId(), OWNER_AND_MANAGER)))));
                 case READY -> withOrder(event.orderId(), (order, data) -> dispatcher.dispatch(new NotificationRequest(
-                        NotificationEvent.ORDER_READY, order.getId(), data,
+                        NotificationEvent.ORDER_READY, order.getId(), order.getRestaurantId(), data,
                         new Recipients(WAITER, null, guestPhone(order), guestPush(order)))));
                 case CANCELLED -> withOrder(event.orderId(), (order, data) -> {
                     List<String> phones = guestPhone(order);
                     if (!phones.isEmpty()) {
                         dispatcher.dispatch(new NotificationRequest(NotificationEvent.ORDER_CANCELLED, order.getId(),
-                                data, new Recipients(null, null, phones, null)));
+                                order.getRestaurantId(), data, new Recipients(null, null, phones, null)));
                     }
                 });
                 default -> {
@@ -93,8 +94,10 @@ public class NotificationTriggers {
         try {
             withOrder(event.orderId(), (order, data) -> {
                 data.put("reason", event.reason() == null ? "unknown reason" : event.reason());
-                dispatcher.dispatch(new NotificationRequest(NotificationEvent.PAYMENT_FLAGGED, order.getId(), data,
-                        new Recipients(OWNER_AND_MANAGER, ownerEmails(), null, staffPush(OWNER_AND_MANAGER))));
+                dispatcher.dispatch(new NotificationRequest(NotificationEvent.PAYMENT_FLAGGED, order.getId(),
+                        order.getRestaurantId(), data,
+                        new Recipients(OWNER_AND_MANAGER, ownerEmails(order.getRestaurantId()), null,
+                                staffPush(order.getRestaurantId(), OWNER_AND_MANAGER))));
             });
         } catch (RuntimeException e) {
             log.error("notification.trigger_failed event=payment_flagged orderId={}", event.orderId(), e);
@@ -106,8 +109,9 @@ public class NotificationTriggers {
     public void onRefundFailed(RefundFailedEvent event) {
         try {
             withOrder(event.orderId(), (order, data) -> dispatcher.dispatch(new NotificationRequest(
-                    NotificationEvent.REFUND_FAILED, order.getId(), data,
-                    new Recipients(OWNER, ownerEmails(), null, staffPush(OWNER)))));
+                    NotificationEvent.REFUND_FAILED, order.getId(), order.getRestaurantId(), data,
+                    new Recipients(OWNER, ownerEmails(order.getRestaurantId()), null,
+                            staffPush(order.getRestaurantId(), OWNER)))));
         } catch (RuntimeException e) {
             log.error("notification.trigger_failed event=refund_failed orderId={}", event.orderId(), e);
         }
@@ -142,19 +146,19 @@ public class NotificationTriggers {
         return phone == null || phone.isBlank() ? List.of() : List.of(phone);
     }
 
-    private List<StaffUserEntity> activeStaff(Set<StaffRole> roles) {
-        // Single restaurant: a handful of staff rows, so filtering in memory is fine.
-        return staffUserRepository.findAllByOrderByUsernameAsc().stream()
+    private List<StaffUserEntity> activeStaff(Long restaurantId, Set<StaffRole> roles) {
+        // One restaurant's worth of staff rows, so filtering in memory is fine.
+        return staffUserRepository.findAllByRestaurantIdOrderByUsernameAsc(restaurantId).stream()
                 .filter(u -> u.isActive() && roles.contains(u.getRole()))
                 .toList();
     }
 
-    private List<String> ownerEmails() {
-        return activeStaff(OWNER).stream().map(StaffUserEntity::getEmail)
+    private List<String> ownerEmails(Long restaurantId) {
+        return activeStaff(restaurantId, OWNER).stream().map(StaffUserEntity::getEmail)
                 .filter(e -> e != null && !e.isBlank()).distinct().toList();
     }
 
-    private List<PushTarget> staffPush(Set<StaffRole> roles) {
-        return pushSubscriptions.staffTargets(activeStaff(roles).stream().map(StaffUserEntity::getId).toList());
+    private List<PushTarget> staffPush(Long restaurantId, Set<StaffRole> roles) {
+        return pushSubscriptions.staffTargets(activeStaff(restaurantId, roles).stream().map(StaffUserEntity::getId).toList());
     }
 }

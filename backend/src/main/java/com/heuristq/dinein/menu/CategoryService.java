@@ -8,6 +8,7 @@ import com.heuristq.dinein.menu.domain.ItemRepository;
 import com.heuristq.dinein.menu.dto.MenuAdminDtos.CategoryRequest;
 import com.heuristq.dinein.menu.dto.MenuAdminDtos.CategoryResponse;
 import com.heuristq.dinein.shared.exception.ApiException;
+import com.heuristq.dinein.shared.security.CurrentStaff;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -39,26 +40,29 @@ public class CategoryService {
 
     @Transactional(readOnly = true)
     public List<CategoryResponse> list() {
-        Map<Long, Long> counts = itemRepository.countActiveByCategory().stream()
+        Long restaurantId = currentRestaurantId();
+        Map<Long, Long> counts = itemRepository.countActiveByCategory(restaurantId).stream()
                 .collect(Collectors.toMap(ItemRepository.CategoryCount::getCategoryId, ItemRepository.CategoryCount::getCount));
-        return categoryRepository.findAllByOrderByDisplayOrderAscNameAsc().stream()
+        return categoryRepository.findAllByRestaurantIdOrderByDisplayOrderAscNameAsc(restaurantId).stream()
                 .map(c -> toResponse(c, counts.getOrDefault(c.getId(), 0L)))
                 .toList();
     }
 
     @Transactional
     public CategoryResponse create(CategoryRequest request) {
+        Long restaurantId = currentRestaurantId();
         String name = request.name().trim();
-        if (categoryRepository.existsByNameIgnoreCase(name)) {
+        if (categoryRepository.existsByRestaurantIdAndNameIgnoreCase(restaurantId, name)) {
             throw ApiException.conflict("DUPLICATE_NAME", "A category with this name already exists");
         }
         imageService.requireExists(request.imageId());
         CategoryEntity category = new CategoryEntity();
+        category.setRestaurantId(restaurantId);
         category.setName(name);
         category.setDescription(blankToNull(request.description()));
         category.setImageId(request.imageId());
         category.setActive(request.active() == null || request.active());
-        category.setDisplayOrder(categoryRepository.maxDisplayOrder() + 1);
+        category.setDisplayOrder(categoryRepository.maxDisplayOrder(restaurantId) + 1);
         categoryRepository.save(category);
         log.info("category.created id={}", category.getId());
         events.publishEvent(new MenuChangedEvent("category.created"));
@@ -69,7 +73,7 @@ public class CategoryService {
     public CategoryResponse update(Long id, CategoryRequest request) {
         CategoryEntity category = find(id);
         String name = request.name().trim();
-        if (categoryRepository.existsByNameIgnoreCaseAndIdNot(name, id)) {
+        if (categoryRepository.existsByRestaurantIdAndNameIgnoreCaseAndIdNot(category.getRestaurantId(), name, id)) {
             throw ApiException.conflict("DUPLICATE_NAME", "A category with this name already exists");
         }
         imageService.requireExists(request.imageId());
@@ -101,7 +105,8 @@ public class CategoryService {
                 throw ApiException.badRequest("DUPLICATE_ID", "Category " + id + " is listed twice");
             }
         }
-        Map<Long, CategoryEntity> byId = categoryRepository.findAllByOrderByDisplayOrderAscNameAsc().stream()
+        Map<Long, CategoryEntity> byId = categoryRepository
+                .findAllByRestaurantIdOrderByDisplayOrderAscNameAsc(currentRestaurantId()).stream()
                 .collect(Collectors.toMap(CategoryEntity::getId, Function.identity(), (a, b) -> a,
                         java.util.LinkedHashMap::new));
         int order = 1;
@@ -120,14 +125,19 @@ public class CategoryService {
     }
 
     CategoryEntity find(Long id) {
-        return categoryRepository.findById(id).orElseThrow(() -> ApiException.notFound("Category"));
+        return categoryRepository.findByIdAndRestaurantId(id, currentRestaurantId())
+                .orElseThrow(() -> ApiException.notFound("Category"));
     }
 
     private long countItems(Long categoryId) {
-        return itemRepository.countActiveByCategory().stream()
+        return itemRepository.countActiveByCategory(currentRestaurantId()).stream()
                 .filter(c -> c.getCategoryId().equals(categoryId))
                 .mapToLong(ItemRepository.CategoryCount::getCount)
                 .findFirst().orElse(0);
+    }
+
+    private static Long currentRestaurantId() {
+        return CurrentStaff.require().restaurantId();
     }
 
     private CategoryResponse toResponse(CategoryEntity c, long itemCount) {

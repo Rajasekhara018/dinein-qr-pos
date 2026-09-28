@@ -2,6 +2,7 @@ package com.heuristq.dinein.staff;
 
 import com.heuristq.dinein.shared.config.AppProperties;
 import com.heuristq.dinein.shared.exception.ApiException;
+import com.heuristq.dinein.shared.security.CurrentStaff;
 import com.heuristq.dinein.shared.security.StaffPrincipal;
 import com.heuristq.dinein.shared.security.TokenAuthenticator;
 import com.heuristq.dinein.shared.util.SecureTokens;
@@ -48,6 +49,7 @@ public class DeviceTokenService {
     public IssuedDeviceToken issue(StaffUserEntity user, String deviceName) {
         String raw = TokenAuthenticator.DEVICE_TOKEN_PREFIX + SecureTokens.randomUrlSafe(32);
         DeviceTokenEntity entity = new DeviceTokenEntity();
+        entity.setRestaurantId(user.getRestaurantId());
         entity.setStaffUserId(user.getId());
         entity.setDeviceName(deviceName);
         entity.setTokenHash(SecureTokens.sha256Hex(raw));
@@ -71,13 +73,14 @@ public class DeviceTokenService {
                                 device.setLastSeenAt(now);
                             }
                             return new StaffPrincipal(user.getId(), user.getUsername(), StaffRole.KITCHEN,
-                                    device.getId(), false);
+                                    user.getRestaurantId(), device.getId(), false);
                         }));
     }
 
     @Transactional(readOnly = true)
     public List<DeviceResponse> list() {
-        List<DeviceTokenEntity> devices = deviceTokenRepository.findAllByOrderByCreatedAtDesc();
+        List<DeviceTokenEntity> devices =
+                deviceTokenRepository.findAllByRestaurantIdOrderByCreatedAtDesc(CurrentStaff.require().restaurantId());
         Map<Long, StaffUserEntity> users = staffUserRepository
                 .findAllById(devices.stream().map(DeviceTokenEntity::getStaffUserId).distinct().toList())
                 .stream().collect(Collectors.toMap(StaffUserEntity::getId, Function.identity()));
@@ -91,7 +94,7 @@ public class DeviceTokenService {
 
     @Transactional
     public void revoke(Long id) {
-        DeviceTokenEntity device = deviceTokenRepository.findById(id)
+        DeviceTokenEntity device = deviceTokenRepository.findByIdAndRestaurantId(id, CurrentStaff.require().restaurantId())
                 .orElseThrow(() -> ApiException.notFound("Device"));
         if (device.getRevokedAt() == null) {
             device.setRevokedAt(clock.instant());

@@ -1,5 +1,6 @@
 package com.heuristq.dinein.menu.domain;
 
+import com.heuristq.dinein.restaurant.domain.RestaurantEntity;
 import com.heuristq.dinein.shared.persistence.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -12,6 +13,9 @@ import lombok.Setter;
 @Entity
 @Table(name = "category")
 public class CategoryEntity extends BaseEntity {
+
+    @Column(name = "restaurant_id", nullable = false)
+    private Long restaurantId = RestaurantEntity.DEFAULT_ID;
 
     @Column(nullable = false, length = 80)
     private String name;
