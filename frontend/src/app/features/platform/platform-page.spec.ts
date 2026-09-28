@@ -67,7 +67,24 @@ describe('PlatformPage', () => {
     const req = http.expectOne('/api/v1/platform/restaurants');
     expect(req.request.method).toBe('POST');
     expect(req.request.headers.get('Authorization')).toBe('Bearer fake-token');
-    expect(req.request.body).toEqual({ restaurantName: 'Pizza Corner', slug: null, ownerDisplayName: null });
+    expect(req.request.body).toEqual({
+      restaurantName: 'Pizza Corner',
+      slug: null,
+      address: null,
+      phone: null,
+      gstin: null,
+      fssaiNo: null,
+      pricesIncludeGst: false,
+      openingTime: null,
+      closingTime: null,
+      brandColor: null,
+      takeawayEnabled: true,
+      ownerDisplayName: null,
+      ownerUsername: null,
+      ownerEmail: null,
+      ownerPhone: null,
+      ownerPassword: null,
+    });
     req.flush({
       restaurantId: 5,
       restaurantName: 'Pizza Corner',

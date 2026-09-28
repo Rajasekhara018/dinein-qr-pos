@@ -1,10 +1,12 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, startWith } from 'rxjs';
 import { ApiError } from '../../core/api/api-error';
 import { AuthStore } from '../../core/auth/auth.store';
 import { PlatformApi } from '../../core/api/platform.api';
 import { OnboardRestaurantResponse, RestaurantSummary } from '../../core/api/models';
+import { brandPalette } from '../../core/util/color';
 import {
   generateTemporaryPassword,
   PASSWORD_MESSAGES,
@@ -94,6 +96,12 @@ export class PlatformPage {
     ownerPhone: new FormControl('', { nonNullable: true, validators: [Validators.pattern(/^\d{10}$/)] }),
     ownerPassword: new FormControl('', { nonNullable: true, validators: [passwordPolicy] }),
   });
+  private readonly color = toSignal(
+    this.form.controls.brandColor.valueChanges.pipe(startWith(this.form.controls.brandColor.value)),
+    { initialValue: '' },
+  );
+  protected readonly palette = computed(() => brandPalette(this.color()));
+
   protected readonly showPassword = signal(false);
   protected readonly submitting = signal(false);
   protected readonly formError = signal('');
@@ -149,6 +157,12 @@ export class PlatformPage {
 
   protected uppercaseGstin(): void {
     this.form.controls.gstin.setValue(this.form.controls.gstin.value.toUpperCase());
+  }
+
+  protected onColorPicked(event: Event): void {
+    const value = (event.target as HTMLInputElement).value;
+    this.form.controls.brandColor.setValue(value);
+    this.form.controls.brandColor.markAsDirty();
   }
 
   protected async onboard(): Promise<void> {

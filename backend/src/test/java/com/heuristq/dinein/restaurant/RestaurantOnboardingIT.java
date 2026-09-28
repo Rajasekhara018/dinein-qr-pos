@@ -11,6 +11,7 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
@@ -137,5 +138,59 @@ class RestaurantOnboardingIT extends AbstractIntegrationTest {
             if (node.get("id").asLong() == id) return node;
         }
         throw new AssertionError("restaurant id " + id + " not found in " + array);
+    }
+
+    @Test
+    void onboardingAcceptsARestaurantsSettingsAndACustomOwnerLoginUpFront() throws Exception {
+        String suffix = UUID.randomUUID().toString().substring(0, 8);
+        String username = "custom-owner-" + suffix;
+        MvcResult result = mvc.perform(post("/api/v1/platform/restaurants")
+                        .header("X-Platform-Admin-Key", PLATFORM_KEY)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(("{\"restaurantName\":\"Full Details %s\",\"address\":\"12 MG Road\","
+                                + "\"phone\":\"9876543210\",\"gstin\":\"29ABCDE1234F1Z5\",\"fssaiNo\":\"12345678901234\","
+                                + "\"pricesIncludeGst\":true,\"openingTime\":\"09:00\",\"closingTime\":\"22:00\","
+                                + "\"brandColor\":\"#112233\",\"takeawayEnabled\":false,"
+                                + "\"ownerUsername\":\"%s\",\"ownerEmail\":\"owner@example.com\",\"ownerPhone\":\"9123456780\","
+                                + "\"ownerPassword\":\"CustomPass1\"}").formatted(suffix, username)))
+                .andReturn();
+        assertThat(result.getResponse().getStatus()).as(result.getResponse().getContentAsString()).isEqualTo(201);
+        JsonNode onboarded = body(result);
+        assertThat(onboarded.get("ownerUsername").asText()).isEqualTo(username);
+        assertThat(onboarded.get("temporaryPassword").asText()).isEqualTo("CustomPass1");
+
+        String token = ownerToken(username, "CustomPass1");
+        MvcResult settingsResult = mvc.perform(get("/api/v1/admin/settings").header("Authorization", "Bearer " + token))
+                .andReturn();
+        assertThat(settingsResult.getResponse().getStatus()).isEqualTo(200);
+        JsonNode settings = body(settingsResult);
+        assertThat(settings.get("address").asText()).isEqualTo("12 MG Road");
+        assertThat(settings.get("phone").asText()).isEqualTo("9876543210");
+        // Uppercased server-side, matching the settings page's own uppercaseGstin() behaviour.
+        assertThat(settings.get("gstin").asText()).isEqualTo("29ABCDE1234F1Z5");
+        assertThat(settings.get("fssaiNo").asText()).isEqualTo("12345678901234");
+        assertThat(settings.get("pricesIncludeGst").asBoolean()).isTrue();
+        assertThat(settings.get("openingTime").asText()).startsWith("09:00");
+        assertThat(settings.get("closingTime").asText()).startsWith("22:00");
+        assertThat(settings.get("brandColor").asText()).isEqualToIgnoringCase("#112233");
+        assertThat(settings.get("takeawayEnabled").asBoolean()).isFalse();
+    }
+
+    @Test
+    void onboardingRejectsAnOwnerUsernameThatIsAlreadyTaken() throws Exception {
+        String suffix = UUID.randomUUID().toString().substring(0, 8);
+        String username = "dup-owner-" + suffix;
+        mvc.perform(post("/api/v1/platform/restaurants")
+                        .header("X-Platform-Admin-Key", PLATFORM_KEY)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"restaurantName\":\"First %s\",\"ownerUsername\":\"%s\"}".formatted(suffix, username)))
+                .andExpect(status().isCreated());
+
+        mvc.perform(post("/api/v1/platform/restaurants")
+                        .header("X-Platform-Admin-Key", PLATFORM_KEY)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"restaurantName\":\"Second %s\",\"ownerUsername\":\"%s\"}".formatted(suffix, username)))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.code").value("USERNAME_TAKEN"));
     }
 }

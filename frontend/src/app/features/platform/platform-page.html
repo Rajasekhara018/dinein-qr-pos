@@ -78,11 +78,24 @@
             <label for="plat-close" class="block text-sm font-medium text-ink">Closing time <span class="font-normal text-ink-subtle">(optional)</span></label>
             <input id="plat-close" appInput type="time" class="mt-1" formControlName="closingTime" />
           </div>
+        </div>
+
+        <div class="mt-4 flex flex-wrap items-end gap-3">
           <div>
-            <label for="plat-color" class="block text-sm font-medium text-ink">Brand colour <span class="font-normal text-ink-subtle">(optional)</span></label>
+            <label for="plat-color-picker" class="block text-sm font-medium text-ink">Brand colour <span class="font-normal text-ink-subtle">(optional)</span></label>
+            <input id="plat-color-picker" type="color" class="mt-1 h-11 w-16 cursor-pointer rounded-control border border-line-strong bg-surface p-1" [value]="palette()?.brand ?? '#c2410c'" (input)="onColorPicked($event)" />
+          </div>
+          <div class="min-w-0 flex-1 basis-40">
+            <label for="plat-color" class="block text-sm font-medium text-ink">Hex</label>
             <input id="plat-color" appInput class="mt-1 font-mono" formControlName="brandColor" maxlength="7" placeholder="#C2410C" aria-describedby="plat-color-error" />
             <app-field-error id="plat-color-error" [control]="form.controls.brandColor" [messages]="{ pattern: 'Use the #RRGGBB format.' }" />
           </div>
+          @if (palette(); as p) {
+            <div class="flex items-center gap-2" aria-label="Preview of the guest button">
+              <span class="inline-flex min-h-touch items-center rounded-control px-4 font-semibold" [style.background]="p.brand" [style.color]="p.contrast">Pay ₹540</span>
+              <span class="font-semibold" [style.color]="p.ink">Link text</span>
+            </div>
+          }
         </div>
         <div class="mt-4 flex flex-col gap-3">
           <app-toggle-switch formControlName="pricesIncludeGst" label="Prices include GST" hint="Off: GST is added on top of menu prices at checkout." showLabel />
