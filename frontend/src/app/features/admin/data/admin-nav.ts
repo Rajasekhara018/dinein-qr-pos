@@ -19,7 +19,7 @@ export interface AdminNavItem {
 }
 
 export interface AdminNavGroup {
-  /** Small-caps section label shown above the group (hidden when the sidebar is collapsed to icons-only). */
+  /** Small-caps section label shown above the group. */
   label: string;
   items: readonly AdminNavItem[];
 }

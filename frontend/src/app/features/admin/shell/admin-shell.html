@@ -5,13 +5,11 @@
   Skip to content
 </a>
 
-<ng-template #navList let-compact="compact">
+<ng-template #navList>
   <nav class="flex flex-col gap-4" aria-label="Admin sections">
     @for (group of navGroups(); track group.label) {
       <div>
-        @if (!compact) {
-          <p class="mb-1 px-3 text-overline text-ink-subtle">{{ group.label }}</p>
-        }
+        <p class="mb-1 px-3 text-overline text-ink-subtle">{{ group.label }}</p>
         <ul class="flex flex-col gap-1" role="list">
           @for (item of group.items; track item.path) {
             <li>
@@ -21,8 +19,6 @@
                 [routerLinkActiveOptions]="{ exact: !!item.exact }"
                 ariaCurrentWhenActive="page"
                 class="flex min-h-touch items-center gap-3 rounded-control px-3 text-ink hover:bg-surface-muted"
-                [class.justify-center]="compact"
-                [attr.title]="compact ? item.label : null"
                 [attr.data-testid]="'nav-' + item.path"
               >
                 @switch (item.icon) {
@@ -51,11 +47,7 @@
                     <svg lucideUsers class="size-5 shrink-0" aria-hidden="true"></svg>
                   }
                 }
-                @if (compact) {
-                  <span class="sr-only">{{ item.label }}</span>
-                } @else {
-                  <span class="min-w-0 truncate">{{ item.label }}</span>
-                }
+                <span class="min-w-0 truncate">{{ item.label }}</span>
               </a>
             </li>
           }
@@ -65,72 +57,49 @@
   </nav>
 </ng-template>
 
-<ng-template #userFooter let-compact="compact">
-  <div class="flex items-center gap-3 border-t border-line p-3" [class.justify-center]="compact">
+<ng-template #userFooter>
+  <div class="flex items-center gap-3 border-t border-line p-3">
     <span
       class="flex size-9 shrink-0 items-center justify-center rounded-full bg-admin-brand-soft text-sm font-bold text-admin-brand-ink"
       aria-hidden="true"
     >
       {{ initials() || '?' }}
     </span>
-    @if (!compact) {
-      <span class="min-w-0 flex-1 text-left">
-        <span class="block truncate text-sm font-semibold text-ink">{{ displayName() }}</span>
-        <span class="block text-xs text-ink-muted">{{ roleLabel() }}</span>
-      </span>
-      <button
-        appIconButton
-        type="button"
-        aria-label="Sign out"
-        data-testid="sidebar-logout"
-        (click)="logout()"
-      >
-        <svg lucideLogOut class="size-5" aria-hidden="true"></svg>
-      </button>
-    }
+    <span class="min-w-0 flex-1 text-left">
+      <span class="block truncate text-sm font-semibold text-ink">{{ displayName() }}</span>
+      <span class="block text-xs text-ink-muted">{{ roleLabel() }}</span>
+    </span>
+    <button
+      appIconButton
+      type="button"
+      aria-label="Sign out"
+      data-testid="sidebar-logout"
+      (click)="logout()"
+    >
+      <svg lucideLogOut class="size-5" aria-hidden="true"></svg>
+    </button>
   </div>
 </ng-template>
 
 <div class="min-h-dvh lg:flex">
   <!-- Desktop sidebar (≥ 1024px) -->
   <aside
-    class="sticky top-0 hidden h-dvh shrink-0 flex-col border-r border-line bg-surface transition-[width] lg:flex"
-    [class.w-64]="!collapsed()"
-    [class.w-20]="collapsed()"
+    class="sticky top-0 hidden h-dvh w-64 shrink-0 flex-col border-r border-line bg-surface lg:flex"
     aria-label="Main"
   >
-    <div class="flex h-16 items-center gap-2 border-b border-line px-3" [class.justify-center]="collapsed()">
+    <div class="flex h-16 items-center gap-2 border-b border-line px-3">
       <span
         class="flex size-10 shrink-0 items-center justify-center rounded-control bg-admin-brand text-admin-brand-contrast"
         aria-hidden="true"
       >
         <svg lucideChefHat class="size-6" aria-hidden="true"></svg>
       </span>
-      @if (!collapsed()) {
-        <span class="min-w-0 truncate font-admin-heading text-lg font-semibold">DineIn admin</span>
-      }
+      <span class="min-w-0 truncate font-admin-heading text-lg font-semibold">DineIn admin</span>
     </div>
     <div class="min-h-0 flex-1 overflow-y-auto p-3">
-      <ng-container *ngTemplateOutlet="navList; context: { compact: collapsed() }" />
+      <ng-container *ngTemplateOutlet="navList" />
     </div>
-    <div class="p-3 pt-0">
-      <button
-        type="button"
-        class="flex min-h-touch w-full items-center gap-3 rounded-control px-3 text-ink-muted hover:bg-surface-muted"
-        [class.justify-center]="collapsed()"
-        [attr.aria-expanded]="!collapsed()"
-        [attr.aria-label]="collapsed() ? 'Expand sidebar' : 'Collapse sidebar'"
-        (click)="toggleCollapsed()"
-      >
-        <svg
-          lucideChevronLeft
-          class="size-5 shrink-0 transition-transform"
-          [class.rotate-180]="collapsed()"
-          aria-hidden="true"
-        ></svg>
-      </button>
-    </div>
-    <ng-container *ngTemplateOutlet="userFooter; context: { compact: collapsed() }" />
+    <ng-container *ngTemplateOutlet="userFooter" />
   </aside>
 
   <!-- Drawer (< 1024px) -->
@@ -161,9 +130,9 @@
           </button>
         </div>
         <div class="min-h-0 flex-1 overflow-y-auto p-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))]">
-          <ng-container *ngTemplateOutlet="navList; context: { compact: false }" />
+          <ng-container *ngTemplateOutlet="navList" />
         </div>
-        <ng-container *ngTemplateOutlet="userFooter; context: { compact: false }" />
+        <ng-container *ngTemplateOutlet="userFooter" />
       </div>
     </div>
   }

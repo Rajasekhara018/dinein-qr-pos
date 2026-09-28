@@ -19,7 +19,6 @@ import { AuthStore } from '../../../core/auth/auth.store';
 import { RealtimeService } from '../../../core/realtime/realtime.service';
 import { ToastService } from '../../../core/ui/toast.service';
 import { BreakpointService } from '../../../core/ui/breakpoint.service';
-import { SafeStorage } from '../../../core/util/storage';
 import { errorMessage } from '../../../shared/util/form-errors';
 import { ConfirmService } from '../../../shared/services/confirm.service';
 import { AdminPrefs } from '../data/admin-prefs';
@@ -27,7 +26,6 @@ import { visibleNavGroups } from '../data/admin-nav';
 import { AdminNotificationsStore } from '../data/notifications.store';
 import { settingsResponseToRequest } from '../settings/settings-form';
 
-const COLLAPSED_KEY = 'dinein.admin.sidebarCollapsed.v1';
 /** setTimeout's max delay (≈ 24.8 days). */
 const MAX_TIMER = 2_147_483_647;
 
@@ -52,7 +50,6 @@ export class AdminShell {
   protected readonly prefs = inject(AdminPrefs);
   private readonly router = inject(Router);
   private readonly realtime = inject(RealtimeService);
-  private readonly storage = inject(SafeStorage);
   private readonly notifications = inject(AdminNotificationsStore);
   private readonly settingsApi = inject(AdminSettingsApi);
   private readonly toasts = inject(ToastService);
@@ -60,7 +57,6 @@ export class AdminShell {
   protected readonly isDesktop = inject(BreakpointService).isDesktop;
 
   protected readonly navGroups = computed(() => visibleNavGroups(this.auth.isOwner()));
-  protected readonly collapsed = signal(this.storage.getItem(COLLAPSED_KEY) === '1');
   protected readonly drawerOpen = signal(false);
   protected readonly userMenuOpen = signal(false);
   protected readonly paletteOpen = signal(false);
@@ -173,12 +169,6 @@ export class AdminShell {
       event.preventDefault();
       this.paletteOpen.set(true);
     }
-  }
-
-  protected toggleCollapsed(): void {
-    const next = !this.collapsed();
-    this.collapsed.set(next);
-    this.storage.setItem(COLLAPSED_KEY, next ? '1' : '0');
   }
 
   protected closeDrawer(): void {
