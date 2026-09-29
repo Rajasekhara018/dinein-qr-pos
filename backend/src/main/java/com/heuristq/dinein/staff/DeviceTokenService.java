@@ -1,5 +1,6 @@
 package com.heuristq.dinein.staff;
 
+import com.heuristq.dinein.audit.AuditService;
 import com.heuristq.dinein.shared.config.AppProperties;
 import com.heuristq.dinein.shared.exception.ApiException;
 import com.heuristq.dinein.shared.security.CurrentStaff;
@@ -36,13 +37,15 @@ public class DeviceTokenService {
     private final StaffUserRepository staffUserRepository;
     private final Duration ttl;
     private final Clock clock;
+    private final AuditService auditService;
 
     public DeviceTokenService(DeviceTokenRepository deviceTokenRepository, StaffUserRepository staffUserRepository,
-                              AppProperties properties, Clock clock) {
+                              AppProperties properties, Clock clock, AuditService auditService) {
         this.deviceTokenRepository = deviceTokenRepository;
         this.staffUserRepository = staffUserRepository;
         this.ttl = properties.security().deviceTokenTtl();
         this.clock = clock;
+        this.auditService = auditService;
     }
 
     @Transactional
@@ -57,6 +60,7 @@ public class DeviceTokenService {
         entity.setLastSeenAt(clock.instant());
         deviceTokenRepository.save(entity);
         log.info("device.issued deviceId={} userId={}", entity.getId(), user.getId());
+        auditService.record("DEVICE_ISSUED", "DeviceToken", entity.getId(), null, deviceName);
         return new IssuedDeviceToken(raw, entity.getExpiresAt());
     }
 
@@ -99,6 +103,7 @@ public class DeviceTokenService {
         if (device.getRevokedAt() == null) {
             device.setRevokedAt(clock.instant());
             log.info("device.revoked deviceId={}", id);
+            auditService.record("DEVICE_REVOKED", "DeviceToken", device.getId(), null, device.getDeviceName());
         }
     }
 

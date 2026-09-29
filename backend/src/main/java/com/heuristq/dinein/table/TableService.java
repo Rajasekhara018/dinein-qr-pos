@@ -89,6 +89,7 @@ public class TableService {
         table.setActive(request.active() == null || request.active());
         tableRepository.save(table);
         log.info("table.created id={} label={}", table.getId(), label);
+        auditService.record("TABLE_CREATED", "DiningTable", table.getId(), null, label);
         return toResponse(table);
     }
 

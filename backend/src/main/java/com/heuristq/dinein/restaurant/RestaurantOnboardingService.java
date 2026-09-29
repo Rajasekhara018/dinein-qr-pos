@@ -1,5 +1,6 @@
 package com.heuristq.dinein.restaurant;
 
+import com.heuristq.dinein.audit.AuditService;
 import com.heuristq.dinein.auth.PasswordPolicy;
 import com.heuristq.dinein.restaurant.domain.RestaurantEntity;
 import com.heuristq.dinein.restaurant.domain.RestaurantRepository;
@@ -14,6 +15,9 @@ import com.heuristq.dinein.shared.util.SecureTokens;
 import com.heuristq.dinein.staff.domain.StaffRole;
 import com.heuristq.dinein.staff.domain.StaffUserEntity;
 import com.heuristq.dinein.staff.domain.StaffUserRepository;
+import com.heuristq.dinein.table.TableService;
+import com.heuristq.dinein.table.domain.DiningTableEntity;
+import com.heuristq.dinein.table.domain.DiningTableRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -38,15 +42,20 @@ public class RestaurantOnboardingService {
     private final RestaurantRepository restaurantRepository;
     private final RestaurantSettingsRepository settingsRepository;
     private final StaffUserRepository staffUserRepository;
+    private final DiningTableRepository tableRepository;
     private final PasswordEncoder passwordEncoder;
+    private final AuditService auditService;
 
     public RestaurantOnboardingService(RestaurantRepository restaurantRepository,
                                        RestaurantSettingsRepository settingsRepository,
-                                       StaffUserRepository staffUserRepository, PasswordEncoder passwordEncoder) {
+                                       StaffUserRepository staffUserRepository, DiningTableRepository tableRepository,
+                                       PasswordEncoder passwordEncoder, AuditService auditService) {
         this.restaurantRepository = restaurantRepository;
         this.settingsRepository = settingsRepository;
         this.staffUserRepository = staffUserRepository;
+        this.tableRepository = tableRepository;
         this.passwordEncoder = passwordEncoder;
+        this.auditService = auditService;
     }
 
     @Transactional
@@ -103,7 +112,17 @@ public class RestaurantOnboardingService {
         owner.setMustChangePassword(true);
         staffUserRepository.save(owner);
 
+        // Without at least one table, a freshly onboarded restaurant can't receive a single QR order until someone
+        // logs in and creates one by hand. T1 gets them a working QR immediately; they can rename/add more later.
+        DiningTableEntity table = new DiningTableEntity();
+        table.setRestaurantId(restaurant.getId());
+        table.setLabel("T1");
+        table.setQrToken(TableService.newQrToken());
+        tableRepository.save(table);
+
         log.info("restaurant.onboarded id={} slug={} ownerUsername={}", restaurant.getId(), slug, username);
+        auditService.recordForRestaurant(restaurant.getId(), "RESTAURANT_ONBOARDED", "Restaurant", restaurant.getId(),
+                null, slug);
         return new OnboardRestaurantResponse(restaurant.getId(), name, slug, username, temporaryPassword);
     }
 

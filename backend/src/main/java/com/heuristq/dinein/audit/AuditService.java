@@ -39,6 +39,25 @@ public class AuditService {
         CurrentStaff.find().ifPresent(actor -> record(actor, action, entityType, entityId, previousValue, newValue));
     }
 
+    /**
+     * For platform-level actions whose subject isn't the acting principal's own restaurant (e.g. onboarding a new
+     * tenant) -- records against the given restaurant regardless of the actor's own tenant, and works even when
+     * there is no authenticated principal at all (platform key-authenticated tooling).
+     */
+    @Transactional
+    public void recordForRestaurant(Long restaurantId, String action, String entityType, Long entityId,
+                                    String previousValue, String newValue) {
+        AuditLogEntity log = new AuditLogEntity();
+        log.setRestaurantId(restaurantId);
+        log.setStaffUserId(CurrentStaff.find().map(StaffPrincipal::userId).orElse(null));
+        log.setAction(action);
+        log.setEntityType(entityType);
+        log.setEntityId(entityId);
+        log.setPreviousValue(truncate(previousValue));
+        log.setNewValue(truncate(newValue));
+        repository.save(log);
+    }
+
     @Transactional(readOnly = true)
     public PageResponse<AuditLogEntry> list(Pageable pageable) {
         Long restaurantId = CurrentStaff.require().restaurantId();
