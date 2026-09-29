@@ -1,6 +1,8 @@
 package com.heuristq.dinein.table;
 
 import com.heuristq.dinein.audit.AuditService;
+import com.heuristq.dinein.order.domain.OrderRepository;
+import com.heuristq.dinein.order.domain.OrderStatus;
 import com.heuristq.dinein.shared.config.AppProperties;
 import com.heuristq.dinein.shared.exception.ApiException;
 import com.heuristq.dinein.shared.security.CurrentStaff;
@@ -17,17 +19,21 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.Set;
 
 @Slf4j
 @Service
 public class TableService {
 
     private final DiningTableRepository tableRepository;
+    private final OrderRepository orderRepository;
     private final String publicBaseUrl;
     private final AuditService auditService;
 
-    public TableService(DiningTableRepository tableRepository, AppProperties properties, AuditService auditService) {
+    public TableService(DiningTableRepository tableRepository, OrderRepository orderRepository,
+                        AppProperties properties, AuditService auditService) {
         this.tableRepository = tableRepository;
+        this.orderRepository = orderRepository;
         String base = properties.publicBaseUrl();
         this.publicBaseUrl = base.endsWith("/") ? base.substring(0, base.length() - 1) : base;
         this.auditService = auditService;
@@ -44,8 +50,10 @@ public class TableService {
 
     @Transactional(readOnly = true)
     public List<TableResponse> list() {
-        return tableRepository.findAllByRestaurantIdOrderByLabelAsc(currentRestaurantId())
-                .stream().map(this::toResponse).toList();
+        Long restaurantId = currentRestaurantId();
+        Set<Long> occupied = Set.copyOf(orderRepository.findOccupiedTableIds(restaurantId, OrderStatus.OCCUPIES_TABLE));
+        return tableRepository.findAllByRestaurantIdOrderByLabelAsc(restaurantId)
+                .stream().map(t -> toResponse(t, occupied.contains(t.getId()))).toList();
     }
 
     @Transactional(readOnly = true)
@@ -122,8 +130,15 @@ public class TableService {
         return label.trim().replaceAll("\\s+", " ").toUpperCase(Locale.ROOT);
     }
 
+    /** Single-table responses (create/update/regenerate) look occupancy up on demand rather than batched. */
     private TableResponse toResponse(DiningTableEntity t) {
-        return new TableResponse(t.getId(), t.getLabel(), t.isActive(), menuUrl(t),
+        boolean occupied = orderRepository.findOccupiedTableIds(t.getRestaurantId(), OrderStatus.OCCUPIES_TABLE)
+                .contains(t.getId());
+        return toResponse(t, occupied);
+    }
+
+    private TableResponse toResponse(DiningTableEntity t, boolean occupied) {
+        return new TableResponse(t.getId(), t.getLabel(), t.isActive(), occupied, menuUrl(t),
                 qrImageUrl(t), t.getCreatedAt(), t.getUpdatedAt());
     }
 

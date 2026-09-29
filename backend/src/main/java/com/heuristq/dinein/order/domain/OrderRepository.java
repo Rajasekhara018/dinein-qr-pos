@@ -47,6 +47,12 @@ public interface OrderRepository extends JpaRepository<OrderEntity, Long>, JpaSp
 
     List<OrderEntity> findByPlacedAtGreaterThanEqualAndPlacedAtLessThanOrderByPlacedAtAsc(Instant from, Instant to);
 
+    /** Table ids currently in use (see {@link OrderStatus#OCCUPIES_TABLE}), for the admin floor view. */
+    @Query("select distinct o.tableId from OrderEntity o "
+            + "where o.restaurantId = :restaurantId and o.status in :statuses and o.tableId is not null")
+    List<Long> findOccupiedTableIds(@Param("restaurantId") Long restaurantId,
+                                    @Param("statuses") Collection<OrderStatus> statuses);
+
     /**
      * GDPR data minimisation: clears guest-identifying fields from terminal orders once they're older than the
      * configured retention period. Amounts, status and timestamps are kept -- only who the guest was is erased.

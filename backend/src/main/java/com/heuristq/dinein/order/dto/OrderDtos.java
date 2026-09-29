@@ -113,7 +113,10 @@ public final class OrderDtos {
                                  boolean paymentFlagged, String flagReason, String cancelReason,
                                  Long placedByStaffId, String placedByStaffName, boolean manualRefundDue,
                                  Instant placedAt, Instant paidAt, Instant preparingAt, Instant readyAt,
-                                 Instant completedAt, Instant cancelledAt) {
+                                 Instant completedAt, Instant cancelledAt,
+                                 /** This order's own restaurant (not "whichever restaurant the viewer's session is
+                                  * currently pointed at") -- for the printed receipt header. */
+                                 String restaurantName, String restaurantAddress) {
     }
 
     /** One active table on the waiter screen with its open (paid, not yet served) orders. */

@@ -22,7 +22,8 @@ class OrderStateMachineTest {
             "CONFIRMED, CANCELLED",
             "PREPARING, READY",
             "PREPARING, CANCELLED",
-            "READY, COMPLETED"
+            "READY, COMPLETED",
+            "READY, PREPARING"
     })
     void allowsLegalTransitions(OrderStatus from, OrderStatus to) {
         assertThat(OrderStateMachine.canTransition(from, to)).isTrue();
@@ -35,7 +36,6 @@ class OrderStateMachineTest {
             "CONFIRMED, READY",
             "CONFIRMED, CONFIRMED",
             "READY, CANCELLED",
-            "READY, PREPARING",
             "COMPLETED, CANCELLED",
             "CANCELLED, CONFIRMED",
             "EXPIRED, PREPARING"

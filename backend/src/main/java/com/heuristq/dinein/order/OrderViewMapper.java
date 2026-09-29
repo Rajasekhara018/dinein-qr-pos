@@ -16,6 +16,7 @@ import com.heuristq.dinein.order.dto.OrderDtos.OrderLineView;
 import com.heuristq.dinein.order.dto.OrderDtos.PaymentView;
 import com.heuristq.dinein.payment.domain.PaymentEntity;
 import com.heuristq.dinein.payment.domain.RefundStatus;
+import com.heuristq.dinein.settings.SettingsService;
 import com.heuristq.dinein.staff.domain.StaffUserRepository;
 import com.heuristq.dinein.table.domain.DiningTableEntity;
 import com.heuristq.dinein.table.domain.DiningTableRepository;
@@ -35,10 +36,13 @@ public class OrderViewMapper {
 
     private final DiningTableRepository tableRepository;
     private final StaffUserRepository staffUserRepository;
+    private final SettingsService settingsService;
 
-    public OrderViewMapper(DiningTableRepository tableRepository, StaffUserRepository staffUserRepository) {
+    public OrderViewMapper(DiningTableRepository tableRepository, StaffUserRepository staffUserRepository,
+                           SettingsService settingsService) {
         this.tableRepository = tableRepository;
         this.staffUserRepository = staffUserRepository;
+        this.settingsService = settingsService;
     }
 
     /**
@@ -97,12 +101,13 @@ public class OrderViewMapper {
                 : staffUserRepository.findById(o.getPlacedByStaffId())
                 .map(u -> u.getDisplayName() != null ? u.getDisplayName() : u.getUsername()).orElse(null);
         boolean manualRefundDue = payments.stream().anyMatch(p -> p.getRefundStatus() == RefundStatus.MANUAL);
+        var restaurant = settingsService.forRestaurant(o.getRestaurantId());
         return new AdminOrderView(o.getId(), o.getOrderNumber(), o.getDisplayToken(), o.getStatus(), o.getOrderType(),
                 tableLabel, o.getCustomerName(), o.getCustomerPhone(), o.getNotes(), lines(o), bill(o),
                 payments.stream().sorted(Comparator.comparing(PaymentEntity::getId)).map(this::paymentView).toList(),
                 o.isPaymentFlagged(), o.getFlagReason(), o.getCancelReason(), o.getPlacedByStaffId(), placedBy,
                 manualRefundDue, o.getPlacedAt(), o.getPaidAt(), o.getPreparingAt(), o.getReadyAt(),
-                o.getCompletedAt(), o.getCancelledAt());
+                o.getCompletedAt(), o.getCancelledAt(), restaurant.getName(), restaurant.getAddress());
     }
 
     public PaymentView paymentView(PaymentEntity p) {

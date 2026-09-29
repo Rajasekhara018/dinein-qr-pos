@@ -21,4 +21,7 @@ public enum OrderStatus {
 
     /** Orders that will never change again, so their guest PII is safe to redact after a retention period. */
     public static final Set<OrderStatus> TERMINAL = EnumSet.of(COMPLETED, EXPIRED, PAYMENT_FAILED, CANCELLED);
+
+    /** A table with any order in one of these statuses is physically in use, whether paid yet or not. */
+    public static final Set<OrderStatus> OCCUPIES_TABLE = EnumSet.of(PENDING_PAYMENT, CONFIRMED, PREPARING, READY);
 }

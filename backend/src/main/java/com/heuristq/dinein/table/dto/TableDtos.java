@@ -16,7 +16,7 @@ public final class TableDtos {
             Boolean active) {
     }
 
-    public record TableResponse(Long id, String label, boolean active, String qrUrl, String qrImageUrl,
-                                Instant createdAt, Instant updatedAt) {
+    public record TableResponse(Long id, String label, boolean active, boolean occupied, String qrUrl,
+                                String qrImageUrl, Instant createdAt, Instant updatedAt) {
     }
 }

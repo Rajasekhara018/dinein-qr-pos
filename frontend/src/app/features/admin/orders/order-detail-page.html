@@ -1,4 +1,4 @@
-<nav class="mb-2" aria-label="Breadcrumb">
+<nav class="mb-2 print:hidden" aria-label="Breadcrumb">
   <a routerLink="/admin/orders" class="inline-flex min-h-touch items-center gap-1 text-sm font-medium text-brand-ink hover:underline">
     <svg viewBox="0 0 20 20" class="size-4 fill-current" aria-hidden="true"><path d="m12.7 4.3 1.4 1.4L9.8 10l4.3 4.3-1.4 1.4L7 10z" /></svg>
     Orders
@@ -11,6 +11,15 @@
 } @else if (error() && !order()) {
   <app-error-state title="Could not load this order" [error]="error()" (retry)="load()" />
 } @else if (order(); as o) {
+  <div class="hidden print:mb-4 print:block print:text-center">
+    @if (o.restaurantName) {
+      <p class="font-display text-lg font-semibold">{{ o.restaurantName }}</p>
+    }
+    @if (o.restaurantAddress) {
+      <p class="text-sm">{{ o.restaurantAddress }}</p>
+    }
+  </div>
+
   <header class="mb-4 flex flex-wrap items-start justify-between gap-3 sm:mb-6">
     <div class="min-w-0">
       <p class="text-sm font-medium text-ink-muted">Order {{ o.orderNumber }}</p>
@@ -38,7 +47,7 @@
         }
       </p>
     </div>
-    <div class="flex flex-wrap gap-2">
+    <div class="flex flex-wrap gap-2 print:hidden">
       @for (action of actions(); track action.to) {
         <button appButton type="button" [loading]="busy() === 'status'" [disabled]="busy() !== null" (click)="changeStatus(action)" [attr.data-testid]="'order-action-' + action.to">
           {{ action.label }}
@@ -54,11 +63,14 @@
           Cancel & refund
         </button>
       }
+      <button appButton variant="outline" type="button" (click)="printReceipt()" data-testid="order-print-receipt">
+        Print receipt
+      </button>
     </div>
   </header>
 
   @if (manualRefund(); as refund) {
-    <div class="mb-4 flex items-start gap-3 rounded-card border-2 border-warning-border bg-warning-bg p-4 text-warning-fg" role="alert" data-testid="manual-refund-banner">
+    <div class="mb-4 flex items-start gap-3 rounded-card border-2 border-warning-border bg-warning-bg p-4 text-warning-fg print:hidden" role="alert" data-testid="manual-refund-banner">
       <svg viewBox="0 0 24 24" class="mt-0.5 size-7 shrink-0" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
         <path d="M3 6h18v12H3V6Zm9 3a3 3 0 1 0 0 6 3 3 0 0 0 0-6Z" />
       </svg>
@@ -72,14 +84,14 @@
     </div>
   }
   @if (o.paymentFlagged) {
-    <div class="mb-4 rounded-card border border-danger-border bg-danger-bg p-4 text-danger-fg" role="alert">
+    <div class="mb-4 rounded-card border border-danger-border bg-danger-bg p-4 text-danger-fg print:hidden" role="alert">
       <p class="font-semibold">Payment flagged — not sent to the kitchen</p>
       <p class="mt-1 text-sm">{{ o.flagReason || 'The payment needs a manual check.' }}</p>
       <p class="mt-1 text-sm">Check the payment in your provider dashboard, then refund or contact the guest.</p>
     </div>
   }
   @if (retryRefund() || refundError()) {
-    <div class="mb-4 flex flex-wrap items-center gap-3 rounded-card border border-warning-border bg-warning-bg p-4 text-warning-fg" role="alert" data-testid="refund-failed">
+    <div class="mb-4 flex flex-wrap items-center gap-3 rounded-card border border-warning-border bg-warning-bg p-4 text-warning-fg print:hidden" role="alert" data-testid="refund-failed">
       <div class="min-w-0 flex-1">
         <p class="font-semibold">Refund failed</p>
         <p class="mt-1 text-sm">
@@ -243,7 +255,7 @@
         }
       </section>
 
-      <section class="rounded-card border border-line bg-surface p-4 shadow-card" aria-labelledby="timeline-heading">
+      <section class="rounded-card border border-line bg-surface p-4 shadow-card print:hidden" aria-labelledby="timeline-heading">
         <h2 id="timeline-heading" class="font-display text-lg font-semibold">Timeline</h2>
         <dl class="mt-2 grid grid-cols-[auto_minmax(0,1fr)] gap-x-3 gap-y-1 text-sm">
           @if (o.placedAt) {

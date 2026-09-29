@@ -43,17 +43,20 @@ public class RestaurantOnboardingService {
     private final RestaurantSettingsRepository settingsRepository;
     private final StaffUserRepository staffUserRepository;
     private final DiningTableRepository tableRepository;
+    private final TableService tableService;
     private final PasswordEncoder passwordEncoder;
     private final AuditService auditService;
 
     public RestaurantOnboardingService(RestaurantRepository restaurantRepository,
                                        RestaurantSettingsRepository settingsRepository,
                                        StaffUserRepository staffUserRepository, DiningTableRepository tableRepository,
-                                       PasswordEncoder passwordEncoder, AuditService auditService) {
+                                       TableService tableService, PasswordEncoder passwordEncoder,
+                                       AuditService auditService) {
         this.restaurantRepository = restaurantRepository;
         this.settingsRepository = settingsRepository;
         this.staffUserRepository = staffUserRepository;
         this.tableRepository = tableRepository;
+        this.tableService = tableService;
         this.passwordEncoder = passwordEncoder;
         this.auditService = auditService;
     }
@@ -123,7 +126,8 @@ public class RestaurantOnboardingService {
         log.info("restaurant.onboarded id={} slug={} ownerUsername={}", restaurant.getId(), slug, username);
         auditService.recordForRestaurant(restaurant.getId(), "RESTAURANT_ONBOARDED", "Restaurant", restaurant.getId(),
                 null, slug);
-        return new OnboardRestaurantResponse(restaurant.getId(), name, slug, username, temporaryPassword);
+        return new OnboardRestaurantResponse(restaurant.getId(), name, slug, username, temporaryPassword,
+                tableService.menuUrl(table));
     }
 
     /** Runs `setter` only when `value` is non-blank, leaving the entity's own default otherwise. */

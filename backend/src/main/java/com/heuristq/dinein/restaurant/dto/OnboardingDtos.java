@@ -55,9 +55,12 @@ public final class OnboardingDtos {
     /**
      * {@code temporaryPassword} is returned once, here, and never stored or logged in plain text; hand it to the
      * merchant out of band. {@code ownerUsername} must be used to sign in ({@code POST /api/v1/auth/login}), which
-     * forces a password change on first use.
+     * forces a password change on first use. {@code defaultTableMenuUrl} is the guest QR link for the "T1" table
+     * created automatically for every new restaurant, ready to hand over (or print) before the owner has even
+     * logged in once.
      */
     public record OnboardRestaurantResponse(Long restaurantId, String restaurantName, String slug,
-                                            String ownerUsername, String temporaryPassword) {
+                                            String ownerUsername, String temporaryPassword,
+                                            String defaultTableMenuUrl) {
     }
 }

@@ -470,6 +470,8 @@ export interface TableResponse {
   id: number;
   label: string;
   active: boolean;
+  /** Has an unfinished order (paid or not) right now — the floor-view "occupied" indicator. */
+  occupied: boolean;
   qrUrl: string;
   qrImageUrl: string;
   createdAt: IsoInstant;
@@ -731,6 +733,9 @@ export interface AdminOrderView {
   readyAt?: IsoInstant;
   completedAt?: IsoInstant;
   cancelledAt?: IsoInstant;
+  /** This order's own restaurant (not whichever restaurant the viewer's session is currently pointed at) — for the printed receipt header. */
+  restaurantName?: string;
+  restaurantAddress?: string;
 }
 
 export interface AdminOrderSearchParams {

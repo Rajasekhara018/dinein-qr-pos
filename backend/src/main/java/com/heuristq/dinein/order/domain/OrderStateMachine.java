@@ -24,6 +24,7 @@ import static com.heuristq.dinein.order.domain.OrderStatus.READY;
  * PENDING_PAYMENT -> EXPIRED | PAYMENT_FAILED
  * EXPIRED | PAYMENT_FAILED -> CONFIRMED      (a capture that arrives late still reaches the kitchen)
  * CONFIRMED | PREPARING -> CANCELLED         (admin cancel, full refund)
+ * READY -> PREPARING                        (kitchen "Recall": marked ready too early, still being worked on)
  * </pre>
  */
 public final class OrderStateMachine {
@@ -36,7 +37,7 @@ public final class OrderStateMachine {
         ALLOWED.put(PAYMENT_FAILED, EnumSet.of(CONFIRMED));
         ALLOWED.put(CONFIRMED, EnumSet.of(PREPARING, CANCELLED));
         ALLOWED.put(PREPARING, EnumSet.of(READY, CANCELLED));
-        ALLOWED.put(READY, EnumSet.of(COMPLETED));
+        ALLOWED.put(READY, EnumSet.of(COMPLETED, PREPARING));
         ALLOWED.put(COMPLETED, EnumSet.noneOf(OrderStatus.class));
         ALLOWED.put(CANCELLED, EnumSet.noneOf(OrderStatus.class));
     }

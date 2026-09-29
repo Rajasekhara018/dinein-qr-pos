@@ -37,6 +37,8 @@ function adminOrder(overrides: Partial<AdminOrderView> = {}): AdminOrderView {
     paymentFlagged: false,
     manualRefundDue: false,
     placedAt: '2026-09-27T07:00:00Z',
+    restaurantName: 'Spice Route Kitchen',
+    restaurantAddress: '12 MG Road, Bengaluru 560001',
     ...overrides,
   };
 }

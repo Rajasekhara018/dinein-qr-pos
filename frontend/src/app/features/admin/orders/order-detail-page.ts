@@ -141,6 +141,10 @@ export class OrderDetailPage implements OnInit {
     }
   }
 
+  protected printReceipt(): void {
+    window.print();
+  }
+
   protected isOffline(payment: PaymentView): boolean {
     return payment.provider === OFFLINE_PROVIDER;
   }
