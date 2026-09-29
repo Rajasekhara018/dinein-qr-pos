@@ -81,7 +81,8 @@ export class GuestShell {
 
   protected async retry(): Promise<void> {
     const token = this.route.snapshot.queryParamMap.get('t');
-    const outcome = await this.session.start(token);
+    const restaurantId = this.route.snapshot.queryParamMap.get('r');
+    const outcome = await this.session.start(token, restaurantId);
     if (outcome === 'invalid') {
       await this.router.navigate(['/menu', 'scan']);
       return;
@@ -91,7 +92,7 @@ export class GuestShell {
       this.cart.bindTable(table.id);
       if (token)
         await this.router.navigate([], {
-          queryParams: { t: null },
+          queryParams: { t: null, r: null },
           queryParamsHandling: 'merge',
           replaceUrl: true,
         });

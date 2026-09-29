@@ -16,7 +16,7 @@ describe('guestSessionGuard', () => {
   const store = {
     status: signal<string>('idle'),
     table: signal<{ id: number; label: string } | null>(null),
-    start: vi.fn<(t?: string | null) => Promise<SessionOutcome>>(),
+    start: vi.fn<(t?: string | null, r?: string | null) => Promise<SessionOutcome>>(),
   };
   const cart = { bindTable: vi.fn() };
 
@@ -47,8 +47,18 @@ describe('guestSessionGuard', () => {
       return 'ready';
     });
     const result = await run({ t: 'abc' }, '/menu?t=abc&x=1');
-    expect(store.start).toHaveBeenCalledWith('abc');
+    expect(store.start).toHaveBeenCalledWith('abc', null);
     expect(cart.bindTable).toHaveBeenCalledWith(3);
+    expect(result instanceof UrlTree && result.toString()).toBe('/menu?x=1');
+  });
+
+  it('also passes and strips `r` (the restaurant id) alongside `t`', async () => {
+    store.start.mockImplementation(async () => {
+      store.table.set({ id: 3, label: 'T3' });
+      return 'ready';
+    });
+    const result = await run({ t: 'abc', r: '7' }, '/menu?t=abc&r=7&x=1');
+    expect(store.start).toHaveBeenCalledWith('abc', '7');
     expect(result instanceof UrlTree && result.toString()).toBe('/menu?x=1');
   });
 
@@ -58,7 +68,7 @@ describe('guestSessionGuard', () => {
       return 'ready';
     });
     expect(await run({}, '/menu/orders/5')).toBe(true);
-    expect(store.start).toHaveBeenCalledWith(null);
+    expect(store.start).toHaveBeenCalledWith(null, null);
   });
 
   it('sends invalid tables / missing sessions to the scan page', async () => {

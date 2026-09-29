@@ -1,5 +1,6 @@
 package com.heuristq.dinein.table;
 
+import com.heuristq.dinein.audit.AuditService;
 import com.heuristq.dinein.shared.config.AppProperties;
 import com.heuristq.dinein.shared.exception.ApiException;
 import com.heuristq.dinein.shared.security.CurrentStaff;
@@ -23,11 +24,13 @@ public class TableService {
 
     private final DiningTableRepository tableRepository;
     private final String publicBaseUrl;
+    private final AuditService auditService;
 
-    public TableService(DiningTableRepository tableRepository, AppProperties properties) {
+    public TableService(DiningTableRepository tableRepository, AppProperties properties, AuditService auditService) {
         this.tableRepository = tableRepository;
         String base = properties.publicBaseUrl();
         this.publicBaseUrl = base.endsWith("/") ? base.substring(0, base.length() - 1) : base;
+        this.auditService = auditService;
     }
 
     /** 32 random bytes, base64url: unguessable, so a table link cannot be forged or enumerated. */
@@ -36,7 +39,7 @@ public class TableService {
     }
 
     public String menuUrl(DiningTableEntity table) {
-        return publicBaseUrl + "/menu?t=" + table.getQrToken();
+        return publicBaseUrl + "/menu?t=" + table.getQrToken() + "&r=" + table.getRestaurantId();
     }
 
     @Transactional(readOnly = true)
@@ -110,6 +113,7 @@ public class TableService {
         DiningTableEntity table = get(id);
         table.setQrToken(newQrToken());
         log.info("table.qr_regenerated id={}", id);
+        auditService.record("TABLE_QR_REGENERATED", "DiningTable", table.getId(), null, table.getLabel());
         return toResponse(table);
     }
 

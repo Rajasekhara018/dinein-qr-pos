@@ -25,8 +25,9 @@ export class PublicApi {
    * With a QR token: validates the table and issues/renews the guest cookie.
    * Without: resumes from the existing cookie (401 GUEST_SESSION_REQUIRED if there is none).
    */
-  session(qrToken?: string | null): Observable<SessionResponse> {
-    const params = qrToken ? new HttpParams().set('t', qrToken) : undefined;
+  session(qrToken?: string | null, restaurantId?: string | null): Observable<SessionResponse> {
+    let params = qrToken ? new HttpParams().set('t', qrToken) : undefined;
+    if (qrToken && restaurantId) params = params!.set('r', restaurantId);
     return this.http.get<SessionResponse>(`${API_BASE}/public/session`, {
       params,
       context: silentErrors(),

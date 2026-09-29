@@ -48,11 +48,11 @@ export class GuestSessionStore {
    * Starts (with a QR token) or resumes (cookie only) the session.
    * `invalid` = bad/inactive table token or no session cookie → ask the guest to scan the table QR.
    */
-  async start(qrToken?: string | null): Promise<SessionOutcome> {
+  async start(qrToken?: string | null, restaurantId?: string | null): Promise<SessionOutcome> {
     this._status.set('loading');
     this._error.set(null);
     try {
-      const session = await firstValueFrom(this.api.session(qrToken));
+      const session = await firstValueFrom(this.api.session(qrToken, restaurantId));
       this._session.set(session);
       this._status.set('ready');
       return 'ready';

@@ -51,17 +51,24 @@ public class PublicSessionController {
     }
 
     /**
-     * With {@code t}: validates the table QR token and issues (or renews) the guest cookie.
+     * With {@code t}: validates the table QR token and issues (or renews) the guest cookie. {@code r} (the
+     * restaurant id printed alongside {@code t} on every generated link, see {@code TableService#menuUrl}) is
+     * optional but, when present, must match the token's own restaurant -- a defense-in-depth check against a stale
+     * or hand-edited link, on top of the token itself already being an unguessable per-table secret.
      * Without {@code t}: resumes from an existing cookie (for reloads after the query string is gone).
      */
     @GetMapping
     public ResponseEntity<SessionResponse> session(@RequestParam(name = "t", required = false) String qrToken,
+                                                   @RequestParam(name = "r", required = false) Long restaurantId,
                                                    HttpServletRequest request) {
         Optional<GuestSession> existing = guestSessionService.fromRequest(request);
         DiningTableEntity table;
         GuestSession session;
         if (qrToken != null && !qrToken.isBlank()) {
             table = tableService.findActiveByToken(qrToken.trim()).orElseThrow(PublicSessionController::invalidTable);
+            if (restaurantId != null && !restaurantId.equals(table.getRestaurantId())) {
+                throw invalidTable();
+            }
             boolean alreadySeatedHere = existing.isPresent() && existing.get().tableId().equals(table.getId());
             // A device without a session for THIS table is a fresh arrival: if another guest session already has
             // an active order there, refuse rather than start a second, colliding self-service session for the same
