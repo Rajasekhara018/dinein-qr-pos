@@ -190,6 +190,8 @@ export interface StaffInfo {
   mustChangePassword: boolean;
   /** Can use `/platform` (onboard/list restaurants) with this login, no shared key needed. */
   platformAdmin: boolean;
+  /** This account's own restaurant (the JWT's `rid` claim) — for building restaurant-scoped realtime topics. */
+  restaurantId: number;
 }
 
 export interface TokenResponse {

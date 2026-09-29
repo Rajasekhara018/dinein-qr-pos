@@ -73,7 +73,7 @@ public class NotificationDispatcher {
         }
         attempt(NotificationChannel.IN_APP, IN_APP_PROVIDER, request, role.name(), () -> {
             Message m = templates.render(request.event(), NotificationChannel.IN_APP, request.data(), restaurant);
-            inAppService.createForRole(role, request.event(), m, request.orderId());
+            inAppService.createForRole(role, request.event(), m, request.orderId(), request.restaurantId());
         });
     }
 

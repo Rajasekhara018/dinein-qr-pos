@@ -21,7 +21,7 @@ const config: WaiterConfig = {
   onlinePaymentsAvailable: true,
   kitchenWarnMinutes: 10,
   kitchenAlertMinutes: 20,
-  staff: { id: 9, username: 'ravi', role: 'WAITER', mustChangePassword: false, platformAdmin: false },
+  staff: { id: 9, username: 'ravi', role: 'WAITER', mustChangePassword: false, platformAdmin: false, restaurantId: 1 },
 };
 
 const tables: WaiterTableView[] = [

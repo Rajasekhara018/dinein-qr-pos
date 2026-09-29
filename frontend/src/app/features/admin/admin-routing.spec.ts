@@ -31,7 +31,7 @@ describe('admin routes – owner-only sections', () => {
   });
 
   const signIn = (role: 'OWNER' | 'MANAGER', mustChangePassword = false) =>
-    user.set({ id: 7, username: 'sam', role, mustChangePassword, platformAdmin: false });
+    user.set({ id: 7, username: 'sam', role, mustChangePassword, platformAdmin: false, restaurantId: 1 });
 
   for (const section of ['reports', 'settings', 'staff']) {
     // The first lazy child module loaded in this whole file (usually 'reports', since it's first in the array)

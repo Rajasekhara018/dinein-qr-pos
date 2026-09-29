@@ -22,6 +22,7 @@ describe('PlatformPage', () => {
       role: 'OWNER',
       mustChangePassword: false,
       platformAdmin: true,
+      restaurantId: 1,
     });
     (auth as unknown as { _accessToken: { set: (v: unknown) => void } })['_accessToken'].set('fake-token');
   }

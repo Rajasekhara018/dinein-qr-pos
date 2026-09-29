@@ -26,11 +26,12 @@ public class OrderRealtimeListener {
         OrderStatus to = event.to();
         publisher.toGuest(event.orderId(), to.name());
         if (to == OrderStatus.CONFIRMED) {
-            publisher.toKitchen(RealtimeEvent.ORDER_CONFIRMED, event.orderId(), to.name(), event.kitchenView());
+            publisher.toKitchen(event.restaurantId(), RealtimeEvent.ORDER_CONFIRMED, event.orderId(), to.name(),
+                    event.kitchenView());
         } else if (to == OrderStatus.CANCELLED) {
-            publisher.toKitchen(RealtimeEvent.ORDER_CANCELLED, event.orderId(), to.name(), null);
+            publisher.toKitchen(event.restaurantId(), RealtimeEvent.ORDER_CANCELLED, event.orderId(), to.name(), null);
         } else if (OrderStatus.KITCHEN_VISIBLE.contains(to) || to == OrderStatus.COMPLETED) {
-            publisher.toKitchen(RealtimeEvent.ORDER_STATUS_CHANGED, event.orderId(), to.name(),
+            publisher.toKitchen(event.restaurantId(), RealtimeEvent.ORDER_STATUS_CHANGED, event.orderId(), to.name(),
                     to == OrderStatus.READY ? event.kitchenView() : null);
         }
     }

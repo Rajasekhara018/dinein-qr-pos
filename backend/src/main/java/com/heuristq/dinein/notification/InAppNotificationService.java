@@ -43,8 +43,10 @@ public class InAppNotificationService {
      * Stores the notification (committed immediately) and then announces it: WAITER notifications on
      * {@code /topic/waiter/notifications}, everything else on {@code /topic/staff/notifications}.
      */
-    public InAppNotificationEntity createForRole(StaffRole role, NotificationEvent event, Message message, Long orderId) {
+    public InAppNotificationEntity createForRole(StaffRole role, NotificationEvent event, Message message, Long orderId,
+                                                 Long restaurantId) {
         InAppNotificationEntity n = new InAppNotificationEntity();
+        n.setRestaurantId(restaurantId);
         n.setAudience(InAppAudience.STAFF_ROLE);
         n.setRecipient(role.name());
         n.setEvent(event);
@@ -57,9 +59,9 @@ public class InAppNotificationService {
         StaffNotificationMessage announcement = new StaffNotificationMessage("NOTIFICATION", n.getAudience().name(),
                 n.getRecipient(), view(n, false));
         if (role == StaffRole.WAITER) {
-            realtimePublisher.toWaiterNotifications(announcement);
+            realtimePublisher.toWaiterNotifications(restaurantId, announcement);
         } else {
-            realtimePublisher.toStaffNotifications(announcement);
+            realtimePublisher.toStaffNotifications(restaurantId, announcement);
         }
         return n;
     }
@@ -67,8 +69,8 @@ public class InAppNotificationService {
     @Transactional(readOnly = true)
     public PageResponse<NotificationView> list(StaffPrincipal staff, boolean unreadOnly, int page, int size) {
         PageRequest pageable = PageRequest.of(Math.max(page, 0), Math.min(Math.max(size, 1), MAX_PAGE_SIZE));
-        Page<InAppNotificationEntity> result = repository.findVisible(staff.role().name(), userKey(staff),
-                staff.userId(), unreadOnly, pageable);
+        Page<InAppNotificationEntity> result = repository.findVisible(staff.restaurantId(), staff.role().name(),
+                userKey(staff), staff.userId(), unreadOnly, pageable);
         List<Long> ids = result.getContent().stream().map(InAppNotificationEntity::getId).toList();
         Set<Long> read = ids.isEmpty() ? Set.of() : new HashSet<>(repository.findReadIds(staff.userId(), ids));
         return PageResponse.of(result, n -> view(n, read.contains(n.getId())));
@@ -76,12 +78,12 @@ public class InAppNotificationService {
 
     @Transactional(readOnly = true)
     public long unreadCount(StaffPrincipal staff) {
-        return repository.countUnread(staff.role().name(), userKey(staff), staff.userId());
+        return repository.countUnread(staff.restaurantId(), staff.role().name(), userKey(staff), staff.userId());
     }
 
     @Transactional
     public void markRead(StaffPrincipal staff, Long id) {
-        if (!repository.isVisible(id, staff.role().name(), userKey(staff))) {
+        if (!repository.isVisible(id, staff.restaurantId(), staff.role().name(), userKey(staff))) {
             throw ApiException.notFound("Notification");
         }
         repository.markRead(id, staff.userId());
@@ -89,7 +91,7 @@ public class InAppNotificationService {
 
     @Transactional
     public int markAllRead(StaffPrincipal staff) {
-        int marked = repository.markAllRead(staff.role().name(), userKey(staff), staff.userId());
+        int marked = repository.markAllRead(staff.restaurantId(), staff.role().name(), userKey(staff), staff.userId());
         log.info("notification.read_all userId={} marked={}", staff.userId(), marked);
         return marked;
     }

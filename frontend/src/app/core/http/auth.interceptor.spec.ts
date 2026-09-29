@@ -10,7 +10,14 @@ import { DeviceAuthStore } from '../auth/device-auth.store';
 import { authInterceptor } from './auth.interceptor';
 import { withAuth } from './http-context';
 
-const owner: StaffInfo = { id: 1, username: 'owner', role: 'OWNER', mustChangePassword: false, platformAdmin: false };
+const owner: StaffInfo = {
+  id: 1,
+  username: 'owner',
+  role: 'OWNER',
+  mustChangePassword: false,
+  platformAdmin: false,
+  restaurantId: 1,
+};
 const tokens = (accessToken: string): TokenResponse => ({
   accessToken,
   expiresIn: 900,

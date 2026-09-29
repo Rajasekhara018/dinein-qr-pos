@@ -14,6 +14,7 @@ const waiter: StaffInfo = {
   role: 'WAITER',
   mustChangePassword: false,
   platformAdmin: false,
+  restaurantId: 1,
 };
 
 describe('WaiterLogin', () => {

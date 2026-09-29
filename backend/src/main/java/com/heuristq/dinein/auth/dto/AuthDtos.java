@@ -29,7 +29,7 @@ public final class AuthDtos {
     }
 
     public record StaffInfo(Long id, String username, String displayName, StaffRole role,
-                            boolean mustChangePassword, boolean platformAdmin) {
+                            boolean mustChangePassword, boolean platformAdmin, Long restaurantId) {
     }
 
     public record TokenResponse(String accessToken, long expiresIn, StaffInfo user) {

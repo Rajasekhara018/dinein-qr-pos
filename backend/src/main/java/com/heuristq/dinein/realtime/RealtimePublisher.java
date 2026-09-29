@@ -6,15 +6,25 @@ import org.springframework.stereotype.Component;
 
 import java.time.Clock;
 
+/**
+ * Every per-restaurant topic is built from {@code restaurantId} (see {@link #kitchenTopic}, {@link #staffTopic},
+ * {@link #waiterTopic}) so one tenant's kitchen tickets/notifications are never delivered to another's staff --
+ * {@code StompAuthChannelInterceptor} enforces that the subscriber's own restaurant matches. Only {@code /topic/menu}
+ * and the per-order guest topic are exempt: the menu topic carries no data (just "refetch"), and the guest topic is
+ * already scoped by unguessable order id + ownership check.
+ */
 @Slf4j
 @Component
 public class RealtimePublisher {
 
-    public static final String KITCHEN_TOPIC = "/topic/kitchen/orders";
+    public static final String KITCHEN_TOPIC_PREFIX = "/topic/kitchen/";
+    public static final String KITCHEN_TOPIC_SUFFIX = "/orders";
     public static final String MENU_TOPIC = "/topic/menu";
     public static final String ORDER_TOPIC_PREFIX = "/topic/orders/";
-    public static final String STAFF_NOTIFICATIONS_TOPIC = "/topic/staff/notifications";
-    public static final String WAITER_NOTIFICATIONS_TOPIC = "/topic/waiter/notifications";
+    public static final String STAFF_NOTIFICATIONS_PREFIX = "/topic/staff/";
+    public static final String STAFF_NOTIFICATIONS_SUFFIX = "/notifications";
+    public static final String WAITER_NOTIFICATIONS_PREFIX = "/topic/waiter/";
+    public static final String WAITER_NOTIFICATIONS_SUFFIX = "/notifications";
 
     private final SimpMessagingTemplate messagingTemplate;
     private final Clock clock;
@@ -24,12 +34,24 @@ public class RealtimePublisher {
         this.clock = clock;
     }
 
+    public static String kitchenTopic(Long restaurantId) {
+        return KITCHEN_TOPIC_PREFIX + restaurantId + KITCHEN_TOPIC_SUFFIX;
+    }
+
+    public static String staffNotificationsTopic(Long restaurantId) {
+        return STAFF_NOTIFICATIONS_PREFIX + restaurantId + STAFF_NOTIFICATIONS_SUFFIX;
+    }
+
+    public static String waiterNotificationsTopic(Long restaurantId) {
+        return WAITER_NOTIFICATIONS_PREFIX + restaurantId + WAITER_NOTIFICATIONS_SUFFIX;
+    }
+
     public void menuUpdated() {
         send(MENU_TOPIC, new RealtimeEvent(RealtimeEvent.MENU_UPDATED, null, null, null, clock.instant()));
     }
 
-    public void toKitchen(String type, Long orderId, String status, Object order) {
-        send(KITCHEN_TOPIC, new RealtimeEvent(type, orderId, status, order, clock.instant()));
+    public void toKitchen(Long restaurantId, String type, Long orderId, String status, Object order) {
+        send(kitchenTopic(restaurantId), new RealtimeEvent(type, orderId, status, order, clock.instant()));
     }
 
     public void toGuest(Long orderId, String status) {
@@ -38,20 +60,22 @@ public class RealtimePublisher {
     }
 
     /** New in-app notification for owners/managers; the payload names the role or user it targets. */
-    public void toStaffNotifications(Object notification) {
+    public void toStaffNotifications(Long restaurantId, Object notification) {
+        String destination = staffNotificationsTopic(restaurantId);
         try {
-            messagingTemplate.convertAndSend(STAFF_NOTIFICATIONS_TOPIC, notification);
+            messagingTemplate.convertAndSend(destination, notification);
         } catch (RuntimeException e) {
-            log.warn("realtime.send_failed destination={} type=NOTIFICATION", STAFF_NOTIFICATIONS_TOPIC, e);
+            log.warn("realtime.send_failed destination={} type=NOTIFICATION", destination, e);
         }
     }
 
     /** New in-app notification for waiters (e.g. an order is ready to be served). */
-    public void toWaiterNotifications(Object notification) {
+    public void toWaiterNotifications(Long restaurantId, Object notification) {
+        String destination = waiterNotificationsTopic(restaurantId);
         try {
-            messagingTemplate.convertAndSend(WAITER_NOTIFICATIONS_TOPIC, notification);
+            messagingTemplate.convertAndSend(destination, notification);
         } catch (RuntimeException e) {
-            log.warn("realtime.send_failed destination={} type=NOTIFICATION", WAITER_NOTIFICATIONS_TOPIC, e);
+            log.warn("realtime.send_failed destination={} type=NOTIFICATION", destination, e);
         }
     }
 

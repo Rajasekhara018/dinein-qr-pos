@@ -61,7 +61,7 @@ public class OrderLifecycleService {
         // CONFIRMED carries the ticket for the kitchen; READY carries it so waiter screens can alert without a refetch.
         KitchenOrderView kitchenView = to == OrderStatus.CONFIRMED || to == OrderStatus.READY
                 ? viewMapper.toKitchenView(order, viewMapper.tableLabel(order)) : null;
-        events.publishEvent(new OrderStatusChangedEvent(order.getId(), from, to, kitchenView));
+        events.publishEvent(new OrderStatusChangedEvent(order.getId(), order.getRestaurantId(), from, to, kitchenView));
     }
 
     /** Staff-initiated change (kitchen board / admin), restricted to {@code allowedTargets}. */

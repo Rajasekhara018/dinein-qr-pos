@@ -12,11 +12,13 @@ import java.util.List;
 
 /**
  * Native queries because read state lives in the unmapped {@code notification_read} join table. A notification is
- * visible to a user when it targets their role or their user id ({@code :userKey} is the id as text).
+ * visible to a user when it belongs to their restaurant AND targets their role or their user id ({@code :userKey}
+ * is the id as text).
  */
 public interface InAppNotificationRepository extends JpaRepository<InAppNotificationEntity, Long> {
 
-    String VISIBLE = "((n.audience = 'STAFF_ROLE' AND n.recipient = :role) "
+    String VISIBLE = "n.restaurant_id = :restaurantId AND "
+            + "((n.audience = 'STAFF_ROLE' AND n.recipient = :role) "
             + "OR (n.audience = 'STAFF_USER' AND n.recipient = :userKey))";
     String UNREAD = "NOT EXISTS (SELECT 1 FROM notification_read r "
             + "WHERE r.notification_id = n.id AND r.staff_user_id = :userId)";
@@ -26,17 +28,19 @@ public interface InAppNotificationRepository extends JpaRepository<InAppNotifica
             countQuery = "SELECT count(*) FROM in_app_notification n WHERE " + VISIBLE
                     + " AND (:unreadOnly = false OR " + UNREAD + ")",
             nativeQuery = true)
-    Page<InAppNotificationEntity> findVisible(@Param("role") String role, @Param("userKey") String userKey,
-                                              @Param("userId") long userId, @Param("unreadOnly") boolean unreadOnly,
-                                              Pageable pageable);
+    Page<InAppNotificationEntity> findVisible(@Param("restaurantId") long restaurantId, @Param("role") String role,
+                                              @Param("userKey") String userKey, @Param("userId") long userId,
+                                              @Param("unreadOnly") boolean unreadOnly, Pageable pageable);
 
     @Query(value = "SELECT count(*) FROM in_app_notification n WHERE " + VISIBLE + " AND " + UNREAD,
             nativeQuery = true)
-    long countUnread(@Param("role") String role, @Param("userKey") String userKey, @Param("userId") long userId);
+    long countUnread(@Param("restaurantId") long restaurantId, @Param("role") String role,
+                     @Param("userKey") String userKey, @Param("userId") long userId);
 
     @Query(value = "SELECT EXISTS (SELECT 1 FROM in_app_notification n WHERE n.id = :id AND " + VISIBLE + ")",
             nativeQuery = true)
-    boolean isVisible(@Param("id") long id, @Param("role") String role, @Param("userKey") String userKey);
+    boolean isVisible(@Param("id") long id, @Param("restaurantId") long restaurantId, @Param("role") String role,
+                      @Param("userKey") String userKey);
 
     @Query(value = "SELECT r.notification_id FROM notification_read r "
             + "WHERE r.staff_user_id = :userId AND r.notification_id IN (:ids)", nativeQuery = true)
@@ -51,5 +55,6 @@ public interface InAppNotificationRepository extends JpaRepository<InAppNotifica
     @Query(value = "INSERT INTO notification_read (notification_id, staff_user_id, read_at) "
             + "SELECT n.id, :userId, now() FROM in_app_notification n WHERE " + VISIBLE + " AND " + UNREAD
             + " ON CONFLICT DO NOTHING", nativeQuery = true)
-    int markAllRead(@Param("role") String role, @Param("userKey") String userKey, @Param("userId") long userId);
+    int markAllRead(@Param("restaurantId") long restaurantId, @Param("role") String role,
+                    @Param("userKey") String userKey, @Param("userId") long userId);
 }

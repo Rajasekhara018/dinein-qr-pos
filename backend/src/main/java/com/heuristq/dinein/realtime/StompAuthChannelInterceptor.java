@@ -25,16 +25,22 @@ import java.util.regex.Pattern;
  *   <li>Staff: {@code Authorization: Bearer <jwt|device token>} native header on CONNECT.</li>
  *   <li>Guests: the signed guest-session cookie captured at handshake time.</li>
  * </ul>
- * Topic rules: {@code /topic/kitchen/orders} any staff (kitchen screens and waiter screens); {@code /topic/orders/{id}}
- * the owning guest (or owner/manager/waiter); {@code /topic/staff/notifications} owner/manager users (not kitchen
- * devices); {@code /topic/waiter/notifications} waiter/owner/manager users; {@code /topic/menu} anyone.
- * Clients may not SEND; the server is the only publisher.
+ * Topic rules: {@code /topic/kitchen/{restaurantId}/orders} staff of that restaurant only (kitchen screens and
+ * waiter screens); {@code /topic/orders/{id}} the owning guest (or owner/manager/waiter of that order's
+ * restaurant); {@code /topic/staff/{restaurantId}/notifications} owner/manager users of that restaurant (not
+ * kitchen devices); {@code /topic/waiter/{restaurantId}/notifications} waiter/owner/manager users of that
+ * restaurant; {@code /topic/menu} anyone. A {@code platformAdmin} may only subscribe to their own restaurant's
+ * topics here (the {@code X-Restaurant-Id} admin-view override is an HTTP-only mechanism; the JWT's own tenant is
+ * what the socket connection carries). Clients may not SEND; the server is the only publisher.
  */
 @Slf4j
 @Component
 public class StompAuthChannelInterceptor implements ChannelInterceptor {
 
     private static final Pattern ORDER_TOPIC = Pattern.compile("^/topic/orders/(\\d{1,18})$");
+    private static final Pattern KITCHEN_TOPIC = Pattern.compile("^/topic/kitchen/(\\d{1,18})/orders$");
+    private static final Pattern STAFF_NOTIFICATIONS_TOPIC = Pattern.compile("^/topic/staff/(\\d{1,18})/notifications$");
+    private static final Pattern WAITER_NOTIFICATIONS_TOPIC = Pattern.compile("^/topic/waiter/(\\d{1,18})/notifications$");
 
     private final TokenAuthenticator tokenAuthenticator;
     private final OrderRepository orderRepository;
@@ -93,21 +99,25 @@ public class StompAuthChannelInterceptor implements ChannelInterceptor {
             return;
         }
         StaffPrincipal staff = staffOf(user);
-        if (destination.equals(RealtimePublisher.KITCHEN_TOPIC)) {
-            if (staff != null) {
+        Matcher kitchen = KITCHEN_TOPIC.matcher(destination);
+        if (kitchen.matches()) {
+            if (staff != null && sameRestaurant(staff, kitchen.group(1))) {
                 return;
             }
             throw denied(destination);
         }
-        if (destination.equals(RealtimePublisher.STAFF_NOTIFICATIONS_TOPIC)) {
-            if (staff != null && !staff.isDevice()
+        Matcher staffNotifications = STAFF_NOTIFICATIONS_TOPIC.matcher(destination);
+        if (staffNotifications.matches()) {
+            if (staff != null && !staff.isDevice() && sameRestaurant(staff, staffNotifications.group(1))
                     && (staff.role() == StaffRole.OWNER || staff.role() == StaffRole.MANAGER)) {
                 return;
             }
             throw denied(destination);
         }
-        if (destination.equals(RealtimePublisher.WAITER_NOTIFICATIONS_TOPIC)) {
-            if (staff != null && !staff.isDevice() && staff.role() != StaffRole.KITCHEN) {
+        Matcher waiterNotifications = WAITER_NOTIFICATIONS_TOPIC.matcher(destination);
+        if (waiterNotifications.matches()) {
+            if (staff != null && !staff.isDevice() && sameRestaurant(staff, waiterNotifications.group(1))
+                    && staff.role() != StaffRole.KITCHEN) {
                 return;
             }
             throw denied(destination);
@@ -123,6 +133,10 @@ public class StompAuthChannelInterceptor implements ChannelInterceptor {
             }
         }
         throw denied(destination);
+    }
+
+    private static boolean sameRestaurant(StaffPrincipal staff, String restaurantIdSegment) {
+        return staff.restaurantId() != null && staff.restaurantId().toString().equals(restaurantIdSegment);
     }
 
     private static StaffPrincipal staffOf(Principal user) {
