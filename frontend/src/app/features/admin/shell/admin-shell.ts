@@ -13,9 +13,11 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRouteSnapshot, NavigationEnd, Router } from '@angular/router';
 import { filter } from 'rxjs';
 import { AdminSettingsApi } from '../../../core/api/admin.api';
-import { SettingsResponse } from '../../../core/api/models';
+import { PlatformApi } from '../../../core/api/platform.api';
+import { RestaurantSummary, SettingsResponse } from '../../../core/api/models';
 import { ADMIN_PATHS } from '../../../core/auth/auth-paths';
 import { AuthStore } from '../../../core/auth/auth.store';
+import { RestaurantViewStore } from '../../../core/auth/restaurant-view.store';
 import { RealtimeService } from '../../../core/realtime/realtime.service';
 import { ToastService } from '../../../core/ui/toast.service';
 import { BreakpointService } from '../../../core/ui/breakpoint.service';
@@ -59,6 +61,11 @@ export class AdminShell {
   protected readonly navGroups = computed(() =>
     visibleNavGroups(this.auth.isOwner(), this.auth.isPlatformAdmin()),
   );
+
+  protected readonly restaurantView = inject(RestaurantViewStore);
+  private readonly platformApi = inject(PlatformApi);
+  protected readonly restaurants = signal<RestaurantSummary[]>([]);
+
   protected readonly drawerOpen = signal(false);
   protected readonly userMenuOpen = signal(false);
   protected readonly paletteOpen = signal(false);
@@ -117,6 +124,13 @@ export class AdminShell {
       });
     }
 
+    if (this.auth.isPlatformAdmin()) {
+      this.platformApi.list(null).subscribe({
+        next: (list) => this.restaurants.set(list),
+        error: () => undefined,
+      });
+    }
+
     this.router.events
       .pipe(
         filter((e) => e instanceof NavigationEnd),
@@ -171,6 +185,12 @@ export class AdminShell {
       event.preventDefault();
       this.paletteOpen.set(true);
     }
+  }
+
+  /** Reloads so every store on the page refetches cleanly under the newly-viewed restaurant. */
+  protected switchRestaurant(value: string): void {
+    this.restaurantView.view(value ? Number(value) : null);
+    location.reload();
   }
 
   protected closeDrawer(): void {

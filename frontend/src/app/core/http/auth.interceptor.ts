@@ -6,6 +6,7 @@ import { API_BASE } from '../api/api-base';
 import { ADMIN_PATHS, KITCHEN_PATHS, WAITER_PATHS } from '../auth/auth-paths';
 import { AuthStore } from '../auth/auth.store';
 import { DeviceAuthStore } from '../auth/device-auth.store';
+import { RestaurantViewStore } from '../auth/restaurant-view.store';
 import { AUTH_MODE, AuthMode, IS_RETRY, pathOf } from './http-context';
 
 /** Resolves which credential a request needs (see {@link AuthMode}). */
@@ -27,6 +28,10 @@ export function resolveAuthMode(req: HttpRequest<unknown>): Exclude<AuthMode, 'a
 
 const withBearer = (req: HttpRequest<unknown>, token: string | null) =>
   token ? req.clone({ setHeaders: { Authorization: `Bearer ${token}` } }) : req;
+
+/** `X-Restaurant-Id`, when a platform admin is viewing a restaurant other than their own (see RestaurantViewStore). */
+const withRestaurantView = (req: HttpRequest<unknown>, restaurantId: string | null) =>
+  restaurantId ? req.clone({ setHeaders: { 'X-Restaurant-Id': restaurantId } }) : req;
 
 /**
  * Attaches `Authorization: Bearer …`:
@@ -56,7 +61,10 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   }
 
   const auth = inject(AuthStore);
-  return next(withBearer(req, auth.accessToken())).pipe(
+  const restaurantView = inject(RestaurantViewStore);
+  const withCreds = (r: HttpRequest<unknown>) =>
+    withRestaurantView(withBearer(r, auth.accessToken()), restaurantView.headerValue());
+  return next(withCreds(req)).pipe(
     catchError((error: unknown) => {
       if (
         !(error instanceof HttpErrorResponse) ||
@@ -76,7 +84,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
             return throwError(() => error);
           }
           const retry = req.clone({ context: req.context.set(IS_RETRY, true) });
-          return next(withBearer(retry, auth.accessToken()));
+          return next(withCreds(retry));
         }),
       );
     }),

@@ -221,6 +221,23 @@
           </button>
         }
 
+        @if (auth.isPlatformAdmin() && restaurants().length) {
+          <label class="hidden items-center gap-1.5 text-sm text-ink-muted xl:flex">
+            <span class="sr-only">Viewing restaurant</span>
+            <select
+              class="min-h-touch max-w-40 truncate rounded-control border border-line-strong bg-surface px-2 text-sm text-ink"
+              data-testid="restaurant-switcher"
+              [value]="restaurantView.restaurantId() ?? ''"
+              (change)="switchRestaurant($any($event.target).value)"
+            >
+              <option value="">My restaurant</option>
+              @for (r of restaurants(); track r.id) {
+                <option [value]="r.id">{{ r.name }}</option>
+              }
+            </select>
+          </label>
+        }
+
         <button appIconButton type="button" [attr.aria-label]="prefs.theme() === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'" data-testid="theme-toggle" (click)="prefs.toggleTheme()">
           @if (prefs.theme() === 'dark') {
             <svg lucideSun class="size-5" aria-hidden="true"></svg>

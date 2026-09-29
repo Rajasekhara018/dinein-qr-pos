@@ -23,6 +23,7 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -40,11 +41,15 @@ public class OrderViewMapper {
         this.staffUserRepository = staffUserRepository;
     }
 
-    /** Table labels for a batch of orders (tables are few; one query). */
+    /**
+     * Table labels for a batch of orders (tables are few; one query). Every caller looks a takeaway order's
+     * (table-less) {@code null} id up in the result directly, so this must tolerate a {@code null} key --
+     * {@code Map.of()} does not (it throws on {@code get(null)}), unlike {@link Collections#emptyMap()}.
+     */
     public Map<Long, String> tableLabels(Collection<OrderEntity> orders) {
         List<Long> ids = orders.stream().map(OrderEntity::getTableId).filter(Objects::nonNull).distinct().toList();
         if (ids.isEmpty()) {
-            return Map.of();
+            return Collections.emptyMap();
         }
         return tableRepository.findAllById(ids).stream()
                 .collect(Collectors.toMap(DiningTableEntity::getId, DiningTableEntity::getLabel));

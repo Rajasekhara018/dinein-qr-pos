@@ -3,9 +3,13 @@ package com.heuristq.dinein.restaurant;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.heuristq.dinein.support.AbstractIntegrationTest;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.test.web.servlet.MvcResult;
 
+import java.time.Instant;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -22,6 +26,25 @@ class RestaurantOnboardingIT extends AbstractIntegrationTest {
 
     // Matches app.security.platform-admin-key in application-test.properties.
     private static final String PLATFORM_KEY = "test_platform_admin_key";
+
+    @Autowired
+    private NamedParameterJdbcTemplate jdbc;
+
+    /** A minimal, valid CONFIRMED order for the given restaurant, for report-scoping assertions. */
+    private void insertConfirmedOrder(long restaurantId, String grandTotal) {
+        String suffix = UUID.randomUUID().toString();
+        jdbc.update("INSERT INTO orders (order_number, display_token, guest_session_id, status, subtotal, tax_total, "
+                        + "grand_total, idempotency_key, placed_at, restaurant_id) "
+                        + "VALUES (:orderNumber, 1, :guestSessionId, 'CONFIRMED', :grandTotal, 0, :grandTotal, "
+                        + ":idempotencyKey, :placedAt, :restaurantId)",
+                new MapSqlParameterSource()
+                        .addValue("orderNumber", suffix.substring(0, 20))
+                        .addValue("guestSessionId", suffix)
+                        .addValue("grandTotal", new java.math.BigDecimal(grandTotal))
+                        .addValue("idempotencyKey", suffix)
+                        .addValue("placedAt", java.sql.Timestamp.from(Instant.now()))
+                        .addValue("restaurantId", restaurantId));
+    }
 
     private JsonNode onboard(String restaurantName) throws Exception {
         MvcResult result = mvc.perform(post("/api/v1/platform/restaurants")
@@ -174,6 +197,45 @@ class RestaurantOnboardingIT extends AbstractIntegrationTest {
         assertThat(settings.get("closingTime").asText()).startsWith("22:00");
         assertThat(settings.get("brandColor").asText()).isEqualToIgnoringCase("#112233");
         assertThat(settings.get("takeawayEnabled").asBoolean()).isFalse();
+    }
+
+    @Test
+    void reportsAndDashboardAreScopedToOneRestaurantExceptForThePlatformAdmin() throws Exception {
+        String suffix = UUID.randomUUID().toString().substring(0, 8);
+        JsonNode a = onboard("Report Scope A " + suffix);
+        JsonNode b = onboard("Report Scope B " + suffix);
+        String tokenA = ownerToken(a.get("ownerUsername").asText(), a.get("temporaryPassword").asText());
+        String tokenB = ownerToken(b.get("ownerUsername").asText(), b.get("temporaryPassword").asText());
+
+        insertConfirmedOrder(a.get("restaurantId").asLong(), "500.00");
+        insertConfirmedOrder(b.get("restaurantId").asLong(), "700.00");
+
+        // Each restaurant's own owner sees only its own order in today's dashboard totals.
+        JsonNode dashboardA = body(mvc.perform(get("/api/v1/admin/dashboard").header("Authorization", "Bearer " + tokenA))
+                .andExpect(status().isOk()).andReturn());
+        assertThat(dashboardA.get("ordersToday").asLong()).isEqualTo(1);
+        assertThat(dashboardA.get("revenueToday").asDouble()).isEqualTo(500.00);
+
+        JsonNode dashboardB = body(mvc.perform(get("/api/v1/admin/dashboard").header("Authorization", "Bearer " + tokenB))
+                .andExpect(status().isOk()).andReturn());
+        assertThat(dashboardB.get("ordersToday").asLong()).isEqualTo(1);
+        assertThat(dashboardB.get("revenueToday").asDouble()).isEqualTo(700.00);
+
+        // A platform admin (see BootstrapOwnerRunner -- this flag is what makes an account one) sees both,
+        // combined, regardless of which restaurant it happens to belong to. Promoted directly rather than reusing
+        // the shared bootstrap "owner" account, which other IT classes in this same suite/container also log
+        // into and permanently change the password of -- reusing it here would be order-dependent and flaky.
+        JsonNode c = onboard("Report Scope Platform Admin " + suffix);
+        String ownerUsername = c.get("ownerUsername").asText();
+        jdbc.update("UPDATE staff_user SET platform_admin = true WHERE username = :username",
+                new MapSqlParameterSource().addValue("username", ownerUsername));
+        String platformAdminToken = ownerToken(ownerUsername, c.get("temporaryPassword").asText());
+
+        JsonNode dashboardPlatform = body(mvc.perform(
+                        get("/api/v1/admin/dashboard").header("Authorization", "Bearer " + platformAdminToken))
+                .andExpect(status().isOk()).andReturn());
+        assertThat(dashboardPlatform.get("ordersToday").asLong()).isGreaterThanOrEqualTo(2);
+        assertThat(dashboardPlatform.get("revenueToday").asDouble()).isGreaterThanOrEqualTo(1200.00);
     }
 
     @Test
