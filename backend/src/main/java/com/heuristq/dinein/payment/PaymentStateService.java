@@ -8,7 +8,7 @@ import com.heuristq.dinein.payment.domain.PaymentEntity;
 import com.heuristq.dinein.payment.domain.PaymentRepository;
 import com.heuristq.dinein.payment.domain.PaymentStatus;
 import com.heuristq.dinein.payment.domain.RefundStatus;
-import com.heuristq.dinein.payment.gateway.ProviderPayment;
+import com.heuristq.dinein.payment.infrastructure.gateway.ProviderPayment;
 import com.heuristq.dinein.shared.util.Money;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;

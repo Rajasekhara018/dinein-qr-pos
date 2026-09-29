@@ -1,7 +1,7 @@
 package com.heuristq.dinein.payment.dto;
 
 import com.heuristq.dinein.order.domain.OrderStatus;
-import com.heuristq.dinein.payment.gateway.CheckoutMode;
+import com.heuristq.dinein.payment.infrastructure.gateway.CheckoutMode;
 
 import java.util.Map;
 

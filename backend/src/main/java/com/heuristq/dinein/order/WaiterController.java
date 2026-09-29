@@ -11,7 +11,7 @@ import com.heuristq.dinein.order.dto.OrderDtos.StaffPlaceOrderRequest;
 import com.heuristq.dinein.order.dto.OrderDtos.WaiterTableView;
 import com.heuristq.dinein.payment.PaymentService;
 import com.heuristq.dinein.payment.dto.PaymentDtos.CheckoutResponse;
-import com.heuristq.dinein.payment.gateway.razorpay.RazorpayPaymentGateway;
+import com.heuristq.dinein.payment.infrastructure.gateway.razorpay.RazorpayPaymentGateway;
 import com.heuristq.dinein.settings.SettingsService;
 import com.heuristq.dinein.settings.domain.RestaurantSettingsEntity;
 import com.heuristq.dinein.shared.exception.ApiException;

@@ -7,7 +7,7 @@ import com.heuristq.dinein.order.domain.OrderStatus;
 import com.heuristq.dinein.order.dto.OrderDtos.KitchenOrderView;
 import com.heuristq.dinein.payment.PaymentExpiryJob;
 import com.heuristq.dinein.payment.domain.PaymentEventRepository;
-import com.heuristq.dinein.payment.gateway.ProviderPayment;
+import com.heuristq.dinein.payment.infrastructure.gateway.ProviderPayment;
 import com.heuristq.dinein.restaurant.domain.RestaurantEntity;
 import com.heuristq.dinein.shared.security.StaffPrincipal;
 import com.heuristq.dinein.staff.domain.StaffRole;

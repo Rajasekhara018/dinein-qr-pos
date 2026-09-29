@@ -9,7 +9,7 @@ import com.heuristq.dinein.menu.domain.FoodType;
 import com.heuristq.dinein.menu.domain.ItemEntity;
 import com.heuristq.dinein.menu.domain.ItemRepository;
 import com.heuristq.dinein.menu.domain.ItemVariantEntity;
-import com.heuristq.dinein.payment.gateway.razorpay.RazorpayPaymentGateway;
+import com.heuristq.dinein.payment.infrastructure.gateway.razorpay.RazorpayPaymentGateway;
 import com.heuristq.dinein.shared.util.Hmac;
 import com.heuristq.dinein.table.TableService;
 import com.heuristq.dinein.table.domain.DiningTableEntity;

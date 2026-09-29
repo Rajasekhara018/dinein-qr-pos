@@ -10,7 +10,7 @@ import com.heuristq.dinein.payment.domain.PaymentEntity;
 import com.heuristq.dinein.payment.domain.PaymentRepository;
 import com.heuristq.dinein.payment.domain.PaymentStatus;
 import com.heuristq.dinein.payment.domain.RefundStatus;
-import com.heuristq.dinein.payment.gateway.ProviderPayment;
+import com.heuristq.dinein.payment.infrastructure.gateway.ProviderPayment;
 import com.heuristq.dinein.restaurant.domain.RestaurantEntity;
 import com.heuristq.dinein.settings.domain.RestaurantSettingsEntity;
 import com.heuristq.dinein.settings.domain.RestaurantSettingsRepository;

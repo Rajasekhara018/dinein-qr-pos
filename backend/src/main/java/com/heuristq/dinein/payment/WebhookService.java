@@ -2,10 +2,10 @@ package com.heuristq.dinein.payment;
 
 import com.heuristq.dinein.payment.domain.PaymentEventEntity;
 import com.heuristq.dinein.payment.domain.PaymentEventRepository;
-import com.heuristq.dinein.payment.gateway.PaymentGateway;
-import com.heuristq.dinein.payment.gateway.PaymentGatewayRegistry;
-import com.heuristq.dinein.payment.gateway.WebhookParseResult;
-import com.heuristq.dinein.payment.gateway.WebhookParseResult.GatewayEvent;
+import com.heuristq.dinein.payment.infrastructure.gateway.PaymentGateway;
+import com.heuristq.dinein.payment.infrastructure.gateway.PaymentGatewayRegistry;
+import com.heuristq.dinein.payment.infrastructure.gateway.WebhookParseResult;
+import com.heuristq.dinein.payment.infrastructure.gateway.WebhookParseResult.GatewayEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;

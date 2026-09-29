@@ -7,7 +7,7 @@ import com.heuristq.dinein.order.dto.OrderDtos.GuestOrderView;
 import com.heuristq.dinein.order.dto.OrderDtos.PlaceOrderRequest;
 import com.heuristq.dinein.payment.PaymentService;
 import com.heuristq.dinein.payment.dto.PaymentDtos.CheckoutResponse;
-import com.heuristq.dinein.payment.gateway.razorpay.RazorpayPaymentGateway;
+import com.heuristq.dinein.payment.infrastructure.gateway.razorpay.RazorpayPaymentGateway;
 import com.heuristq.dinein.shared.exception.ApiException;
 import jakarta.validation.Valid;
 import org.springframework.http.CacheControl;
