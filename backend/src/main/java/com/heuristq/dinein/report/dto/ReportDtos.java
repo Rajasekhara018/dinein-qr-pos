@@ -29,6 +29,10 @@ public final class ReportDtos {
     public record TopItem(String name, long quantity, BigDecimal revenue) {
     }
 
+    /** One staff member who placed orders on a guest's behalf (waiter/counter), ranked by revenue. */
+    public record WaiterPerformance(Long staffId, String staffName, long ordersCount, BigDecimal revenue) {
+    }
+
     public record DailyPoint(LocalDate date, long orders, BigDecimal gross) {
     }
 
@@ -41,7 +45,8 @@ public final class ReportDtos {
                                BigDecimal cgst, BigDecimal sgst, BigDecimal net, BigDecimal averageOrderValue,
                                long cancelledCount, BigDecimal refundedAmount, BigDecimal manualRefundAmount,
                                List<MethodSplit> paymentMethods, List<PaymentChannelSplit> paymentChannels,
-                               List<OrderTypeSplit> orderTypes, List<TopItem> topItems, List<DailyPoint> daily) {
+                               List<OrderTypeSplit> orderTypes, List<TopItem> topItems, List<DailyPoint> daily,
+                               List<WaiterPerformance> waiterPerformance) {
     }
 
     public record Dashboard(LocalDate date, long ordersToday, BigDecimal revenueToday, BigDecimal averageOrderValue,

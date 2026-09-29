@@ -810,6 +810,15 @@ export interface SalesSummary {
   orderTypes?: OrderTypeSplit[];
   topItems: TopItem[];
   daily: DailyPoint[];
+  waiterPerformance?: WaiterPerformance[];
+}
+
+/** One staff member who placed orders on a guest's behalf (waiter/counter), ranked by revenue. */
+export interface WaiterPerformance {
+  staffId: number;
+  staffName: string;
+  ordersCount: number;
+  revenue: Money;
 }
 
 export interface Dashboard {

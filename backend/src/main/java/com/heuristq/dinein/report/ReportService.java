@@ -11,6 +11,7 @@ import com.heuristq.dinein.report.dto.ReportDtos.OrderTypeSplit;
 import com.heuristq.dinein.report.dto.ReportDtos.PaymentChannelSplit;
 import com.heuristq.dinein.report.dto.ReportDtos.SalesSummary;
 import com.heuristq.dinein.report.dto.ReportDtos.TopItem;
+import com.heuristq.dinein.report.dto.ReportDtos.WaiterPerformance;
 import com.heuristq.dinein.shared.exception.ApiException;
 import com.heuristq.dinein.shared.security.CurrentStaff;
 import com.heuristq.dinein.shared.util.BusinessTime;
@@ -124,11 +125,22 @@ public class ReportService {
                         + " GROUP BY 1 ORDER BY 1", p,
                 (rs, i) -> new DailyPoint(rs.getDate("d").toLocalDate(), rs.getLong("cnt"), Money.round(rs.getBigDecimal("gross"))));
 
+        // Staff-placed orders only (waiter/counter); guest self-orders have no placed_by_staff_id.
+        List<WaiterPerformance> waiterPerformance = jdbc.query(
+                "SELECT o.placed_by_staff_id AS staff_id, coalesce(su.display_name, su.username) AS staff_name, "
+                        + "count(*) AS cnt, coalesce(sum(o.grand_total),0) AS amount FROM orders o "
+                        + "JOIN staff_user su ON su.id = o.placed_by_staff_id "
+                        + "WHERE o.status IN " + PAID + " AND o.placed_by_staff_id IS NOT NULL "
+                        + "AND o.placed_at >= :start AND o.placed_at < :end" + scope("o")
+                        + " GROUP BY 1, 2 ORDER BY amount DESC", p,
+                (rs, i) -> new WaiterPerformance(rs.getLong("staff_id"), rs.getString("staff_name"),
+                        rs.getLong("cnt"), Money.round(rs.getBigDecimal("amount"))));
+
         BigDecimal avg = count == 0 ? BigDecimal.ZERO.setScale(2) : gross.divide(BigDecimal.valueOf(count), 2, RoundingMode.HALF_UP);
         return new SalesSummary(from, to, count, gross, tax, split[0], split[1], Money.round(gross.subtract(tax)), avg,
                 ((Number) cancelled.get("cnt")).longValue(), Money.fromPaise(refunded == null ? 0 : refunded.longValue()),
                 Money.fromPaise(manualRefunds == null ? 0 : manualRefunds.longValue()), methods,
-                List.copyOf(channels.values()), List.copyOf(types.values()), topItems, daily);
+                List.copyOf(channels.values()), List.copyOf(types.values()), topItems, daily, waiterPerformance);
     }
 
     @Transactional(readOnly = true)

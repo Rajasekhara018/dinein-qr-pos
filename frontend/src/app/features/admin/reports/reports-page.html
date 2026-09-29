@@ -212,6 +212,32 @@
           </table>
         }
       </section>
+
+      @if (s.waiterPerformance?.length) {
+        <section class="min-w-0 rounded-card border border-line bg-surface p-4 shadow-card" aria-labelledby="waiter-heading" data-testid="report-waiter-performance">
+          <h2 id="waiter-heading" class="font-display text-lg font-semibold">Waiter performance</h2>
+          <p class="text-sm text-ink-muted">Orders placed by staff on a guest's behalf (waiter/counter), by revenue.</p>
+          <table class="mt-2 w-full text-left text-sm">
+            <caption class="sr-only">Waiter performance</caption>
+            <thead class="text-xs uppercase text-ink-muted">
+              <tr>
+                <th scope="col" class="py-2">Staff</th>
+                <th scope="col" class="py-2 text-right">Orders</th>
+                <th scope="col" class="py-2 text-right">Revenue</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-line">
+              @for (w of s.waiterPerformance; track w.staffId) {
+                <tr>
+                  <th scope="row" class="py-2 font-medium">{{ w.staffName }}</th>
+                  <td class="py-2 text-right tabular-nums">{{ w.ordersCount }}</td>
+                  <td class="py-2 text-right tabular-nums">{{ w.revenue | inr }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </section>
+      }
     </div>
   </div>
 }
