@@ -136,6 +136,7 @@ public class PaymentService {
     private PaymentEntity createAttempt(OrderEntity order, PaymentGateway gateway, CheckoutContext context) {
         String providerOrderId = gateway.createProviderOrder(context);
         PaymentEntity payment = new PaymentEntity();
+        payment.setRestaurantId(order.getRestaurantId());
         payment.setOrderId(order.getId());
         payment.setProvider(gateway.code());
         payment.setProviderOrderId(providerOrderId);

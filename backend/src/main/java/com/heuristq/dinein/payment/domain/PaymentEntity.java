@@ -1,6 +1,6 @@
 package com.heuristq.dinein.payment.domain;
 
-import com.heuristq.dinein.shared.persistence.BaseEntity;
+import com.heuristq.dinein.shared.persistence.TenantOwnedEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -8,6 +8,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Filter;
 
 /**
  * One provider-side order for one of our orders. Providers that allow retries on the same order (Razorpay) keep one
@@ -17,7 +18,8 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "payment")
-public class PaymentEntity extends BaseEntity {
+@Filter(name = TenantOwnedEntity.TENANT_FILTER, condition = "restaurant_id = :restaurantId")
+public class PaymentEntity extends TenantOwnedEntity {
 
     /** Provider code of counter / waiter payments. It is never a registered gateway: no provider API is ever called. */
     public static final String OFFLINE_PROVIDER = "OFFLINE";

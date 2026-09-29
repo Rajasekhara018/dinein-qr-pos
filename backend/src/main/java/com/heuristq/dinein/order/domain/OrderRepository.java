@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Lock;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -45,4 +46,14 @@ public interface OrderRepository extends JpaRepository<OrderEntity, Long>, JpaSp
     Page<OrderEntity> findByPlacedAtGreaterThanEqualAndPlacedAtLessThan(Instant from, Instant to, Pageable pageable);
 
     List<OrderEntity> findByPlacedAtGreaterThanEqualAndPlacedAtLessThanOrderByPlacedAtAsc(Instant from, Instant to);
+
+    /**
+     * GDPR data minimisation: clears guest-identifying fields from terminal orders once they're older than the
+     * configured retention period. Amounts, status and timestamps are kept -- only who the guest was is erased.
+     */
+    @Modifying(clearAutomatically = true)
+    @Query("update OrderEntity o set o.customerName = null, o.customerPhone = null, o.notes = null "
+            + "where o.status in :statuses and o.placedAt < :cutoff "
+            + "and (o.customerName is not null or o.customerPhone is not null or o.notes is not null)")
+    int redactGuestPiiOlderThan(@Param("statuses") Collection<OrderStatus> statuses, @Param("cutoff") Instant cutoff);
 }

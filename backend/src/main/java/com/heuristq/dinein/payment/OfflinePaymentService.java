@@ -67,6 +67,7 @@ public class OfflinePaymentService {
         }
         long amountPaise = Money.toPaise(order.getGrandTotal());
         PaymentEntity payment = new PaymentEntity();
+        payment.setRestaurantId(order.getRestaurantId());
         payment.setOrderId(orderId);
         payment.setProvider(PaymentEntity.OFFLINE_PROVIDER);
         payment.setProviderOrderId("off_" + orderId + "_" + SecureTokens.randomUrlSafe(9));

@@ -18,4 +18,7 @@ public enum OrderStatus {
 
     /** Statuses that count as revenue in reports. */
     public static final Set<OrderStatus> PAID = EnumSet.of(CONFIRMED, PREPARING, READY, COMPLETED);
+
+    /** Orders that will never change again, so their guest PII is safe to redact after a retention period. */
+    public static final Set<OrderStatus> TERMINAL = EnumSet.of(COMPLETED, EXPIRED, PAYMENT_FAILED, CANCELLED);
 }

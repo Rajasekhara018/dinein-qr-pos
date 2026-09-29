@@ -17,6 +17,7 @@ public record AppProperties(
         Security security,
         Orders orders,
         Images images,
+        @DefaultValue Privacy privacy,
         @DefaultValue Seed seed) {
 
     public record Cors(List<String> allowedOrigins) {
@@ -46,5 +47,10 @@ public record AppProperties(
     }
 
     public record Seed(@DefaultValue("false") boolean sampleData) {
+    }
+
+    /** GDPR data minimisation: how long a finished order keeps its guest-identifying fields. */
+    public record Privacy(@DefaultValue("90") int guestDataRetentionDays,
+                          @DefaultValue("0 15 3 * * *") String guestDataRedactionCron) {
     }
 }

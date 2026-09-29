@@ -16,7 +16,7 @@ class NotificationTemplatesTest {
             "orderNumber", "260926-017", "table", "T3", "reason", "Captured 100 paise but order total is 200 paise");
 
     private final NotificationTemplates templates = new NotificationTemplates(mock(SettingsService.class),
-            new AppProperties("https://dine.example.com/", null, null, null, null, null, null));
+            new AppProperties("https://dine.example.com/", null, null, null, null, null, null, null));
 
     @Test
     void readySmsContainsTokenAndRestaurant() {

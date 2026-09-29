@@ -1,5 +1,6 @@
 package com.heuristq.dinein.menu;
 
+import com.heuristq.dinein.audit.AuditService;
 import com.heuristq.dinein.image.ImageService;
 import com.heuristq.dinein.image.ImageUrls;
 import com.heuristq.dinein.menu.domain.CategoryEntity;
@@ -29,13 +30,15 @@ public class CategoryService {
     private final ItemRepository itemRepository;
     private final ImageService imageService;
     private final ApplicationEventPublisher events;
+    private final AuditService auditService;
 
     public CategoryService(CategoryRepository categoryRepository, ItemRepository itemRepository,
-                           ImageService imageService, ApplicationEventPublisher events) {
+                           ImageService imageService, ApplicationEventPublisher events, AuditService auditService) {
         this.categoryRepository = categoryRepository;
         this.itemRepository = itemRepository;
         this.imageService = imageService;
         this.events = events;
+        this.auditService = auditService;
     }
 
     @Transactional(readOnly = true)
@@ -90,8 +93,13 @@ public class CategoryService {
     @Transactional
     public CategoryResponse setActive(Long id, boolean active) {
         CategoryEntity category = find(id);
+        boolean previous = category.isActive();
         category.setActive(active);
         log.info("category.status id={} active={}", id, active);
+        if (previous != active) {
+            auditService.record("CATEGORY_STATUS_CHANGED", "Category", category.getId(),
+                    String.valueOf(previous), String.valueOf(active));
+        }
         events.publishEvent(new MenuChangedEvent("category.status"));
         return toResponse(category, countItems(id));
     }
