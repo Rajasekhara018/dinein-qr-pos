@@ -1,11 +1,12 @@
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { DestroyRef } from '@angular/core';
+import { DestroyRef, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TestBed } from '@angular/core/testing';
 import { Subject } from 'rxjs';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { KitchenOrderView, KitchenRealtimeEvent, WaiterConfig } from '../../../core/api/models';
+import { AuthStore } from '../../../core/auth/auth.store';
 import { RealtimeService } from '../../../core/realtime/realtime.service';
 import { ToastService } from '../../../core/ui/toast.service';
 import { kOrder, MIN, T0 } from '../../kitchen/data/test-fixtures';
@@ -52,6 +53,19 @@ describe('WaiterBoardStore', () => {
         provideHttpClient(),
         provideHttpClientTesting(),
         { provide: RealtimeService, useValue: realtime },
+        {
+          provide: AuthStore,
+          useValue: {
+            user: signal({
+              id: 9,
+              username: 'ravi',
+              role: 'WAITER',
+              mustChangePassword: false,
+              platformAdmin: false,
+              restaurantId: 1,
+            }),
+          },
+        },
       ],
     });
     store = TestBed.inject(WaiterBoardStore);
@@ -81,7 +95,7 @@ describe('WaiterBoardStore', () => {
   it('loads config + active orders and lists READY ones oldest first', async () => {
     await start([kOrder({ id: 1 }), ready(2, 1), ready(3, 8), kOrder({ id: 4, status: 'PREPARING' })]);
     expect(store.config()?.restaurantName).toBe('Spice Route');
-    expect(realtime.watch).toHaveBeenCalledWith('/topic/kitchen/orders');
+    expect(realtime.watch).toHaveBeenCalledWith('/topic/kitchen/1/orders');
     expect(store.ready().map((o) => o.id)).toEqual([3, 2]);
     expect(store.readyCount()).toBe(2);
     expect(store.orders()).toHaveLength(4);

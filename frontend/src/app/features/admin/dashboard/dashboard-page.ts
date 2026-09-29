@@ -54,7 +54,7 @@ export class DashboardPage {
   private readonly manual$ = new Subject<void>();
 
   constructor() {
-    merge(this.manual$, orderRefreshSignals(this.realtime))
+    merge(this.manual$, orderRefreshSignals(this.realtime, this.auth.user()?.restaurantId))
       .pipe(
         startWith(undefined),
         switchMap(() => this.fetch()),

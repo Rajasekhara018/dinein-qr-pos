@@ -52,7 +52,20 @@ describe('KitchenBoardStore', () => {
         provideHttpClientTesting(),
         { provide: KitchenClock, useValue: { now } },
         { provide: RealtimeService, useValue: realtime },
-        { provide: DeviceAuthStore, useValue: { token: signal('dvc_abc') } },
+        {
+          provide: DeviceAuthStore,
+          useValue: {
+            token: signal('dvc_abc'),
+            user: signal({
+              id: 9,
+              username: 'kitchen1',
+              role: 'KITCHEN',
+              mustChangePassword: false,
+              platformAdmin: false,
+              restaurantId: 1,
+            }),
+          },
+        },
       ],
     });
     store = TestBed.inject(KitchenBoardStore);
@@ -90,7 +103,7 @@ describe('KitchenBoardStore', () => {
     expect(store.config()).toEqual(testConfig);
     expect(store.columns().CONFIRMED.map((o) => o.id)).toEqual([3, 1]);
     expect(store.counts()).toEqual({ CONFIRMED: 2, PREPARING: 1, READY: 1 });
-    expect(realtime.watch).toHaveBeenCalledWith('/topic/kitchen/orders');
+    expect(realtime.watch).toHaveBeenCalledWith('/topic/kitchen/1/orders');
     const provider = realtime.setAuthProvider.mock.calls[0][0] as () => string;
     expect(provider()).toBe('Bearer dvc_abc');
     http.verify();

@@ -905,8 +905,9 @@ export interface RealtimeEvent<TOrder = unknown> {
 export type KitchenRealtimeEvent = RealtimeEvent<KitchenOrderView>;
 
 export const TOPICS = {
-  kitchenOrders: '/topic/kitchen/orders',
-  waiterNotifications: '/topic/waiter/notifications',
+  /** Restaurant-scoped: the backend rejects a subscription for any restaurant but the caller's own. */
+  kitchenOrders: (restaurantId: number) => `/topic/kitchen/${restaurantId}/orders`,
+  waiterNotifications: (restaurantId: number) => `/topic/waiter/${restaurantId}/notifications`,
   menu: '/topic/menu',
   order: (orderId: number) => `/topic/orders/${orderId}`,
 } as const;
@@ -959,7 +960,7 @@ export interface NotificationSearchParams {
 }
 
 export const ADMIN_TOPICS = {
-  staffNotifications: '/topic/staff/notifications',
+  staffNotifications: (restaurantId: number) => `/topic/staff/${restaurantId}/notifications`,
 } as const;
 
 // ─── Waiter screen (`order.WaiterController`) ────────────────────────────────────────────────────

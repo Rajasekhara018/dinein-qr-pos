@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { debounceTime, distinctUntilChanged, firstValueFrom } from 'rxjs';
 import { AdminOrdersApi } from '../../../core/api/admin.api';
 import { AdminOrderSummary, ORDER_TYPES, OrderStatus, OrderType } from '../../../core/api/models';
+import { AuthStore } from '../../../core/auth/auth.store';
 import { RealtimeService } from '../../../core/realtime/realtime.service';
 import { orderStatusLabel } from '../../../shared/components/order-status-badge';
 import { orderRefreshSignals } from '../data/live-refresh';
@@ -34,6 +35,7 @@ export class OrdersPage implements OnInit {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly realtime = inject(RealtimeService);
+  private readonly auth = inject(AuthStore);
 
   protected readonly statusOptions = FILTERABLE_STATUSES.map((status) => ({
     status,
@@ -71,7 +73,7 @@ export class OrdersPage implements OnInit {
       .pipe(debounceTime(300), distinctUntilChanged(), takeUntilDestroyed())
       .subscribe(() => this.apply());
     this.filters.controls.date.valueChanges.pipe(takeUntilDestroyed()).subscribe(() => this.apply());
-    orderRefreshSignals(this.realtime)
+    orderRefreshSignals(this.realtime, this.auth.user()?.restaurantId)
       .pipe(takeUntilDestroyed())
       .subscribe(() => void this.load(true));
   }

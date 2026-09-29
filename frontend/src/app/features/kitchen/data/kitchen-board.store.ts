@@ -121,10 +121,13 @@ export class KitchenBoardStore {
       const token = this.devices.token();
       return token ? `Bearer ${token}` : null;
     });
-    this.realtime
-      .watch<KitchenRealtimeEvent>(TOPICS.kitchenOrders)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((event) => this.onEvent(event));
+    const restaurantId = this.devices.user()?.restaurantId;
+    if (restaurantId) {
+      this.realtime
+        .watch<KitchenRealtimeEvent>(TOPICS.kitchenOrders(restaurantId))
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe((event) => this.onEvent(event));
+    }
     // Full refetch on every (re)connect: events may have been missed while offline.
     this.realtime.onConnected(() => void this.refresh(), this.destroyRef);
 

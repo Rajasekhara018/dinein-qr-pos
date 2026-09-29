@@ -1,10 +1,11 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
-import { debounceTime, firstValueFrom, merge } from 'rxjs';
+import { debounceTime, EMPTY, firstValueFrom, merge } from 'rxjs';
 import { ApiError } from '../../../core/api/api-error';
 import { TOPICS, WaiterTableView } from '../../../core/api/models';
 import { WaiterApi } from '../../../core/api/waiter.api';
+import { AuthStore } from '../../../core/auth/auth.store';
 import { silentErrors } from '../../../core/http/http-context';
 import { RealtimeService } from '../../../core/realtime/realtime.service';
 import { WaiterBoardStore } from '../data/waiter-board.store';
@@ -23,6 +24,7 @@ export class TablesPage {
   private readonly api = inject(WaiterApi);
   private readonly router = inject(Router);
   private readonly realtime = inject(RealtimeService);
+  private readonly auth = inject(AuthStore);
   protected readonly board = inject(WaiterBoardStore);
 
   protected readonly tables = signal<readonly WaiterTableView[]>([]);
@@ -33,7 +35,8 @@ export class TablesPage {
   constructor() {
     void this.load();
     // Counts change with every kitchen event; refetch (debounced) and on every reconnect.
-    merge(this.realtime.watch(TOPICS.kitchenOrders), this.realtime.connected$)
+    const restaurantId = this.auth.user()?.restaurantId;
+    merge(restaurantId ? this.realtime.watch(TOPICS.kitchenOrders(restaurantId)) : EMPTY, this.realtime.connected$)
       .pipe(debounceTime(500), takeUntilDestroyed())
       .subscribe(() => void this.load(true));
   }

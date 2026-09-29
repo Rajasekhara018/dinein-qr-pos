@@ -17,6 +17,7 @@ import {
   OfflinePaymentMethod,
   PaymentView,
 } from '../../../core/api/models';
+import { AuthStore } from '../../../core/auth/auth.store';
 import { formatInr } from '../../../core/util/money';
 import { RealtimeService } from '../../../core/realtime/realtime.service';
 import { SheetService } from '../../../core/ui/sheet.service';
@@ -52,6 +53,7 @@ import {
 })
 export class OrderDetailPage implements OnInit {
   private readonly api = inject(AdminOrdersApi);
+  private readonly auth = inject(AuthStore);
   private readonly toasts = inject(ToastService);
   private readonly confirmService = inject(ConfirmService);
   private readonly sheets = inject(SheetService);
@@ -104,7 +106,11 @@ export class OrderDetailPage implements OnInit {
     void this.load();
     const orderId = Number(this.id());
     // Live: refetch on events for this order and on reconnect; unsubscribed with the component.
-    const sub = orderRefreshSignals(this.realtime, (event) => event.orderId === orderId).subscribe(
+    const sub = orderRefreshSignals(
+      this.realtime,
+      this.auth.user()?.restaurantId,
+      (event) => event.orderId === orderId,
+    ).subscribe(
       () => void this.load(true),
     );
     this.destroyRef.onDestroy(() => sub.unsubscribe());

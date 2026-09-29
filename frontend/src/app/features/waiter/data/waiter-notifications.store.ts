@@ -66,12 +66,15 @@ export class WaiterNotificationsStore {
 
   start(): void {
     if (this.subscription) return;
+    const restaurantId = this.auth.user()?.restaurantId;
     const sub = new Subscription();
-    sub.add(
-      this.realtime
-        .watch<StaffNotificationMessage>(TOPICS.waiterNotifications)
-        .subscribe((message) => this.onMessage(message)),
-    );
+    if (restaurantId) {
+      sub.add(
+        this.realtime
+          .watch<StaffNotificationMessage>(TOPICS.waiterNotifications(restaurantId))
+          .subscribe((message) => this.onMessage(message)),
+      );
+    }
     sub.add(this.realtime.connected$.subscribe(() => void this.refreshCount()));
     this.subscription = sub;
     void this.refreshCount();

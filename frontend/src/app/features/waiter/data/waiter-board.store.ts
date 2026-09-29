@@ -10,6 +10,7 @@ import {
   WaiterConfig,
 } from '../../../core/api/models';
 import { WaiterApi } from '../../../core/api/waiter.api';
+import { AuthStore } from '../../../core/auth/auth.store';
 import { silentErrors } from '../../../core/http/http-context';
 import { RealtimeService } from '../../../core/realtime/realtime.service';
 import { ToastService } from '../../../core/ui/toast.service';
@@ -68,6 +69,7 @@ export function filterActive(
 export class WaiterBoardStore {
   private readonly api = inject(WaiterApi);
   private readonly realtime = inject(RealtimeService);
+  private readonly auth = inject(AuthStore);
   private readonly toasts = inject(ToastService);
   private readonly destroyRef = inject(DestroyRef);
 
@@ -133,10 +135,13 @@ export class WaiterBoardStore {
   start(): void {
     if (this.started) return;
     this.started = true;
-    this.realtime
-      .watch<KitchenRealtimeEvent>(TOPICS.kitchenOrders)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((event) => this.onEvent(event));
+    const restaurantId = this.auth.user()?.restaurantId;
+    if (restaurantId) {
+      this.realtime
+        .watch<KitchenRealtimeEvent>(TOPICS.kitchenOrders(restaurantId))
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe((event) => this.onEvent(event));
+    }
     this.realtime.onConnected(() => void this.refresh(), this.destroyRef);
     this.ticker = setInterval(() => this._now.set(Date.now()), TICK_MS);
     void this.loadConfig();

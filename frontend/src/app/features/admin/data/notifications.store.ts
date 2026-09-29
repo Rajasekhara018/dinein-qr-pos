@@ -60,12 +60,15 @@ export class AdminNotificationsStore {
   /** Starts live updates (idempotent). Call from the admin shell; `stop()` on logout/destroy. */
   start(): void {
     if (this.subscription) return;
+    const restaurantId = this.auth.user()?.restaurantId;
     const sub = new Subscription();
-    sub.add(
-      this.realtime
-        .watch<StaffNotificationMessage>(ADMIN_TOPICS.staffNotifications)
-        .subscribe((message) => this.onMessage(message)),
-    );
+    if (restaurantId) {
+      sub.add(
+        this.realtime
+          .watch<StaffNotificationMessage>(ADMIN_TOPICS.staffNotifications(restaurantId))
+          .subscribe((message) => this.onMessage(message)),
+      );
+    }
     sub.add(this.realtime.connected$.subscribe(() => void this.refreshCount()));
     this.subscription = sub;
     void this.refreshCount();
