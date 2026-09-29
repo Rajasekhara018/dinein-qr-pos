@@ -28,6 +28,19 @@
       <button appButton variant="ghost" size="sm" type="button" (click)="copyLink(t)">Copy link</button>
       <button appButton variant="ghost" size="sm" type="button" [disabled]="downloading()" (click)="downloadPdf([t.id])">PDF</button>
       <button appButton variant="ghost" size="sm" type="button" (click)="open(t)">Rename</button>
+      @if (t.occupied) {
+        <button appButton variant="ghost" size="sm" type="button" [disabled]="busyIds().has(t.id)" (click)="moveOrMerge(t)" [attr.data-testid]="'table-move-' + t.id">
+          Move/merge
+        </button>
+      } @else if (t.reserved) {
+        <button appButton variant="ghost" size="sm" type="button" [disabled]="busyIds().has(t.id)" (click)="clearReservation(t)" [attr.data-testid]="'table-clear-reservation-' + t.id">
+          Clear reservation
+        </button>
+      } @else {
+        <button appButton variant="ghost" size="sm" type="button" [disabled]="busyIds().has(t.id)" (click)="reserve(t)" [attr.data-testid]="'table-reserve-' + t.id">
+          Reserve
+        </button>
+      }
       <button appButton variant="ghost" size="sm" type="button" class="text-danger" [disabled]="busyIds().has(t.id)" (click)="regenerate(t)">Regenerate</button>
     </div>
   </ng-template>

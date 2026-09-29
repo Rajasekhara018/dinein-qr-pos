@@ -1,0 +1,39 @@
+<app-bottom-sheet [title]="'Move order from ' + data.table.label" (closed)="ref.close()">
+  <p class="text-sm text-ink-muted">
+    Pick where this table's order goes. An empty table is a plain move; an occupied one merges both bills together.
+  </p>
+  @if (candidates.length === 0) {
+    <p class="mt-4 text-sm text-ink-subtle">No other active tables.</p>
+  } @else {
+    <ul class="mt-4 flex flex-col gap-2" role="list">
+      @for (t of candidates; track t.id) {
+        <li>
+          <button
+            type="button"
+            class="flex w-full items-center justify-between gap-3 rounded-card border px-3 py-2 text-left"
+            [class.border-brand]="selectedId() === t.id"
+            [class.bg-brand-soft]="selectedId() === t.id"
+            [class.border-line]="selectedId() !== t.id"
+            [attr.data-testid]="'move-target-' + t.id"
+            (click)="select(t.id)"
+          >
+            <span class="font-medium">{{ t.label }}</span>
+            @if (t.occupied) {
+              <span class="rounded-full bg-warning/15 px-2 py-0.5 text-xs font-medium text-warning">Occupied — will merge</span>
+            } @else if (t.reserved) {
+              <span class="rounded-full bg-brand-soft px-2 py-0.5 text-xs font-medium text-brand-ink">Reserved</span>
+            } @else {
+              <span class="rounded-full bg-surface-muted px-2 py-0.5 text-xs font-medium text-ink-muted">Free</span>
+            }
+          </button>
+        </li>
+      }
+    </ul>
+  }
+  <div sheetFooter class="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+    <button appButton variant="outline" type="button" (click)="ref.close()">Cancel</button>
+    <button appButton type="button" [disabled]="!selected()" data-testid="move-confirm" (click)="confirm()">
+      {{ selected()?.occupied ? 'Merge into ' + (selected()?.label ?? '') : 'Move to ' + (selected()?.label ?? '') }}
+    </button>
+  </div>
+</app-bottom-sheet>

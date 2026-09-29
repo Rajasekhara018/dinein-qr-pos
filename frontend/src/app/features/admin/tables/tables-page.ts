@@ -1,13 +1,16 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
+import { ApiError } from '../../../core/api/api-error';
 import { AdminTablesApi } from '../../../core/api/admin.api';
-import { TableResponse } from '../../../core/api/models';
+import { ReserveTableRequest, TableResponse } from '../../../core/api/models';
 import { SheetService } from '../../../core/ui/sheet.service';
 import { ToastService } from '../../../core/ui/toast.service';
 import { copyText, saveBlob } from '../shared/browser';
 import { ConfirmService } from '../../../shared/services/confirm.service';
 import { errorMessage } from '../../../shared/util/form-errors';
+import { MoveTableDialog, MoveTableDialogData } from './move-table-dialog';
 import { QrPreviewData, QrPreviewDialog } from './qr-preview-dialog';
+import { ReserveTableDialog, ReserveTableDialogData } from './reserve-table-dialog';
 import { TableDialog, TableDialogData } from './table-dialog';
 
 const PAGE_SIZE_OPTIONS = [5, 10, 20, 50] as const;
@@ -171,6 +174,68 @@ export class TablesPage {
 
   protected downloadSelected(): void {
     void this.downloadPdf([...this.selected()]);
+  }
+
+  protected async reserve(table: TableResponse): Promise<void> {
+    const ref = this.sheets.open<ReserveTableRequest | undefined, ReserveTableDialogData, ReserveTableDialog>(
+      ReserveTableDialog,
+      { data: { table }, maxWidth: '28rem' },
+    );
+    const request = await firstValueFrom(ref.closed);
+    if (!request) return;
+    this.markBusy(table.id, true);
+    try {
+      this.patch(await firstValueFrom(this.api.reserve(table.id, request)));
+      this.toasts.success(`Table ${table.label} reserved.`, { key: `table-${table.id}` });
+    } catch (error) {
+      this.toasts.error(errorMessage(error, 'Could not reserve the table.'));
+    } finally {
+      this.markBusy(table.id, false);
+    }
+  }
+
+  protected async clearReservation(table: TableResponse): Promise<void> {
+    this.markBusy(table.id, true);
+    try {
+      this.patch(await firstValueFrom(this.api.clearReservation(table.id)));
+      this.toasts.success(`Reservation cleared for table ${table.label}.`, { key: `table-${table.id}` });
+    } catch (error) {
+      this.toasts.error(errorMessage(error, 'Could not clear the reservation.'));
+    } finally {
+      this.markBusy(table.id, false);
+    }
+  }
+
+  /** Move (destination free) or merge (destination occupied) — see MoveTableDialog. */
+  protected async moveOrMerge(table: TableResponse): Promise<void> {
+    const otherTables = this.tables().filter((t) => t.id !== table.id);
+    const ref = this.sheets.open<TableResponse | undefined, MoveTableDialogData, MoveTableDialog>(MoveTableDialog, {
+      data: { table, otherTables },
+      maxWidth: '28rem',
+    });
+    const target = await firstValueFrom(ref.closed);
+    if (!target) return;
+    this.markBusy(table.id, true);
+    try {
+      if (target.occupied) {
+        await firstValueFrom(this.api.merge({ fromTableId: table.id, toTableId: target.id }));
+        this.toasts.success(`Merged ${table.label} into ${target.label}.`);
+      } else {
+        await firstValueFrom(this.api.moveOrders(table.id, { tableId: target.id }));
+        this.toasts.success(`Moved ${table.label}'s order to ${target.label}.`);
+      }
+      void this.load();
+    } catch (error) {
+      const code = ApiError.from(error).code;
+      if (code === 'TABLE_OCCUPIED' || code === 'TABLE_RESERVED') {
+        this.toasts.warning(errorMessage(error, 'That table is no longer available.'));
+        void this.load();
+      } else {
+        this.toasts.error(errorMessage(error, 'Could not move the order.'));
+      }
+    } finally {
+      this.markBusy(table.id, false);
+    }
   }
 
   private patch(table: TableResponse): void {

@@ -1,0 +1,21 @@
+<app-bottom-sheet [title]="'Reserve table ' + data.table.label" (closed)="ref.close()">
+  <form id="reserve-form" [formGroup]="form" (ngSubmit)="confirm()" novalidate class="flex flex-col gap-4">
+    @if (error()) {
+      <p class="rounded-control bg-red-50 px-3 py-2 text-sm font-medium text-red-900" role="alert">{{ error() }}</p>
+    }
+    <div>
+      <label for="reserve-until" class="block text-sm font-medium text-ink">Reserved until</label>
+      <input id="reserve-until" appInput type="datetime-local" class="mt-1" formControlName="until" data-testid="reserve-until" />
+    </div>
+    <div>
+      <label for="reserve-note" class="block text-sm font-medium text-ink">
+        Note <span class="font-normal text-ink-subtle">(optional)</span>
+      </label>
+      <input id="reserve-note" appInput class="mt-1" formControlName="note" maxlength="100" placeholder="e.g. Sharma, party of 6" data-testid="reserve-note" />
+    </div>
+  </form>
+  <div sheetFooter class="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+    <button appButton variant="outline" type="button" (click)="ref.close()">Cancel</button>
+    <button appButton type="submit" form="reserve-form" data-testid="reserve-confirm">Reserve</button>
+  </div>
+</app-bottom-sheet>
