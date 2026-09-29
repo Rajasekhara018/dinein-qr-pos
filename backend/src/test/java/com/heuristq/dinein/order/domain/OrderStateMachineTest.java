@@ -23,7 +23,8 @@ class OrderStateMachineTest {
             "PREPARING, READY",
             "PREPARING, CANCELLED",
             "READY, COMPLETED",
-            "READY, PREPARING"
+            "READY, PREPARING",
+            "PENDING_PAYMENT, CANCELLED"
     })
     void allowsLegalTransitions(OrderStatus from, OrderStatus to) {
         assertThat(OrderStateMachine.canTransition(from, to)).isTrue();
@@ -32,7 +33,6 @@ class OrderStateMachineTest {
     @ParameterizedTest
     @CsvSource({
             "PENDING_PAYMENT, PREPARING",
-            "PENDING_PAYMENT, CANCELLED",
             "CONFIRMED, READY",
             "CONFIRMED, CONFIRMED",
             "READY, CANCELLED",

@@ -39,6 +39,9 @@ public interface OrderRepository extends JpaRepository<OrderEntity, Long>, JpaSp
 
     List<OrderEntity> findByRestaurantIdAndStatusInOrderByPaidAtAsc(Long restaurantId, Collection<OrderStatus> statuses);
 
+    /** Open orders currently seated at a table, for move/merge (see {@code TableService}). */
+    List<OrderEntity> findByTableIdAndStatusIn(Long tableId, Collection<OrderStatus> statuses);
+
     @Query("select o.id from OrderEntity o where o.status = :status and o.placedAt < :cutoff "
             + "and o.paymentFlagged = false order by o.placedAt")
     List<Long> findIdsByStatusPlacedBefore(@Param("status") OrderStatus status, @Param("cutoff") Instant cutoff);

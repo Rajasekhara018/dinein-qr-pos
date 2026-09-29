@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Filter;
 
+import java.time.Instant;
+
 @Getter
 @Setter
 @Entity
@@ -24,4 +26,15 @@ public class DiningTableEntity extends TenantOwnedEntity {
 
     @Column(name = "is_active", nullable = false)
     private boolean active = true;
+
+    /** Set means reserved until this moment; null means not reserved. Cleared automatically once it's in the past. */
+    @Column(name = "reserved_until")
+    private Instant reservedUntil;
+
+    @Column(name = "reserved_note", length = 100)
+    private String reservedNote;
+
+    public boolean isReserved(Instant now) {
+        return reservedUntil != null && reservedUntil.isAfter(now);
+    }
 }

@@ -4,6 +4,9 @@ import com.heuristq.dinein.settings.SettingsService;
 import com.heuristq.dinein.shared.exception.ApiException;
 import com.heuristq.dinein.shared.security.CurrentStaff;
 import com.heuristq.dinein.table.domain.DiningTableEntity;
+import com.heuristq.dinein.table.dto.TableDtos.MergeTablesRequest;
+import com.heuristq.dinein.table.dto.TableDtos.MoveOrderRequest;
+import com.heuristq.dinein.table.dto.TableDtos.ReserveRequest;
 import com.heuristq.dinein.table.dto.TableDtos.TableRequest;
 import com.heuristq.dinein.table.dto.TableDtos.TableResponse;
 import jakarta.validation.Valid;
@@ -13,6 +16,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -76,6 +80,28 @@ public class AdminTableController {
     @PostMapping("/{id}/regenerate-qr")
     public TableResponse regenerate(@PathVariable Long id) {
         return tableService.regenerateQr(id);
+    }
+
+    @PutMapping("/{id}/reservation")
+    public TableResponse reserve(@PathVariable Long id, @Valid @RequestBody ReserveRequest request) {
+        return tableService.reserve(id, request);
+    }
+
+    @DeleteMapping("/{id}/reservation")
+    public TableResponse clearReservation(@PathVariable Long id) {
+        return tableService.clearReservation(id);
+    }
+
+    /** Moves this table's open order(s) to an empty table. */
+    @PostMapping("/{id}/move")
+    public TableResponse move(@PathVariable Long id, @Valid @RequestBody MoveOrderRequest request) {
+        return tableService.moveOrders(id, request.tableId());
+    }
+
+    /** Combines two tables' bills onto {@code toTableId}; {@code fromTableId} ends up free. */
+    @PostMapping("/merge")
+    public TableResponse merge(@Valid @RequestBody MergeTablesRequest request) {
+        return tableService.mergeTables(request.fromTableId(), request.toTableId());
     }
 
     /**

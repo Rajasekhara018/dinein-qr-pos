@@ -6,6 +6,7 @@ import com.heuristq.dinein.order.dto.OrderDtos.AdminOrderSummary;
 import com.heuristq.dinein.order.dto.OrderDtos.AdminOrderView;
 import com.heuristq.dinein.order.dto.OrderDtos.CancelRequest;
 import com.heuristq.dinein.order.dto.OrderDtos.MarkPaidOfflineRequest;
+import com.heuristq.dinein.order.dto.OrderDtos.SplitOrderRequest;
 import com.heuristq.dinein.order.dto.OrderDtos.StaffPlaceOrderRequest;
 import com.heuristq.dinein.order.dto.OrderDtos.StatusChangeRequest;
 import com.heuristq.dinein.payment.OfflinePaymentService;
@@ -42,15 +43,17 @@ public class AdminOrderController {
     private final RefundService refundService;
     private final OrderPlacementService placementService;
     private final OfflinePaymentService offlinePaymentService;
+    private final OrderSplitService splitService;
 
     public AdminOrderController(OrderQueryService queryService, OrderLifecycleService lifecycle,
                                 RefundService refundService, OrderPlacementService placementService,
-                                OfflinePaymentService offlinePaymentService) {
+                                OfflinePaymentService offlinePaymentService, OrderSplitService splitService) {
         this.queryService = queryService;
         this.lifecycle = lifecycle;
         this.refundService = refundService;
         this.placementService = placementService;
         this.offlinePaymentService = offlinePaymentService;
+        this.splitService = splitService;
     }
 
     @GetMapping
@@ -98,5 +101,11 @@ public class AdminOrderController {
         StaffPrincipal staff = CurrentStaff.require();
         offlinePaymentService.recordAndConfirm(id, request.method(), staff.userId(), "user:" + staff.userId());
         return queryService.adminOrder(id);
+    }
+
+    /** Splits an unpaid order into separate bills. 409 NOT_SPLITTABLE once it's been paid or confirmed. */
+    @PostMapping("/{id}/split")
+    public List<AdminOrderView> split(@PathVariable Long id, @Valid @RequestBody SplitOrderRequest request) {
+        return splitService.split(id, request.itemGroups(), "user:" + CurrentStaff.require().userId());
     }
 }

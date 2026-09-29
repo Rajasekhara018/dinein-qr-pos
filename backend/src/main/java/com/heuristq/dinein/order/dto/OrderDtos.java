@@ -140,6 +140,14 @@ public final class OrderDtos {
     public record CancelRequest(@Size(max = 300) String reason) {
     }
 
+    /**
+     * Splits an unpaid order's items into two or more new orders (e.g. separate bills for a group). Every item id
+     * from the original order must appear in exactly one group. Only orders still {@code PENDING_PAYMENT} can be
+     * split -- once paid, splitting the bill would mean unwinding a real payment, which is a refund, not a split.
+     */
+    public record SplitOrderRequest(@NotEmpty List<@NotEmpty List<Long>> itemGroups) {
+    }
+
     /** How a staff-assisted order is paid: online (same checkout as guests) or taken offline at the table / counter. */
     public enum StaffPaymentMethod {
         CASH,

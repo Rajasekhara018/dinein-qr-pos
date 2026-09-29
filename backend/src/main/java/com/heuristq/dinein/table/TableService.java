@@ -1,6 +1,7 @@
 package com.heuristq.dinein.table;
 
 import com.heuristq.dinein.audit.AuditService;
+import com.heuristq.dinein.order.domain.OrderEntity;
 import com.heuristq.dinein.order.domain.OrderRepository;
 import com.heuristq.dinein.order.domain.OrderStatus;
 import com.heuristq.dinein.shared.config.AppProperties;
@@ -10,12 +11,14 @@ import com.heuristq.dinein.shared.util.SecureTokens;
 import com.heuristq.dinein.shared.web.ApiPaths;
 import com.heuristq.dinein.table.domain.DiningTableEntity;
 import com.heuristq.dinein.table.domain.DiningTableRepository;
+import com.heuristq.dinein.table.dto.TableDtos.ReserveRequest;
 import com.heuristq.dinein.table.dto.TableDtos.TableRequest;
 import com.heuristq.dinein.table.dto.TableDtos.TableResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Clock;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -29,14 +32,16 @@ public class TableService {
     private final OrderRepository orderRepository;
     private final String publicBaseUrl;
     private final AuditService auditService;
+    private final Clock clock;
 
     public TableService(DiningTableRepository tableRepository, OrderRepository orderRepository,
-                        AppProperties properties, AuditService auditService) {
+                        AppProperties properties, AuditService auditService, Clock clock) {
         this.tableRepository = tableRepository;
         this.orderRepository = orderRepository;
         String base = properties.publicBaseUrl();
         this.publicBaseUrl = base.endsWith("/") ? base.substring(0, base.length() - 1) : base;
         this.auditService = auditService;
+        this.clock = clock;
     }
 
     /** 32 random bytes, base64url: unguessable, so a table link cannot be forged or enumerated. */
@@ -126,6 +131,74 @@ public class TableService {
         return toResponse(table);
     }
 
+    /** Books a table ahead of a group's arrival; a reservation on an already-reserved table replaces it. */
+    @Transactional
+    public TableResponse reserve(Long id, ReserveRequest request) {
+        DiningTableEntity table = get(id);
+        table.setReservedUntil(request.until());
+        table.setReservedNote(request.note() == null || request.note().isBlank() ? null : request.note().trim());
+        log.info("table.reserved id={} until={}", id, request.until());
+        return toResponse(table);
+    }
+
+    @Transactional
+    public TableResponse clearReservation(Long id) {
+        DiningTableEntity table = get(id);
+        table.setReservedUntil(null);
+        table.setReservedNote(null);
+        log.info("table.reservation_cleared id={}", id);
+        return toResponse(table);
+    }
+
+    /**
+     * Moves every open order from {@code fromTableId} to an empty, unreserved table (a group asked to switch
+     * tables). Rejects if the destination already has an open order of its own -- use {@link #mergeTables} for
+     * that instead, since combining bills onto one table needs to be an explicit choice.
+     */
+    @Transactional
+    public TableResponse moveOrders(Long fromTableId, Long toTableId) {
+        if (fromTableId.equals(toTableId)) {
+            throw ApiException.badRequest("SAME_TABLE", "Choose a different table to move to");
+        }
+        DiningTableEntity from = get(fromTableId);
+        DiningTableEntity to = get(toTableId);
+        List<OrderEntity> openOrders = orderRepository.findByTableIdAndStatusIn(fromTableId, OrderStatus.OCCUPIES_TABLE);
+        if (openOrders.isEmpty()) {
+            throw ApiException.badRequest("TABLE_EMPTY", "This table has no open order to move");
+        }
+        if (!orderRepository.findByTableIdAndStatusIn(toTableId, OrderStatus.OCCUPIES_TABLE).isEmpty()) {
+            throw ApiException.conflict("TABLE_OCCUPIED", "The destination table already has an open order");
+        }
+        if (to.isReserved(clock.instant())) {
+            throw ApiException.conflict("TABLE_RESERVED", "The destination table is reserved");
+        }
+        openOrders.forEach(o -> o.setTableId(toTableId));
+        log.info("table.orders_moved fromTableId={} toTableId={} orders={}", fromTableId, toTableId, openOrders.size());
+        auditService.record("TABLE_ORDER_MOVED", "DiningTable", fromTableId, from.getLabel(), to.getLabel());
+        return toResponse(to);
+    }
+
+    /**
+     * Combines two tables' bills: every open order on {@code fromTableId} moves onto {@code toTableId} (which may
+     * already have its own open order), and {@code fromTableId} ends up free.
+     */
+    @Transactional
+    public TableResponse mergeTables(Long fromTableId, Long toTableId) {
+        if (fromTableId.equals(toTableId)) {
+            throw ApiException.badRequest("SAME_TABLE", "Choose a different table to merge into");
+        }
+        DiningTableEntity from = get(fromTableId);
+        DiningTableEntity to = get(toTableId);
+        List<OrderEntity> openOrders = orderRepository.findByTableIdAndStatusIn(fromTableId, OrderStatus.OCCUPIES_TABLE);
+        if (openOrders.isEmpty()) {
+            throw ApiException.badRequest("TABLE_EMPTY", "This table has no open order to merge");
+        }
+        openOrders.forEach(o -> o.setTableId(toTableId));
+        log.info("table.merged fromTableId={} toTableId={} orders={}", fromTableId, toTableId, openOrders.size());
+        auditService.record("TABLES_MERGED", "DiningTable", fromTableId, from.getLabel(), to.getLabel());
+        return toResponse(to);
+    }
+
     private static String normalize(String label) {
         return label.trim().replaceAll("\\s+", " ").toUpperCase(Locale.ROOT);
     }
@@ -138,8 +211,8 @@ public class TableService {
     }
 
     private TableResponse toResponse(DiningTableEntity t, boolean occupied) {
-        return new TableResponse(t.getId(), t.getLabel(), t.isActive(), occupied, menuUrl(t),
-                qrImageUrl(t), t.getCreatedAt(), t.getUpdatedAt());
+        return new TableResponse(t.getId(), t.getLabel(), t.isActive(), occupied, t.isReserved(clock.instant()),
+                t.getReservedUntil(), t.getReservedNote(), menuUrl(t), qrImageUrl(t), t.getCreatedAt(), t.getUpdatedAt());
     }
 
     /**
