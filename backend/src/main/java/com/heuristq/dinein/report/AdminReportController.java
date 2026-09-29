@@ -35,14 +35,14 @@ public class AdminReportController {
     }
 
     @GetMapping("/reports/summary")
-    @PreAuthorize("hasRole('OWNER')")
+    @PreAuthorize("@perm.has('VIEW_REPORTS')")
     public SalesSummary summary(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
                                 @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to) {
         return reportService.summary(from, to);
     }
 
     @GetMapping("/reports/orders.csv")
-    @PreAuthorize("hasRole('OWNER')")
+    @PreAuthorize("@perm.has('VIEW_REPORTS')")
     public void ordersCsv(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
                           @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to,
                           HttpServletResponse response) throws IOException {

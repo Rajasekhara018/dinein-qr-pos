@@ -28,7 +28,7 @@ public class AdminSettingsController {
     }
 
     @PutMapping
-    @PreAuthorize("hasRole('OWNER')")
+    @PreAuthorize("@perm.has('MANAGE_SETTINGS')")
     public SettingsResponse update(@Valid @RequestBody UpdateSettingsRequest request) {
         return settingsService.update(CurrentStaff.require().restaurantId(), request);
     }

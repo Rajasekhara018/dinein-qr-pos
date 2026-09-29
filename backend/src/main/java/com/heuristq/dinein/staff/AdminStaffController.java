@@ -22,7 +22,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/admin")
-@PreAuthorize("hasRole('OWNER')")
+@PreAuthorize("@perm.has('MANAGE_STAFF')")
 public class AdminStaffController {
 
     private final StaffService staffService;
