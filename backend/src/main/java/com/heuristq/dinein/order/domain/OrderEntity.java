@@ -78,6 +78,10 @@ public class OrderEntity extends TenantOwnedEntity {
     @Column(name = "payment_flagged", nullable = false)
     private boolean paymentFlagged;
 
+    /** Staff-set flag telling the kitchen to work this order first. */
+    @Column(nullable = false)
+    private boolean priority;
+
     @Column(name = "flag_reason", length = 300)
     private String flagReason;
 

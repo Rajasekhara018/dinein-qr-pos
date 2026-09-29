@@ -16,6 +16,45 @@
       <app-field-error id="category-description-error" [control]="form.controls.description" />
     </div>
     <app-image-upload formControlName="imageId" label="Category image" [url]="imageUrl()" (uploaded)="onUploaded($event)" />
+    <div>
+      <label for="category-station" class="block text-sm font-medium text-ink">
+        Kitchen station <span class="font-normal text-ink-subtle">(optional)</span>
+      </label>
+      @if (stations().length) {
+        <select id="category-station" appInput class="mt-1" formControlName="stationId" data-testid="category-station">
+          <option [ngValue]="null">Unassigned (shows on every KDS screen)</option>
+          @for (station of stations(); track station.id) {
+            <option [ngValue]="station.id">{{ station.name }}</option>
+          }
+        </select>
+      } @else {
+        <p class="mt-1 text-sm text-ink-subtle">No kitchen stations yet — add one below to route this category to its own KDS screen.</p>
+      }
+      <div class="mt-2 flex gap-2">
+        <input
+          appInput
+          class="flex-1"
+          placeholder="New station name (e.g. Grill, Beverage)"
+          maxlength="40"
+          [formControl]="newStationName"
+          data-testid="category-new-station-name"
+        />
+        <button
+          appButton
+          variant="outline"
+          type="button"
+          [loading]="addingStation()"
+          [disabled]="!newStationName.value.trim()"
+          (click)="addStation()"
+          data-testid="category-add-station"
+        >
+          Add
+        </button>
+      </div>
+      @if (stationError()) {
+        <p class="mt-1 text-sm font-medium text-danger" role="alert">{{ stationError() }}</p>
+      }
+    </div>
     <app-toggle-switch formControlName="active" label="Visible to guests" hint="Hidden categories hide all their items." showLabel />
   </form>
   <div sheetFooter class="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">

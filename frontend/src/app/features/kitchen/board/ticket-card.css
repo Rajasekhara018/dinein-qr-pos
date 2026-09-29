@@ -188,6 +188,18 @@
   background: #0284c7;
   color: #fff;
 }
+.ticket-badge--priority {
+  background: #7c3aed;
+  color: #fff;
+}
+
+/* Priority: a distinct accent independent of age escalation, so it's visible even on a fresh ticket. */
+.ticket--priority {
+  border-left: 6px solid #7c3aed;
+}
+:host-context(.dark) .ticket--priority {
+  border-left-color: #a78bfa;
+}
 
 /* New order: pulse a few times, then keep a static ring while highlighted. */
 .ticket--new {

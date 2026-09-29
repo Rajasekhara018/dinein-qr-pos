@@ -90,6 +90,7 @@ describe('KitchenBoardStore', () => {
     const req = http.expectOne((r) => r.url === '/api/v1/kitchen/orders');
     expect(req.request.params.get('status')).toBe('CONFIRMED,PREPARING,READY');
     req.flush(orders);
+    http.expectOne('/api/v1/kitchen/heartbeat').flush(null);
     await tick();
   }
 

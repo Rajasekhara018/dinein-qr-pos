@@ -49,7 +49,14 @@ public final class OnboardingDtos {
             @Email @Size(max = 120) String ownerEmail,
             @Pattern(regexp = "^(\\d{10})?$", message = "Phone must be 10 digits") String ownerPhone,
             /** Blank auto-generates one, matching the previous behaviour. */
-            @Size(max = 72) String ownerPassword) {
+            @Size(max = 72) String ownerPassword,
+            /**
+             * Kitchen stations to create up front (e.g. {@code ["Grill", "Fry", "Beverage"]} for a burger place,
+             * {@code ["Tawa", "Chutney"]} for a dosa counter) -- there's no fixed list, so whoever runs onboarding
+             * names them for this specific business. Omit or leave empty to let the owner set their own up later
+             * from the admin panel instead.
+             */
+            List<@Size(max = 40) String> kitchenStations) {
     }
 
     /**

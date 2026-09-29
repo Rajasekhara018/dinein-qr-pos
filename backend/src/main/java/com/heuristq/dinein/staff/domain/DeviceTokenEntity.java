@@ -36,6 +36,10 @@ public class DeviceTokenEntity extends TenantOwnedEntity {
     @Column(name = "last_seen_at")
     private Instant lastSeenAt;
 
+    /** Reported by the client on each heartbeat; null until a client that sends one calls in. */
+    @Column(name = "application_version", length = 20)
+    private String applicationVersion;
+
     public boolean isUsable(Instant now) {
         return revokedAt == null && expiresAt.isAfter(now);
     }

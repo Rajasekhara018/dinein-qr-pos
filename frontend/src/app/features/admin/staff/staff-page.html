@@ -158,7 +158,9 @@
               <tr [attr.data-testid]="'device-' + d.id">
                 <td class="min-w-0 px-4 py-3">
                   <p class="truncate font-semibold">{{ d.deviceName || 'Kitchen device' }}</p>
-                  <p class="truncate text-ink-muted">Signed in as {{ d.username }}</p>
+                  <p class="truncate text-ink-muted">
+                    Signed in as {{ d.username }}{{ d.applicationVersion ? ' · v' + d.applicationVersion : '' }}
+                  </p>
                 </td>
                 <td class="px-4 py-3">
                   <span
@@ -208,7 +210,9 @@
             <div class="flex items-start justify-between gap-2">
               <div class="min-w-0">
                 <p class="truncate font-semibold">{{ d.deviceName || 'Kitchen device' }}</p>
-                <p class="truncate text-sm text-ink-muted">Signed in as {{ d.username }}</p>
+                <p class="truncate text-sm text-ink-muted">
+                  Signed in as {{ d.username }}{{ d.applicationVersion ? ' · v' + d.applicationVersion : '' }}
+                </p>
               </div>
               <span
                 class="shrink-0 rounded-full px-2 py-0.5 text-xs font-semibold"

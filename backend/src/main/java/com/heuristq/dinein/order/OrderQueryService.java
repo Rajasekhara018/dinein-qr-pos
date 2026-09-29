@@ -7,6 +7,7 @@ import com.heuristq.dinein.order.domain.OrderStatus;
 import com.heuristq.dinein.order.domain.OrderType;
 import com.heuristq.dinein.order.dto.OrderDtos.AdminOrderSummary;
 import com.heuristq.dinein.order.dto.OrderDtos.AdminOrderView;
+import com.heuristq.dinein.order.dto.OrderDtos.DisplayBoardView;
 import com.heuristq.dinein.order.dto.OrderDtos.GuestOrderSummary;
 import com.heuristq.dinein.order.dto.OrderDtos.GuestOrderView;
 import com.heuristq.dinein.order.dto.OrderDtos.KitchenOrderView;
@@ -58,6 +59,18 @@ public class OrderQueryService {
         this.mapper = mapper;
         this.settingsService = settingsService;
         this.clock = clock;
+    }
+
+    /** Public, login-free snapshot for the customer display board (see {@code PublicDisplayController}). */
+    @Transactional(readOnly = true)
+    public DisplayBoardView displayBoard(Long restaurantId) {
+        List<OrderRepository.DisplayTokenStatus> rows =
+                orderRepository.findDisplayTokens(restaurantId, List.of(OrderStatus.PREPARING, OrderStatus.READY));
+        List<Integer> preparing = rows.stream().filter(r -> r.getStatus() == OrderStatus.PREPARING)
+                .map(OrderRepository.DisplayTokenStatus::getDisplayToken).toList();
+        List<Integer> ready = rows.stream().filter(r -> r.getStatus() == OrderStatus.READY)
+                .map(OrderRepository.DisplayTokenStatus::getDisplayToken).toList();
+        return new DisplayBoardView(preparing, ready);
     }
 
     @Transactional(readOnly = true)

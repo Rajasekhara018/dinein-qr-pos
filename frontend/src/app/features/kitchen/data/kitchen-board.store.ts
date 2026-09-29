@@ -30,6 +30,9 @@ import { KitchenClock } from './kitchen-clock';
 /** How long a newly arrived ticket keeps its "new" highlight. */
 export const NEW_ORDER_HIGHLIGHT_MS = 10_000;
 
+/** How often this device reports itself alive; comfortably under the backend's offline threshold (10 min default). */
+export const HEARTBEAT_INTERVAL_MS = 2 * 60_000;
+
 /**
  * How long a tap on the action button stays reversible. The card moves immediately (so the board always shows
  * "what the kitchen believes right now"), but the PATCH that actually commits the move to the server — and to
@@ -133,6 +136,11 @@ export class KitchenBoardStore {
 
     void this.loadConfig();
     void this.refresh();
+
+    // Keeps last-seen fresh independent of REST/STOMP auth traffic, so a silently-hung device is still detected.
+    this.api.heartbeat(silentErrors()).subscribe();
+    const heartbeat = setInterval(() => this.api.heartbeat(silentErrors()).subscribe(), HEARTBEAT_INTERVAL_MS);
+    this.destroyRef.onDestroy(() => clearInterval(heartbeat));
   }
 
   /** Tears down the socket (sign-out / board destroyed). */
@@ -240,10 +248,38 @@ export class KitchenBoardStore {
     });
   }
 
+  /** Flags/unflags an order for the kitchen to work first. Optimistic, with rollback on failure. */
+  async setPriority(order: KitchenOrderView): Promise<void> {
+    const id = order.id;
+    const target = !order.priority;
+    const original = this._orders().find((o) => o.id === id) ?? order;
+    this._orders.update((list) => upsertOrder(list, { ...original, priority: target }));
+    try {
+      const updated = await firstValueFrom(this.api.setPriority(id, target, silentErrors()));
+      if (this.destroyed) return;
+      this._orders.update((list) => upsertOrder(list, updated));
+    } catch (e) {
+      if (this.destroyed) return;
+      this._orders.update((list) => upsertOrder(list, original));
+      const error = ApiError.from(e);
+      if (error.status === 401) return;
+      this.toasts.error(`Couldn't update priority for token #${order.displayToken}. ${error.message}`, {
+        key: `kitchen-priority-${id}`,
+      });
+    }
+  }
+
   /** Visible for tests. */
   onEvent(event: KitchenRealtimeEvent): void {
     if (this.destroyed || !event) return;
     switch (event.type) {
+      case 'ORDER_PRIORITY_CHANGED': {
+        const order = event.order;
+        if (order && !this._pending().has(order.id)) {
+          this._orders.update((list) => upsertOrder(list, order));
+        }
+        break;
+      }
       case 'ORDER_CONFIRMED': {
         const order = event.order;
         if (order && isKitchenStatus(order.status) && !this._pending().has(order.id)) {

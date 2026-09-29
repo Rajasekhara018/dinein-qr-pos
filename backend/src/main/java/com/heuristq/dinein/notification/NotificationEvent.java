@@ -6,7 +6,9 @@ public enum NotificationEvent {
     ORDER_READY(NotificationSeverity.INFO),
     ORDER_CANCELLED(NotificationSeverity.INFO),
     PAYMENT_FLAGGED(NotificationSeverity.HIGH),
-    REFUND_FAILED(NotificationSeverity.HIGH);
+    REFUND_FAILED(NotificationSeverity.HIGH),
+    DAILY_SUMMARY(NotificationSeverity.INFO),
+    KDS_DEVICE_OFFLINE(NotificationSeverity.HIGH);
 
     private final NotificationSeverity severity;
 

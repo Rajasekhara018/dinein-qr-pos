@@ -25,6 +25,7 @@ export class BoardColumn {
   readonly highlighted = input<ReadonlySet<number>>(new Set());
 
   readonly advance = output<KitchenOrderView>();
+  readonly togglePriority = output<KitchenOrderView>();
 
   protected readonly label = computed(() => COLUMN_LABELS[this.column()]);
   protected readonly emptyText = computed(() => EMPTY_TEXT[this.column()]);

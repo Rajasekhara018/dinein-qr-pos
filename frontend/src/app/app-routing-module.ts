@@ -22,6 +22,11 @@ const routes: Routes = [
     loadChildren: () => import('./features/admin/admin-module').then((m) => m.AdminModule),
   },
   {
+    // Customer-facing "order ready" screen for the dining area; public, no login (see DisplayPage).
+    path: 'display',
+    loadChildren: () => import('./features/display/display-module').then((m) => m.DisplayModule),
+  },
+  {
     // Internal restaurant onboarding + platform-wide restaurant list; key-authenticated, not staff login
     // (see PlatformApi/PlatformPrefs). Lazy like every other feature module.
     path: 'platform',

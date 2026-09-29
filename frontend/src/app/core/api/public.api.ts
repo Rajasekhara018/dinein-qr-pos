@@ -5,6 +5,7 @@ import { silentErrors } from '../http/http-context';
 import { API_BASE } from './api-base';
 import {
   CheckoutResponse,
+  DisplayBoardView,
   GuestOrderSummary,
   GuestOrderView,
   MenuResponse,
@@ -40,6 +41,13 @@ export class PublicApi {
    */
   menu(): Observable<MenuResponse> {
     return this.http.get<MenuResponse>(`${API_BASE}/public/menu`);
+  }
+
+  /** Customer display board snapshot (no session/cookie needed; runs unattended on a screen). */
+  displayBoard(restaurantId: number): Observable<DisplayBoardView> {
+    return this.http.get<DisplayBoardView>(`${API_BASE}/public/display`, {
+      params: new HttpParams().set('restaurantId', restaurantId),
+    });
   }
 
   /** Places an order. `idempotencyKey` must be stable per checkout attempt. Errors are handled by the caller. */

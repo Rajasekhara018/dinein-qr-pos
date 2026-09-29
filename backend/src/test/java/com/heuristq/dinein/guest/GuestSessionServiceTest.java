@@ -21,7 +21,7 @@ class GuestSessionServiceTest {
                 Duration.ofDays(7), Duration.ofDays(30), "guest-secret-guest-secret-guest-secret", Duration.ofHours(12),
                 5, Duration.ofMinutes(15), "owner", "pw", null);
         AppProperties props = new AppProperties("http://localhost", new AppProperties.Cors(List.of()),
-                new AppProperties.Cookies(false), security, null, null, null, new AppProperties.Seed(false));
+                new AppProperties.Cookies(false), security, null, null, null, null, new AppProperties.Seed(false));
         return new GuestSessionService(props, clock);
     }
 

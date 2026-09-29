@@ -17,6 +17,8 @@ import {
   ItemRequest,
   ItemResponse,
   ItemSearchParams,
+  KitchenStationRequest,
+  KitchenStationResponse,
   NotificationSearchParams,
   NotificationView,
   OfflinePaymentMethod,
@@ -72,6 +74,22 @@ export class AdminMenuApi {
 
   reorderCategories(ids: number[]): Observable<CategoryResponse[]> {
     return this.http.patch<CategoryResponse[]>(`${API_BASE}/admin/categories/reorder`, { ids });
+  }
+
+  kitchenStations(): Observable<KitchenStationResponse[]> {
+    return this.http.get<KitchenStationResponse[]>(`${API_BASE}/admin/kitchen-stations`);
+  }
+
+  createKitchenStation(body: KitchenStationRequest): Observable<KitchenStationResponse> {
+    return this.http.post<KitchenStationResponse>(`${API_BASE}/admin/kitchen-stations`, body);
+  }
+
+  updateKitchenStation(id: number, body: KitchenStationRequest): Observable<KitchenStationResponse> {
+    return this.http.put<KitchenStationResponse>(`${API_BASE}/admin/kitchen-stations/${id}`, body);
+  }
+
+  deleteKitchenStation(id: number): Observable<void> {
+    return this.http.delete<void>(`${API_BASE}/admin/kitchen-stations/${id}`);
   }
 
   items(search: ItemSearchParams = {}): Observable<PageResponse<ItemResponse>> {

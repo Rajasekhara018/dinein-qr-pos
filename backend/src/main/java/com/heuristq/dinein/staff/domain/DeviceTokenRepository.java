@@ -14,4 +14,7 @@ public interface DeviceTokenRepository extends JpaRepository<DeviceTokenEntity, 
     List<DeviceTokenEntity> findAllByRestaurantIdOrderByCreatedAtDesc(Long restaurantId);
 
     List<DeviceTokenEntity> findByStaffUserIdAndRevokedAtIsNull(Long staffUserId);
+
+    /** Every restaurant's still-usable devices, for the platform-wide offline-monitor job. */
+    List<DeviceTokenEntity> findAllByRevokedAtIsNull();
 }

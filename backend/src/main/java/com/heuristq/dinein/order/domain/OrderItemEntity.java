@@ -47,6 +47,17 @@ public class OrderItemEntity extends BaseEntity {
     @Column(name = "food_type", length = 10)
     private FoodType foodType;
 
+    /**
+     * Snapshot of the item's category's kitchen station at placement time (both id, for filtering by a still-live
+     * station, and name, so the ticket stays meaningful even if that station is later renamed or deleted). Null
+     * when the category had no station assigned.
+     */
+    @Column(name = "station_id")
+    private Long stationId;
+
+    @Column(name = "station_name", length = 40)
+    private String stationName;
+
     /** Variant/base price plus add-ons, per unit. */
     @Column(name = "unit_price", nullable = false, precision = 10, scale = 2)
     private BigDecimal unitPrice;

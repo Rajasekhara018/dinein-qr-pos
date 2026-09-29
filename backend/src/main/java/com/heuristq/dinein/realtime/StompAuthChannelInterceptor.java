@@ -29,9 +29,11 @@ import java.util.regex.Pattern;
  * waiter screens); {@code /topic/orders/{id}} the owning guest (or owner/manager/waiter of that order's
  * restaurant); {@code /topic/staff/{restaurantId}/notifications} owner/manager users of that restaurant (not
  * kitchen devices); {@code /topic/waiter/{restaurantId}/notifications} waiter/owner/manager users of that
- * restaurant; {@code /topic/menu} anyone. A {@code platformAdmin} may only subscribe to their own restaurant's
- * topics here (the {@code X-Restaurant-Id} admin-view override is an HTTP-only mechanism; the JWT's own tenant is
- * what the socket connection carries). Clients may not SEND; the server is the only publisher.
+ * restaurant; {@code /topic/menu} and {@code /topic/display/{restaurantId}} anyone (the display board is meant to
+ * run unattended, login-free, on a screen in the dining area -- see {@code PublicDisplayController}). A
+ * {@code platformAdmin} may only subscribe to their own restaurant's staff/kitchen topics here (the
+ * {@code X-Restaurant-Id} admin-view override is an HTTP-only mechanism; the JWT's own tenant is what the socket
+ * connection carries). Clients may not SEND; the server is the only publisher.
  */
 @Slf4j
 @Component
@@ -41,6 +43,7 @@ public class StompAuthChannelInterceptor implements ChannelInterceptor {
     private static final Pattern KITCHEN_TOPIC = Pattern.compile("^/topic/kitchen/(\\d{1,18})/orders$");
     private static final Pattern STAFF_NOTIFICATIONS_TOPIC = Pattern.compile("^/topic/staff/(\\d{1,18})/notifications$");
     private static final Pattern WAITER_NOTIFICATIONS_TOPIC = Pattern.compile("^/topic/waiter/(\\d{1,18})/notifications$");
+    private static final Pattern DISPLAY_TOPIC = Pattern.compile("^/topic/display/(\\d{1,18})$");
 
     private final TokenAuthenticator tokenAuthenticator;
     private final OrderRepository orderRepository;
@@ -95,7 +98,7 @@ public class StompAuthChannelInterceptor implements ChannelInterceptor {
         if (destination == null) {
             throw new MessagingException("Missing destination");
         }
-        if (destination.equals(RealtimePublisher.MENU_TOPIC)) {
+        if (destination.equals(RealtimePublisher.MENU_TOPIC) || DISPLAY_TOPIC.matcher(destination).matches()) {
             return;
         }
         StaffPrincipal staff = staffOf(user);

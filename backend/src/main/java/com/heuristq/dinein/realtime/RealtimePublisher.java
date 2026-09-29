@@ -25,6 +25,7 @@ public class RealtimePublisher {
     public static final String STAFF_NOTIFICATIONS_SUFFIX = "/notifications";
     public static final String WAITER_NOTIFICATIONS_PREFIX = "/topic/waiter/";
     public static final String WAITER_NOTIFICATIONS_SUFFIX = "/notifications";
+    public static final String DISPLAY_TOPIC_PREFIX = "/topic/display/";
 
     private final SimpMessagingTemplate messagingTemplate;
     private final Clock clock;
@@ -44,6 +45,14 @@ public class RealtimePublisher {
 
     public static String waiterNotificationsTopic(Long restaurantId) {
         return WAITER_NOTIFICATIONS_PREFIX + restaurantId + WAITER_NOTIFICATIONS_SUFFIX;
+    }
+
+    public static String displayTopic(Long restaurantId) {
+        return DISPLAY_TOPIC_PREFIX + restaurantId;
+    }
+
+    /** Order number/name-free by design: this topic is public (no login), shown on a screen in the dining area. */
+    public record DisplayEvent(int displayToken, String status) {
     }
 
     public void menuUpdated() {
@@ -76,6 +85,16 @@ public class RealtimePublisher {
             messagingTemplate.convertAndSend(destination, notification);
         } catch (RuntimeException e) {
             log.warn("realtime.send_failed destination={} type=NOTIFICATION", destination, e);
+        }
+    }
+
+    /** Pushed whenever an order enters/leaves PREPARING or READY, or reaches a terminal state, for the display board. */
+    public void toDisplay(Long restaurantId, int displayToken, String status) {
+        String destination = displayTopic(restaurantId);
+        try {
+            messagingTemplate.convertAndSend(destination, new DisplayEvent(displayToken, status));
+        } catch (RuntimeException e) {
+            log.warn("realtime.send_failed destination={} type=DISPLAY", destination, e);
         }
     }
 

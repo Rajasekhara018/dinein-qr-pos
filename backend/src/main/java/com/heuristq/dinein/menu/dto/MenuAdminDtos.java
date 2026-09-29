@@ -24,11 +24,14 @@ public final class MenuAdminDtos {
             @NotBlank @Size(max = 80) String name,
             @Size(max = 300) String description,
             Long imageId,
-            Boolean active) {
+            Boolean active,
+            /** One of this restaurant's own {@code KitchenStationEntity} rows, or null to leave unassigned. */
+            Long stationId) {
     }
 
     public record CategoryResponse(Long id, String name, String description, Long imageId, String imageUrl,
-                                   String thumbUrl, int displayOrder, boolean active, long itemCount) {
+                                   String thumbUrl, int displayOrder, boolean active, long itemCount,
+                                   Long stationId, String stationName) {
     }
 
     public record StatusRequest(@NotNull Boolean active) {

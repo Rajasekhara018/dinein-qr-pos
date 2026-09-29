@@ -2,6 +2,8 @@ package com.heuristq.dinein.restaurant;
 
 import com.heuristq.dinein.audit.AuditService;
 import com.heuristq.dinein.auth.PasswordPolicy;
+import com.heuristq.dinein.menu.domain.KitchenStationEntity;
+import com.heuristq.dinein.menu.domain.KitchenStationRepository;
 import com.heuristq.dinein.restaurant.domain.RestaurantEntity;
 import com.heuristq.dinein.restaurant.domain.RestaurantRepository;
 import com.heuristq.dinein.restaurant.dto.OnboardingDtos.OnboardRestaurantRequest;
@@ -44,19 +46,21 @@ public class RestaurantOnboardingService {
     private final StaffUserRepository staffUserRepository;
     private final DiningTableRepository tableRepository;
     private final TableService tableService;
+    private final KitchenStationRepository stationRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuditService auditService;
 
     public RestaurantOnboardingService(RestaurantRepository restaurantRepository,
                                        RestaurantSettingsRepository settingsRepository,
                                        StaffUserRepository staffUserRepository, DiningTableRepository tableRepository,
-                                       TableService tableService, PasswordEncoder passwordEncoder,
-                                       AuditService auditService) {
+                                       TableService tableService, KitchenStationRepository stationRepository,
+                                       PasswordEncoder passwordEncoder, AuditService auditService) {
         this.restaurantRepository = restaurantRepository;
         this.settingsRepository = settingsRepository;
         this.staffUserRepository = staffUserRepository;
         this.tableRepository = tableRepository;
         this.tableService = tableService;
+        this.stationRepository = stationRepository;
         this.passwordEncoder = passwordEncoder;
         this.auditService = auditService;
     }
@@ -122,6 +126,21 @@ public class RestaurantOnboardingService {
         table.setLabel("T1");
         table.setQrToken(TableService.newQrToken());
         tableRepository.save(table);
+
+        if (request.kitchenStations() != null) {
+            int order = 1;
+            java.util.Set<String> seen = new java.util.HashSet<>();
+            for (String stationName : request.kitchenStations()) {
+                if (stationName == null || stationName.isBlank()) continue;
+                String trimmed = stationName.trim();
+                if (!seen.add(trimmed.toLowerCase(Locale.ROOT))) continue;
+                KitchenStationEntity station = new KitchenStationEntity();
+                station.setRestaurantId(restaurant.getId());
+                station.setName(trimmed);
+                station.setDisplayOrder(order++);
+                stationRepository.save(station);
+            }
+        }
 
         log.info("restaurant.onboarded id={} slug={} ownerUsername={}", restaurant.getId(), slug, username);
         auditService.recordForRestaurant(restaurant.getId(), "RESTAURANT_ONBOARDED", "Restaurant", restaurant.getId(),

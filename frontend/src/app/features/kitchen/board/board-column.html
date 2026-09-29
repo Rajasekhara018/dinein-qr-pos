@@ -22,6 +22,7 @@
       [pending]="pending().has(order.id)"
       [highlighted]="highlighted().has(order.id)"
       (advance)="advance.emit($event)"
+      (togglePriority)="togglePriority.emit($event)"
     />
   } @empty {
     <p

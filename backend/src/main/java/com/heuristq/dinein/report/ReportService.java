@@ -199,6 +199,26 @@ public class ReportService {
         out.flush();
     }
 
+    /**
+     * Orders count + gross for one day, one explicit restaurant -- for background jobs (e.g. the daily summary
+     * notification) that have no authenticated {@code StaffPrincipal} to read a restaurant from, unlike every other
+     * method here.
+     */
+    public record DailyTotals(long ordersCount, BigDecimal gross) {
+    }
+
+    @Transactional(readOnly = true)
+    public DailyTotals dailyTotals(LocalDate date, Long restaurantId) {
+        MapSqlParameterSource p = new MapSqlParameterSource()
+                .addValue("start", Timestamp.from(BusinessTime.startOfDay(date)))
+                .addValue("end", Timestamp.from(BusinessTime.startOfDay(date.plusDays(1))))
+                .addValue("restaurantId", restaurantId);
+        Map<String, Object> totals = jdbc.queryForMap("SELECT count(*) AS cnt, coalesce(sum(grand_total),0) AS gross "
+                + "FROM orders WHERE status IN " + PAID + " AND placed_at >= :start AND placed_at < :end "
+                + "AND restaurant_id = :restaurantId", p);
+        return new DailyTotals(((Number) totals.get("cnt")).longValue(), Money.round((BigDecimal) totals.get("gross")));
+    }
+
     private MapSqlParameterSource range(LocalDate from, LocalDate to) {
         if (from == null || to == null || to.isBefore(from)) {
             throw ApiException.badRequest("INVALID_RANGE", "Choose a valid date range");

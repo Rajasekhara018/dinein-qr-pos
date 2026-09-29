@@ -82,11 +82,11 @@ public class OrderViewMapper {
         List<KitchenLineView> lines = o.getItems().stream()
                 .map(i -> new KitchenLineView(i.getItemName(), i.getVariantName(), i.getFoodType(),
                         i.getAddons().stream().map(OrderItemAddonEntity::getAddonName).toList(),
-                        i.getQuantity(), i.getNotes()))
+                        i.getQuantity(), i.getNotes(), i.getStationId(), i.getStationName()))
                 .toList();
         return new KitchenOrderView(o.getId(), o.getOrderNumber(), o.getDisplayToken(), o.getStatus(),
                 o.getOrderType(), o.getTableId(), tableLabel, o.getNotes(), lines, o.isPlacedByStaff(),
-                o.getPaidAt(), o.getPreparingAt(), o.getReadyAt());
+                o.isPriority(), o.getPaidAt(), o.getPreparingAt(), o.getReadyAt());
     }
 
     public AdminOrderSummary toAdminSummary(OrderEntity o, String tableLabel, PaymentEntity payment) {

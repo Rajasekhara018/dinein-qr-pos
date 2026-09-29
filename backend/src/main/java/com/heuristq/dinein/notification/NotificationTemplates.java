@@ -9,8 +9,9 @@ import java.util.Map;
 
 /**
  * Plain-English text per event and channel. Data keys: {@code orderId}, {@code token}, {@code orderNumber},
- * {@code table}, {@code reason}. SMS is kept within one 160-character segment by shortening the restaurant name.
- * Links are app-relative; {@link #absolute(String)} turns them into full URLs for email and push.
+ * {@code table}, {@code reason} (order events); {@code date}, {@code ordersCount}, {@code gross} (DAILY_SUMMARY);
+ * {@code deviceName} (KDS_DEVICE_OFFLINE). SMS is kept within one 160-character segment by shortening the
+ * restaurant name. Links are app-relative; {@link #absolute(String)} turns them into full URLs for email and push.
  */
 @Slf4j
 @Component
@@ -81,6 +82,29 @@ public class NotificationTemplates {
                             + "payment provider's dashboard:\n" + absolute(adminLink) + "\n\n- " + restaurant, adminLink)
                     : new Message("Refund failed: order #" + token,
                     "Refund for order " + orderNumber + " failed. Retry from the order page.", adminLink);
+            case DAILY_SUMMARY -> {
+                String date = data.getOrDefault("date", "yesterday");
+                String ordersCount = data.getOrDefault("ordersCount", "0");
+                String gross = data.getOrDefault("gross", "0");
+                String dashboardLink = "/admin/dashboard";
+                yield channel == NotificationChannel.EMAIL
+                        ? new Message(restaurant + ": sales summary for " + date,
+                        date + ": " + ordersCount + " order(s), " + gross + " gross.\n\nSee the full breakdown:\n"
+                                + absolute(dashboardLink) + "\n\n- " + restaurant, dashboardLink)
+                        : new Message("Sales summary: " + date, ordersCount + " orders, " + gross + " gross.",
+                        dashboardLink);
+            }
+            case KDS_DEVICE_OFFLINE -> {
+                String deviceName = data.getOrDefault("deviceName", "A kitchen device");
+                String devicesLink = "/admin/settings/devices";
+                yield channel == NotificationChannel.EMAIL
+                        ? new Message(restaurant + ": " + deviceName + " may be offline",
+                        deviceName + " hasn't reached the kitchen board in a while and may be offline or "
+                                + "disconnected. Check the kitchen screen, then review devices here:\n"
+                                + absolute(devicesLink) + "\n\n- " + restaurant, devicesLink)
+                        : new Message(deviceName + " may be offline",
+                        "It hasn't reached the kitchen board recently.", devicesLink);
+            }
         };
     }
 

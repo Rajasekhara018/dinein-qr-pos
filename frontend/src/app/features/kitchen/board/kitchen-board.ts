@@ -65,6 +65,10 @@ export class KitchenBoard {
     void this.store.advance(order);
   }
 
+  protected togglePriority(order: KitchenOrderView): void {
+    void this.store.setPriority(order);
+  }
+
   protected onUserGesture(): void {
     void this.sound.resumeFromGesture();
   }

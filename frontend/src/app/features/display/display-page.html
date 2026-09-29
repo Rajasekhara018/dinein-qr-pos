@@ -1,0 +1,50 @@
+<div class="flex min-h-dvh flex-col bg-slate-950 p-6 text-white sm:p-10">
+  @if (error()) {
+    <div class="m-auto text-center">
+      <p class="text-2xl font-semibold">Could not load the order display.</p>
+      <p class="mt-2 text-slate-400">Check the link and reload this screen.</p>
+    </div>
+  } @else if (loading()) {
+    <div class="m-auto text-2xl text-slate-400">Loading…</div>
+  } @else {
+    <div class="grid flex-1 grid-cols-1 gap-8 md:grid-cols-2">
+      <section aria-labelledby="preparing-heading">
+        <h2 id="preparing-heading" class="mb-4 text-3xl font-bold uppercase tracking-wide text-amber-400 sm:text-4xl">
+          Preparing
+        </h2>
+        @if (preparing().length === 0) {
+          <p class="text-xl text-slate-500">—</p>
+        } @else {
+          <ul class="flex flex-wrap gap-4" role="list">
+            @for (token of preparing(); track token) {
+              <li
+                class="rounded-2xl bg-amber-500/15 px-6 py-4 font-mono text-4xl font-extrabold tabular-nums text-amber-300 sm:text-5xl"
+              >
+                #{{ token }}
+              </li>
+            }
+          </ul>
+        }
+      </section>
+
+      <section aria-labelledby="ready-heading">
+        <h2 id="ready-heading" class="mb-4 text-3xl font-bold uppercase tracking-wide text-emerald-400 sm:text-4xl">
+          Ready
+        </h2>
+        @if (ready().length === 0) {
+          <p class="text-xl text-slate-500">—</p>
+        } @else {
+          <ul class="flex flex-wrap gap-4" role="list">
+            @for (token of ready(); track token) {
+              <li
+                class="rounded-2xl bg-emerald-500/15 px-6 py-4 font-mono text-4xl font-extrabold tabular-nums text-emerald-300 sm:text-5xl"
+              >
+                #{{ token }}
+              </li>
+            }
+          </ul>
+        }
+      </section>
+    </div>
+  }
+</div>

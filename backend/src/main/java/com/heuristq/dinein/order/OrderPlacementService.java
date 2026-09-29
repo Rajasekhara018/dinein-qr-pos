@@ -7,6 +7,8 @@ import com.heuristq.dinein.menu.domain.CategoryRepository;
 import com.heuristq.dinein.menu.domain.ItemEntity;
 import com.heuristq.dinein.menu.domain.ItemRepository;
 import com.heuristq.dinein.menu.domain.ItemVariantEntity;
+import com.heuristq.dinein.menu.domain.KitchenStationEntity;
+import com.heuristq.dinein.menu.domain.KitchenStationRepository;
 import com.heuristq.dinein.order.PricingService.LineInput;
 import com.heuristq.dinein.order.domain.OrderEntity;
 import com.heuristq.dinein.order.domain.OrderItemAddonEntity;
@@ -64,6 +66,7 @@ public class OrderPlacementService {
     private final OrderRepository orderRepository;
     private final ItemRepository itemRepository;
     private final CategoryRepository categoryRepository;
+    private final KitchenStationRepository stationRepository;
     private final DiningTableRepository tableRepository;
     private final SettingsService settingsService;
     private final PricingService pricingService;
@@ -74,13 +77,15 @@ public class OrderPlacementService {
     private final Clock clock;
 
     public OrderPlacementService(OrderRepository orderRepository, ItemRepository itemRepository,
-                                 CategoryRepository categoryRepository, DiningTableRepository tableRepository,
+                                 CategoryRepository categoryRepository, KitchenStationRepository stationRepository,
+                                 DiningTableRepository tableRepository,
                                  SettingsService settingsService, PricingService pricingService,
                                  OrderNumberService orderNumberService, PaymentService paymentService,
                                  OfflinePaymentService offlinePaymentService, TransactionTemplate tx, Clock clock) {
         this.orderRepository = orderRepository;
         this.itemRepository = itemRepository;
         this.categoryRepository = categoryRepository;
+        this.stationRepository = stationRepository;
         this.tableRepository = tableRepository;
         this.settingsService = settingsService;
         this.pricingService = pricingService;
@@ -247,6 +252,7 @@ public class OrderPlacementService {
         order.setIdempotencyKey(draft.idempotencyKey());
         order.setPlacedAt(clock.instant());
 
+        Map<Long, String> stationNames = stationNames(lines);
         for (int i = 0; i < lines.size(); i++) {
             ResolvedLine rl = lines.get(i);
             PricingService.LineResult priced = bill.lines().get(i);
@@ -256,6 +262,9 @@ public class OrderPlacementService {
             oi.setItemName(rl.item().getName());
             oi.setVariantName(rl.variant() == null ? null : rl.variant().getName());
             oi.setFoodType(rl.item().getFoodType());
+            Long stationId = rl.category().getStationId();
+            oi.setStationId(stationId);
+            oi.setStationName(stationId == null ? null : stationNames.get(stationId));
             oi.setUnitPrice(rl.unitPrice());
             oi.setQuantity(rl.line().quantity());
             oi.setGstPercent(rl.item().getGstPercent());
@@ -278,8 +287,20 @@ public class OrderPlacementService {
         return order.getId();
     }
 
-    record ResolvedLine(CartLine line, ItemEntity item, ItemVariantEntity variant, List<AddonEntity> addons,
-                        BigDecimal unitPrice) {
+    record ResolvedLine(CartLine line, ItemEntity item, CategoryEntity category, ItemVariantEntity variant,
+                        List<AddonEntity> addons, BigDecimal unitPrice) {
+    }
+
+    private Map<Long, String> stationNames(List<ResolvedLine> lines) {
+        List<Long> ids = lines.stream().map(l -> l.category().getStationId()).filter(java.util.Objects::nonNull)
+                .distinct().toList();
+        if (ids.isEmpty()) {
+            // Not Map.of(): the caller looks up by a possibly-null stationId, and Map.of()'s immutable map throws
+            // on get(null) instead of just returning null.
+            return java.util.Collections.emptyMap();
+        }
+        return stationRepository.findAllById(ids).stream()
+                .collect(Collectors.toMap(KitchenStationEntity::getId, KitchenStationEntity::getName));
     }
 
     /**
@@ -348,7 +369,7 @@ public class OrderPlacementService {
                 continue;
             }
             BigDecimal unitPrice = Money.round(addons.stream().map(AddonEntity::getPrice).reduce(base, BigDecimal::add));
-            resolved.add(new ResolvedLine(line, item, variant, addons, unitPrice));
+            resolved.add(new ResolvedLine(line, item, category, variant, addons, unitPrice));
         }
         if (!problems.isEmpty()) {
             throw new ApiException(HttpStatus.CONFLICT, "ITEM_UNAVAILABLE",

@@ -340,6 +340,8 @@ export interface CategoryRequest {
   description?: string | null;
   imageId?: number | null;
   active?: boolean | null;
+  /** One of this restaurant's own kitchen stations, or null/omitted to leave unassigned. */
+  stationId?: number | null;
 }
 
 export interface CategoryResponse {
@@ -352,6 +354,22 @@ export interface CategoryResponse {
   displayOrder: number;
   active: boolean;
   itemCount: number;
+  stationId?: number;
+  stationName?: string;
+}
+
+// ─── Kitchen stations (`menu.dto.KitchenStationDtos`) ────────────────────────────────────────────
+
+export interface KitchenStationRequest {
+  name: string;
+  active?: boolean | null;
+}
+
+export interface KitchenStationResponse {
+  id: number;
+  name: string;
+  displayOrder: number;
+  active: boolean;
 }
 
 export interface StatusRequest {
@@ -532,6 +550,7 @@ export interface DeviceResponse {
   expiresAt: IsoInstant;
   revokedAt?: IsoInstant;
   active: boolean;
+  applicationVersion?: string;
 }
 
 // ─── Orders (`order.dto.OrderDtos`) ──────────────────────────────────────────────────────────────
@@ -663,6 +682,8 @@ export interface KitchenLineView {
   addons: string[];
   quantity: number;
   notes?: string;
+  stationId?: number;
+  stationName?: string;
 }
 
 export interface KitchenOrderView {
@@ -677,6 +698,8 @@ export interface KitchenOrderView {
   items: KitchenLineView[];
   /** Taken by a waiter or at the counter. */
   placedByStaff?: boolean;
+  /** Staff flagged this order for the kitchen to work first. */
+  priority?: boolean;
   paidAt?: IsoInstant;
   preparingAt?: IsoInstant;
   readyAt?: IsoInstant;
@@ -891,7 +914,11 @@ export interface RazorpaySuccessResponse {
 // ─── Realtime (`realtime.RealtimeEvent`) ─────────────────────────────────────────────────────────
 
 export type RealtimeEventType =
-  'ORDER_CONFIRMED' | 'ORDER_STATUS_CHANGED' | 'ORDER_CANCELLED' | 'MENU_UPDATED';
+  | 'ORDER_CONFIRMED'
+  | 'ORDER_STATUS_CHANGED'
+  | 'ORDER_CANCELLED'
+  | 'ORDER_PRIORITY_CHANGED'
+  | 'MENU_UPDATED';
 
 export interface RealtimeEvent<TOrder = unknown> {
   type: RealtimeEventType;
@@ -910,7 +937,21 @@ export const TOPICS = {
   waiterNotifications: (restaurantId: number) => `/topic/waiter/${restaurantId}/notifications`,
   menu: '/topic/menu',
   order: (orderId: number) => `/topic/orders/${orderId}`,
+  /** Public, login-free: the customer-facing order-ready display board. */
+  display: (restaurantId: number) => `/topic/display/${restaurantId}`,
 } as const;
+
+/** One PREPARING/READY/COMPLETED/CANCELLED transition, pushed to `TOPICS.display`. */
+export interface DisplayEvent {
+  displayToken: number;
+  status: OrderStatus;
+}
+
+/** `GET /api/v1/public/display` — the display board's initial snapshot. */
+export interface DisplayBoardView {
+  preparing: number[];
+  ready: number[];
+}
 
 // ─── Admin notifications (`notification.dto.NotificationDtos`) ──────────────────────────────────
 

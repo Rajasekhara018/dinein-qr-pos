@@ -82,17 +82,18 @@ public final class OrderDtos {
     }
 
     public record KitchenLineView(String name, String variantName, FoodType foodType, List<String> addons,
-                                  int quantity, String notes) {
+                                  int quantity, String notes, Long stationId, String stationName) {
     }
 
     /**
      * Kitchen ticket, also used for the waiter's order cards and realtime payloads. {@code placedByStaff} is true for
-     * orders taken by a waiter or at the counter.
+     * orders taken by a waiter or at the counter. {@code priority}: staff flagged this order for the kitchen to work
+     * first (see {@code OrderLifecycleService#setPriority}).
      */
     public record KitchenOrderView(Long id, String orderNumber, int displayToken, OrderStatus status,
                                    OrderType orderType, Long tableId, String tableLabel, String notes,
-                                   List<KitchenLineView> items, boolean placedByStaff, Instant paidAt,
-                                   Instant preparingAt, Instant readyAt) {
+                                   List<KitchenLineView> items, boolean placedByStaff, boolean priority,
+                                   Instant paidAt, Instant preparingAt, Instant readyAt) {
     }
 
     /** {@code paymentProvider}: gateway code or OFFLINE; for OFFLINE {@code paymentMethod} is CASH etc. */
@@ -124,9 +125,16 @@ public final class OrderDtos {
                                   Instant oldestOpenSince) {
     }
 
+    /** Public, login-free customer display board snapshot. No PII: just display tokens the guest was given. */
+    public record DisplayBoardView(List<Integer> preparing, List<Integer> ready) {
+    }
+
     // ----- Staff requests ----------------------------------------------------------------------
 
     public record StatusChangeRequest(@NotNull OrderStatus status) {
+    }
+
+    public record PriorityRequest(@NotNull Boolean priority) {
     }
 
     public record CancelRequest(@Size(max = 300) String reason) {

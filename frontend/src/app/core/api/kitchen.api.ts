@@ -33,4 +33,18 @@ export class KitchenApi {
       { context },
     );
   }
+
+  /** Flags/unflags an order for the kitchen to work first. */
+  setPriority(orderId: number, priority: boolean, context?: HttpContext): Observable<KitchenOrderView> {
+    return this.http.patch<KitchenOrderView>(
+      `${API_BASE}/kitchen/orders/${orderId}/priority`,
+      { priority },
+      { context },
+    );
+  }
+
+  /** Keeps this device's last-seen timestamp fresh independent of other traffic; no-op for a staff JWT session. */
+  heartbeat(context?: HttpContext): Observable<void> {
+    return this.http.post<void>(`${API_BASE}/kitchen/heartbeat`, {}, { context });
+  }
 }

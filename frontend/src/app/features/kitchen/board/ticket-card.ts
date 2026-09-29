@@ -41,6 +41,7 @@ export class TicketCard {
   readonly highlighted = input(false);
 
   readonly advance = output<KitchenOrderView>();
+  readonly togglePriority = output<KitchenOrderView>();
 
   protected readonly action = computed(() => nextAction(this.order().status));
   protected readonly isTakeaway = computed(() => this.order().orderType === 'TAKEAWAY');
@@ -53,6 +54,7 @@ export class TicketCard {
     const classes = [`ticket--${this.level()}`];
     if (this.highlighted()) classes.push('ticket--new');
     if (this.order().status === 'READY') classes.push('ticket--ready');
+    if (this.order().priority) classes.push('ticket--priority');
     return classes.join(' ');
   });
 
@@ -67,5 +69,9 @@ export class TicketCard {
 
   protected onAction(): void {
     if (!this.pending()) this.advance.emit(this.order());
+  }
+
+  protected onTogglePriority(): void {
+    if (!this.pending()) this.togglePriority.emit(this.order());
   }
 }

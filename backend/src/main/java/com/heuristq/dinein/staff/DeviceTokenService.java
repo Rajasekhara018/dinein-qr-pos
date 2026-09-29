@@ -92,8 +92,22 @@ public class DeviceTokenService {
         return devices.stream().map(d -> {
             StaffUserEntity u = users.get(d.getStaffUserId());
             return new DeviceResponse(d.getId(), d.getDeviceName(), u == null ? null : u.getUsername(),
-                    d.getCreatedAt(), d.getLastSeenAt(), d.getExpiresAt(), d.getRevokedAt(), d.isUsable(now));
+                    d.getCreatedAt(), d.getLastSeenAt(), d.getExpiresAt(), d.getRevokedAt(), d.isUsable(now),
+                    d.getApplicationVersion());
         }).toList();
+    }
+
+    /** A device calls this periodically (independent of REST/STOMP auth) so liveness tracking doesn't depend on
+     *  how chatty its other traffic happens to be. {@code applicationVersion} is optional. */
+    @Transactional
+    public void heartbeat(Long deviceId, String applicationVersion) {
+        deviceTokenRepository.findById(deviceId).ifPresent(device -> {
+            device.setLastSeenAt(clock.instant());
+            if (applicationVersion != null && !applicationVersion.isBlank()) {
+                device.setApplicationVersion(applicationVersion.length() > 20
+                        ? applicationVersion.substring(0, 20) : applicationVersion);
+            }
+        });
     }
 
     @Transactional

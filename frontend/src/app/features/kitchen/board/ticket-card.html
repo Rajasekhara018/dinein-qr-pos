@@ -38,6 +38,21 @@
       @if (order().placedByStaff) {
         <span class="ticket-chip ticket-chip--staff" data-testid="ticket-staff">Staff</span>
       }
+      <button
+        type="button"
+        class="ticket-badge"
+        [class.ticket-badge--priority]="order().priority"
+        [disabled]="pending()"
+        [attr.aria-pressed]="!!order().priority"
+        [attr.aria-label]="(order().priority ? 'Unflag' : 'Flag') + ' token ' + order().displayToken + ' as priority'"
+        [attr.data-testid]="'ticket-priority-' + order().id"
+        (click)="onTogglePriority()"
+      >
+        <svg viewBox="0 0 20 20" class="size-4" fill="currentColor" aria-hidden="true">
+          <path d="M4 2a1 1 0 0 1 1 1v14a1 1 0 1 1-2 0V3a1 1 0 0 1 1-1Zm2 1.5 9 3.5-9 3.5v-7Z" />
+        </svg>
+        Priority
+      </button>
     </div>
     <div class="flex shrink-0 flex-col items-end gap-1">
       <span
@@ -95,6 +110,9 @@
               /></span>
             }
             <span class="min-w-0 break-words">{{ line.name }}</span>
+            @if (line.stationName) {
+              <span class="ticket-mod ticket-mod--variant" data-testid="ticket-line-station">{{ line.stationName }}</span>
+            }
           </p>
           @if (line.variantName || line.addons.length) {
             <p class="mt-1 flex flex-wrap gap-1.5">

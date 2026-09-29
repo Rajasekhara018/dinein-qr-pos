@@ -61,7 +61,25 @@ public class OrderLifecycleService {
         // CONFIRMED carries the ticket for the kitchen; READY carries it so waiter screens can alert without a refetch.
         KitchenOrderView kitchenView = to == OrderStatus.CONFIRMED || to == OrderStatus.READY
                 ? viewMapper.toKitchenView(order, viewMapper.tableLabel(order)) : null;
-        events.publishEvent(new OrderStatusChangedEvent(order.getId(), order.getRestaurantId(), from, to, kitchenView));
+        events.publishEvent(new OrderStatusChangedEvent(order.getId(), order.getRestaurantId(), order.getDisplayToken(),
+                from, to, kitchenView));
+    }
+
+    /** Staff-set flag telling the kitchen to work this order first; not a status transition. */
+    @Transactional
+    public KitchenOrderView setPriority(Long orderId, boolean priority, String actor) {
+        OrderEntity order = orderRepository.findByIdForUpdate(orderId).orElseThrow(() -> ApiException.notFound("Order"));
+        KitchenOrderView view = viewMapper.toKitchenView(order, viewMapper.tableLabel(order));
+        if (order.isPriority() == priority) {
+            return view;
+        }
+        order.setPriority(priority);
+        orderRepository.save(order);
+        log.info("order.priority orderId={} orderNumber={} priority={} actor={}",
+                order.getId(), order.getOrderNumber(), priority, actor);
+        KitchenOrderView updated = viewMapper.toKitchenView(order, viewMapper.tableLabel(order));
+        events.publishEvent(new OrderPriorityChangedEvent(order.getId(), order.getRestaurantId(), updated));
+        return updated;
     }
 
     /** Staff-initiated change (kitchen board / admin), restricted to {@code allowedTargets}. */
