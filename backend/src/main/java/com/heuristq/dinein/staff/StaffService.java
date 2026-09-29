@@ -1,5 +1,6 @@
 package com.heuristq.dinein.staff;
 
+import com.heuristq.dinein.audit.AuditService;
 import com.heuristq.dinein.auth.PasswordPolicy;
 import com.heuristq.dinein.auth.domain.RefreshTokenRepository;
 import com.heuristq.dinein.shared.exception.ApiException;
@@ -29,14 +30,17 @@ public class StaffService {
     private final DeviceTokenService deviceTokenService;
     private final PasswordEncoder passwordEncoder;
     private final Clock clock;
+    private final AuditService auditService;
 
     public StaffService(StaffUserRepository staffUserRepository, RefreshTokenRepository refreshTokenRepository,
-                        DeviceTokenService deviceTokenService, PasswordEncoder passwordEncoder, Clock clock) {
+                        DeviceTokenService deviceTokenService, PasswordEncoder passwordEncoder, Clock clock,
+                        AuditService auditService) {
         this.staffUserRepository = staffUserRepository;
         this.refreshTokenRepository = refreshTokenRepository;
         this.deviceTokenService = deviceTokenService;
         this.passwordEncoder = passwordEncoder;
         this.clock = clock;
+        this.auditService = auditService;
     }
 
     @Transactional(readOnly = true)
@@ -68,6 +72,7 @@ public class StaffService {
         user.setMustChangePassword(!usesPinSignIn(request.role()));
         staffUserRepository.save(user);
         log.info("staff.created userId={} role={}", user.getId(), user.getRole());
+        auditService.record("STAFF_CREATED", "StaffUser", user.getId(), null, user.getRole().name());
         return StaffResponse.from(user);
     }
 
@@ -79,6 +84,7 @@ public class StaffService {
         if (selfEdit && (!request.active() || request.role() != user.getRole())) {
             throw ApiException.badRequest("SELF_LOCKOUT", "You cannot deactivate yourself or change your own role");
         }
+        StaffRole previousRole = user.getRole();
         user.setDisplayName(trimToNull(request.displayName()));
         user.setEmail(normalizeEmail(request.email()));
         user.setPhone(trimToNull(request.phone()));
@@ -107,6 +113,12 @@ public class StaffService {
             throw ApiException.badRequest("LAST_OWNER", "At least one owner account must remain");
         }
         log.info("staff.updated userId={} by={}", user.getId(), actor.userId());
+        if (previousRole != user.getRole()) {
+            auditService.record("STAFF_ROLE_CHANGED", "StaffUser", user.getId(), previousRole.name(), user.getRole().name());
+        }
+        if (deactivated) {
+            auditService.record("STAFF_DEACTIVATED", "StaffUser", user.getId(), null, null);
+        }
         return StaffResponse.from(user);
     }
 

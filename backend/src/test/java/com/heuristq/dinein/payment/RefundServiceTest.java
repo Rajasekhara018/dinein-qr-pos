@@ -1,5 +1,6 @@
 package com.heuristq.dinein.payment;
 
+import com.heuristq.dinein.audit.AuditService;
 import com.heuristq.dinein.order.OrderLifecycleService;
 import com.heuristq.dinein.order.domain.OrderEntity;
 import com.heuristq.dinein.order.domain.OrderRepository;
@@ -36,8 +37,9 @@ class RefundServiceTest {
     private final OrderLifecycleService lifecycle = mock(OrderLifecycleService.class);
     private final PaymentGatewayRegistry gateways = mock(PaymentGatewayRegistry.class);
     private final ApplicationEventPublisher events = mock(ApplicationEventPublisher.class);
+    private final AuditService auditService = mock(AuditService.class);
     private final RefundService service = new RefundService(orders, payments, lifecycle, gateways,
-            new DirectTransactionTemplate(), events);
+            new DirectTransactionTemplate(), events, auditService);
 
     private OrderEntity order;
 

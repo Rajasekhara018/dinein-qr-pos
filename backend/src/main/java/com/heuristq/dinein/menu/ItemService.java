@@ -1,5 +1,6 @@
 package com.heuristq.dinein.menu;
 
+import com.heuristq.dinein.audit.AuditService;
 import com.heuristq.dinein.image.ImageService;
 import com.heuristq.dinein.image.ImageUrls;
 import com.heuristq.dinein.menu.domain.AddonEntity;
@@ -51,13 +52,15 @@ public class ItemService {
     private final CategoryRepository categoryRepository;
     private final ImageService imageService;
     private final ApplicationEventPublisher events;
+    private final AuditService auditService;
 
     public ItemService(ItemRepository itemRepository, CategoryRepository categoryRepository,
-                       ImageService imageService, ApplicationEventPublisher events) {
+                       ImageService imageService, ApplicationEventPublisher events, AuditService auditService) {
         this.itemRepository = itemRepository;
         this.categoryRepository = categoryRepository;
         this.imageService = imageService;
         this.events = events;
+        this.auditService = auditService;
     }
 
     @Transactional(readOnly = true)
@@ -145,6 +148,7 @@ public class ItemService {
     public ItemResponse updatePrice(Long id, PriceRequest request) {
         ItemEntity item = find(id);
         checkVersion(item, request.version());
+        String previousPrice = item.hasActiveVariants() ? "variants" : String.valueOf(item.getBasePrice());
         boolean changed = false;
         if (request.basePrice() != null) {
             if (item.hasActiveVariants()) {
@@ -171,6 +175,8 @@ public class ItemService {
         }
         touch(item);
         log.info("item.price_updated id={}", id);
+        String newPrice = item.hasActiveVariants() ? "variants" : String.valueOf(item.getBasePrice());
+        auditService.record("ITEM_PRICE_CHANGED", "Item", item.getId(), previousPrice, newPrice);
         events.publishEvent(new MenuChangedEvent("item.price"));
         return toResponse(item, categoryName(item.getCategoryId()));
     }
@@ -181,6 +187,7 @@ public class ItemService {
         ItemEntity item = find(id);
         item.setActive(false);
         log.info("item.deleted id={}", id);
+        auditService.record("ITEM_DISABLED", "Item", item.getId(), null, null);
         events.publishEvent(new MenuChangedEvent("item.deleted"));
     }
 

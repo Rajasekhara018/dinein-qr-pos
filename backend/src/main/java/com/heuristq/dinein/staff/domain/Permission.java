@@ -9,5 +9,6 @@ package com.heuristq.dinein.staff.domain;
 public enum Permission {
     VIEW_REPORTS,
     MANAGE_SETTINGS,
-    MANAGE_STAFF
+    MANAGE_STAFF,
+    VIEW_AUDIT_LOG
 }

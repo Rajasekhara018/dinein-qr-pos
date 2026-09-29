@@ -1,5 +1,6 @@
 package com.heuristq.dinein.settings;
 
+import com.heuristq.dinein.audit.AuditService;
 import com.heuristq.dinein.image.ImageUrls;
 import com.heuristq.dinein.image.ImageService;
 import com.heuristq.dinein.menu.MenuChangedEvent;
@@ -26,13 +27,15 @@ public class SettingsService {
     private final ImageService imageService;
     private final ApplicationEventPublisher events;
     private final Clock clock;
+    private final AuditService auditService;
 
     public SettingsService(RestaurantSettingsRepository repository, ImageService imageService,
-                           ApplicationEventPublisher events, Clock clock) {
+                           ApplicationEventPublisher events, Clock clock, AuditService auditService) {
         this.repository = repository;
         this.imageService = imageService;
         this.events = events;
         this.clock = clock;
+        this.auditService = auditService;
     }
 
     @Transactional(readOnly = true)
@@ -55,6 +58,7 @@ public class SettingsService {
             throw ApiException.badRequest("INVALID_THRESHOLDS", "Alert threshold must be greater than warning threshold");
         }
         RestaurantSettingsEntity s = forRestaurant(restaurantId);
+        String previousSummary = "acceptingOrders=" + s.isAcceptingOrders() + ", pricesIncludeGst=" + s.isPricesIncludeGst();
         s.setName(r.name().trim());
         s.setAddress(blankToNull(r.address()));
         s.setPhone(blankToNull(r.phone()));
@@ -77,6 +81,8 @@ public class SettingsService {
         repository.save(s);
         log.info("settings.updated acceptingOrders={} pricesIncludeGst={} takeawayEnabled={}", s.isAcceptingOrders(),
                 s.isPricesIncludeGst(), s.isTakeawayEnabled());
+        auditService.record("SETTINGS_UPDATED", "RestaurantSettings", s.getId(), previousSummary,
+                "acceptingOrders=" + s.isAcceptingOrders() + ", pricesIncludeGst=" + s.isPricesIncludeGst());
         // Pricing mode and open/closed state are part of what guests see.
         events.publishEvent(new MenuChangedEvent("settings"));
         return toResponse(s);

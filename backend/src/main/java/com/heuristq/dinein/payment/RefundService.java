@@ -1,5 +1,6 @@
 package com.heuristq.dinein.payment;
 
+import com.heuristq.dinein.audit.AuditService;
 import com.heuristq.dinein.order.OrderLifecycleService;
 import com.heuristq.dinein.order.domain.OrderEntity;
 import com.heuristq.dinein.order.domain.OrderRepository;
@@ -38,16 +39,18 @@ public class RefundService {
     private final PaymentGatewayRegistry gateways;
     private final TransactionTemplate tx;
     private final ApplicationEventPublisher events;
+    private final AuditService auditService;
 
     public RefundService(OrderRepository orderRepository, PaymentRepository paymentRepository,
                          OrderLifecycleService lifecycle, PaymentGatewayRegistry gateways, TransactionTemplate tx,
-                         ApplicationEventPublisher events) {
+                         ApplicationEventPublisher events, AuditService auditService) {
         this.orderRepository = orderRepository;
         this.paymentRepository = paymentRepository;
         this.lifecycle = lifecycle;
         this.gateways = gateways;
         this.tx = tx;
         this.events = events;
+        this.auditService = auditService;
     }
 
     public void cancelAndRefund(Long orderId, String reason, String actor) {
@@ -58,8 +61,10 @@ public class RefundService {
                     throw ApiException.conflict("ILLEGAL_TRANSITION",
                             "Only paid orders that are not yet ready can be cancelled (current: " + order.getStatus() + ")");
                 }
+                OrderStatus previousStatus = order.getStatus();
                 order.setCancelReason(Text.clean(reason, 300));
                 lifecycle.transition(order, OrderStatus.CANCELLED, actor);
+                auditService.record("ORDER_CANCELLED", "Order", order.getId(), previousStatus.name(), reason);
             }
             PaymentEntity captured = paymentRepository.findByOrderIdOrderByIdAsc(orderId).stream()
                     .filter(p -> p.getStatus() == PaymentStatus.CAPTURED)
@@ -78,6 +83,7 @@ public class RefundService {
         if (toRefund.isOffline()) {
             log.info("order.refund.manual orderId={} method={} amountPaise={}", orderId, toRefund.getMethod(),
                     toRefund.getAmountPaise());
+            auditService.record("REFUND_INITIATED", "Order", orderId, null, "manual (offline payment)");
             return;
         }
         try {
@@ -93,6 +99,7 @@ public class RefundService {
                 }
             }));
             log.info("order.refund.requested orderId={} provider={} refundId={}", orderId, toRefund.getProvider(), refund.refundId());
+            auditService.record("REFUND_INITIATED", "Order", orderId, null, toRefund.getProvider() + ":" + refund.refundId());
         } catch (ApiException e) {
             tx.executeWithoutResult(s -> paymentRepository.findById(toRefund.getId())
                     .ifPresent(p -> p.setRefundStatus(RefundStatus.FAILED)));
