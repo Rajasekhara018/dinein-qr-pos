@@ -1,6 +1,7 @@
 package com.heuristq.dinein.settings.domain;
 
 import com.heuristq.dinein.restaurant.domain.RestaurantEntity;
+import com.heuristq.dinein.shared.persistence.TenantOwnedEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -10,6 +11,7 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.Instant;
@@ -20,6 +22,7 @@ import java.time.LocalTime;
 @Setter
 @Entity
 @Table(name = "restaurant_settings")
+@Filter(name = TenantOwnedEntity.TENANT_FILTER, condition = "restaurant_id = :restaurantId")
 public class RestaurantSettingsEntity {
 
     @Id

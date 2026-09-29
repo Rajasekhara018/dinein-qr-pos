@@ -1,12 +1,12 @@
 package com.heuristq.dinein.staff.domain;
 
-import com.heuristq.dinein.restaurant.domain.RestaurantEntity;
-import com.heuristq.dinein.shared.persistence.BaseEntity;
+import com.heuristq.dinein.shared.persistence.TenantOwnedEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Filter;
 
 import java.time.Instant;
 
@@ -15,10 +15,8 @@ import java.time.Instant;
 @Setter
 @Entity
 @Table(name = "device_token")
-public class DeviceTokenEntity extends BaseEntity {
-
-    @Column(name = "restaurant_id", nullable = false)
-    private Long restaurantId = RestaurantEntity.DEFAULT_ID;
+@Filter(name = TenantOwnedEntity.TENANT_FILTER, condition = "restaurant_id = :restaurantId")
+public class DeviceTokenEntity extends TenantOwnedEntity {
 
     @Column(name = "staff_user_id", nullable = false)
     private Long staffUserId;

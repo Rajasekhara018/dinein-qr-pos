@@ -1,21 +1,19 @@
 package com.heuristq.dinein.menu.domain;
 
-import com.heuristq.dinein.restaurant.domain.RestaurantEntity;
-import com.heuristq.dinein.shared.persistence.BaseEntity;
+import com.heuristq.dinein.shared.persistence.TenantOwnedEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Filter;
 
 @Getter
 @Setter
 @Entity
 @Table(name = "category")
-public class CategoryEntity extends BaseEntity {
-
-    @Column(name = "restaurant_id", nullable = false)
-    private Long restaurantId = RestaurantEntity.DEFAULT_ID;
+@Filter(name = TenantOwnedEntity.TENANT_FILTER, condition = "restaurant_id = :restaurantId")
+public class CategoryEntity extends TenantOwnedEntity {
 
     @Column(nullable = false, length = 80)
     private String name;

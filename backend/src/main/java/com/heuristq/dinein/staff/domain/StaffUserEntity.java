@@ -1,7 +1,6 @@
 package com.heuristq.dinein.staff.domain;
 
-import com.heuristq.dinein.restaurant.domain.RestaurantEntity;
-import com.heuristq.dinein.shared.persistence.BaseEntity;
+import com.heuristq.dinein.shared.persistence.TenantOwnedEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -9,6 +8,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Filter;
 
 import java.time.Instant;
 
@@ -16,10 +16,8 @@ import java.time.Instant;
 @Setter
 @Entity
 @Table(name = "staff_user")
-public class StaffUserEntity extends BaseEntity {
-
-    @Column(name = "restaurant_id", nullable = false)
-    private Long restaurantId = RestaurantEntity.DEFAULT_ID;
+@Filter(name = TenantOwnedEntity.TENANT_FILTER, condition = "restaurant_id = :restaurantId")
+public class StaffUserEntity extends TenantOwnedEntity {
 
     @Column(nullable = false, unique = true, length = 50)
     private String username;
