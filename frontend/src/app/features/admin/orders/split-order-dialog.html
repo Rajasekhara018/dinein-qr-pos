@@ -1,0 +1,38 @@
+<app-bottom-sheet [title]="'Split order #' + data.order.displayToken" (closed)="ref.close()">
+  <p class="text-sm text-ink-muted">
+    Assign each item to a group. Every group becomes its own new order, paid separately; this order is cancelled.
+  </p>
+  <ul class="mt-4 flex flex-col gap-2" role="list">
+    @for (line of items; track line.id) {
+      <li class="flex items-center justify-between gap-3 rounded-card border border-line bg-surface px-3 py-2">
+        <div class="min-w-0">
+          <p class="truncate font-medium">{{ line.quantity }}× {{ line.name }}</p>
+          <p class="text-xs text-ink-muted">{{ line.lineTotal | inr }}</p>
+        </div>
+        <div class="flex shrink-0 gap-1" role="group" [attr.aria-label]="'Group for ' + line.name">
+          @for (group of groups(); track group.group) {
+            <button
+              appButton
+              [variant]="assignments()[line.id!] === group.group ? 'primary' : 'outline'"
+              size="sm"
+              type="button"
+              [attr.data-testid]="'split-line-' + line.id + '-group-' + group.group"
+              (click)="setGroup(line.id!, group.group)"
+            >
+              {{ group.group }}
+            </button>
+          }
+        </div>
+      </li>
+    }
+  </ul>
+  <button appButton variant="ghost" size="sm" type="button" class="mt-2 self-start" (click)="addGroup()">
+    + Add group
+  </button>
+  <div sheetFooter class="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+    <button appButton variant="outline" type="button" (click)="ref.close()">Cancel</button>
+    <button appButton type="button" [disabled]="!canConfirm()" data-testid="split-confirm" (click)="confirm()">
+      Split into {{ nonEmptyGroupCount() }} orders
+    </button>
+  </div>
+</app-bottom-sheet>

@@ -58,6 +58,11 @@
           Mark paid (offline)
         </button>
       }
+      @if (splittable()) {
+        <button appButton variant="outline" type="button" [loading]="busy() === 'split'" [disabled]="busy() !== null" (click)="splitOrder()" data-testid="order-split">
+          Split bill
+        </button>
+      }
       @if (cancellable()) {
         <button appButton variant="outline" type="button" class="text-danger" [loading]="busy() === 'cancel'" [disabled]="busy() !== null" (click)="cancelAndRefund()" data-testid="order-cancel">
           Cancel & refund

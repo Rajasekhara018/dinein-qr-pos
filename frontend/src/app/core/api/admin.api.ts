@@ -29,6 +29,10 @@ import {
   SettingsResponse,
   StaffPlaceOrderRequest,
   StaffResponse,
+  MergeTablesRequest,
+  MoveOrderRequest,
+  ReserveTableRequest,
+  SplitOrderRequest,
   TableRequest,
   TableResponse,
   UpdateSettingsRequest,
@@ -154,6 +158,24 @@ export class AdminTablesApi {
     return this.http.post<TableResponse>(`${API_BASE}/admin/tables/${id}/regenerate-qr`, null);
   }
 
+  reserve(id: number, body: ReserveTableRequest): Observable<TableResponse> {
+    return this.http.put<TableResponse>(`${API_BASE}/admin/tables/${id}/reservation`, body);
+  }
+
+  clearReservation(id: number): Observable<TableResponse> {
+    return this.http.delete<TableResponse>(`${API_BASE}/admin/tables/${id}/reservation`);
+  }
+
+  /** Moves this table's open order(s) to an empty, unreserved table. */
+  moveOrders(id: number, body: MoveOrderRequest): Observable<TableResponse> {
+    return this.http.post<TableResponse>(`${API_BASE}/admin/tables/${id}/move`, body);
+  }
+
+  /** Combines two tables' bills onto `toTableId`; `fromTableId` ends up free. */
+  merge(body: MergeTablesRequest): Observable<TableResponse> {
+    return this.http.post<TableResponse>(`${API_BASE}/admin/tables/merge`, body);
+  }
+
   /** Printable A4 PDF (all tables when `ids` is empty). Returned as a Blob because it needs the bearer token. */
   qrPdf(ids: number[] = []): Observable<Blob> {
     return this.http.get(`${API_BASE}/admin/tables/qr.pdf`, {
@@ -218,6 +240,11 @@ export class AdminOrdersApi {
       { reason: reason || null },
       { context: silentErrors() },
     );
+  }
+
+  /** Splits an unpaid order into separate bills, one per item group. 409 NOT_SPLITTABLE once paid/confirmed. */
+  split(id: number, body: SplitOrderRequest): Observable<AdminOrderView[]> {
+    return this.http.post<AdminOrderView[]>(`${API_BASE}/admin/orders/${id}/split`, body);
   }
 }
 

@@ -51,9 +51,10 @@ public final class OrderDtos {
     public record AddonView(String name, BigDecimal price) {
     }
 
-    public record OrderLineView(Long itemId, Long variantId, String name, String variantName, FoodType foodType,
-                                List<AddonView> addons, BigDecimal unitPrice, int quantity, BigDecimal gstPercent,
-                                BigDecimal lineTotal, BigDecimal taxAmount, String notes) {
+    /** {@code id}: this order line's own row id (not the menu item id) -- what {@code SplitOrderRequest} groups by. */
+    public record OrderLineView(Long id, Long itemId, Long variantId, String name, String variantName,
+                                FoodType foodType, List<AddonView> addons, BigDecimal unitPrice, int quantity,
+                                BigDecimal gstPercent, BigDecimal lineTotal, BigDecimal taxAmount, String notes) {
     }
 
     public record BillView(BigDecimal subtotal, BigDecimal taxTotal, BigDecimal cgst, BigDecimal sgst,

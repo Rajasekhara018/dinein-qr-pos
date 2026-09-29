@@ -39,6 +39,7 @@ import {
   refundStatusLabel,
   StatusAction,
 } from './order-actions';
+import { SplitOrderDialog, SplitOrderDialogData } from './split-order-dialog';
 
 /**
  * Order detail: lines, bill, payments, flags; status actions; cancel & refund (with retry on refund failure);
@@ -66,7 +67,7 @@ export class OrderDetailPage implements OnInit {
   protected readonly order = signal<AdminOrderView | null>(null);
   protected readonly loading = signal(true);
   protected readonly error = signal<unknown>(null);
-  protected readonly busy = signal<'status' | 'cancel' | 'markPaid' | null>(null);
+  protected readonly busy = signal<'status' | 'cancel' | 'markPaid' | 'split' | null>(null);
   protected readonly refundError = signal('');
 
   protected readonly actions = computed<StatusAction[]>(() => {
@@ -88,6 +89,11 @@ export class OrderDetailPage implements OnInit {
   protected readonly markPaidAvailable = computed(() => {
     const order = this.order();
     return !!order && canMarkPaidOffline(order);
+  });
+  /** Only before any payment is captured: splitting a paid bill would mean unwinding a real payment (a refund). */
+  protected readonly splittable = computed(() => {
+    const order = this.order();
+    return !!order && order.status === 'PENDING_PAYMENT' && order.items.length > 1;
   });
   /** Rupees to hand back when a cancelled order had been paid offline. */
   protected readonly manualRefund = computed(() => {
@@ -202,6 +208,34 @@ export class OrderDetailPage implements OnInit {
         this.toasts.error(errorMessage(error, 'Could not mark the order as paid.'));
       }
       void this.load(true);
+    } finally {
+      this.busy.set(null);
+    }
+  }
+
+  /** Group-by-group split into separate bills (see SplitOrderDialog). Navigates to the first new order on success. */
+  protected async splitOrder(): Promise<void> {
+    const order = this.order();
+    if (!order || this.busy() !== null) return;
+    const ref = this.sheets.open<number[][] | undefined, SplitOrderDialogData, SplitOrderDialog>(
+      SplitOrderDialog,
+      { data: { order }, maxWidth: '32rem' },
+    );
+    const itemGroups = await firstValueFrom(ref.closed);
+    if (!itemGroups) return;
+    this.busy.set('split');
+    try {
+      const created = await firstValueFrom(this.api.split(order.id, { itemGroups }));
+      this.toasts.success(`Order #${order.displayToken} split into ${created.length} orders.`);
+      void this.load(true);
+    } catch (error) {
+      const code = ApiError.from(error).code;
+      if (code === 'NOT_SPLITTABLE') {
+        this.toasts.warning('This order can no longer be split. Showing the latest status.');
+        void this.load(true);
+      } else {
+        this.toasts.error(errorMessage(error, 'Could not split the order.'));
+      }
     } finally {
       this.busy.set(null);
     }

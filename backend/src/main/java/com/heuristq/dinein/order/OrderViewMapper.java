@@ -128,8 +128,8 @@ public class OrderViewMapper {
     }
 
     private OrderLineView line(OrderItemEntity i) {
-        return new OrderLineView(i.getItemId(), i.getVariantId(), i.getItemName(), i.getVariantName(), i.getFoodType(),
-                i.getAddons().stream().map(a -> new AddonView(a.getAddonName(), a.getPrice())).toList(),
+        return new OrderLineView(i.getId(), i.getItemId(), i.getVariantId(), i.getItemName(), i.getVariantName(),
+                i.getFoodType(), i.getAddons().stream().map(a -> new AddonView(a.getAddonName(), a.getPrice())).toList(),
                 i.getUnitPrice(), i.getQuantity(), i.getGstPercent(), i.getLineTotal(), i.getTaxAmount(), i.getNotes());
     }
 

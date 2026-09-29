@@ -492,10 +492,33 @@ export interface TableResponse {
   active: boolean;
   /** Has an unfinished order (paid or not) right now — the floor-view "occupied" indicator. */
   occupied: boolean;
+  reserved: boolean;
+  reservedUntil?: IsoInstant;
+  reservedNote?: string;
   qrUrl: string;
   qrImageUrl: string;
   createdAt: IsoInstant;
   updatedAt: IsoInstant;
+}
+
+export interface ReserveTableRequest {
+  /** Must be in the future. */
+  until: IsoInstant;
+  note?: string | null;
+}
+
+export interface MoveOrderRequest {
+  tableId: number;
+}
+
+export interface MergeTablesRequest {
+  fromTableId: number;
+  toTableId: number;
+}
+
+export interface SplitOrderRequest {
+  /** Every item id from the order, partitioned into 2+ groups (one new order per group). */
+  itemGroups: number[][];
 }
 
 // ─── Staff & devices (`staff.dto`) ───────────────────────────────────────────────────────────────
@@ -605,6 +628,8 @@ export interface AddonView {
 }
 
 export interface OrderLineView {
+  /** This order line's own row id (not the menu item id) — what SplitOrderRequest groups by. */
+  id?: number;
   itemId?: number;
   variantId?: number;
   name: string;
