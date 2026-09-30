@@ -1,5 +1,8 @@
+import 'package:dinein_kiosk/core/branding/branding.dart';
 import 'package:dinein_kiosk/core/printing/printer_service.dart';
 import 'package:dinein_kiosk/core/storage/secure_storage.dart';
+import 'package:dinein_kiosk/features/cart/providers/cart_provider.dart';
+import 'package:dinein_kiosk/features/order/data/order_repository.dart';
 import 'package:dinein_kiosk/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -52,7 +55,35 @@ Future<void> _pumpFor(WidgetTester tester, {int ms = 600}) async {
   }
 }
 
-Future<void> _launch(WidgetTester tester, {_RecordingPrinter? printer, bool paired = true}) async {
+/// Fails the first [failures] attempts like a dropped network, and remembers every key it was sent.
+class _FlakyOrders implements OrderRepository {
+  _FlakyOrders({required this.failures});
+
+  int failures;
+  final keys = <String>[];
+
+  @override
+  Future<OrderResult> placeOrder({
+    required CartState cart,
+    required OrderType orderType,
+    required PaymentMode paymentMode,
+    required String idempotencyKey,
+  }) async {
+    keys.add(idempotencyKey);
+    if (failures > 0) {
+      failures--;
+      throw Exception('Network down');
+    }
+    return OrderResult(orderId: 'x', tokenNumber: 301, total: cart.total);
+  }
+}
+
+Future<void> _launch(
+  WidgetTester tester, {
+  _RecordingPrinter? printer,
+  bool paired = true,
+  OrderRepository? orders,
+}) async {
   SharedPreferences.setMockInitialValues({});
   tester.view.physicalSize = const Size(1080, 1920);
   tester.view.devicePixelRatio = 1.0;
@@ -64,6 +95,7 @@ Future<void> _launch(WidgetTester tester, {_RecordingPrinter? printer, bool pair
     overrides: [
       secureStorageProvider.overrideWithValue(storage),
       if (printer != null) printerTransportProvider.overrideWithValue(printer),
+      if (orders != null) orderRepositoryProvider.overrideWithValue(orders),
     ],
     child: const KioskApp(),
   ));
@@ -155,6 +187,48 @@ void main() {
 
     expect(find.text('Order placed!'), findsOneWidget);
     expect(find.textContaining('could not be printed'), findsNothing);
+    await _finish(tester);
+  });
+
+  testWidgets('a retry of the same order reuses its key, but an edited order gets a new one', (tester) async {
+    final orders = _FlakyOrders(failures: 2);
+    await _launch(tester, orders: orders);
+
+    await tester.tap(find.text('Touch to order'));
+    await _pumpFor(tester);
+    await tester.tap(find.text('Dine in'));
+    await _pumpFor(tester);
+    await tester.tap(find.text('Classic Veg Burger'));
+    await _pumpFor(tester);
+    await tester.tap(find.textContaining('Add  •'));
+    await _pumpFor(tester);
+    await tester.tap(find.text('No, thanks'));
+    await _pumpFor(tester);
+    await tester.tap(find.text('View order'));
+    await _pumpFor(tester);
+    await tester.tap(find.textContaining('Place order'));
+    await _pumpFor(tester);
+    await tester.tap(find.text('No, thanks')); // the one-time checkout suggestion
+    await _pumpFor(tester);
+
+    await tester.tap(find.textContaining('Place order')); // attempt 1: the network drops
+    await _pumpFor(tester, ms: 1000);
+    expect(find.text('Network down'), findsOneWidget);
+
+    await tester.tap(find.text('Try again')); // attempt 2: same order, so the same key
+    await _pumpFor(tester, ms: 1000);
+    expect(orders.keys, hasLength(2));
+    expect(orders.keys[0], orders.keys[1]);
+
+    await tester.tap(find.byIcon(Icons.add_rounded)); // the customer changes their mind
+    await _pumpFor(tester);
+    await tester.tap(find.text('Try again')); // attempt 3: a different order, so a new key
+    await _pumpFor(tester, ms: 1000);
+
+    expect(orders.keys, hasLength(3));
+    expect(orders.keys[2], isNot(orders.keys[1]),
+        reason: 'if the earlier attempt did reach the server, its key would replay the old items');
+    expect(find.text('Order placed!'), findsOneWidget);
     await _finish(tester);
   });
 

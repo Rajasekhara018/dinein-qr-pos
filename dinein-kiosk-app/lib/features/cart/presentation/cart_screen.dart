@@ -104,6 +104,11 @@ class _CartScreenState extends ConsumerState<CartScreen> {
     final cart = ref.watch(cartProvider);
     final orderType = ref.watch(orderTypeProvider);
     ref.watch(upsellsProvider);
+    // A retry of the same order reuses its key, but an edited order is a different order. If the first attempt
+    // reached the server and only its reply was lost, reusing the key would replay the old items.
+    ref.listen(cartProvider, (prev, next) {
+      if (prev?.lines != next.lines) _idempotencyKey = newIdempotencyKey();
+    });
 
     if (cart.isEmpty && !_placing) {
       return Scaffold(
