@@ -6,8 +6,7 @@ import com.heuristq.dinein.kiosk.domain.KioskDeviceRepository;
 import com.heuristq.dinein.kiosk.dto.KioskDtos.KioskDeviceView;
 import com.heuristq.dinein.kiosk.dto.KioskDtos.PairResponse;
 import com.heuristq.dinein.kiosk.dto.KioskDtos.PairingCodeResponse;
-import com.heuristq.dinein.restaurant.domain.RestaurantEntity;
-import com.heuristq.dinein.restaurant.domain.RestaurantRepository;
+import com.heuristq.dinein.settings.SettingsService;
 import com.heuristq.dinein.shared.exception.ApiException;
 import com.heuristq.dinein.shared.security.CurrentStaff;
 import com.heuristq.dinein.shared.security.KioskPrincipal;
@@ -40,14 +39,14 @@ public class KioskDeviceService {
     private static final SecureRandom RANDOM = new SecureRandom();
 
     private final KioskDeviceRepository repository;
-    private final RestaurantRepository restaurantRepository;
+    private final SettingsService settingsService;
     private final AuditService auditService;
     private final Clock clock;
 
-    public KioskDeviceService(KioskDeviceRepository repository, RestaurantRepository restaurantRepository,
+    public KioskDeviceService(KioskDeviceRepository repository, SettingsService settingsService,
                               AuditService auditService, Clock clock) {
         this.repository = repository;
-        this.restaurantRepository = restaurantRepository;
+        this.settingsService = settingsService;
         this.auditService = auditService;
         this.clock = clock;
     }
@@ -119,8 +118,8 @@ public class KioskDeviceService {
         device.setLastSeenAt(now);
         device.setPairingCodeHash(null);
         device.setPairingExpiresAt(null);
-        String restaurantName = restaurantRepository.findById(device.getRestaurantId())
-                .map(RestaurantEntity::getName).orElse("");
+        // The name the restaurant set in Settings: the same one the branding and printed bills show.
+        String restaurantName = settingsService.forRestaurant(device.getRestaurantId()).getName();
         log.info("kiosk.paired deviceId={}", device.getId());
         auditService.recordForRestaurant(device.getRestaurantId(), "KIOSK_PAIRED", "KioskDevice", device.getId(),
                 null, device.getName());

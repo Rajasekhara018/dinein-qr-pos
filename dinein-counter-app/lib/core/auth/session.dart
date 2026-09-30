@@ -35,6 +35,16 @@ class StaffUser extends Equatable {
   List<Object?> get props => [id, username, displayName, role, restaurantId, mustChangePassword];
 }
 
+/// A manager or owner whose temporary password has not been replaced yet. The server limits such a login to the
+/// change-password call, so every counter request would fail; better to say what to do.
+class PasswordChangeRequired implements Exception {
+  const PasswordChangeRequired();
+
+  @override
+  String toString() =>
+      'You need to set a new password first. Sign in on the admin website, change it, then sign in here.';
+}
+
 class SessionExpired implements Exception {
   const SessionExpired();
 
@@ -187,6 +197,11 @@ class SessionManager {
 
   Future<StaffUser> _adopt(Response<dynamic> response) async {
     final data = Map<String, dynamic>.from(response.data as Map);
+    final incoming = StaffUser.fromJson(Map<String, dynamic>.from(data['user'] as Map));
+    if (incoming.mustChangePassword) {
+      await signOutLocally();
+      throw const PasswordChangeRequired();
+    }
     final refreshToken = _cookie(response, _refreshCookie);
     if (refreshToken != null && refreshToken.isNotEmpty) {
       // Saved before the new access token is used anywhere: a crash now must not lose the rotated token.

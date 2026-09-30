@@ -21,9 +21,10 @@ class MemoryStorage extends SecureStorageService {
 
 /// A tiny stand-in for the backend's auth endpoints: rotating refresh cookie plus CSRF cookie.
 class FakeAuthServer implements HttpClientAdapter {
-  FakeAuthServer({this.role = 'WAITER'});
+  FakeAuthServer({this.role = 'WAITER', this.mustChangePassword = false});
 
   final String role;
+  final bool mustChangePassword;
   final requests = <RequestOptions>[];
   int _rotation = 0;
   String currentRefresh = 'rt-0';
@@ -43,7 +44,7 @@ class FakeAuthServer implements HttpClientAdapter {
           'displayName': 'Asha',
           'role': role,
           'restaurantId': 1,
-          'mustChangePassword': false,
+          'mustChangePassword': mustChangePassword,
         },
       };
 
@@ -108,6 +109,17 @@ void main() {
     expect(storage.refreshToken, 'rt-1');
     final body = server.requests.firstWhere((r) => r.path.endsWith('/login')).data as Map;
     expect(body, {'username': 'asha', 'pin': '1234'});
+  });
+
+  test('a login that still has a temporary password is refused with an instruction, and nothing is kept',
+      () async {
+    final storage = MemoryStorage();
+    final manager = managerFor(FakeAuthServer(role: 'MANAGER', mustChangePassword: true), storage);
+
+    await expectLater(manager.login('boss', password: 'Temp1234'),
+        throwsA(isA<PasswordChangeRequired>()));
+    expect(storage.refreshToken, isNull);
+    expect(manager.hasSession, isFalse);
   });
 
   test('a password login sends the password, not a PIN', () async {
