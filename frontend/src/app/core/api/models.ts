@@ -1113,3 +1113,60 @@ export interface WaiterTableView {
   ready: number;
   oldestOpenSince?: IsoInstant;
 }
+
+// ─── Self-order kiosks (`kiosk.dto`) ─────────────────────────────────────────────────────────────
+
+export type KioskDeviceStatus = 'PENDING_PAIRING' | 'ACTIVE' | 'REVOKED';
+
+export interface KioskDeviceResponse {
+  id: number;
+  name: string;
+  status: KioskDeviceStatus;
+  pairedAt?: IsoInstant | null;
+  lastSeenAt?: IsoInstant | null;
+  pairingExpiresAt?: IsoInstant | null;
+  applicationVersion?: string | null;
+  createdAt: IsoInstant;
+}
+
+export interface CreateKioskDeviceRequest {
+  /** 1–60 characters. */
+  name: string;
+}
+
+/** Returned by create and by "new pairing code". The 6-digit code is shown exactly once. */
+export interface KioskPairingResponse {
+  id: number;
+  name: string;
+  pairingCode: string;
+  pairingExpiresAt: IsoInstant;
+}
+
+/** `null` fields mean "use the app default". `logoUrl`/`backgroundUrl` are relative image URLs. */
+export interface KioskBrandingResponse {
+  restaurantName: string;
+  kioskEnabled: boolean;
+  primaryColor: string | null;
+  secondaryColor: string | null;
+  headline: string | null;
+  subtext: string | null;
+  startButtonLabel: string | null;
+  idleTimeoutSeconds: number | null;
+  logoUrl: string | null;
+  backgroundUrl: string | null;
+  paymentModes?: string[] | null;
+}
+
+export interface UpdateKioskBrandingRequest {
+  kioskEnabled: boolean;
+  /** `#RRGGBB` */
+  primaryColor: string | null;
+  secondaryColor: string | null;
+  headline: string | null;
+  subtext: string | null;
+  startButtonLabel: string | null;
+  /** 15..600 */
+  idleTimeoutSeconds: number | null;
+  logoImageId: number | null;
+  backgroundImageId: number | null;
+}

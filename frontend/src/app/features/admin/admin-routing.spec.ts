@@ -64,6 +64,21 @@ describe('admin routes – owner-only sections', () => {
     expect(router.url).toBe('/admin/orders');
   });
 
+  for (const path of ['/admin/kiosks', '/admin/kiosks/appearance']) {
+    it(`lets a manager open ${path}`, async () => {
+      signIn('MANAGER');
+      const router = TestBed.inject(Router);
+      await router.navigateByUrl(path);
+      expect(router.url).toBe(path);
+    }, 60_000);
+  }
+
+  it('shows the kiosk navigation to managers too', () => {
+    const labels = visibleNav(false, false).map((n) => n.label);
+    expect(labels).toContain('Kiosks');
+    expect(labels).toContain('Kiosk appearance');
+  });
+
   it('forces the password change first', async () => {
     signIn('OWNER', true);
     const router = TestBed.inject(Router);

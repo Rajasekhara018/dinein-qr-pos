@@ -37,6 +37,10 @@ public interface OrderRepository extends JpaRepository<OrderEntity, Long>, JpaSp
 
     Optional<OrderEntity> findByIdAndRestaurantId(Long id, Long restaurantId);
 
+    /** Kiosk orders still waiting to be paid at the counter, oldest first. */
+    List<OrderEntity> findByRestaurantIdAndSourceAndStatusInAndPlacedAtGreaterThanEqualOrderByPlacedAtAsc(
+            Long restaurantId, OrderSource source, Collection<OrderStatus> statuses, Instant since);
+
     List<OrderEntity> findByRestaurantIdAndStatusInOrderByPaidAtAsc(Long restaurantId, Collection<OrderStatus> statuses);
 
     /** Open orders currently seated at a table, for move/merge (see {@code TableService}). */

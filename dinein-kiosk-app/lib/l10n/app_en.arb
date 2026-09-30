@@ -1,0 +1,55 @@
+{
+  "@@locale": "en",
+
+  "whereWillYouEat": "Where will you eat?",
+  "dineIn": "Dine in",
+  "takeaway": "Takeaway",
+
+  "menuTitle": "Menu",
+  "soldOut": "Sold out",
+  "menuUnavailable": "The menu is not available right now",
+  "offlineMenuNotice": "No connection. Showing the last saved menu.",
+  "tryAgain": "Try again",
+  "itemCount": "{count, plural, =1{1 item} other{{count} items}}",
+  "@itemCount": {"placeholders": {"count": {"type": "int"}}},
+  "viewOrder": "View order",
+
+  "chooseSize": "Choose size",
+  "addExtras": "Add extras",
+  "specialRequest": "Special request (e.g. no onion)",
+  "addWithPrice": "Add  •  {price}",
+  "@addWithPrice": {"placeholders": {"price": {"type": "String"}}},
+
+  "yourOrder": "Your order",
+  "yourOrderWithType": "Your order  •  {type}",
+  "@yourOrderWithType": {"placeholders": {"type": {"type": "String"}}},
+  "orderEmpty": "Your order is empty",
+  "browseMenu": "Browse menu",
+  "subtotal": "Subtotal",
+  "gst": "GST",
+  "total": "Total",
+  "placeOrderPayAtCounter": "Place order  •  pay at counter",
+
+  "orderPlaced": "Order placed!",
+  "yourToken": "Your token",
+  "payAtCounterAmount": "Please pay {amount} at the counter",
+  "@payAtCounterAmount": {"placeholders": {"amount": {"type": "String"}}},
+  "weWillCall": "We will call your number when it is ready",
+  "doneWithSeconds": "Done  ({seconds})",
+  "@doneWithSeconds": {"placeholders": {"seconds": {"type": "int"}}},
+  "receiptNotPrinted": "Your receipt could not be printed. Please remember your token.",
+
+  "stillThereTitle": "Still there?",
+  "stillThereBody": "Your order will be cleared in {seconds} seconds.",
+  "@stillThereBody": {"placeholders": {"seconds": {"type": "int"}}},
+  "yesKeepOrdering": "Yes, keep ordering",
+
+  "upsellTitle": "Add something?",
+  "upsellAdd": "Add",
+  "upsellChoose": "Choose",
+  "noThanks": "No, thanks",
+  "done": "Done",
+
+  "largeText": "Large text",
+  "standardText": "Standard text"
+}

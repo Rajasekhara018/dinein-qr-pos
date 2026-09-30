@@ -9,21 +9,28 @@ class KioskSizes {
   static const double minTouch = 56;
   static const double radius = 20;
   static const double gutter = 24;
+
+  /// Text scale used by the customer's "large text" switch.
+  static const double largeTextScale = 1.3;
 }
 
-ThemeData buildKioskTheme(Branding branding) {
+/// [highContrast] is the customer's accessibility mode: black text on white,
+/// and a darkened brand colour so buttons keep at least a 4.5:1 contrast with their labels.
+ThemeData buildKioskTheme(Branding branding, {bool highContrast = false}) {
+  final primary = highContrast ? _darken(branding.primary, 0.35) : branding.primary;
+  final ink = highContrast ? Colors.black : branding.secondary;
   final scheme = ColorScheme.fromSeed(
-    seedColor: branding.primary,
-    primary: branding.primary,
+    seedColor: primary,
+    primary: primary,
     secondary: branding.secondary,
   );
   return ThemeData(
     useMaterial3: true,
     colorScheme: scheme,
-    scaffoldBackgroundColor: const Color(0xFFF8F9FA),
+    scaffoldBackgroundColor: highContrast ? Colors.white : const Color(0xFFF8F9FA),
     textTheme: Typography.blackMountainView.apply(
-      bodyColor: branding.secondary,
-      displayColor: branding.secondary,
+      bodyColor: ink,
+      displayColor: ink,
       fontSizeFactor: 1.15,
     ),
     filledButtonTheme: FilledButtonThemeData(
@@ -49,8 +56,16 @@ ThemeData buildKioskTheme(Branding branding) {
       color: Colors.white,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(KioskSizes.radius),
-        side: const BorderSide(color: Color(0xFFE9ECEF)),
+        side: BorderSide(
+          color: highContrast ? Colors.black : const Color(0xFFE9ECEF),
+          width: highContrast ? 2 : 1,
+        ),
       ),
     ),
   );
+}
+
+Color _darken(Color color, double amount) {
+  final hsl = HSLColor.fromColor(color);
+  return hsl.withLightness((hsl.lightness - amount).clamp(0.0, 1.0)).toColor();
 }

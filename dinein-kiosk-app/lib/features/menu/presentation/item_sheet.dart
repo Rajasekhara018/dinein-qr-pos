@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/widgets/kiosk_widgets.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../cart/providers/cart_provider.dart';
 import '../domain/menu_models.dart';
 
-Future<void> showItemSheet(BuildContext context, MenuItem item) {
-  return showModalBottomSheet<void>(
+/// Opens the customise sheet. Returns true when the customer added the item to their order.
+Future<bool> showItemSheet(BuildContext context, MenuItem item) async {
+  final added = await showModalBottomSheet<bool>(
     context: context,
     isScrollControlled: true,
     useSafeArea: true,
@@ -14,6 +16,7 @@ Future<void> showItemSheet(BuildContext context, MenuItem item) {
     constraints: const BoxConstraints(maxWidth: 720),
     builder: (_) => _ItemSheet(item: item),
   );
+  return added ?? false;
 }
 
 class _ItemSheet extends ConsumerStatefulWidget {
@@ -52,11 +55,12 @@ class _ItemSheetState extends ConsumerState<_ItemSheet> {
           quantity: _quantity,
           note: _note.text,
         );
-    Navigator.of(context).pop();
+    Navigator.of(context).pop(true);
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final item = widget.item;
     final text = Theme.of(context).textTheme;
     return Padding(
@@ -77,8 +81,7 @@ class _ItemSheetState extends ConsumerState<_ItemSheet> {
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(item.name,
-                          style: text.headlineSmall
-                              ?.copyWith(fontWeight: FontWeight.w800)),
+                          style: text.headlineSmall?.copyWith(fontWeight: FontWeight.w800)),
                     ),
                   ],
                 ),
@@ -88,7 +91,7 @@ class _ItemSheetState extends ConsumerState<_ItemSheet> {
                 ],
                 if (item.variants.isNotEmpty) ...[
                   const SizedBox(height: 20),
-                  Text('Choose size',
+                  Text(l10n.chooseSize,
                       style: text.titleLarge?.copyWith(fontWeight: FontWeight.w700)),
                   RadioGroup<int>(
                     groupValue: _variant?.id,
@@ -101,8 +104,7 @@ class _ItemSheetState extends ConsumerState<_ItemSheet> {
                           RadioListTile<int>(
                             value: v.id,
                             title: Text(v.name, style: text.titleMedium),
-                            secondary: Text(formatPrice(v.price),
-                                style: text.titleMedium),
+                            secondary: Text(formatPrice(v.price), style: text.titleMedium),
                           ),
                       ],
                     ),
@@ -110,28 +112,25 @@ class _ItemSheetState extends ConsumerState<_ItemSheet> {
                 ],
                 if (item.addons.isNotEmpty) ...[
                   const SizedBox(height: 12),
-                  Text('Add extras',
+                  Text(l10n.addExtras,
                       style: text.titleLarge?.copyWith(fontWeight: FontWeight.w700)),
                   for (final a in item.addons)
                     CheckboxListTile(
                       value: _addonIds.contains(a.id),
                       onChanged: (checked) => setState(() {
-                        checked == true
-                            ? _addonIds.add(a.id)
-                            : _addonIds.remove(a.id);
+                        checked == true ? _addonIds.add(a.id) : _addonIds.remove(a.id);
                       }),
                       title: Text(a.name, style: text.titleMedium),
-                      secondary: Text('+ ${formatPrice(a.price)}',
-                          style: text.titleMedium),
+                      secondary: Text('+ ${formatPrice(a.price)}', style: text.titleMedium),
                     ),
                 ],
                 const SizedBox(height: 12),
                 TextField(
                   controller: _note,
                   maxLength: 80,
-                  decoration: const InputDecoration(
-                    labelText: 'Special request (e.g. no onion)',
-                    border: OutlineInputBorder(),
+                  decoration: InputDecoration(
+                    labelText: l10n.specialRequest,
+                    border: const OutlineInputBorder(),
                   ),
                 ),
               ],
@@ -149,7 +148,7 @@ class _ItemSheetState extends ConsumerState<_ItemSheet> {
                 Expanded(
                   child: FilledButton(
                     onPressed: _add,
-                    child: Text('Add  •  ${formatPrice(_unitPrice * _quantity)}'),
+                    child: Text(l10n.addWithPrice(formatPrice(_unitPrice * _quantity))),
                   ),
                 ),
               ],

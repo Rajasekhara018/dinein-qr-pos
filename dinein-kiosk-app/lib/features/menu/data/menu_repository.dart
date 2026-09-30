@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/config/app_config.dart';
 import '../../../core/network/dio_client.dart';
 import '../domain/menu_models.dart';
+import 'menu_cache.dart';
 
 abstract class MenuRepository {
   Future<MenuData> fetchMenu();
@@ -11,7 +12,7 @@ abstract class MenuRepository {
 
 final menuRepositoryProvider = Provider<MenuRepository>((ref) {
   if (AppConfig.demoMode) return DemoMenuRepository();
-  return ApiMenuRepository(ref.watch(dioProvider));
+  return ApiMenuRepository(ref.watch(dioProvider), ref.watch(menuCacheProvider));
 });
 
 final menuProvider = FutureProvider<MenuData>((ref) {
@@ -19,16 +20,35 @@ final menuProvider = FutureProvider<MenuData>((ref) {
 });
 
 class ApiMenuRepository implements MenuRepository {
-  ApiMenuRepository(this._dio);
+  ApiMenuRepository(this._dio, this._cache);
 
   final Dio _dio;
+  final MenuCache _cache;
 
+  /// Revalidates with the saved ETag, so an unchanged menu costs one tiny
+  /// request. If the server cannot be reached, the saved menu is shown (marked
+  /// stale) instead of an error page.
   @override
   Future<MenuData> fetchMenu() async {
+    final cached = await _cache.read();
     try {
-      final response = await _dio.get('/api/v1/kiosk/menu');
-      return MenuData.fromJson(Map<String, dynamic>.from(response.data as Map));
+      final response = await _dio.get(
+        '/api/v1/kiosk/menu',
+        options: Options(
+          headers: {if (cached?.etag != null) 'If-None-Match': cached!.etag},
+          validateStatus: (s) => s == 200 || s == 304,
+        ),
+      );
+      if (response.statusCode == 304 && cached != null) {
+        return MenuData.fromJson(cached.json);
+      }
+      final json = Map<String, dynamic>.from(response.data as Map);
+      await _cache.write(json, response.headers.value('etag'));
+      return MenuData.fromJson(json);
     } on DioException catch (e) {
+      if (cached != null && isConnectivityError(e)) {
+        return MenuData.fromJson(cached.json).asStale();
+      }
       throwApiError(e, fallback: 'Could not load the menu');
     }
   }
@@ -38,11 +58,11 @@ class DemoMenuRepository implements MenuRepository {
   @override
   Future<MenuData> fetchMenu() async {
     await Future<void>.delayed(const Duration(milliseconds: 300));
-    return MenuData.fromJson(_demoMenu);
+    return MenuData.fromJson(demoMenuJson);
   }
 }
 
-const _demoMenu = <String, dynamic>{
+const demoMenuJson = <String, dynamic>{
   'version': 'demo',
   'pricesIncludeGst': true,
   'categories': [

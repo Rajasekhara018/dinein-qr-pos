@@ -84,6 +84,11 @@ export const ADMIN_ROUTES: Routes = [
         loadChildren: () => import('./staff/staff-module').then((m) => m.StaffModule),
       },
       {
+        path: 'kiosks',
+        data: { breadcrumb: 'Kiosks' },
+        loadChildren: () => import('./kiosks/kiosks-module').then((m) => m.KiosksModule),
+      },
+      {
         path: 'platform',
         canActivate: [platformAdminGuard],
         data: { breadcrumb: 'Platform' },

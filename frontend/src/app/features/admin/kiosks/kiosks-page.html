@@ -1,0 +1,173 @@
+<app-page-header
+  title="Kiosks"
+  subtitle="Self-order tablets in your restaurant. Pair a tablet with a one-time code."
+>
+  <a
+    appButton
+    variant="outline"
+    routerLink="/admin/kiosks/appearance"
+    data-testid="kiosk-appearance-link"
+    >Appearance</a
+  >
+  <button appButton type="button" (click)="add()" data-testid="add-kiosk">
+    <svg viewBox="0 0 20 20" class="size-4 fill-current" aria-hidden="true">
+      <path d="M9 4h2v5h5v2h-5v5H9v-5H4V9h5z" />
+    </svg>
+    Add kiosk
+  </button>
+</app-page-header>
+
+<ng-template #badge let-d>
+  @let s = status(d);
+  <span class="flex flex-wrap items-center gap-1">
+    <span
+      class="inline-block rounded-full px-2 py-0.5 text-xs font-semibold"
+      [class.bg-green-100]="s.tone === 'success'"
+      [class.text-green-900]="s.tone === 'success'"
+      [class.bg-amber-100]="s.tone === 'warning'"
+      [class.text-amber-950]="s.tone === 'warning'"
+      [class.bg-red-100]="s.tone === 'danger'"
+      [class.text-red-900]="s.tone === 'danger'"
+      [class.bg-stone-200]="s.tone === 'neutral'"
+      [class.text-stone-800]="s.tone === 'neutral'"
+    >
+      {{ s.label }}
+    </span>
+    @if (s.presence) {
+      <span class="inline-flex items-center gap-1 text-xs font-medium text-ink-muted">
+        <span
+          class="size-2 rounded-full"
+          [class.bg-success]="s.presence === 'online'"
+          [class.bg-ink-subtle]="s.presence === 'offline'"
+          aria-hidden="true"
+        ></span>
+        {{ s.presence === 'online' ? 'Online' : 'Offline' }}
+      </span>
+    }
+  </span>
+</ng-template>
+
+@if (loading() && !devices().length) {
+  <app-skeleton shape="block" class="h-64" />
+} @else if (error() && !devices().length) {
+  <app-error-state title="Could not load kiosks" [error]="error()" (retry)="load()" />
+} @else if (devices().length === 0) {
+  <p
+    class="rounded-card border border-dashed border-line-strong p-6 text-center text-sm text-ink-muted"
+  >
+    No kiosks yet. Choose <strong>Add kiosk</strong>, then enter the pairing code in the kiosk app
+    on the tablet.
+  </p>
+} @else {
+  <div class="hidden overflow-hidden rounded-card border border-line bg-surface shadow-md md:block">
+    <table class="w-full table-fixed text-left text-sm">
+      <caption class="sr-only">
+        Kiosks
+      </caption>
+      <thead class="bg-surface-muted text-xs uppercase tracking-wide text-ink-muted">
+        <tr>
+          <th scope="col" class="px-4 py-3 font-semibold">Kiosk</th>
+          <th scope="col" class="w-52 px-4 py-3 font-semibold">Status</th>
+          <th scope="col" class="w-40 px-4 py-3 font-semibold">Last seen</th>
+          <th scope="col" class="w-28 px-4 py-3 font-semibold">App version</th>
+          <th scope="col" class="w-64 px-2 py-3 text-right">
+            <span class="sr-only">Actions</span>
+          </th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-line">
+        @for (d of devices(); track d.id) {
+          <tr [attr.data-testid]="'kiosk-row-' + d.id">
+            <td class="min-w-0 px-4 py-3">
+              <p class="truncate font-semibold">{{ d.name }}</p>
+              <p class="truncate text-ink-muted">Added {{ d.createdAt | date: 'd MMM y' }}</p>
+            </td>
+            <td class="px-4 py-3">
+              <ng-container *ngTemplateOutlet="badge; context: { $implicit: d }" />
+            </td>
+            <td class="px-4 py-3 text-ink-muted">
+              {{ d.lastSeenAt ? (d.lastSeenAt | date: 'd MMM, h:mm a') : '—' }}
+            </td>
+            <td class="px-4 py-3 text-ink-muted">
+              {{ d.applicationVersion ? 'v' + d.applicationVersion : '—' }}
+            </td>
+            <td class="px-2 py-2 text-right">
+              @if (d.status !== 'REVOKED') {
+                <span class="inline-flex gap-2">
+                  <button
+                    appButton
+                    variant="outline"
+                    size="sm"
+                    type="button"
+                    [loading]="busy() === d.id"
+                    (click)="newCode(d)"
+                    [attr.data-testid]="'kiosk-newcode-' + d.id"
+                  >
+                    New pairing code
+                  </button>
+                  <button
+                    appButton
+                    variant="outline"
+                    size="sm"
+                    type="button"
+                    class="text-danger"
+                    [disabled]="busy() === d.id"
+                    (click)="revoke(d)"
+                    [attr.data-testid]="'kiosk-revoke-' + d.id"
+                  >
+                    Revoke
+                  </button>
+                </span>
+              }
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <ul class="flex flex-col gap-3 md:hidden" role="list" aria-label="Kiosks">
+    @for (d of devices(); track d.id) {
+      <li
+        class="rounded-card border border-line bg-surface p-4 shadow-card"
+        [attr.data-testid]="'kiosk-card-' + d.id"
+      >
+        <p class="truncate font-semibold">{{ d.name }}</p>
+        <div class="mt-1">
+          <ng-container *ngTemplateOutlet="badge; context: { $implicit: d }" />
+        </div>
+        <dl class="mt-3 grid grid-cols-[auto_minmax(0,1fr)] gap-x-3 gap-y-0.5 text-sm">
+          <dt class="text-ink-muted">Last seen</dt>
+          <dd>{{ d.lastSeenAt ? (d.lastSeenAt | date: 'd MMM, h:mm a') : '—' }}</dd>
+          <dt class="text-ink-muted">App version</dt>
+          <dd>{{ d.applicationVersion ? 'v' + d.applicationVersion : '—' }}</dd>
+        </dl>
+        @if (d.status !== 'REVOKED') {
+          <div class="mt-3 flex flex-wrap gap-2">
+            <button
+              appButton
+              variant="outline"
+              size="sm"
+              type="button"
+              [loading]="busy() === d.id"
+              (click)="newCode(d)"
+            >
+              New pairing code
+            </button>
+            <button
+              appButton
+              variant="outline"
+              size="sm"
+              type="button"
+              class="text-danger"
+              [disabled]="busy() === d.id"
+              (click)="revoke(d)"
+            >
+              Revoke
+            </button>
+          </div>
+        }
+      </li>
+    }
+  </ul>
+}

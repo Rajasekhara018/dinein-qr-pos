@@ -143,11 +143,39 @@ class MenuData extends Equatable {
     required this.version,
     required this.pricesIncludeGst,
     required this.categories,
+    this.stale = false,
   });
 
   final String version;
   final bool pricesIncludeGst;
   final List<MenuCategory> categories;
+
+  /// True when this is the last saved menu because the server could not be reached.
+  final bool stale;
+
+  MenuData asStale() => MenuData(
+        version: version,
+        pricesIncludeGst: pricesIncludeGst,
+        categories: categories,
+        stale: true,
+      );
+
+  /// The category an item belongs to, or null when the item is not on the menu.
+  int? categoryIdOf(int itemId) {
+    for (final c in categories) {
+      if (c.items.any((i) => i.id == itemId)) return c.id;
+    }
+    return null;
+  }
+
+  MenuItem? itemById(int itemId) {
+    for (final c in categories) {
+      for (final i in c.items) {
+        if (i.id == itemId) return i;
+      }
+    }
+    return null;
+  }
 
   factory MenuData.fromJson(Map<String, dynamic> json) => MenuData(
         version: json['version'] as String? ?? '',
@@ -159,5 +187,5 @@ class MenuData extends Equatable {
       );
 
   @override
-  List<Object?> get props => [version, pricesIncludeGst, categories];
+  List<Object?> get props => [version, pricesIncludeGst, categories, stale];
 }

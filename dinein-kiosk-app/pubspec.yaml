@@ -1,4 +1,4 @@
-name: dinein_kiosk
+﻿name: dinein_kiosk
 description: "A new Flutter project."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
@@ -42,6 +42,10 @@ dependencies:
   intl: ^0.20.3
   equatable: ^3.0.0
   package_info_plus: ^10.2.1
+  shared_preferences: ^2.5.5
+  stomp_dart_client: ^3.0.1
+  flutter_localizations:
+    sdk: flutter
 
 dev_dependencies:
   flutter_test:
@@ -59,6 +63,7 @@ dev_dependencies:
 
 # The following section is specific to Flutter packages.
 flutter:
+  generate: true
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
@@ -95,3 +100,4 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+

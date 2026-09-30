@@ -14,6 +14,7 @@ import com.heuristq.dinein.order.domain.OrderEntity;
 import com.heuristq.dinein.order.domain.OrderItemAddonEntity;
 import com.heuristq.dinein.order.domain.OrderItemEntity;
 import com.heuristq.dinein.order.domain.OrderRepository;
+import com.heuristq.dinein.order.domain.OrderSource;
 import com.heuristq.dinein.order.domain.OrderStatus;
 import com.heuristq.dinein.order.domain.OrderType;
 import com.heuristq.dinein.order.dto.OrderDtos.CartLine;
@@ -102,8 +103,13 @@ public class OrderPlacementService {
      * restaurant is authoritative.
      */
     record NewOrder(Long tableId, String guestSessionId, Long placedByStaffId, Long restaurantId,
-                    OrderType requestedType, List<CartLine> items, String notes, String customerName,
-                    String customerPhone, String idempotencyKey) {
+                    OrderSource source, OrderType requestedType, List<CartLine> items, String notes,
+                    String customerName, String customerPhone, String idempotencyKey) {
+    }
+
+    /** What a kiosk needs to show the customer after ordering. Totals are the server's, never the app's. */
+    public record PlacedOrder(Long orderId, String orderNumber, int displayToken, OrderStatus status,
+                              BigDecimal grandTotal) {
     }
 
     private static Long requireStaffRestaurantId(NewOrder draft) {
@@ -123,8 +129,9 @@ public class OrderPlacementService {
         }
         // Fail before creating an order that could never be paid (e.g. gateway credentials missing).
         paymentService.activeProvider();
-        NewOrder draft = new NewOrder(guest.tableId(), guest.sessionId(), null, null, request.orderType(),
-                request.items(), request.notes(), request.customerName(), request.customerPhone(), idempotencyKey);
+        NewOrder draft = new NewOrder(guest.tableId(), guest.sessionId(), null, null, OrderSource.GUEST_QR,
+                request.orderType(), request.items(), request.notes(), request.customerName(),
+                request.customerPhone(), idempotencyKey);
         Long orderId;
         try {
             orderId = tx.execute(status -> createOrder(draft));
@@ -166,7 +173,7 @@ public class OrderPlacementService {
         }
         String actor = "user:" + staff.userId();
         NewOrder draft = new NewOrder(request.tableId(), null, staff.userId(), staff.restaurantId(),
-                request.orderType(), request.items(), request.note(), request.customerName(),
+                OrderSource.STAFF, request.orderType(), request.items(), request.note(), request.customerName(),
                 request.customerPhone(), idempotencyKey);
         Long orderId;
         try {
@@ -183,6 +190,45 @@ public class OrderPlacementService {
         }
         log.info("order.placed_by_staff orderId={} staffId={} payment={}", orderId, staff.userId(), request.paymentMethod());
         return offline == null ? paymentService.ensureCheckout(orderId, false) : offlineResponse(orderId);
+    }
+
+    // ----- Self-order kiosk ------------------------------------------------------------------------
+
+    /**
+     * Places an order from a kiosk. It is created {@code PENDING_PAYMENT} with no payment attempt: the customer
+     * pays at the counter, where staff settle it with mark-paid-offline, and only then does it reach the kitchen.
+     * Repeating the idempotency key returns the same order, so a retry after a timeout never doubles it.
+     */
+    public PlacedOrder placeForKiosk(Long restaurantId, String idempotencyKey, OrderType orderType,
+                                     List<CartLine> items, String notes) {
+        requireIdempotencyKey(idempotencyKey);
+        Optional<OrderEntity> replay = orderRepository.findByIdempotencyKey(idempotencyKey);
+        if (replay.isPresent()) {
+            return kioskReplay(replay.get(), restaurantId);
+        }
+        NewOrder draft = new NewOrder(null, null, null, restaurantId, OrderSource.KIOSK, orderType, items, notes,
+                null, null, idempotencyKey);
+        Long orderId;
+        try {
+            orderId = tx.execute(status -> createOrder(draft));
+        } catch (DataIntegrityViolationException e) {
+            OrderEntity winner = orderRepository.findByIdempotencyKey(idempotencyKey).orElseThrow(() -> e);
+            return kioskReplay(winner, restaurantId);
+        }
+        return placed(orderRepository.findById(orderId).orElseThrow());
+    }
+
+    private PlacedOrder kioskReplay(OrderEntity existing, Long restaurantId) {
+        if (existing.getSource() != OrderSource.KIOSK || !existing.getRestaurantId().equals(restaurantId)) {
+            throw ApiException.conflict("IDEMPOTENCY_KEY_REUSED", "This request key was already used");
+        }
+        log.info("order.place_by_kiosk.idempotent_replay orderId={}", existing.getId());
+        return placed(existing);
+    }
+
+    private static PlacedOrder placed(OrderEntity order) {
+        return new PlacedOrder(order.getId(), order.getOrderNumber(), order.getDisplayToken(), order.getStatus(),
+                order.getGrandTotal());
     }
 
     private CheckoutResponse staffReplay(OrderEntity existing) {
@@ -241,6 +287,7 @@ public class OrderPlacementService {
         order.setGuestSessionId(draft.guestSessionId());
         order.setPlacedByStaffId(draft.placedByStaffId());
         order.setOrderType(orderType);
+        order.setSource(draft.source());
         order.setCustomerName(Text.clean(draft.customerName(), 60));
         order.setCustomerPhone(draft.customerPhone() == null || draft.customerPhone().isBlank() ? null : draft.customerPhone());
         order.setNotes(Text.clean(draft.notes(), 300));

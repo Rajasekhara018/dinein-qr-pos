@@ -47,6 +47,10 @@ public class OrderEntity extends TenantOwnedEntity {
     @Column(name = "order_type", nullable = false, length = 10)
     private OrderType orderType = OrderType.DINE_IN;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 10)
+    private OrderSource source = OrderSource.GUEST_QR;
+
     @Column(name = "customer_name", length = 60)
     private String customerName;
 

@@ -1,0 +1,80 @@
+<app-bottom-sheet [title]="title()" (closed)="done()">
+  @if (issued(); as code) {
+    <div class="flex flex-col items-center gap-4 text-center" data-testid="pairing-result">
+      <p class="text-sm text-ink-muted">
+        On the kiosk tablet, open the DineIn kiosk app and enter this code to pair
+        <strong>{{ code.name }}</strong
+        >.
+      </p>
+      <p
+        class="rounded-card border border-line-strong bg-surface-muted px-6 py-4 font-mono text-5xl font-bold tracking-[0.3em] text-ink sm:text-6xl"
+        aria-label="Pairing code"
+        data-testid="pairing-code"
+      >
+        {{ code.pairingCode }}
+      </p>
+      @if (expired()) {
+        <p class="text-sm font-semibold text-danger" role="status">
+          This code has expired. Close this and choose “New pairing code”.
+        </p>
+      } @else {
+        <p class="text-sm text-ink-muted" role="timer" data-testid="pairing-countdown">
+          Expires in <strong class="tabular-nums text-ink">{{ countdown() }}</strong>
+        </p>
+      }
+      <p
+        class="w-full rounded-control bg-amber-50 px-3 py-2 text-sm font-medium text-amber-950"
+        role="alert"
+      >
+        This code is shown only once. Write it down or enter it on the tablet now, it cannot be
+        shown again after you close this window.
+      </p>
+    </div>
+  } @else {
+    <form id="kiosk-form" (ngSubmit)="create()" novalidate class="flex flex-col gap-4">
+      @if (error()) {
+        <p
+          class="rounded-control bg-red-50 px-3 py-2 text-sm font-medium text-red-900"
+          role="alert"
+          data-testid="kiosk-error"
+        >
+          {{ error() }}
+        </p>
+      }
+      <div>
+        <label for="kiosk-name" class="block text-sm font-medium text-ink">Kiosk name</label>
+        <input
+          id="kiosk-name"
+          appInput
+          class="mt-1"
+          [formControl]="name"
+          maxlength="60"
+          placeholder="e.g. Entrance kiosk"
+          aria-describedby="kiosk-name-error"
+        />
+        <app-field-error id="kiosk-name-error" [control]="name" />
+        <p class="mt-1 text-xs text-ink-subtle">
+          Helps you tell tablets apart. You will get a 6-digit pairing code next.
+        </p>
+      </div>
+    </form>
+  }
+  <div sheetFooter class="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+    @if (issued()) {
+      <button appButton type="button" (click)="done()" data-testid="pairing-done">
+        I have entered the code
+      </button>
+    } @else {
+      <button appButton variant="outline" type="button" (click)="ref.close(false)">Cancel</button>
+      <button
+        appButton
+        type="submit"
+        form="kiosk-form"
+        [loading]="saving()"
+        data-testid="kiosk-create"
+      >
+        Add kiosk
+      </button>
+    }
+  </div>
+</app-bottom-sheet>

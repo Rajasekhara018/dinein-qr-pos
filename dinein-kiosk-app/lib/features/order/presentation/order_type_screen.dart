@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../../session/session_provider.dart';
 import '../data/order_repository.dart';
 
@@ -15,6 +16,7 @@ class OrderTypeScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(onPressed: () => context.go('/attract')),
@@ -22,12 +24,13 @@ class OrderTypeScreen extends ConsumerWidget {
       ),
       body: SafeArea(
         child: Center(
-          child: Padding(
+          child: SingleChildScrollView(
             padding: const EdgeInsets.all(24),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text('Where will you eat?',
+                Text(l10n.whereWillYouEat,
+                    textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.displaySmall),
                 const SizedBox(height: 40),
                 Wrap(
@@ -37,12 +40,12 @@ class OrderTypeScreen extends ConsumerWidget {
                   children: [
                     _ChoiceCard(
                       icon: Icons.restaurant_rounded,
-                      label: 'Dine in',
+                      label: l10n.dineIn,
                       onTap: () => _choose(context, ref, OrderType.dineIn),
                     ),
                     _ChoiceCard(
                       icon: Icons.shopping_bag_rounded,
-                      label: 'Takeaway',
+                      label: l10n.takeaway,
                       onTap: () => _choose(context, ref, OrderType.takeaway),
                     ),
                   ],
@@ -83,6 +86,7 @@ class _ChoiceCard extends StatelessWidget {
               Icon(icon, size: 96, color: color),
               const SizedBox(height: 16),
               Text(label,
+                  textAlign: TextAlign.center,
                   style: Theme.of(context)
                       .textTheme
                       .headlineMedium

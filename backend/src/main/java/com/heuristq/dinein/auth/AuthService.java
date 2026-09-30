@@ -86,6 +86,28 @@ public class AuthService {
         return new KitchenDeviceSession(issued.token(), issued.expiresAt(), toInfo(user));
     }
 
+    /**
+     * Checks a staff member's PIN for the kiosk's service menu. Uses the same lockout as every other login, and only
+     * accepts staff of the given restaurant who can run the floor (waiter, manager, owner). Failed-attempt counters
+     * must persist, so ApiException does not roll back.
+     */
+    @Transactional(noRollbackFor = ApiException.class)
+    public StaffInfo verifyStaffPinForRestaurant(String username, String pin, Long restaurantId) {
+        StaffUserEntity user;
+        try {
+            user = verifyCredentials(username, pin, true);
+        } catch (ApiException e) {
+            throw asForbidden(e);
+        }
+        boolean allowedRole = user.getRole() == StaffRole.WAITER || user.getRole() == StaffRole.MANAGER
+                || user.getRole() == StaffRole.OWNER;
+        if (!allowedRole || !restaurantId.equals(user.getRestaurantId())) {
+            // Same answer as a wrong PIN: do not reveal that the account exists elsewhere or has another role.
+            throw asForbidden(invalidCredentials());
+        }
+        return toInfo(user);
+    }
+
     public StaffInfo infoFor(Long userId) {
         return toInfo(staffUserRepository.findById(userId).orElseThrow(() -> ApiException.notFound("User")));
     }
@@ -205,6 +227,15 @@ public class AuthService {
     public static StaffInfo toInfo(StaffUserEntity user) {
         return new StaffInfo(user.getId(), user.getUsername(), user.getDisplayName(), user.getRole(),
                 user.isMustChangePassword(), user.isPlatformAdmin(), user.getRestaurantId());
+    }
+
+    /**
+     * The kiosk app treats a 401 as "my device token was revoked" and unpairs itself, so a wrong staff PIN must not
+     * be a 401 there. Lockout (423) and other statuses pass through unchanged.
+     */
+    private static ApiException asForbidden(ApiException e) {
+        return e.getStatus() == HttpStatus.UNAUTHORIZED
+                ? new ApiException(HttpStatus.FORBIDDEN, e.getCode(), e.getMessage()) : e;
     }
 
     private ApiException invalidCredentials() {

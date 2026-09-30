@@ -71,7 +71,7 @@ class ApiOrderRepository implements OrderRepository {
                 'variantId': l.variant?.id,
                 'addonIds': l.addons.map((a) => a.id).toList(),
                 'quantity': l.quantity,
-                'note': l.note,
+                'notes': l.note,
               },
           ],
         },

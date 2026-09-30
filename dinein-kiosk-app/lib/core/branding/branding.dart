@@ -1,8 +1,12 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../features/pairing/providers/device_provider.dart';
 import '../config/app_config.dart';
 import '../network/dio_client.dart';
 
@@ -101,12 +105,42 @@ class Branding extends Equatable {
       ];
 }
 
+const _brandingCacheKey = 'kiosk.branding.json';
+
+/// Fetches this restaurant's branding once the kiosk is paired (and again if it is re-paired), remembers the last
+/// good copy, and falls back to it, then to the built-in defaults, so the welcome page always renders.
 final brandingProvider = FutureProvider<Branding>((ref) async {
   if (AppConfig.demoMode) return Branding.defaults;
+  final paired = ref.watch(deviceProvider.select((d) => d.paired));
+  if (!paired) return Branding.defaults;
+
+  final dio = ref.watch(dioProvider);
   try {
-    final response = await ref.watch(dioProvider).get('/api/v1/kiosk/branding');
-    return Branding.fromJson(Map<String, dynamic>.from(response.data as Map));
+    final response = await dio.get('/api/v1/kiosk/branding');
+    final json = Map<String, dynamic>.from(response.data as Map);
+    await _saveBranding(json);
+    return Branding.fromJson(json);
   } on DioException {
-    return Branding.defaults;
+    return await _loadBranding() ?? Branding.defaults;
   }
 });
+
+Future<void> _saveBranding(Map<String, dynamic> json) async {
+  try {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_brandingCacheKey, jsonEncode(json));
+  } catch (_) {
+    // The cache is a convenience only.
+  }
+}
+
+Future<Branding?> _loadBranding() async {
+  try {
+    final prefs = await SharedPreferences.getInstance();
+    final raw = prefs.getString(_brandingCacheKey);
+    if (raw == null) return null;
+    return Branding.fromJson(Map<String, dynamic>.from(jsonDecode(raw) as Map));
+  } catch (_) {
+    return null;
+  }
+}

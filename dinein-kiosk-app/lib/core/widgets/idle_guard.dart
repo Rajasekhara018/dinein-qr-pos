@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../features/session/session_provider.dart';
+import '../../l10n/app_localizations.dart';
 import '../branding/branding.dart';
 import '../router/app_router.dart';
 
@@ -49,7 +50,8 @@ class _IdleGuardState extends ConsumerState<IdleGuard> {
   Future<void> _onIdle() async {
     final router = ref.read(appRouterProvider);
     final location = router.routerDelegate.currentConfiguration.uri.path;
-    if (idleExemptRoutes.contains(location)) {
+    // Nobody is mid-order on these screens, and staff working in the service menu must not be interrupted.
+    if (idleExemptRoutes.contains(location) || ref.read(staffMenuOpenProvider)) {
       _restart();
       return;
     }
@@ -115,13 +117,14 @@ class _StillThereDialogState extends State<_StillThereDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return AlertDialog(
-      title: const Text('Still there?'),
-      content: Text('Your order will be cleared in $_left seconds.'),
+      title: Text(l10n.stillThereTitle),
+      content: Text(l10n.stillThereBody(_left)),
       actions: [
         FilledButton(
           onPressed: () => Navigator.of(context).pop(true),
-          child: const Text('Yes, keep ordering'),
+          child: Text(l10n.yesKeepOrdering),
         ),
       ],
     );

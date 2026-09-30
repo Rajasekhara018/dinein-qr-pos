@@ -44,9 +44,16 @@ public class TenantFilterInterceptor implements HandlerInterceptor {
     @Nullable
     private static Long currentRestaurantId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || !(authentication.getPrincipal() instanceof StaffPrincipal principal)) {
+        if (authentication == null) {
             return null;
         }
-        return principal.restaurantId();
+        Object principal = authentication.getPrincipal();
+        if (principal instanceof StaffPrincipal staff) {
+            return staff.restaurantId();
+        }
+        if (principal instanceof KioskPrincipal kiosk) {
+            return kiosk.restaurantId();
+        }
+        return null;
     }
 }

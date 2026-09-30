@@ -8,6 +8,8 @@ export type AdminNavIcon =
   | 'reports'
   | 'settings'
   | 'staff'
+  | 'kiosk'
+  | 'appearance'
   | 'platform';
 
 export interface AdminNavItem {
@@ -46,6 +48,13 @@ export const ADMIN_NAV_GROUPS: readonly AdminNavGroup[] = [
     items: [
       { label: 'Categories', path: '/admin/menu/categories', icon: 'categories' },
       { label: 'Items', path: '/admin/menu/items', icon: 'items' },
+    ],
+  },
+  {
+    label: 'Kiosks',
+    items: [
+      { label: 'Kiosks', path: '/admin/kiosks', exact: true, icon: 'kiosk' },
+      { label: 'Kiosk appearance', path: '/admin/kiosks/appearance', icon: 'appearance' },
     ],
   },
   {

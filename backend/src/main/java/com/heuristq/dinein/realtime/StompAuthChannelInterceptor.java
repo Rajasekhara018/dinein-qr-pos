@@ -75,7 +75,10 @@ public class StompAuthChannelInterceptor implements ChannelInterceptor {
         if (header != null) {
             UsernamePasswordAuthenticationToken auth = tokenAuthenticator.authenticate(header)
                     .orElseThrow(() -> new MessagingException("Invalid or expired token"));
-            StaffPrincipal staff = (StaffPrincipal) auth.getPrincipal();
+            if (!(auth.getPrincipal() instanceof StaffPrincipal staff)) {
+                // Kiosk devices have no realtime channel yet; fail cleanly instead of a ClassCastException.
+                throw new MessagingException("This credential cannot open a realtime connection");
+            }
             if (staff.passwordChangeRequired()) {
                 throw new MessagingException("Password change required");
             }

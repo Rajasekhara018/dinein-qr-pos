@@ -1,11 +1,18 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/branding/branding.dart';
+import '../../../core/printing/printer_service.dart';
+import '../../../core/printing/receipt.dart';
 import '../../../core/widgets/kiosk_widgets.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../order/data/order_repository.dart';
 import '../../session/session_provider.dart';
+import '../../upsell/data/upsell_repository.dart';
+import '../../upsell/presentation/upsell_sheet.dart';
 import '../providers/cart_provider.dart';
 
 class CartScreen extends ConsumerStatefulWidget {
@@ -20,12 +27,21 @@ class _CartScreenState extends ConsumerState<CartScreen> {
   // second order. Replaced only after an order succeeds.
   String _idempotencyKey = newIdempotencyKey();
   bool _placing = false;
+  bool _upsellOffered = false;
   String? _error;
 
   Future<void> _placeOrder() async {
     final cart = ref.read(cartProvider);
     final orderType = ref.read(orderTypeProvider);
     if (cart.isEmpty || orderType == null || _placing) return;
+
+    // One last suggestion ("something sweet?"). It returns to the cart, so the customer can
+    // review what they added before placing the order.
+    if (!_upsellOffered) {
+      _upsellOffered = true;
+      if (await showCheckoutUpsell(context, ref)) return;
+      if (!mounted) return;
+    }
 
     final branding = ref.read(brandingProvider).valueOrNull ?? Branding.defaults;
     setState(() {
@@ -39,6 +55,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
             paymentMode: branding.paymentModes.first,
             idempotencyKey: _idempotencyKey,
           );
+      _printSlip(branding, orderType, cart, result);
       ref.read(kioskSessionProvider).reset();
       _idempotencyKey = newIdempotencyKey();
       if (mounted) context.go('/confirmation', extra: result);
@@ -52,27 +69,57 @@ class _CartScreenState extends ConsumerState<CartScreen> {
     }
   }
 
+  /// Fire and forget: a jammed printer must never hold up the customer or lose the order.
+  void _printSlip(Branding branding, OrderType type, CartState cart, OrderResult result) {
+    final failed = ref.read(receiptPrintFailedProvider.notifier);
+    final coordinator = ref.read(printCoordinatorProvider);
+    failed.state = false;
+    final slip = ReceiptData(
+      restaurantName: branding.restaurantName,
+      tokenNumber: result.tokenNumber,
+      orderTypeLabel: type == OrderType.takeaway ? 'TAKEAWAY' : 'DINE IN',
+      total: result.total,
+      printedAt: DateTime.now(),
+      lines: [
+        for (final l in cart.lines)
+          ReceiptLine(
+            name: l.item.name,
+            quantity: l.quantity,
+            details: [
+              if (l.variant != null) l.variant!.name,
+              ...l.addons.map((a) => '+ ${a.name}'),
+              if (l.note.isNotEmpty) '"${l.note}"',
+            ],
+          ),
+      ],
+    );
+    unawaited(coordinator.printTokenSlip(slip).then((outcome) {
+      if (outcome == PrintOutcome.failed) failed.state = true;
+    }));
+  }
+
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final cart = ref.watch(cartProvider);
     final orderType = ref.watch(orderTypeProvider);
+    ref.watch(upsellsProvider);
 
     if (cart.isEmpty && !_placing) {
       return Scaffold(
         appBar: AppBar(
           leading: BackButton(onPressed: () => context.go('/menu')),
-          title: const Text('Your order'),
+          title: Text(l10n.yourOrder),
         ),
         body: Center(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text('Your order is empty',
-                  style: Theme.of(context).textTheme.headlineSmall),
+              Text(l10n.orderEmpty, style: Theme.of(context).textTheme.headlineSmall),
               const SizedBox(height: 16),
               FilledButton(
                 onPressed: () => context.go('/menu'),
-                child: const Text('Browse menu'),
+                child: Text(l10n.browseMenu),
               ),
             ],
           ),
@@ -80,11 +127,11 @@ class _CartScreenState extends ConsumerState<CartScreen> {
       );
     }
 
+    final typeLabel = orderType == OrderType.takeaway ? l10n.takeaway : l10n.dineIn;
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(onPressed: _placing ? null : () => context.go('/menu')),
-        title: Text(
-            'Your order  •  ${orderType == OrderType.takeaway ? 'Takeaway' : 'Dine in'}'),
+        title: Text(l10n.yourOrderWithType(typeLabel)),
       ),
       body: Column(
         children: [
@@ -144,8 +191,7 @@ class _CartLineTile extends ConsumerWidget {
               child: QuantityStepper(
                 quantity: line.quantity,
                 min: 0,
-                onChanged: (q) =>
-                    ref.read(cartProvider.notifier).setQuantity(line.id, q),
+                onChanged: (q) => ref.read(cartProvider.notifier).setQuantity(line.id, q),
               ),
             ),
           ],
@@ -170,12 +216,12 @@ class _Summary extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final text = Theme.of(context).textTheme;
     Widget row(String label, double value, {bool bold = false}) => Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(label,
-                style: bold ? text.headlineSmall : text.titleMedium),
+            Text(label, style: bold ? text.headlineSmall : text.titleMedium),
             Text(formatPriceExact(value),
                 style: (bold ? text.headlineSmall : text.titleMedium)
                     ?.copyWith(fontWeight: bold ? FontWeight.w900 : null)),
@@ -190,11 +236,11 @@ class _Summary extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              row('Subtotal', cart.subtotal),
+              row(l10n.subtotal, cart.subtotal),
               const SizedBox(height: 4),
-              row('GST', cart.gst),
+              row(l10n.gst, cart.gst),
               const Divider(height: 24),
-              row('Total', cart.total, bold: true),
+              row(l10n.total, cart.total, bold: true),
               if (error != null) ...[
                 const SizedBox(height: 12),
                 Text(error!,
@@ -211,9 +257,7 @@ class _Summary extends StatelessWidget {
                           width: 28,
                           height: 28,
                           child: CircularProgressIndicator(strokeWidth: 3))
-                      : Text(error == null
-                          ? 'Place order  •  pay at counter'
-                          : 'Try again'),
+                      : Text(error == null ? l10n.placeOrderPayAtCounter : l10n.tryAgain),
                 ),
               ),
             ],

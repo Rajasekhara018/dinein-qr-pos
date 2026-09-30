@@ -51,6 +51,14 @@ public class RateLimitFilter extends OncePerRequestFilter {
             } else if (path.equals(ApiPaths.V1 + "/admin/images")) {
                 rule = properties.upload();
                 key = "upload:" + CurrentStaff.find().map(p -> "u" + p.userId()).orElse(request.getRemoteAddr());
+            } else if (path.equals(ApiPaths.V1 + "/kiosk/pair")) {
+                // A 6-digit code is guessable in bulk, so pairing attempts share the strict login limit.
+                rule = properties.login();
+                key = "kioskpair:" + request.getRemoteAddr();
+            } else if (path.equals(ApiPaths.V1 + "/kiosk/staff-unlock")) {
+                // A PIN is short, so unlock attempts get the strict login limit on top of the account lockout.
+                rule = properties.login();
+                key = "kioskunlock:" + request.getRemoteAddr();
             } else if (path.equals(ApiPaths.V1 + "/platform/restaurants")) {
                 // Reuses the login rule: same shape of risk (a secret guessed by brute force), no dedicated config.
                 rule = properties.login();

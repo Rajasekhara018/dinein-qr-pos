@@ -1,0 +1,287 @@
+<app-page-header
+  title="Kiosk appearance"
+  subtitle="Turn kiosks on or off and brand the welcome screen guests see."
+>
+  <a appButton variant="outline" routerLink="/admin/kiosks">Manage kiosks</a>
+</app-page-header>
+
+@if (loading() && !branding()) {
+  <app-skeleton shape="block" class="h-96" />
+} @else if (loadError() && !branding()) {
+  <app-error-state title="Could not load kiosk appearance" [error]="loadError()" (retry)="load()" />
+} @else {
+  <div class="grid grid-cols-1 gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(0,28rem)]">
+    <form class="flex min-w-0 flex-col gap-6" [formGroup]="form" (ngSubmit)="save()" novalidate>
+      @if (formError()) {
+        <p
+          class="rounded-control bg-danger-bg px-3 py-2 text-sm font-medium text-danger-fg"
+          role="alert"
+        >
+          {{ formError() }}
+        </p>
+      }
+
+      <fieldset class="rounded-card border border-line bg-surface p-4 shadow-card sm:p-5">
+        <legend class="px-1 font-display text-lg font-semibold">Kiosk ordering</legend>
+        <app-toggle-switch
+          formControlName="kioskEnabled"
+          label="Kiosks enabled"
+          hint="Off: all kiosks stop taking orders and show an out-of-service screen."
+          showLabel
+          testId="kiosk-enabled"
+          (checkedChange)="onEnabledChange($event)"
+        />
+        @if (!enabled()) {
+          <p
+            class="mt-2 rounded-control bg-amber-50 px-3 py-2 text-sm font-medium text-amber-950"
+            role="status"
+          >
+            Kiosks are turned off, so guests cannot place orders on them.
+          </p>
+        }
+      </fieldset>
+
+      <fieldset class="rounded-card border border-line bg-surface p-4 shadow-card sm:p-5">
+        <legend class="px-1 font-display text-lg font-semibold">Welcome screen</legend>
+        <p class="mb-3 text-xs text-ink-subtle">
+          Leave a field empty to use the kiosk app's default shown as its placeholder.
+        </p>
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div class="sm:col-span-2">
+            <label for="ka-headline" class="block text-sm font-medium text-ink">Headline</label>
+            <input
+              id="ka-headline"
+              appInput
+              class="mt-1"
+              formControlName="headline"
+              maxlength="80"
+              [placeholder]="defaults.headline"
+            />
+            <app-field-error [control]="form.controls.headline" />
+          </div>
+          <div class="sm:col-span-2">
+            <label for="ka-subtext" class="block text-sm font-medium text-ink">Subtext</label>
+            <input
+              id="ka-subtext"
+              appInput
+              class="mt-1"
+              formControlName="subtext"
+              maxlength="120"
+              [placeholder]="defaults.subtext"
+            />
+            <app-field-error [control]="form.controls.subtext" />
+          </div>
+          <div>
+            <label for="ka-button" class="block text-sm font-medium text-ink"
+              >Start button label</label
+            >
+            <input
+              id="ka-button"
+              appInput
+              class="mt-1"
+              formControlName="startButtonLabel"
+              maxlength="40"
+              [placeholder]="defaults.startButtonLabel"
+            />
+            <app-field-error [control]="form.controls.startButtonLabel" />
+          </div>
+          <div>
+            <label for="ka-idle" class="block text-sm font-medium text-ink"
+              >Idle timeout (seconds)</label
+            >
+            <input
+              id="ka-idle"
+              appInput
+              type="number"
+              inputmode="numeric"
+              class="mt-1"
+              formControlName="idleTimeoutSeconds"
+              [min]="timeoutRange.min"
+              [max]="timeoutRange.max"
+              placeholder="App default"
+            />
+            <app-field-error
+              [control]="form.controls.idleTimeoutSeconds"
+              [messages]="{ min: 'Use 15 to 600 seconds.', max: 'Use 15 to 600 seconds.' }"
+            />
+            <p class="mt-1 text-xs text-ink-subtle">
+              Time without a touch before the kiosk returns to the welcome screen.
+            </p>
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset class="rounded-card border border-line bg-surface p-4 shadow-card sm:p-5">
+        <legend class="px-1 font-display text-lg font-semibold">Colours</legend>
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div>
+            <p class="text-sm font-medium text-ink">Primary (button)</p>
+            <div class="mt-1 flex items-center gap-2">
+              <input
+                type="color"
+                class="h-11 w-14 shrink-0 cursor-pointer rounded-control border border-line-strong bg-surface p-1"
+                aria-label="Pick primary colour"
+                [value]="preview().primaryColor"
+                (input)="onColorPicked('primaryColor', $event)"
+              />
+              <input
+                appInput
+                class="font-mono uppercase"
+                formControlName="primaryColor"
+                maxlength="7"
+                [placeholder]="defaults.primaryColor"
+                aria-label="Primary colour hex"
+                data-testid="kiosk-primary"
+              />
+              <button
+                appButton
+                variant="ghost"
+                size="sm"
+                type="button"
+                class="shrink-0"
+                (click)="resetColor('primaryColor')"
+              >
+                Default
+              </button>
+            </div>
+            <app-field-error
+              [control]="form.controls.primaryColor"
+              [messages]="{ pattern: 'Use the #RRGGBB format.' }"
+            />
+            @if (lowContrast()) {
+              <p
+                class="mt-2 rounded-control bg-amber-50 px-3 py-2 text-sm font-medium text-amber-950"
+                role="status"
+                data-testid="contrast-warning"
+              >
+                White text on this colour has a contrast of {{ contrast() | number: '1.1-1' }}:1,
+                below the recommended {{ minContrast }}:1. The button label may be hard to read.
+                Choose a darker primary colour.
+              </p>
+            }
+          </div>
+          <div>
+            <p class="text-sm font-medium text-ink">Secondary (background)</p>
+            <div class="mt-1 flex items-center gap-2">
+              <input
+                type="color"
+                class="h-11 w-14 shrink-0 cursor-pointer rounded-control border border-line-strong bg-surface p-1"
+                aria-label="Pick secondary colour"
+                [value]="preview().secondaryColor"
+                (input)="onColorPicked('secondaryColor', $event)"
+              />
+              <input
+                appInput
+                class="font-mono uppercase"
+                formControlName="secondaryColor"
+                maxlength="7"
+                [placeholder]="defaults.secondaryColor"
+                aria-label="Secondary colour hex"
+              />
+              <button
+                appButton
+                variant="ghost"
+                size="sm"
+                type="button"
+                class="shrink-0"
+                (click)="resetColor('secondaryColor')"
+              >
+                Default
+              </button>
+            </div>
+            <app-field-error
+              [control]="form.controls.secondaryColor"
+              [messages]="{ pattern: 'Use the #RRGGBB format.' }"
+            />
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset class="rounded-card border border-line bg-surface p-4 shadow-card sm:p-5">
+        <legend class="px-1 font-display text-lg font-semibold">Images</legend>
+        <div class="flex flex-col gap-5">
+          <app-image-upload
+            formControlName="logoImageId"
+            label="Logo"
+            keepAlpha
+            [url]="logoUrl()"
+            (uploaded)="onLogoUploaded($event)"
+          />
+          <app-image-upload
+            formControlName="backgroundImageId"
+            label="Background image"
+            [url]="backgroundUrl()"
+            (uploaded)="onBackgroundUploaded($event)"
+          />
+          <p class="text-xs text-ink-subtle">
+            Without a logo the restaurant name is shown. A landscape background works best on kiosk
+            tablets.
+          </p>
+        </div>
+      </fieldset>
+
+      @if (dirty()) {
+        <div
+          class="sticky bottom-0 z-10 -mx-4 flex flex-wrap justify-end gap-2 border-t border-line bg-surface/95 px-4 py-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] backdrop-blur sm:mx-0 sm:rounded-card sm:border"
+          data-testid="kiosk-save-bar"
+        >
+          <button appButton variant="outline" type="button" (click)="discard()">
+            Discard changes
+          </button>
+          <button appButton type="submit" [loading]="saving()" data-testid="kiosk-save">
+            Save appearance
+          </button>
+        </div>
+      }
+    </form>
+
+    <aside class="min-w-0 xl:sticky xl:top-4 xl:self-start" aria-labelledby="kiosk-preview-heading">
+      <h2 id="kiosk-preview-heading" class="mb-2 font-display text-lg font-semibold">
+        Live preview
+      </h2>
+      <div
+        class="relative flex aspect-[16/10] w-full flex-col items-center justify-center gap-3 overflow-hidden rounded-card border border-line p-6 text-center text-white shadow-md"
+        [style.background-color]="preview().secondaryColor"
+        data-testid="kiosk-preview"
+      >
+        @if (previewBackground(); as bg) {
+          <img [src]="bg" alt="" class="absolute inset-0 size-full object-cover" />
+          <span
+            class="absolute inset-0"
+            [style.background-color]="preview().secondaryColor"
+            style="opacity: 0.55"
+            aria-hidden="true"
+          ></span>
+        }
+        <div class="relative flex flex-col items-center gap-3">
+          @if (previewLogo(); as logo) {
+            <img [src]="logo" alt="Restaurant logo" class="max-h-16 max-w-[60%] object-contain" />
+          } @else {
+            <p class="font-display text-xl font-bold" data-testid="preview-name">
+              {{ restaurantName() }}
+            </p>
+          }
+          <h3
+            class="font-display text-2xl font-bold leading-tight sm:text-3xl"
+            data-testid="preview-headline"
+          >
+            {{ preview().headline }}
+          </h3>
+          <p class="text-sm text-white/90 sm:text-base" data-testid="preview-subtext">
+            {{ preview().subtext }}
+          </p>
+          <span
+            class="mt-2 inline-flex min-h-touch items-center rounded-full px-8 py-2 text-base font-bold text-white shadow-lg"
+            [style.background-color]="preview().primaryColor"
+            data-testid="preview-button"
+          >
+            {{ preview().startButtonLabel }}
+          </span>
+        </div>
+      </div>
+      <p class="mt-2 text-xs text-ink-subtle">
+        Approximate preview of the kiosk welcome screen. Save to publish it to your kiosks.
+      </p>
+    </aside>
+  </div>
+}

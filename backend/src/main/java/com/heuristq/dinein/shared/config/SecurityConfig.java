@@ -80,6 +80,9 @@ public class SecurityConfig {
                         .requestMatchers(V1 + "/platform/**").permitAll()
                         .requestMatchers(V1 + "/auth/login", V1 + "/auth/refresh", V1 + "/auth/logout",
                                 V1 + "/auth/kitchen-device", V1 + "/auth/csrf").permitAll()
+                        // The pairing code is the credential; everything else on the kiosk API needs a kiosk token.
+                        .requestMatchers(V1 + "/kiosk/pair").permitAll()
+                        .requestMatchers(V1 + "/kiosk/**").hasRole("KIOSK")
                         .requestMatchers(V1 + "/auth/**").authenticated()
                         .requestMatchers(V1 + "/admin/**").hasAnyRole("OWNER", "MANAGER")
                         .requestMatchers(V1 + "/kitchen/**").hasAnyRole("KITCHEN", "OWNER", "MANAGER")

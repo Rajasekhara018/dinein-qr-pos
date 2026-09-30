@@ -3,7 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/widgets/kiosk_widgets.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../cart/providers/cart_provider.dart';
+import '../../upsell/data/upsell_repository.dart';
+import '../../upsell/presentation/upsell_sheet.dart';
 import '../data/menu_repository.dart';
 import '../domain/menu_models.dart';
 import 'item_sheet.dart';
@@ -20,8 +23,11 @@ class _MenuScreenState extends ConsumerState<MenuScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final menu = ref.watch(menuProvider);
     final cart = ref.watch(cartProvider);
+    // Load the upsell rules while the customer browses, so a prompt is ready the moment they add something.
+    ref.watch(upsellsProvider);
 
     ref.listen(menuProvider, (_, next) {
       final data = next.valueOrNull;
@@ -33,9 +39,11 @@ class _MenuScreenState extends ConsumerState<MenuScreen> {
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(onPressed: () => context.go('/order-type')),
-        title: const Text('Menu'),
+        title: Text(l10n.menuTitle),
       ),
       body: menu.when(
+        // A background refresh (live menu push, new customer) keeps showing the current menu.
+        skipLoadingOnReload: true,
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (e, _) => _MenuError(
           message: '$e'.replaceFirst('Exception: ', ''),
@@ -43,23 +51,51 @@ class _MenuScreenState extends ConsumerState<MenuScreen> {
         ),
         data: (data) {
           if (data.categories.isEmpty) {
-            return const Center(child: Text('The menu is not available right now'));
+            return Center(child: Text(l10n.menuUnavailable));
           }
           final index = _selected.clamp(0, data.categories.length - 1);
-          final category = data.categories[index];
-          return Row(
+          return Column(
             children: [
-              _CategoryRail(
-                categories: data.categories,
-                selected: index,
-                onSelect: (i) => setState(() => _selected = i),
+              if (data.stale) _StaleBanner(message: l10n.offlineMenuNotice),
+              Expanded(
+                child: Row(
+                  children: [
+                    _CategoryRail(
+                      categories: data.categories,
+                      selected: index,
+                      onSelect: (i) => setState(() => _selected = i),
+                    ),
+                    Expanded(child: _ItemGrid(category: data.categories[index])),
+                  ],
+                ),
               ),
-              Expanded(child: _ItemGrid(category: category)),
             ],
           );
         },
       ),
       bottomNavigationBar: cart.isEmpty ? null : _CartBar(cart: cart),
+    );
+  }
+}
+
+class _StaleBanner extends StatelessWidget {
+  const _StaleBanner({required this.message});
+
+  final String message;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      color: const Color(0xFFFFF3BF),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      child: Row(
+        children: [
+          const Icon(Icons.wifi_off_rounded),
+          const SizedBox(width: 12),
+          Expanded(child: Text(message, style: Theme.of(context).textTheme.titleSmall)),
+        ],
+      ),
     );
   }
 }
@@ -142,15 +178,21 @@ class _ItemCard extends ConsumerWidget {
 
   final MenuItem item;
 
+  Future<void> _open(BuildContext context, WidgetRef ref) async {
+    final added = await showItemSheet(context, item);
+    if (added && context.mounted) await showItemAddedUpsell(context, ref, item);
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     final soldOut = !item.available;
     return Opacity(
       opacity: soldOut ? 0.5 : 1,
       child: Card(
         clipBehavior: Clip.antiAlias,
         child: InkWell(
-          onTap: soldOut ? null : () => showItemSheet(context, item),
+          onTap: soldOut ? null : () => _open(context, ref),
           child: Padding(
             padding: const EdgeInsets.all(12),
             child: Column(
@@ -166,16 +208,14 @@ class _ItemCard extends ConsumerWidget {
                         if (soldOut)
                           Center(
                             child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 12, vertical: 6),
+                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                               decoration: BoxDecoration(
                                 color: Colors.black87,
                                 borderRadius: BorderRadius.circular(8),
                               ),
-                              child: const Text('Sold out',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w700)),
+                              child: Text(l10n.soldOut,
+                                  style: const TextStyle(
+                                      color: Colors.white, fontWeight: FontWeight.w700)),
                             ),
                           ),
                       ],
@@ -224,6 +264,7 @@ class _CartBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Material(
       elevation: 12,
       color: Colors.white,
@@ -234,8 +275,7 @@ class _CartBar extends StatelessWidget {
             children: [
               Expanded(
                 child: Text(
-                  '${cart.itemCount} ${cart.itemCount == 1 ? 'item' : 'items'}'
-                  '  •  ${formatPrice(cart.total)}',
+                  '${l10n.itemCount(cart.itemCount)}  •  ${formatPrice(cart.total)}',
                   style: Theme.of(context)
                       .textTheme
                       .headlineSmall
@@ -245,7 +285,7 @@ class _CartBar extends StatelessWidget {
               FilledButton.icon(
                 onPressed: () => context.go('/cart'),
                 icon: const Icon(Icons.shopping_cart_checkout_rounded),
-                label: const Text('View order'),
+                label: Text(l10n.viewOrder),
               ),
             ],
           ),
@@ -263,6 +303,7 @@ class _MenuError extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -271,7 +312,7 @@ class _MenuError extends StatelessWidget {
           const SizedBox(height: 16),
           Text(message, style: Theme.of(context).textTheme.titleLarge),
           const SizedBox(height: 16),
-          FilledButton(onPressed: onRetry, child: const Text('Try again')),
+          FilledButton(onPressed: onRetry, child: Text(l10n.tryAgain)),
         ],
       ),
     );

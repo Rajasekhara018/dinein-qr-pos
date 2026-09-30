@@ -1,0 +1,49 @@
+{
+  "@@locale": "hi",
+
+  "whereWillYouEat": "आप कहाँ खाएँगे?",
+  "dineIn": "यहीं खाएँगे",
+  "takeaway": "पैक करवाएँ",
+
+  "menuTitle": "मेन्यू",
+  "soldOut": "उपलब्ध नहीं",
+  "menuUnavailable": "मेन्यू अभी उपलब्ध नहीं है",
+  "offlineMenuNotice": "कनेक्शन नहीं है। पिछला सेव किया हुआ मेन्यू दिख रहा है।",
+  "tryAgain": "फिर से कोशिश करें",
+  "itemCount": "{count, plural, =1{1 आइटम} other{{count} आइटम}}",
+  "viewOrder": "ऑर्डर देखें",
+
+  "chooseSize": "साइज़ चुनें",
+  "addExtras": "एक्स्ट्रा जोड़ें",
+  "specialRequest": "विशेष अनुरोध (जैसे प्याज़ नहीं)",
+  "addWithPrice": "जोड़ें  •  {price}",
+
+  "yourOrder": "आपका ऑर्डर",
+  "yourOrderWithType": "आपका ऑर्डर  •  {type}",
+  "orderEmpty": "आपका ऑर्डर खाली है",
+  "browseMenu": "मेन्यू देखें",
+  "subtotal": "उप-योग",
+  "gst": "जीएसटी",
+  "total": "कुल",
+  "placeOrderPayAtCounter": "ऑर्डर करें  •  काउंटर पर भुगतान करें",
+
+  "orderPlaced": "ऑर्डर हो गया!",
+  "yourToken": "आपका टोकन",
+  "payAtCounterAmount": "कृपया काउंटर पर {amount} का भुगतान करें",
+  "weWillCall": "तैयार होने पर हम आपका नंबर बुलाएँगे",
+  "doneWithSeconds": "हो गया  ({seconds})",
+  "receiptNotPrinted": "आपकी रसीद प्रिंट नहीं हो सकी। कृपया अपना टोकन याद रखें।",
+
+  "stillThereTitle": "क्या आप वहाँ हैं?",
+  "stillThereBody": "आपका ऑर्डर {seconds} सेकंड में हट जाएगा।",
+  "yesKeepOrdering": "हाँ, ऑर्डर जारी रखें",
+
+  "upsellTitle": "कुछ और जोड़ेंगे?",
+  "upsellAdd": "जोड़ें",
+  "upsellChoose": "चुनें",
+  "noThanks": "नहीं, धन्यवाद",
+  "done": "हो गया",
+
+  "largeText": "बड़े अक्षर",
+  "standardText": "सामान्य अक्षर"
+}

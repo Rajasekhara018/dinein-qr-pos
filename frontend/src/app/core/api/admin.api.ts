@@ -10,6 +10,7 @@ import {
   CategoryRequest,
   CategoryResponse,
   CheckoutResponse,
+  CreateKioskDeviceRequest,
   CreateStaffRequest,
   Dashboard,
   DeviceResponse,
@@ -17,6 +18,9 @@ import {
   ItemRequest,
   ItemResponse,
   ItemSearchParams,
+  KioskBrandingResponse,
+  KioskDeviceResponse,
+  KioskPairingResponse,
   KitchenStationRequest,
   KitchenStationResponse,
   NotificationSearchParams,
@@ -35,6 +39,7 @@ import {
   SplitOrderRequest,
   TableRequest,
   TableResponse,
+  UpdateKioskBrandingRequest,
   UpdateSettingsRequest,
   UnreadCount,
   UpdateStaffRequest,
@@ -329,5 +334,36 @@ export class AdminNotificationsApi {
 
   markAllRead(): Observable<void> {
     return this.http.post<void>(`${API_BASE}/admin/notifications/read-all`, null);
+  }
+}
+
+/** Self-order kiosks (owner/manager): `/api/v1/admin/kiosk-devices` and `/api/v1/admin/kiosk-branding`. */
+@Injectable({ providedIn: 'root' })
+export class AdminKioskApi {
+  private readonly http = inject(HttpClient);
+
+  devices(): Observable<KioskDeviceResponse[]> {
+    return this.http.get<KioskDeviceResponse[]>(`${API_BASE}/admin/kiosk-devices`);
+  }
+
+  createDevice(body: CreateKioskDeviceRequest): Observable<KioskPairingResponse> {
+    return this.http.post<KioskPairingResponse>(`${API_BASE}/admin/kiosk-devices`, body);
+  }
+
+  /** Issues a fresh code and invalidates the device's current token so the tablet can be re-paired. */
+  newPairingCode(id: number): Observable<KioskPairingResponse> {
+    return this.http.post<KioskPairingResponse>(`${API_BASE}/admin/kiosk-devices/${id}/pairing-code`, {});
+  }
+
+  revokeDevice(id: number): Observable<void> {
+    return this.http.post<void>(`${API_BASE}/admin/kiosk-devices/${id}/revoke`, {});
+  }
+
+  branding(): Observable<KioskBrandingResponse> {
+    return this.http.get<KioskBrandingResponse>(`${API_BASE}/admin/kiosk-branding`);
+  }
+
+  updateBranding(body: UpdateKioskBrandingRequest): Observable<KioskBrandingResponse> {
+    return this.http.put<KioskBrandingResponse>(`${API_BASE}/admin/kiosk-branding`, body);
   }
 }
