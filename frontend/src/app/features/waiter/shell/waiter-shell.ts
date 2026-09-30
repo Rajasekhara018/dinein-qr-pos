@@ -45,6 +45,13 @@ export const WAITER_NAV: readonly WaiterNavItem[] = [
     icon: 'M4 4h7v7H4V4Zm9 0h7v7h-7V4ZM4 13h7v7H4v-7Zm9 0h7v7h-7v-7Z',
   },
   {
+    label: 'Kiosk',
+    path: '/waiter/kiosk',
+    exact: false,
+    testId: 'nav-kiosk',
+    icon: 'M3 5h18v11H3V5Zm6 15h6M12 16v4',
+  },
+  {
     label: 'New order',
     path: '/waiter/new',
     exact: false,

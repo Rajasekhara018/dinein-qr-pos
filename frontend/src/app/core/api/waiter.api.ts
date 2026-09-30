@@ -7,6 +7,8 @@ import {
   CheckoutResponse,
   GuestOrderView,
   KITCHEN_STATUSES,
+  KioskCounterOrder,
+  KioskCounterPaymentMethod,
   KitchenOrderView,
   MenuResponse,
   NotificationSearchParams,
@@ -83,6 +85,18 @@ export class WaiterApi {
     return this.http.post<GuestOrderView>(`${API_BASE}/waiter/payments/verify`, body, {
       context: silentErrors(),
     });
+  }
+
+  /** Unpaid kiosk orders (PENDING_PAYMENT / EXPIRED), oldest first. Background polling: no global error toast. */
+  kioskOrders(): Observable<KioskCounterOrder[]> {
+    return this.http.get<KioskCounterOrder[]>(`${API_BASE}/waiter/kiosk-orders`, {
+      context: silentErrors(),
+    });
+  }
+
+  /** Takes payment at the counter (409 ALREADY_PAID / ORDER_NOT_PAYABLE / PAYMENT_FLAGGED / NOT_A_KIOSK_ORDER). */
+  payKioskOrder(id: number, method: KioskCounterPaymentMethod): Observable<void> {
+    return this.http.post<void>(`${API_BASE}/waiter/kiosk-orders/${id}/pay`, { method }, { context: silentErrors() });
   }
 
   notifications(search: NotificationSearchParams = {}): Observable<PageResponse<NotificationView>> {

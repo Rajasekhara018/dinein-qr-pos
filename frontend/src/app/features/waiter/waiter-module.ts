@@ -6,6 +6,7 @@ import { WaiterOrderCard } from './board/waiter-order-card';
 import { WaiterLogin } from './login/waiter-login';
 import { WaiterNewOrderPage } from './new-order/new-order-page';
 import { WaiterOrderPage } from './order/waiter-order-page';
+import { KioskCounterPage } from './kiosk-counter/kiosk-counter-page';
 import { ReadyPage } from './ready/ready-page';
 import { WaiterBell } from './shell/waiter-bell';
 import { WaiterHeader } from './shell/waiter-header';
@@ -27,6 +28,7 @@ import { WaiterRoutingModule } from './waiter-routing-module';
     ReadyPage,
     ActivePage,
     TablesPage,
+    KioskCounterPage,
     WaiterNewOrderPage,
     WaiterOrderPage,
   ],

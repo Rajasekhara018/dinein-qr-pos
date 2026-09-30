@@ -100,13 +100,6 @@ export function isLowWhiteContrast(hex: string | null | undefined): boolean {
   return ratio !== null && ratio < MIN_TEXT_CONTRAST;
 }
 
-/** Image id from a relative image URL such as `/api/v1/images/42` or `/api/v1/images/42/thumb`. */
-export function imageIdFromUrl(url: string | null | undefined): number | null {
-  if (!url) return null;
-  const match = /\/images\/(\d+)(?:\/|\?|$)/.exec(url);
-  return match ? Number(match[1]) : null;
-}
-
 /** Form-level values of the appearance page, all strings so empty means "use the default". */
 export interface BrandingFormValue {
   kioskEnabled: boolean;
@@ -131,8 +124,8 @@ export function brandingToForm(
     subtext: b.subtext ?? '',
     startButtonLabel: b.startButtonLabel ?? '',
     idleTimeoutSeconds: b.idleTimeoutSeconds,
-    logoImageId: imageIdFromUrl(b.logoUrl),
-    backgroundImageId: imageIdFromUrl(b.backgroundUrl),
+    logoImageId: b.logoImageId ?? null,
+    backgroundImageId: b.backgroundImageId ?? null,
   };
 }
 

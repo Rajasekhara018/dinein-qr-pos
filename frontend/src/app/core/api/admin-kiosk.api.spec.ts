@@ -67,10 +67,19 @@ describe('AdminKioskApi', () => {
   });
 
   it('reads and replaces the branding', () => {
-    api.branding().subscribe();
+    let branding: { logoImageId: number | null; backgroundImageId: number | null } | undefined;
+    api.branding().subscribe((b) => (branding = b));
     const get = http.expectOne('/api/v1/admin/kiosk-branding');
     expect(get.request.method).toBe('GET');
-    get.flush({ restaurantName: 'Cafe', kioskEnabled: true });
+    get.flush({
+      restaurantName: 'Cafe',
+      kioskEnabled: true,
+      logoUrl: '/api/v1/images/3',
+      backgroundUrl: null,
+      logoImageId: 3,
+      backgroundImageId: null,
+    });
+    expect(branding).toMatchObject({ logoImageId: 3, backgroundImageId: null });
 
     const body: UpdateKioskBrandingRequest = {
       kioskEnabled: false,
@@ -88,5 +97,29 @@ describe('AdminKioskApi', () => {
     expect(put.request.method).toBe('PUT');
     expect(put.request.body).toEqual(body);
     put.flush({ restaurantName: 'Cafe', kioskEnabled: false });
+  });
+
+  it('manages upsell rules', () => {
+    api.upsells().subscribe();
+    const list = http.expectOne('/api/v1/admin/kiosk-upsells');
+    expect(list.request.method).toBe('GET');
+    list.flush([]);
+
+    const body = { suggestedItemId: 2, placement: 'CHECKOUT' as const, triggerCategoryId: 10 };
+    api.createUpsell(body).subscribe();
+    const post = http.expectOne('/api/v1/admin/kiosk-upsells');
+    expect(post.request.method).toBe('POST');
+    expect(post.request.body).toEqual(body);
+    post.flush({ id: 1, ...body });
+
+    api.updateUpsell(1, body).subscribe();
+    const put = http.expectOne('/api/v1/admin/kiosk-upsells/1');
+    expect(put.request.method).toBe('PUT');
+    put.flush({ id: 1, ...body });
+
+    api.deleteUpsell(1).subscribe();
+    const del = http.expectOne('/api/v1/admin/kiosk-upsells/1');
+    expect(del.request.method).toBe('DELETE');
+    del.flush(null, { status: 204, statusText: 'No Content' });
   });
 });

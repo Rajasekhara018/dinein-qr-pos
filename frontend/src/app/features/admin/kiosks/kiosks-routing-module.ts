@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { KioskAppearancePage } from './kiosk-appearance-page';
 import { KiosksPage } from './kiosks-page';
+import { UpsellsPage } from './upsells-page';
 
 const routes: Routes = [
   {
@@ -15,6 +16,12 @@ const routes: Routes = [
     component: KioskAppearancePage,
     title: 'Kiosk appearance · DineIn admin',
     data: { breadcrumb: 'Kiosk appearance' },
+  },
+  {
+    path: 'upsells',
+    component: UpsellsPage,
+    title: 'Kiosk upsells · DineIn admin',
+    data: { breadcrumb: 'Kiosk upsells' },
   },
 ];
 

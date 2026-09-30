@@ -1154,6 +1154,8 @@ export interface KioskBrandingResponse {
   idleTimeoutSeconds: number | null;
   logoUrl: string | null;
   backgroundUrl: string | null;
+  logoImageId: number | null;
+  backgroundImageId: number | null;
   paymentModes?: string[] | null;
 }
 
@@ -1169,4 +1171,58 @@ export interface UpdateKioskBrandingRequest {
   idleTimeoutSeconds: number | null;
   logoImageId: number | null;
   backgroundImageId: number | null;
+}
+
+// ─── Kiosk upsells (`kiosk.dto`) ─────────────────────────────────────────────────────────────────
+
+export type KioskUpsellPlacement = 'ITEM_ADDED' | 'CHECKOUT';
+
+export interface KioskUpsellView {
+  id: number;
+  triggerItemId: number | null;
+  triggerCategoryId: number | null;
+  suggestedItemId: number;
+  placement: KioskUpsellPlacement;
+  message: string | null;
+  sortOrder: number;
+  active: boolean;
+}
+
+/** Trigger item and trigger category are mutually exclusive; neither means "any order". */
+export interface KioskUpsellRequest {
+  triggerItemId?: number | null;
+  triggerCategoryId?: number | null;
+  suggestedItemId: number;
+  placement: KioskUpsellPlacement;
+  /** <= 80 characters. */
+  message?: string | null;
+  sortOrder?: number | null;
+  active?: boolean | null;
+}
+
+// ─── Kiosk orders at the counter (`kiosk.dto`, waiter API) ───────────────────────────────────────
+
+export type KioskCounterPaymentMethod = 'CASH' | 'UPI_AT_COUNTER' | 'CARD_AT_COUNTER';
+
+export interface KioskCounterOrderItem {
+  name: string;
+  variantName: string | null;
+  quantity: number;
+  notes: string | null;
+  addons: string[];
+}
+
+export interface KioskCounterOrder {
+  id: number;
+  orderNumber: string;
+  displayToken: number | string;
+  orderType: 'DINE_IN' | 'TAKEAWAY';
+  status: 'PENDING_PAYMENT' | 'EXPIRED';
+  grandTotal: Money;
+  placedAt: IsoInstant;
+  items: KioskCounterOrderItem[];
+}
+
+export interface KioskCounterPayRequest {
+  method: KioskCounterPaymentMethod;
 }

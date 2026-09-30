@@ -60,7 +60,9 @@ class KioskApp extends ConsumerWidget {
         return StaffAccessLayer(
           child: MediaQuery(
             data: MediaQuery.of(context).copyWith(
-              textScaler: largeText ? const TextScaler.linear(KioskSizes.largeTextScale) : null,
+              textScaler: TextScaler.linear(
+                largeText ? KioskSizes.largeTextScale : KioskSizes.baseTextScale,
+              ),
             ),
             child: page,
           ),

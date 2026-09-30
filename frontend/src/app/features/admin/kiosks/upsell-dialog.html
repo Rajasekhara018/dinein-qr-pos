@@ -1,0 +1,128 @@
+<app-bottom-sheet [title]="title()" (closed)="ref.close()">
+  <form
+    id="upsell-form"
+    [formGroup]="form"
+    (ngSubmit)="save()"
+    novalidate
+    class="flex flex-col gap-4"
+  >
+    @if (error()) {
+      <p
+        class="rounded-control bg-red-50 px-3 py-2 text-sm font-medium text-red-900"
+        role="alert"
+        data-testid="upsell-error"
+      >
+        {{ error() }}
+      </p>
+    }
+
+    <fieldset>
+      <legend class="text-sm font-medium text-ink">When should this be suggested?</legend>
+      <div class="mt-1 grid grid-cols-1 gap-2 sm:grid-cols-3">
+        @for (t of triggerOptions; track t.value) {
+          <label
+            class="flex min-h-touch cursor-pointer items-center gap-2 rounded-control border border-line-strong p-3 text-sm font-semibold has-[:checked]:border-brand has-[:checked]:bg-brand-soft"
+          >
+            <input
+              type="radio"
+              class="size-4 accent-[var(--brand)]"
+              formControlName="triggerKind"
+              [value]="t.value"
+            />
+            {{ t.label }}
+          </label>
+        }
+      </div>
+    </fieldset>
+
+    @if (kind() === 'CATEGORY') {
+      <div>
+        <label for="up-category" class="block text-sm font-medium text-ink">Trigger category</label>
+        <select id="up-category" appInput class="mt-1" formControlName="triggerCategoryId">
+          <option [ngValue]="null">Choose a category</option>
+          @for (c of data.categories; track c.id) {
+            <option [ngValue]="c.id">{{ c.name }}</option>
+          }
+        </select>
+      </div>
+    }
+    @if (kind() === 'ITEM') {
+      <div>
+        <label for="up-trigger-item" class="block text-sm font-medium text-ink">Trigger item</label>
+        <select id="up-trigger-item" appInput class="mt-1" formControlName="triggerItemId">
+          <option [ngValue]="null">Choose an item</option>
+          @for (i of data.items; track i.id) {
+            <option [ngValue]="i.id">{{ i.name }} ({{ i.categoryName }})</option>
+          }
+        </select>
+      </div>
+    }
+    @if (problem(); as p) {
+      <p class="text-sm font-medium text-danger" role="alert">{{ p }}</p>
+    }
+
+    <div>
+      <label for="up-suggested" class="block text-sm font-medium text-ink">Suggested item</label>
+      <select
+        id="up-suggested"
+        appInput
+        class="mt-1"
+        formControlName="suggestedItemId"
+        aria-describedby="up-suggested-error"
+      >
+        <option [ngValue]="null">Choose an item</option>
+        @for (i of data.items; track i.id) {
+          <option [ngValue]="i.id">{{ i.name }} ({{ i.categoryName }})</option>
+        }
+      </select>
+      <app-field-error
+        id="up-suggested-error"
+        [control]="form.controls.suggestedItemId"
+        [messages]="{ required: 'Choose the item to suggest.' }"
+      />
+    </div>
+
+    <div>
+      <label for="up-placement" class="block text-sm font-medium text-ink">Show it</label>
+      <select id="up-placement" appInput class="mt-1" formControlName="placement">
+        @for (p of placementOptions; track p.value) {
+          <option [ngValue]="p.value">{{ p.label }}</option>
+        }
+      </select>
+    </div>
+
+    <div>
+      <label for="up-message" class="block text-sm font-medium text-ink"
+        >Message <span class="font-normal text-ink-subtle">(optional)</span></label
+      >
+      <input
+        id="up-message"
+        appInput
+        class="mt-1"
+        formControlName="message"
+        [maxlength]="messageMax"
+        placeholder="Add a drink?"
+      />
+      <app-field-error [control]="form.controls.message" />
+    </div>
+
+    <app-toggle-switch
+      formControlName="active"
+      label="Active"
+      hint="Inactive rules are kept but not shown on kiosks."
+      showLabel
+    />
+  </form>
+  <div sheetFooter class="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+    <button appButton variant="outline" type="button" (click)="ref.close()">Cancel</button>
+    <button
+      appButton
+      type="submit"
+      form="upsell-form"
+      [loading]="saving()"
+      data-testid="upsell-save"
+    >
+      {{ isEdit ? 'Save' : 'Add upsell' }}
+    </button>
+  </div>
+</app-bottom-sheet>

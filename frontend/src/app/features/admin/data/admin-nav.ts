@@ -10,6 +10,7 @@ export type AdminNavIcon =
   | 'staff'
   | 'kiosk'
   | 'appearance'
+  | 'upsell'
   | 'platform';
 
 export interface AdminNavItem {
@@ -55,6 +56,7 @@ export const ADMIN_NAV_GROUPS: readonly AdminNavGroup[] = [
     items: [
       { label: 'Kiosks', path: '/admin/kiosks', exact: true, icon: 'kiosk' },
       { label: 'Kiosk appearance', path: '/admin/kiosks/appearance', icon: 'appearance' },
+      { label: 'Kiosk upsells', path: '/admin/kiosks/upsells', icon: 'upsell' },
     ],
   },
   {

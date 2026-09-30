@@ -5,6 +5,7 @@ import { ActivePage } from './active/active-page';
 import { WaiterLogin } from './login/waiter-login';
 import { WaiterNewOrderPage } from './new-order/new-order-page';
 import { WaiterOrderPage } from './order/waiter-order-page';
+import { KioskCounterPage } from './kiosk-counter/kiosk-counter-page';
 import { ReadyPage } from './ready/ready-page';
 import { WaiterShell } from './shell/waiter-shell';
 import { TablesPage } from './tables/tables-page';
@@ -29,6 +30,7 @@ export const WAITER_ROUTES: Routes = [
       { path: '', pathMatch: 'full', component: ReadyPage, title: 'Ready · Waiter' },
       { path: 'active', component: ActivePage, title: 'Active orders · Waiter' },
       { path: 'tables', component: TablesPage, title: 'Tables · Waiter' },
+      { path: 'kiosk', component: KioskCounterPage, title: 'Kiosk orders · Waiter' },
       { path: 'new', component: WaiterNewOrderPage, title: 'New order · Waiter' },
       { path: 'orders/:id', component: WaiterOrderPage, title: 'Order · Waiter' },
       { path: '**', redirectTo: '' },

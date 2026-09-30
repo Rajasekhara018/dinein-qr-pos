@@ -3,7 +3,6 @@ import {
   brandingToForm,
   formatCountdown,
   formToBrandingRequest,
-  imageIdFromUrl,
   isHexColor,
   isKioskOnline,
   isLowWhiteContrast,
@@ -156,13 +155,6 @@ describe('welcomePreview fallbacks', () => {
 });
 
 describe('branding form mapping', () => {
-  it('extracts image ids from relative image URLs', () => {
-    expect(imageIdFromUrl('/api/v1/images/42')).toBe(42);
-    expect(imageIdFromUrl('/api/v1/images/42/thumb')).toBe(42);
-    expect(imageIdFromUrl(null)).toBeNull();
-    expect(imageIdFromUrl('/somewhere/else.png')).toBeNull();
-  });
-
   it('round-trips a server response, keeping existing images by id', () => {
     const form = brandingToForm({
       restaurantName: 'Cafe',
@@ -175,6 +167,8 @@ describe('branding form mapping', () => {
       idleTimeoutSeconds: 90,
       logoUrl: '/api/v1/images/7',
       backgroundUrl: null,
+      logoImageId: 7,
+      backgroundImageId: null,
     });
     expect(formToBrandingRequest(form)).toEqual({
       kioskEnabled: true,

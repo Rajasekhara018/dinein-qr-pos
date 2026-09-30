@@ -64,7 +64,7 @@ describe('admin routes – owner-only sections', () => {
     expect(router.url).toBe('/admin/orders');
   });
 
-  for (const path of ['/admin/kiosks', '/admin/kiosks/appearance']) {
+  for (const path of ['/admin/kiosks', '/admin/kiosks/appearance', '/admin/kiosks/upsells']) {
     it(`lets a manager open ${path}`, async () => {
       signIn('MANAGER');
       const router = TestBed.inject(Router);
@@ -77,6 +77,7 @@ describe('admin routes – owner-only sections', () => {
     const labels = visibleNav(false, false).map((n) => n.label);
     expect(labels).toContain('Kiosks');
     expect(labels).toContain('Kiosk appearance');
+    expect(labels).toContain('Kiosk upsells');
   });
 
   it('forces the password change first', async () => {

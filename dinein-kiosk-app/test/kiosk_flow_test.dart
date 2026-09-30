@@ -176,18 +176,18 @@ void main() {
     double scaleNow() =>
         MediaQuery.of(tester.element(find.byType(Scaffold).first)).textScaler.scale(10);
 
-    expect(scaleNow(), closeTo(10, 0.01));
+    expect(scaleNow(), closeTo(11.5, 0.01));
     await tester.tap(find.text('Large text'));
     await _pumpFor(tester);
-    expect(scaleNow(), closeTo(13, 0.01));
+    expect(scaleNow(), closeTo(15, 0.01));
 
     // Going through the flow and returning to the welcome page resets it.
     await tester.tap(find.text('Touch to order'));
     await _pumpFor(tester);
-    expect(scaleNow(), closeTo(13, 0.01));
+    expect(scaleNow(), closeTo(15, 0.01));
     await tester.tap(find.byType(BackButton));
     await _pumpFor(tester);
-    expect(scaleNow(), closeTo(10, 0.01));
+    expect(scaleNow(), closeTo(11.5, 0.01));
     await _finish(tester);
   });
 

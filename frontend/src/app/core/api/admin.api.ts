@@ -21,6 +21,8 @@ import {
   KioskBrandingResponse,
   KioskDeviceResponse,
   KioskPairingResponse,
+  KioskUpsellRequest,
+  KioskUpsellView,
   KitchenStationRequest,
   KitchenStationResponse,
   NotificationSearchParams,
@@ -365,5 +367,25 @@ export class AdminKioskApi {
 
   updateBranding(body: UpdateKioskBrandingRequest): Observable<KioskBrandingResponse> {
     return this.http.put<KioskBrandingResponse>(`${API_BASE}/admin/kiosk-branding`, body);
+  }
+
+  upsells(): Observable<KioskUpsellView[]> {
+    return this.http.get<KioskUpsellView[]>(`${API_BASE}/admin/kiosk-upsells`);
+  }
+
+  createUpsell(body: KioskUpsellRequest): Observable<KioskUpsellView> {
+    return this.http.post<KioskUpsellView>(`${API_BASE}/admin/kiosk-upsells`, body, {
+      context: silentErrors(),
+    });
+  }
+
+  updateUpsell(id: number, body: KioskUpsellRequest): Observable<KioskUpsellView> {
+    return this.http.put<KioskUpsellView>(`${API_BASE}/admin/kiosk-upsells/${id}`, body, {
+      context: silentErrors(),
+    });
+  }
+
+  deleteUpsell(id: number): Observable<void> {
+    return this.http.delete<void>(`${API_BASE}/admin/kiosk-upsells/${id}`);
   }
 }

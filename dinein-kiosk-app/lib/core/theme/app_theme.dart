@@ -10,8 +10,11 @@ class KioskSizes {
   static const double radius = 20;
   static const double gutter = 24;
 
+  /// Kiosk text is a little larger than a phone's, because it is read at arm's length.
+  static const double baseTextScale = 1.15;
+
   /// Text scale used by the customer's "large text" switch.
-  static const double largeTextScale = 1.3;
+  static const double largeTextScale = 1.5;
 }
 
 /// [highContrast] is the customer's accessibility mode: black text on white,
@@ -28,10 +31,11 @@ ThemeData buildKioskTheme(Branding branding, {bool highContrast = false}) {
     useMaterial3: true,
     colorScheme: scheme,
     scaffoldBackgroundColor: highContrast ? Colors.white : const Color(0xFFF8F9FA),
-    textTheme: Typography.blackMountainView.apply(
+    // Only recolour here. Text sizes are not final until Flutter localizes the theme, so scaling them in the
+    // theme (fontSizeFactor) throws at startup; the kiosk's larger text is applied by the text scaler instead.
+    textTheme: ThemeData(useMaterial3: true).textTheme.apply(
       bodyColor: ink,
       displayColor: ink,
-      fontSizeFactor: 1.15,
     ),
     filledButtonTheme: FilledButtonThemeData(
       style: FilledButton.styleFrom(

@@ -30,7 +30,7 @@ ResponseBody menuResponse(Map<String, dynamic> json, {String etag = '"v1"'}) =>
       'etag': [etag],
     });
 
-ApiMenuRepository repoWith(_FakeAdapter adapter) {
+ApiMenuRepository repoWith(HttpClientAdapter adapter) {
   final dio = Dio(BaseOptions(baseUrl: 'http://test'))..httpClientAdapter = adapter;
   return ApiMenuRepository(dio, MenuCache());
 }
