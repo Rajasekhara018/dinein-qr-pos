@@ -1,10 +1,10 @@
-package com.railcab.audit.adapter.in.web;
+package com.heuristiq.audit.adapter.in.web;
 
-import static com.railcab.audit.adapter.in.web.WebConstants.*;
-import com.railcab.audit.config.security.CallerDetails;
-import com.railcab.audit.config.security.SecurityConstants;
-import com.railcab.audit.domain.AuditException;
-import com.railcab.audit.application.CallerIdentity;
+import static com.heuristiq.audit.adapter.in.web.WebConstants.*;
+import com.heuristiq.audit.config.security.CallerDetails;
+import com.heuristiq.audit.config.security.SecurityConstants;
+import com.heuristiq.audit.domain.AuditException;
+import com.heuristiq.audit.application.CallerIdentity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;

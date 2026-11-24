@@ -1,4 +1,4 @@
-package com.railcab.audit.config;
+package com.heuristiq.audit.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 

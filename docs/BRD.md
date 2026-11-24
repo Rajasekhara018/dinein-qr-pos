@@ -7,7 +7,7 @@
 | Status | Draft for business review |
 | Pilot tenant | SVS Temple, Madhapur branch, Hyderabad (India) |
 | Supersedes | v0.1 BRD (India-only, Claude Docs draft) |
-| Related | [COMPLIANCE.md](COMPLIANCE.md) (compliance & regulations register), [REQUIREMENTS.md](REQUIREMENTS.md) (original MVP brief), [DECISIONS.md](DECISIONS.md), [../kioski.md](../kioski.md) (kiosk plan) |
+| Related | [COMPLIANCE.md](COMPLIANCE.md) (compliance & regulations register), [../kioski.md](../kioski.md) (kiosk plan) |
 
 > **How to maintain this file.** This BRD is the source of truth for business requirements. Change it in the same
 > pull request as any feature that changes behaviour, bump the version in the table above, and add a line to the
@@ -492,11 +492,11 @@ Tip, Refund, Shift, CashMovement, ExchangeRate, MediaAsset, Campaign, Notificati
 
 ## 12. Impact on the current codebase (gap list, not yet implemented)
 
-The existing `backend` (dinein) and Flutter apps were built India-first. Items found that block day-1 multi-region:
+The existing `heuristiq-dinein-core` (dinein) and Flutter apps were built India-first. Items found that block day-1 multi-region:
 
 | Area | Current state | Required change |
 | --- | --- | --- |
-| Tax | `gst_percent` on menu items/order lines, `prices_include_gst`, `gstin` columns in `backend/src/main/resources/db/migration/V1__init.sql` | Replace with tax category + tax profile/rules (RG-04/05/06); keep GST as the India rule set; per-component tax lines on orders |
+| Tax | `gst_percent` on menu items/order lines, `prices_include_gst`, `gstin` columns in `heuristiq-dinein-core/src/main/resources/db/migration/V1__init.sql` | Replace with tax category + tax profile/rules (RG-04/05/06); keep GST as the India rule set; per-component tax lines on orders |
 | Currency | `currency CHAR(3) DEFAULT 'INR'` | No default; required from branch; minor-unit amounts (RG-03) |
 | Tenancy | Restaurant-level only (no branch / legal entity layer, per [kioski.md](../kioski.md)) | Add LegalEntity and Branch with country pack fields (RG-01/02) |
 | Payments | Razorpay, PayU, Pine Labs behind `PaymentGateway` SPI | Keep SPI; add Stripe and Adyen adapters (online + terminal + platform payouts); generic payment terminal record (RG-08) |

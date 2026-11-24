@@ -1,11 +1,11 @@
-package com.railcab.audit.application;
+package com.heuristiq.audit.application;
 
-import static com.railcab.audit.application.RetentionConstants.LOCK_NAME;
-import static com.railcab.audit.application.RetentionConstants.MIN_LEASE_MS;
+import static com.heuristiq.audit.application.RetentionConstants.LOCK_NAME;
+import static com.heuristiq.audit.application.RetentionConstants.MIN_LEASE_MS;
 
-import com.railcab.audit.config.AuditProperties;
-import com.railcab.audit.domain.AuditEventRepository;
-import com.railcab.audit.domain.SchedulerLock;
+import com.heuristiq.audit.config.AuditProperties;
+import com.heuristiq.audit.domain.AuditEventRepository;
+import com.heuristiq.audit.domain.SchedulerLock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;

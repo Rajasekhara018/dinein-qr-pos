@@ -1,6 +1,6 @@
-package com.railcab.audit.adapter.in.scheduler;
+package com.heuristiq.audit.adapter.in.scheduler;
 
-import com.railcab.audit.application.AuditRetentionService;
+import com.heuristiq.audit.application.AuditRetentionService;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;

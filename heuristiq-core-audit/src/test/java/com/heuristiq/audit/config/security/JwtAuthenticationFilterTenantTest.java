@@ -1,4 +1,4 @@
-package com.railcab.audit.config.security;
+package com.heuristiq.audit.config.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

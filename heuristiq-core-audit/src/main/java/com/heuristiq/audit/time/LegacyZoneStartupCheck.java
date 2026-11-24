@@ -1,4 +1,4 @@
-package com.railcab.audit.time;
+package com.heuristiq.audit.time;
 
 import java.time.Clock;
 import java.time.Instant;

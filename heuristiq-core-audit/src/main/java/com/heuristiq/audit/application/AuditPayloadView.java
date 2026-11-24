@@ -1,6 +1,6 @@
-package com.railcab.audit.application;
+package com.heuristiq.audit.application;
 
-import com.railcab.audit.domain.AuditPayload;
+import com.heuristiq.audit.domain.AuditPayload;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.Map;

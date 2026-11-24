@@ -1,8 +1,8 @@
-package com.railcab.audit;
+package com.heuristiq.audit;
 
-import com.railcab.audit.domain.AuditEventRepository;
-import com.railcab.audit.adapter.out.lock.MongoSchedulerLock;
-import com.railcab.audit.domain.SchedulerLock;
+import com.heuristiq.audit.domain.AuditEventRepository;
+import com.heuristiq.audit.adapter.out.lock.MongoSchedulerLock;
+import com.heuristiq.audit.domain.SchedulerLock;
 import org.bson.Document;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Whole application on MongoDB (embedded server, the default persistence type): everything in
  * {@link AbstractAuditModeTest} plus Mongo specifics (no SQL beans, TTL and unique indexes exist).
  */
-@SpringBootTest(classes = AuditServiceApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+@SpringBootTest(classes = HeuristiqCoreAuditServiceApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
         properties = {
                 "spring.profiles.active=dev,test-mongo",
                 "de.flapdoodle.mongodb.embedded.version=7.0.5"

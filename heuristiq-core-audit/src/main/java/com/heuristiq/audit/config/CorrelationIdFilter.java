@@ -1,6 +1,6 @@
-package com.railcab.audit.config;
+package com.heuristiq.audit.config;
 
-import static com.railcab.audit.config.CorrelationConstants.*;
+import static com.heuristiq.audit.config.CorrelationConstants.*;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

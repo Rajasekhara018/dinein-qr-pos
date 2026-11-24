@@ -1,4 +1,4 @@
-package com.railcab.audit.time;
+package com.heuristiq.audit.time;
 
 /**
  * Fixed names and defaults for the legacy time zone setting. The zone itself is configuration

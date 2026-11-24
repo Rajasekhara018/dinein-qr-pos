@@ -1,9 +1,9 @@
-package com.railcab.audit.application;
+package com.heuristiq.audit.application;
 
-import com.railcab.audit.domain.AppChannel;
-import com.railcab.audit.domain.AuditEvent;
-import com.railcab.audit.domain.AuditEventType;
-import com.railcab.audit.domain.AuditOutcome;
+import com.heuristiq.audit.domain.AppChannel;
+import com.heuristiq.audit.domain.AuditEvent;
+import com.heuristiq.audit.domain.AuditEventType;
+import com.heuristiq.audit.domain.AuditOutcome;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.time.Instant;

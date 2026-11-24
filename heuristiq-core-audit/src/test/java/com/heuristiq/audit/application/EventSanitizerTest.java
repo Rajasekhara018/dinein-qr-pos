@@ -1,10 +1,10 @@
-package com.railcab.audit.application;
+package com.heuristiq.audit.application;
 
-import com.railcab.audit.config.AuditProperties;
-import com.railcab.audit.domain.AppChannel;
-import com.railcab.audit.domain.AuditEvent;
-import com.railcab.audit.domain.AuditEventType;
-import com.railcab.audit.domain.AuditOutcome;
+import com.heuristiq.audit.config.AuditProperties;
+import com.heuristiq.audit.domain.AppChannel;
+import com.heuristiq.audit.domain.AuditEvent;
+import com.heuristiq.audit.domain.AuditEventType;
+import com.heuristiq.audit.domain.AuditOutcome;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;

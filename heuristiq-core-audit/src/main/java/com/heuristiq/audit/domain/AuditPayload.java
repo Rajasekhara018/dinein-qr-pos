@@ -1,4 +1,4 @@
-package com.railcab.audit.domain;
+package com.heuristiq.audit.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

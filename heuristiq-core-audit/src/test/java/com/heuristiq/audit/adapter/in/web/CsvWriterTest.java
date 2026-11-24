@@ -1,8 +1,8 @@
-package com.railcab.audit.adapter.in.web;
+package com.heuristiq.audit.adapter.in.web;
 
-import com.railcab.audit.application.AuditEventView;
-import com.railcab.audit.application.AuditPayloadView;
-import com.railcab.audit.domain.AuditEventType;
+import com.heuristiq.audit.application.AuditEventView;
+import com.heuristiq.audit.application.AuditPayloadView;
+import com.heuristiq.audit.domain.AuditEventType;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;

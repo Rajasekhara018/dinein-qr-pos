@@ -1,6 +1,6 @@
-package com.railcab.audit.config.security;
+package com.heuristiq.audit.config.security;
 
-import static com.railcab.audit.config.security.SecurityConstants.*;
+import static com.heuristiq.audit.config.security.SecurityConstants.*;
 import io.micrometer.core.instrument.MeterRegistry;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

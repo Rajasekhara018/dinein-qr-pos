@@ -1,11 +1,11 @@
-package com.railcab.audit.application;
+package com.heuristiq.audit.application;
 
-import static com.railcab.audit.application.IngestConstants.INTERNAL_SERVICE_ROLE;
-import static com.railcab.audit.application.IngestConstants.USER_TYPE_ANONYMOUS;
-import static com.railcab.audit.application.IngestConstants.USER_TYPE_CUSTOMER;
-import static com.railcab.audit.application.IngestConstants.USER_TYPE_DRIVER;
-import static com.railcab.audit.application.IngestConstants.USER_TYPE_SERVICE;
-import static com.railcab.audit.application.IngestConstants.USER_TYPE_STAFF;
+import static com.heuristiq.audit.application.IngestConstants.INTERNAL_SERVICE_ROLE;
+import static com.heuristiq.audit.application.IngestConstants.USER_TYPE_ANONYMOUS;
+import static com.heuristiq.audit.application.IngestConstants.USER_TYPE_CUSTOMER;
+import static com.heuristiq.audit.application.IngestConstants.USER_TYPE_DRIVER;
+import static com.heuristiq.audit.application.IngestConstants.USER_TYPE_SERVICE;
+import static com.heuristiq.audit.application.IngestConstants.USER_TYPE_STAFF;
 
 import java.util.List;
 import java.util.Locale;

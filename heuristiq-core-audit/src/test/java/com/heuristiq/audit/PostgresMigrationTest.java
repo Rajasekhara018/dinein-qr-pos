@@ -1,6 +1,6 @@
-package com.railcab.audit;
+package com.heuristiq.audit;
 
-import com.railcab.audit.adapter.out.lock.JdbcSchedulerLock;
+import com.heuristiq.audit.adapter.out.lock.JdbcSchedulerLock;
 import io.zonky.test.db.postgres.embedded.EmbeddedPostgres;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
@@ -21,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * every entity against the migrated schema, then runs the whole shared behaviour suite of
  * {@link AbstractAuditModeTest} over HTTP against it.
  */
-@SpringBootTest(classes = AuditServiceApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+@SpringBootTest(classes = HeuristiqCoreAuditServiceApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
         properties = {"spring.profiles.active=dev,test"})
 class PostgresMigrationTest extends AbstractAuditModeTest {
     private static EmbeddedPostgres postgres;
@@ -83,22 +83,22 @@ class PostgresMigrationTest extends AbstractAuditModeTest {
     @Test
     void reIngestingTheSameBatchStoresEachEventAndPayloadOnceAndKeepsTheFirstCopy() {
         java.time.Instant at = java.time.Instant.parse("2026-05-01T10:00:00Z");
-        List<com.railcab.audit.domain.AuditEvent> batch = new java.util.ArrayList<>();
+        List<com.heuristiq.audit.domain.AuditEvent> batch = new java.util.ArrayList<>();
         // More than one INSERT statement's worth of rows, so chunking is exercised too.
         for (int i = 0; i < 1203; i++) {
-            batch.add(event(String.format("evt-batch-%05d", i), com.railcab.audit.domain.AuditEventType.ACCESS, "u-batch",
+            batch.add(event(String.format("evt-batch-%05d", i), com.heuristiq.audit.domain.AuditEventType.ACCESS, "u-batch",
                     at.plusMillis(i)));
         }
-        com.railcab.audit.domain.AuditEvent rich = batch.get(7);
+        com.heuristiq.audit.domain.AuditEvent rich = batch.get(7);
         rich.setRoles(List.of("SUPPORT", "AUDITOR"));
         rich.setPrivilegeIds(List.of(7, 99));
-        rich.setAppChannel(com.railcab.audit.domain.AppChannel.ADMIN_WEB);
+        rich.setAppChannel(com.heuristiq.audit.domain.AppChannel.ADMIN_WEB);
         rich.setTenantId("org-a");
         rich.setSubjectType("PAYMENT");
         rich.setSubjectId("pay-1");
         rich.setReasonCode("GATEWAY_TIMEOUT");
         rich.setDetails(new java.util.LinkedHashMap<>(java.util.Map.of("gatewayRef", "g-1", "quote\"key", "va'lue")));
-        List<com.railcab.audit.domain.AuditPayload> payloadBatch = List.of(
+        List<com.heuristiq.audit.domain.AuditPayload> payloadBatch = List.of(
                 payload("evt-batch-00007", "first-body"), payload("evt-batch-00500", "other-body"));
 
         List<String> first = repository.insertNew(batch);
@@ -115,18 +115,18 @@ class PostgresMigrationTest extends AbstractAuditModeTest {
         assertThat(repository.findPayload("evt-batch-00007").orElseThrow().getRequestBody()).isEqualTo("first-body");
 
         // A batch overlapping the stored one only inserts its new event.
-        List<com.railcab.audit.domain.AuditEvent> overlap = List.of(batch.get(0),
-                event("evt-batch-new-1", com.railcab.audit.domain.AuditEventType.ACCESS, "u-batch", at));
+        List<com.heuristiq.audit.domain.AuditEvent> overlap = List.of(batch.get(0),
+                event("evt-batch-new-1", com.heuristiq.audit.domain.AuditEventType.ACCESS, "u-batch", at));
         assertThat(repository.insertNew(overlap)).containsExactly("evt-batch-new-1");
 
         // Stored values read back exactly as written (same mapping as the former JPA save).
         Long id = jdbc.queryForObject("select id from audit_events where event_id = 'evt-batch-00007'", Long.class);
-        com.railcab.audit.domain.AuditEvent stored = repository.findById(id).orElseThrow();
+        com.heuristiq.audit.domain.AuditEvent stored = repository.findById(id).orElseThrow();
         assertThat(stored.getRoles()).containsExactly("SUPPORT", "AUDITOR");
         assertThat(stored.getPrivilegeIds()).containsExactly(7, 99);
-        assertThat(stored.getAppChannel()).isEqualTo(com.railcab.audit.domain.AppChannel.ADMIN_WEB);
+        assertThat(stored.getAppChannel()).isEqualTo(com.heuristiq.audit.domain.AppChannel.ADMIN_WEB);
         assertThat(stored.getOutcome()).isEqualTo(rich.getOutcome());
-        assertThat(stored.getEventType()).isEqualTo(com.railcab.audit.domain.AuditEventType.ACCESS);
+        assertThat(stored.getEventType()).isEqualTo(com.heuristiq.audit.domain.AuditEventType.ACCESS);
         assertThat(stored.getOccurredAt()).isEqualTo(rich.getOccurredAt());
         assertThat(stored.getExpireAt()).isEqualTo(rich.getExpireAt());
         assertThat(stored.getTenantId()).isEqualTo("org-a");
@@ -136,16 +136,16 @@ class PostgresMigrationTest extends AbstractAuditModeTest {
         assertThat(stored.getStatusCode()).isEqualTo(200);
         assertThat(stored.getDurationMs()).isEqualTo(5L);
         assertThat(stored.getCorrelationId()).isEqualTo("c-evt-batch-00007");
-        com.railcab.audit.domain.AuditPayload storedPayload = repository.findPayload("evt-batch-00007").orElseThrow();
+        com.heuristiq.audit.domain.AuditPayload storedPayload = repository.findPayload("evt-batch-00007").orElseThrow();
         assertThat(storedPayload.getRequestHeaders()).containsEntry("Authorization", "***");
         assertThat(storedPayload.isResponseBodyTruncated()).isTrue();
         assertThat(storedPayload.getRequestBodySize()).isEqualTo(10L);
         assertThat(storedPayload.getExpireAt()).isEqualTo(at.plus(java.time.Duration.ofDays(30)));
     }
 
-    private static com.railcab.audit.domain.AuditPayload payload(String eventId, String body) {
+    private static com.heuristiq.audit.domain.AuditPayload payload(String eventId, String body) {
         java.time.Instant at = java.time.Instant.parse("2026-05-01T10:00:00Z");
-        return com.railcab.audit.domain.AuditPayload.builder().eventId(eventId)
+        return com.heuristiq.audit.domain.AuditPayload.builder().eventId(eventId)
                 .requestHeaders(new java.util.LinkedHashMap<>(java.util.Map.of("Authorization", "***")))
                 .responseHeaders(null).requestBody(body).responseBody("{}").requestBodyTruncated(false)
                 .responseBodyTruncated(true).requestBodySize(10L).responseBodySize(2L).bodyContentType("application/json")

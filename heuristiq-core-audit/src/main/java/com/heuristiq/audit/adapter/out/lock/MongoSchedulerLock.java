@@ -1,7 +1,7 @@
-package com.railcab.audit.adapter.out.lock;
+package com.heuristiq.audit.adapter.out.lock;
 
-import static com.railcab.audit.adapter.out.persistence.PersistenceConstants.*;
-import com.railcab.audit.domain.SchedulerLock;
+import static com.heuristiq.audit.adapter.out.persistence.PersistenceConstants.*;
+import com.heuristiq.audit.domain.SchedulerLock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

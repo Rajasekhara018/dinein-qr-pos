@@ -1,7 +1,7 @@
-package com.railcab.audit.adapter.out.persistence.mongo;
+package com.heuristiq.audit.adapter.out.persistence.mongo;
 
-import static com.railcab.audit.adapter.out.persistence.PersistenceConstants.*;
-import com.railcab.audit.domain.AuditPayload;
+import static com.heuristiq.audit.adapter.out.persistence.PersistenceConstants.*;
+import com.heuristiq.audit.domain.AuditPayload;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;

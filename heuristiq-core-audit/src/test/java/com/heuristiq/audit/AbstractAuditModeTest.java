@@ -1,16 +1,16 @@
-package com.railcab.audit;
+package com.heuristiq.audit;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.railcab.audit.domain.AuditEvent;
-import com.railcab.audit.domain.AuditEventFilter;
-import com.railcab.audit.domain.AuditEventType;
-import com.railcab.audit.domain.AuditOutcome;
-import com.railcab.audit.domain.AuditPayload;
-import com.railcab.audit.domain.AuditEventRepository;
-import com.railcab.audit.application.InputBuilder;
-import com.railcab.audit.domain.SchedulerLock;
-import com.railcab.audit.application.AuditRetentionService;
+import com.heuristiq.audit.domain.AuditEvent;
+import com.heuristiq.audit.domain.AuditEventFilter;
+import com.heuristiq.audit.domain.AuditEventType;
+import com.heuristiq.audit.domain.AuditOutcome;
+import com.heuristiq.audit.domain.AuditPayload;
+import com.heuristiq.audit.domain.AuditEventRepository;
+import com.heuristiq.audit.application.InputBuilder;
+import com.heuristiq.audit.domain.SchedulerLock;
+import com.heuristiq.audit.application.AuditRetentionService;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.junit.jupiter.api.BeforeEach;
@@ -95,7 +95,7 @@ abstract class AbstractAuditModeTest {
         return mapper.readTree(r.body());
     }
 
-    String ingestBody(com.railcab.audit.application.AuditEventInput... events) throws Exception {
+    String ingestBody(com.heuristiq.audit.application.AuditEventInput... events) throws Exception {
         return mapper.writeValueAsString(Map.of("events", List.of(events)));
     }
 
@@ -302,7 +302,7 @@ abstract class AbstractAuditModeTest {
         special.setFeature("nms");
         special.setScreenKey("notifications.log");
         special.setOutcome(AuditOutcome.DENIED);
-        special.setAppChannel(com.railcab.audit.domain.AppChannel.ADMIN_WEB);
+        special.setAppChannel(com.heuristiq.audit.domain.AppChannel.ADMIN_WEB);
         special.setMethod("POST");
         special.setPath("/api/Rider/50%_Off/Special");
         events.add(special);
@@ -324,7 +324,7 @@ abstract class AbstractAuditModeTest {
         assertThat(ids(filter(null, null, null, "notifications.log", null, null, null, null, null, null, null))).containsExactly("evt-special-01");
         assertThat(ids(filter(null, null, null, null, AuditEventType.COMMUNICATION, null, null, null, null, null, null))).containsExactly("evt-special-01");
         assertThat(ids(filter(null, null, null, null, null, AuditOutcome.DENIED, null, null, null, null, null))).containsExactly("evt-special-01");
-        assertThat(ids(filter(null, null, null, null, null, null, com.railcab.audit.domain.AppChannel.ADMIN_WEB, null, null, null, null))).containsExactly("evt-special-01");
+        assertThat(ids(filter(null, null, null, null, null, null, com.heuristiq.audit.domain.AppChannel.ADMIN_WEB, null, null, null, null))).containsExactly("evt-special-01");
         assertThat(ids(filter(null, null, null, null, null, null, null, 99, null, null, null))).containsExactly("evt-special-01");
         assertThat(ids(filter(null, null, null, null, null, null, null, 9, null, null, null))).isEmpty();
         assertThat(ids(filter(null, null, null, null, null, null, null, null, "post", null, null))).containsExactly("evt-special-01");
@@ -385,8 +385,8 @@ abstract class AbstractAuditModeTest {
         oldEvent.setFeature("legacy-feature");
         oldEvent.setExpireAt(Instant.now().plus(Duration.ofDays(1)));
         repository.insertNew(List.of(oldEvent));
-        assertThat(repository.facets(Instant.now().minus(Duration.ofDays(30)), 500, com.railcab.audit.domain.TenantScope.ALL).features()).doesNotContain("legacy-feature");
-        assertThat(repository.facets(Instant.now().minus(Duration.ofDays(90)), 500, com.railcab.audit.domain.TenantScope.ALL).features()).contains("legacy-feature");
+        assertThat(repository.facets(Instant.now().minus(Duration.ofDays(30)), 500, com.heuristiq.audit.domain.TenantScope.ALL).features()).doesNotContain("legacy-feature");
+        assertThat(repository.facets(Instant.now().minus(Duration.ofDays(90)), 500, com.heuristiq.audit.domain.TenantScope.ALL).features()).contains("legacy-feature");
     }
 
     // ---------------------------------------------------------------- organization separation
@@ -491,7 +491,7 @@ abstract class AbstractAuditModeTest {
     }
 
     private AuditEventFilter filter(String userId, String role, String feature, String screenKey, AuditEventType type,
-                                    AuditOutcome outcome, com.railcab.audit.domain.AppChannel channel, Integer privilegeId,
+                                    AuditOutcome outcome, com.heuristiq.audit.domain.AppChannel channel, Integer privilegeId,
                                     String method, String path, String correlationId) {
         return new AuditEventFilter(userId, role, feature, screenKey, type, outcome, channel, privilegeId, method, path,
                 correlationId, null, null);

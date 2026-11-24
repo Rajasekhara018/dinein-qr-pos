@@ -10,7 +10,7 @@ The platform's central audit trail. One store (`audit_events` plus `audit_event_
 | `PAYMENT_GATEWAY` | Payment service (later phase) | one gateway call: gateway, operation, gatewayRef, paymentId, failureReason |
 | `DOMAIN` | any service | a business action (approve, refund, config change) |
 
-Port `9023` (`AUDIT_PORT`), package `com.railcab.audit`, Eureka name `Rider-AuditService`, API prefix `/api/v1/audit`,
+Port `9023` (`AUDIT_PORT`), package `com.heuristiq.audit`, Eureka name `Rider-AuditService`, API prefix `/api/v1/audit`,
 through the gateway `/api/rider/audit/audit/...` (the first `audit` is the service prefix, the second the controller path,
 exactly like `/api/rider/config/config/...`). Swagger: `/api/rider/audit/swagger-ui/index.html`; Javadoc: `/api/rider/audit/javadoc/`.
 

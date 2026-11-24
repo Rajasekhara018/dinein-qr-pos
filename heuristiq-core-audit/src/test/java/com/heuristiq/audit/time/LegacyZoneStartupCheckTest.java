@@ -1,4 +1,4 @@
-package com.railcab.audit.time;
+package com.heuristiq.audit.time;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

@@ -1,4 +1,4 @@
-package com.railcab.audit.config;
+package com.heuristiq.audit.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.annotation.Bean;

@@ -24,8 +24,7 @@ from an admin panel.
 
 - The business requirements (multi-region: India, Germany, UK, France, USA, Australia) are in [docs/BRD.md](docs/BRD.md).
 - Country laws and regulations, with controls and review dates, are tracked in [docs/COMPLIANCE.md](docs/COMPLIANCE.md).
-- The original brief is in [docs/REQUIREMENTS.md](docs/REQUIREMENTS.md).
-- Deliberate deviations and design choices are in [docs/DECISIONS.md](docs/DECISIONS.md). Main ones: Gradle,
+- Main design choices (the former `docs/DECISIONS.md` was removed in commit 18397ce; see git history): Gradle,
   an NgModule-based Angular app, and pluggable payment and notification providers.
 
 ---
@@ -40,12 +39,12 @@ from an admin panel.
  Razorpay / PayU / Pine Labs ──webhooks──▶ /api/v1/webhooks/{provider}
 ```
 
-**Backend** (`backend/`) — Java 21, Spring Boot 3.5, Gradle.
+**Backend** (`heuristiq-dinein-core/`) — Java 21, Spring Boot 3.5, Gradle.
 - Stack: Spring Security with stateless JWT, JPA/Hibernate, Flyway, STOMP WebSocket.
 - Packages are feature-first under `com.heuristq.dinein`: `auth`, `staff`, `image`, `menu`, `table`, `guest`,
   `order`, `payment`, `notification`, `report`, `settings`, `realtime`, `shared`.
 - **API:** every REST endpoint is versioned under `/api/v1/...` (declared on each controller's `@RequestMapping`).
-  The STOMP endpoint `/ws` is not versioned. See "API versioning" in [docs/DECISIONS.md](docs/DECISIONS.md).
+  The STOMP endpoint `/ws` is not versioned.
 - **Money:** `BigDecimal` everywhere; paise (`long`) only at the payment-gateway edge.
 - **Prices are computed on the server only.** Order lines snapshot name, price and GST, so later menu edits never
   change a past bill.
@@ -60,7 +59,7 @@ from an admin panel.
   - Messages are sent after the transaction commits and asynchronously, so a failing provider never affects an order.
 - **Realtime:** WebSocket is only a notification channel. Clients refetch REST state on every (re)connect.
 
-**Frontend** (`frontend/`) — Angular 21 (NgModules, signals, zoneless, OnPush), Tailwind CSS, Angular CDK, rx-stomp,
+**Frontend** (`heuristiq-web-dinein/`) — Angular 21 (NgModules, signals, zoneless, OnPush), Tailwind CSS, Angular CDK, rx-stomp,
 PWA service worker.
 
 ### Order lifecycle
@@ -107,13 +106,13 @@ docker run -d --name dinein-pg -e POSTGRES_DB=dinein -e POSTGRES_USER=dinein -e 
   -p 5432:5432 postgres:16-alpine
 
 # 2. Backend on :8080 – the dev profile is the default: sample data, Swagger UI, relaxed cookies.
-cd backend
+cd heuristiq-dinein-core
 ./gradlew bootRun
 #   Swagger UI:  http://localhost:8080/swagger-ui.html (lists the /api/v1/... endpoints; Swagger itself is unversioned)
 #   First owner: owner / ChangeMe@123 (dev default; change it on first login)
 
 # 3. Frontend on :4200 – proxy.conf.json forwards /api and /ws to :8080, so no CORS setup is needed.
-cd frontend
+cd heuristiq-web-dinein
 npm install
 npm start
 ```
@@ -124,7 +123,7 @@ with `psql` (`select label, qr_token from dining_table;`) and open `http://local
 **Frontend against the deployed UAT backend** (no local backend or database needed):
 
 ```bash
-cd frontend
+cd heuristiq-web-dinein
 npm run start:uat            # proxies /api and /ws to http://35.154.15.238:9030 (see proxy.uat.conf.mjs)
 # another backend: DINEIN_API_TARGET=http://<host>:<port> npm run start:uat
 ```
@@ -138,10 +137,10 @@ Jenkins `dinein_bootstrap_owner` credential, and QR links point at `http://35.15
 
 | Command | What it runs |
 |---|---|
-| `cd backend && ./gradlew test` | Unit tests: pricing/GST rounding, state machine, Razorpay/PayU/Pine Labs signatures, Pine Labs API client (mocked HTTP), image validation, guest-session tampering, notifications |
-| `cd backend && ./gradlew integrationTest` | Testcontainers (needs Docker): place → verify → kitchen; duplicate webhooks; webhook/verify in either order; amount mismatch; unavailable items; idempotent placement; price-change snapshot; expiry reconciliation; auth lockout, refresh rotation/reuse, CSRF, roles, kitchen PIN devices; waiter PIN login and role access; cash orders straight to the kitchen; takeaway switch; serve; manual refunds of offline payments; counter settlement of expired orders; payment-channel and order-type reports |
-| `cd frontend && npx ng test --watch=false` | Vitest unit/component tests |
-| `cd frontend && npx playwright test` | Guest happy path (incl. the takeaway choice), kitchen board, admin and waiter app end to end (backend, STOMP and checkout are mocked) |
+| `cd heuristiq-dinein-core && ./gradlew test` | Unit tests: pricing/GST rounding, state machine, Razorpay/PayU/Pine Labs signatures, Pine Labs API client (mocked HTTP), image validation, guest-session tampering, notifications |
+| `cd heuristiq-dinein-core && ./gradlew integrationTest` | Testcontainers (needs Docker): place → verify → kitchen; duplicate webhooks; webhook/verify in either order; amount mismatch; unavailable items; idempotent placement; price-change snapshot; expiry reconciliation; auth lockout, refresh rotation/reuse, CSRF, roles, kitchen PIN devices; waiter PIN login and role access; cash orders straight to the kitchen; takeaway switch; serve; manual refunds of offline payments; counter settlement of expired orders; payment-channel and order-type reports |
+| `cd heuristiq-web-dinein && npx ng test --watch=false` | Vitest unit/component tests |
+| `cd heuristiq-web-dinein && npx playwright test` | Guest happy path (incl. the takeaway choice), kitchen board, admin and waiter app end to end (backend, STOMP and checkout are mocked) |
 
 ---
 
@@ -239,7 +238,7 @@ origin so QR codes and redirects point there.
    - If you firewall the backend, allow Pine Labs' published webhook IPs.
 5. Refunds call `POST /api/pay/v1/refunds/{order_id}`.
 6. Points still to check against a live UAT account are marked `// VERIFY:` in `payment/gateway/pinelabs/` and
-   listed in `docs/DECISIONS.md`.
+   were listed in the former `docs/DECISIONS.md` (see git history before commit 18397ce).
 
 ### Adding a provider
 
@@ -406,7 +405,7 @@ IST after a 24-hour grace period. Copy dumps off the server (object storage or a
 ## Security summary
 
 - HTTPS in production (terminate TLS in front of Nginx and set `APP_COOKIES_SECURE=true`). Enable the HSTS line in
-  `frontend/nginx/default.conf`.
+  `heuristiq-web-dinein/nginx/default.conf`.
 - Nginx sends a CSP that allows only Razorpay's checkout/API and PayU form targets (Pine Labs is a top-level redirect and needs no entry), plus `frame-ancestors 'none'` and
   `nosniff`.
 - Staff access tokens last 15 minutes. The refresh token is an HttpOnly, `SameSite=Strict` cookie scoped to

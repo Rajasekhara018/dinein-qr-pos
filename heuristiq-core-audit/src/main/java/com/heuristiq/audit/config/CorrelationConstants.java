@@ -1,4 +1,4 @@
-package com.railcab.audit.config;
+package com.heuristiq.audit.config;
 
 /**
  * Header and MDC key of the correlation id.

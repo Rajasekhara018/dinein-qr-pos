@@ -1,9 +1,9 @@
-package com.railcab.audit.adapter.in.web;
+package com.heuristiq.audit.adapter.in.web;
 
-import static com.railcab.audit.adapter.in.web.WebConstants.*;
-import com.railcab.audit.application.AuditEventInput;
-import com.railcab.audit.application.AuditIngestService;
-import com.railcab.audit.common.CommonResponseObject;
+import static com.heuristiq.audit.adapter.in.web.WebConstants.*;
+import com.heuristiq.audit.application.AuditEventInput;
+import com.heuristiq.audit.application.AuditIngestService;
+import com.heuristiq.audit.common.CommonResponseObject;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;

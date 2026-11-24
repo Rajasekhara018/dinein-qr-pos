@@ -1,6 +1,6 @@
-package com.railcab.audit.application;
+package com.heuristiq.audit.application;
 
-import static com.railcab.audit.application.IngestConstants.*;
+import static com.heuristiq.audit.application.IngestConstants.*;
 import org.springframework.stereotype.Component;
 
 import java.time.Clock;

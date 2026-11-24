@@ -1,9 +1,9 @@
-package com.railcab.audit.adapter.out.persistence.jpa;
+package com.heuristiq.audit.adapter.out.persistence.jpa;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.railcab.audit.domain.AuditEvent;
-import com.railcab.audit.domain.AuditPayload;
+import com.heuristiq.audit.domain.AuditEvent;
+import com.heuristiq.audit.domain.AuditPayload;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;

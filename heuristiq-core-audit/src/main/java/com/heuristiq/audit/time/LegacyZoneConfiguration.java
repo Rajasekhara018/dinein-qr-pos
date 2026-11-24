@@ -1,4 +1,4 @@
-package com.railcab.audit.time;
+package com.heuristiq.audit.time;
 
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;

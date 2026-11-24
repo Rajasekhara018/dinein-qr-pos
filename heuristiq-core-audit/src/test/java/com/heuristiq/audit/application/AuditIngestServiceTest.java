@@ -1,14 +1,14 @@
-package com.railcab.audit.application;
+package com.heuristiq.audit.application;
 
-import com.railcab.audit.domain.AppChannel;
-import com.railcab.audit.domain.AuditException;
-import com.railcab.audit.domain.PageResult;
-import com.railcab.audit.config.AuditProperties;
-import com.railcab.audit.domain.AuditEvent;
-import com.railcab.audit.domain.AuditEventFilter;
-import com.railcab.audit.domain.AuditFacets;
-import com.railcab.audit.domain.AuditPayload;
-import com.railcab.audit.domain.AuditEventRepository;
+import com.heuristiq.audit.domain.AppChannel;
+import com.heuristiq.audit.domain.AuditException;
+import com.heuristiq.audit.domain.PageResult;
+import com.heuristiq.audit.config.AuditProperties;
+import com.heuristiq.audit.domain.AuditEvent;
+import com.heuristiq.audit.domain.AuditEventFilter;
+import com.heuristiq.audit.domain.AuditFacets;
+import com.heuristiq.audit.domain.AuditPayload;
+import com.heuristiq.audit.domain.AuditEventRepository;
 import org.junit.jupiter.api.Test;
 
 import java.time.Clock;
@@ -77,12 +77,12 @@ class AuditIngestServiceTest {
         }
 
         @Override
-        public List<AuditEvent> findByCorrelationId(String correlationId, int max, com.railcab.audit.domain.TenantScope scope) {
+        public List<AuditEvent> findByCorrelationId(String correlationId, int max, com.heuristiq.audit.domain.TenantScope scope) {
             throw new UnsupportedOperationException();
         }
 
         @Override
-        public AuditFacets facets(Instant since, int maxValues, com.railcab.audit.domain.TenantScope scope) {
+        public AuditFacets facets(Instant since, int maxValues, com.heuristiq.audit.domain.TenantScope scope) {
             throw new UnsupportedOperationException();
         }
 

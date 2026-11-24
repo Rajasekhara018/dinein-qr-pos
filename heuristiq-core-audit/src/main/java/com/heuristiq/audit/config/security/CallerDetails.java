@@ -1,4 +1,4 @@
-package com.railcab.audit.config.security;
+package com.heuristiq.audit.config.security;
 
 /**
  * Organization facts about the authenticated caller, attached to the authentication as its details.

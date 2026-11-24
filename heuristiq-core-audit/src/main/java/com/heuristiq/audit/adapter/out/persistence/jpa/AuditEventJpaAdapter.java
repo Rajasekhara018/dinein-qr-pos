@@ -1,13 +1,13 @@
-package com.railcab.audit.adapter.out.persistence.jpa;
+package com.heuristiq.audit.adapter.out.persistence.jpa;
 
-import static com.railcab.audit.adapter.out.persistence.PersistenceConstants.*;
-import com.railcab.audit.domain.AuditEventRepository;
-import com.railcab.audit.domain.PageResult;
-import com.railcab.audit.domain.AuditEvent;
-import com.railcab.audit.domain.AuditEventFilter;
-import com.railcab.audit.domain.AuditFacets;
-import com.railcab.audit.domain.AuditPayload;
-import com.railcab.audit.domain.TenantScope;
+import static com.heuristiq.audit.adapter.out.persistence.PersistenceConstants.*;
+import com.heuristiq.audit.domain.AuditEventRepository;
+import com.heuristiq.audit.domain.PageResult;
+import com.heuristiq.audit.domain.AuditEvent;
+import com.heuristiq.audit.domain.AuditEventFilter;
+import com.heuristiq.audit.domain.AuditFacets;
+import com.heuristiq.audit.domain.AuditPayload;
+import com.heuristiq.audit.domain.TenantScope;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.data.domain.Page;

@@ -1,4 +1,4 @@
-package com.railcab.audit.domain;
+package com.heuristiq.audit.domain;
 
 /**
  * Which organizations' audit records a reader may reach. A record carries the organization it was created in

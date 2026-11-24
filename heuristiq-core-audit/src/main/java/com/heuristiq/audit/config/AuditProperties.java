@@ -1,4 +1,4 @@
-package com.railcab.audit.config;
+package com.heuristiq.audit.config;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -65,6 +65,6 @@ public class AuditProperties {
         private int maxHeaders = 60;
         /** Ant patterns on the event path; bodies of matching events are dropped (login, OTP, password, token, card). */
         private java.util.List<String> skipBodyPaths = new java.util.ArrayList<>(
-                com.railcab.audit.application.RedactionConstants.DEFAULT_SKIP_BODY_PATHS);
+                com.heuristiq.audit.application.RedactionConstants.DEFAULT_SKIP_BODY_PATHS);
     }
 }

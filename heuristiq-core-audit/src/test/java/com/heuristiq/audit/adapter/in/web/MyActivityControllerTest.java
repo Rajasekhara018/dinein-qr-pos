@@ -1,9 +1,9 @@
-package com.railcab.audit.adapter.in.web;
+package com.heuristiq.audit.adapter.in.web;
 
-import com.railcab.audit.application.AuditQueryService;
-import com.railcab.audit.application.CallerIdentity;
-import com.railcab.audit.application.EventQuery;
-import com.railcab.audit.domain.AuditException;
+import com.heuristiq.audit.application.AuditQueryService;
+import com.heuristiq.audit.application.CallerIdentity;
+import com.heuristiq.audit.application.EventQuery;
+import com.heuristiq.audit.domain.AuditException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
