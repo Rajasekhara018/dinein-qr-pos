@@ -22,6 +22,8 @@ from an admin panel.
 | Kitchen | `POST /api/v1/auth/kitchen-device`, password or PIN (30-day device token) | Kitchen board only: start, ready, served |
 | Waiter | `POST /api/v1/auth/login`, password **or PIN** | Waiter screen only (`/api/v1/waiter/**`): tables, active orders, serve READY orders, take orders paid online or offline |
 
+- The business requirements (multi-region: India, Germany, UK, France, USA, Australia) are in [docs/BRD.md](docs/BRD.md).
+- Country laws and regulations, with controls and review dates, are tracked in [docs/COMPLIANCE.md](docs/COMPLIANCE.md).
 - The original brief is in [docs/REQUIREMENTS.md](docs/REQUIREMENTS.md).
 - Deliberate deviations and design choices are in [docs/DECISIONS.md](docs/DECISIONS.md). Main ones: Gradle,
   an NgModule-based Angular app, and pluggable payment and notification providers.
