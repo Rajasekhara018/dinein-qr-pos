@@ -1,8 +1,8 @@
-package com.railcab.dms.documenttype.support;
+package com.heuristiq.documents.documenttype.support;
 
-import com.railcab.dms.documenttype.domain.DocumentType;
-import com.railcab.dms.documenttype.domain.DocumentTypeException;
-import com.railcab.dms.documenttype.domain.DocumentTypeRepository;
+import com.heuristiq.documents.documenttype.domain.DocumentType;
+import com.heuristiq.documents.documenttype.domain.DocumentTypeException;
+import com.heuristiq.documents.documenttype.domain.DocumentTypeRepository;
 
 import java.util.LinkedHashMap;
 import java.util.List;

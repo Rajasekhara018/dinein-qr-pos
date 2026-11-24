@@ -1,8 +1,8 @@
-package com.railcab.dms.readiness.adapter.in;
+package com.heuristiq.documents.readiness.adapter.in;
 
-import com.railcab.dms.common.dto.CommonResponseObject;
-import com.railcab.dms.exception.DmsException;
-import com.railcab.dms.readiness.application.DmsReadinessService;
+import com.heuristiq.documents.common.dto.CommonResponseObject;
+import com.heuristiq.documents.exception.DmsException;
+import com.heuristiq.documents.readiness.application.DmsReadinessService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

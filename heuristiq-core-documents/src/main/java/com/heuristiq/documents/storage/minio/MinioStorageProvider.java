@@ -1,13 +1,13 @@
-package com.railcab.dms.storage.minio;
+package com.heuristiq.documents.storage.minio;
 
-import com.railcab.dms.config.DmsProperties;
-import com.railcab.dms.exception.DmsException;
-import com.railcab.dms.storage.StorageDigests;
-import com.railcab.dms.storage.StorageProvider;
-import com.railcab.dms.storage.aws.S3ClientFactory;
-import com.railcab.dms.storage.aws.S3PutRequests;
-import com.railcab.dms.storage.encryption.EncryptionCapability;
-import com.railcab.dms.storage.encryption.StorageEncryptionPolicy;
+import com.heuristiq.documents.config.DmsProperties;
+import com.heuristiq.documents.exception.DmsException;
+import com.heuristiq.documents.storage.StorageDigests;
+import com.heuristiq.documents.storage.StorageProvider;
+import com.heuristiq.documents.storage.aws.S3ClientFactory;
+import com.heuristiq.documents.storage.aws.S3PutRequests;
+import com.heuristiq.documents.storage.encryption.EncryptionCapability;
+import com.heuristiq.documents.storage.encryption.StorageEncryptionPolicy;
 import org.springframework.beans.factory.annotation.Autowired;
 import jakarta.annotation.PreDestroy;
 import org.springframework.core.io.InputStreamResource;

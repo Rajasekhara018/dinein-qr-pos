@@ -1,4 +1,4 @@
-package com.railcab.dms.common.cache;
+package com.heuristiq.documents.common.cache;
 
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;

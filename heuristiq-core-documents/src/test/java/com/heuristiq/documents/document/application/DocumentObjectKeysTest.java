@@ -1,6 +1,6 @@
-package com.railcab.dms.document.application;
+package com.heuristiq.documents.document.application;
 
-import com.railcab.dms.exception.DmsException;
+import com.heuristiq.documents.exception.DmsException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;

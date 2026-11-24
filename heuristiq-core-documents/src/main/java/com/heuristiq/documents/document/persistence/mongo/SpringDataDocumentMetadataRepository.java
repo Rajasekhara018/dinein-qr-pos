@@ -1,4 +1,4 @@
-package com.railcab.dms.document.persistence.mongo;
+package com.heuristiq.documents.document.persistence.mongo;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

@@ -1,4 +1,4 @@
-package com.railcab.dms.document.audit.postgres;
+package com.heuristiq.documents.document.audit.postgres;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

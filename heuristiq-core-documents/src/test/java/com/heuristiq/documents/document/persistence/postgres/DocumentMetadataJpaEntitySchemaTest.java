@@ -1,4 +1,4 @@
-package com.railcab.dms.document.persistence.postgres;
+package com.heuristiq.documents.document.persistence.postgres;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;

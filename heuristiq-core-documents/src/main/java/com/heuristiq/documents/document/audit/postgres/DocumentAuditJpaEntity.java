@@ -1,7 +1,7 @@
-package com.railcab.dms.document.audit.postgres;
+package com.heuristiq.documents.document.audit.postgres;
 
-import com.railcab.dms.document.audit.DocumentAuditAction;
-import com.railcab.dms.document.audit.DocumentAuditEvent;
+import com.heuristiq.documents.document.audit.DocumentAuditAction;
+import com.heuristiq.documents.document.audit.DocumentAuditEvent;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;

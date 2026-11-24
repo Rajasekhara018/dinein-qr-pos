@@ -1,17 +1,17 @@
-package com.railcab.dms.documenttype.adapter.in;
+package com.heuristiq.documents.documenttype.adapter.in;
 
-import com.railcab.dms.documenttype.application.CallerContext;
-import com.railcab.dms.documenttype.application.DocumentTypeApplyService;
-import com.railcab.dms.documenttype.application.DocumentTypeFileCheckService;
-import com.railcab.dms.documenttype.application.DocumentTypeQueryService;
-import com.railcab.dms.documenttype.application.DocumentTypeSubmitService;
-import com.railcab.dms.documenttype.application.SubmissionResult;
-import com.railcab.dms.documenttype.domain.DocumentFormat;
-import com.railcab.dms.documenttype.domain.DocumentType;
-import com.railcab.dms.documenttype.domain.DocumentTypeException;
-import com.railcab.dms.documenttype.domain.DocumentTypeRepository;
-import com.railcab.dms.documenttype.domain.DocumentTypeRule;
-import com.railcab.dms.exception.GlobalExceptionHandler;
+import com.heuristiq.documents.documenttype.application.CallerContext;
+import com.heuristiq.documents.documenttype.application.DocumentTypeApplyService;
+import com.heuristiq.documents.documenttype.application.DocumentTypeFileCheckService;
+import com.heuristiq.documents.documenttype.application.DocumentTypeQueryService;
+import com.heuristiq.documents.documenttype.application.DocumentTypeSubmitService;
+import com.heuristiq.documents.documenttype.application.SubmissionResult;
+import com.heuristiq.documents.documenttype.domain.DocumentFormat;
+import com.heuristiq.documents.documenttype.domain.DocumentType;
+import com.heuristiq.documents.documenttype.domain.DocumentTypeException;
+import com.heuristiq.documents.documenttype.domain.DocumentTypeRepository;
+import com.heuristiq.documents.documenttype.domain.DocumentTypeRule;
+import com.heuristiq.documents.exception.GlobalExceptionHandler;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -63,7 +63,7 @@ class DocumentTypeControllerTest {
                         org.springframework.http.converter.json.Jackson2ObjectMapperBuilder.json().build()))
                 .build();
         SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(
-                new com.railcab.dms.security.DmsPrincipal("user-1", "ADMIN", "org-a"), null, List.of()));
+                new com.heuristiq.documents.security.DmsPrincipal("user-1", "ADMIN", "org-a"), null, List.of()));
     }
 
     @AfterEach

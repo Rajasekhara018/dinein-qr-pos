@@ -1,8 +1,8 @@
-package com.railcab.dms.centralaudit.postgres;
+package com.heuristiq.documents.centralaudit.postgres;
 
-import com.railcab.dms.centralaudit.CentralAuditConstants;
-import com.railcab.dms.centralaudit.OutboxEntry;
-import com.railcab.dms.centralaudit.OutboxStatus;
+import com.heuristiq.documents.centralaudit.CentralAuditConstants;
+import com.heuristiq.documents.centralaudit.OutboxEntry;
+import com.heuristiq.documents.centralaudit.OutboxStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

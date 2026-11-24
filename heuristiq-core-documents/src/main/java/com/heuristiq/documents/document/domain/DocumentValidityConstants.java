@@ -1,4 +1,4 @@
-package com.railcab.dms.document.domain;
+package com.heuristiq.documents.document.domain;
 
 import java.util.List;
 

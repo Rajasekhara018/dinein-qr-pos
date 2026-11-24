@@ -1,4 +1,4 @@
-package com.railcab.dms.document.audit;
+package com.heuristiq.documents.document.audit;
 
 import lombok.Data;
 import org.springframework.data.annotation.Id;

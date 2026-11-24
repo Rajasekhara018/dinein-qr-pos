@@ -1,7 +1,7 @@
-package com.railcab.dms.scan.metadefender;
+package com.heuristiq.documents.scan.metadefender;
 
-import com.railcab.dms.config.DmsProperties;
-import com.railcab.dms.scan.ScanProvider;
+import com.heuristiq.documents.config.DmsProperties;
+import com.heuristiq.documents.scan.ScanProvider;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
 import lombok.extern.slf4j.Slf4j;

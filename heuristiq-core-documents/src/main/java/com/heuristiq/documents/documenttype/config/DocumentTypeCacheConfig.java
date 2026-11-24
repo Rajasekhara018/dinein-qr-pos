@@ -1,9 +1,9 @@
-package com.railcab.dms.documenttype.config;
+package com.heuristiq.documents.documenttype.config;
 
 import com.github.benmanes.caffeine.cache.Ticker;
-import com.railcab.dms.common.cache.DmsCacheProperties;
-import com.railcab.dms.documenttype.adapter.out.cache.CachingDocumentTypeRules;
-import com.railcab.dms.documenttype.application.DocumentTypeQueryService;
+import com.heuristiq.documents.common.cache.DmsCacheProperties;
+import com.heuristiq.documents.documenttype.adapter.out.cache.CachingDocumentTypeRules;
+import com.heuristiq.documents.documenttype.application.DocumentTypeQueryService;
 import io.micrometer.core.instrument.MeterRegistry;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;

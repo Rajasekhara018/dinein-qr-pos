@@ -1,4 +1,4 @@
-package com.railcab.dms.expiry.adapter.in;
+package com.heuristiq.documents.expiry.adapter.in;
 
 /** Paths of document expiry (D12). */
 public final class ExpiryWebConstants {

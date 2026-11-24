@@ -1,6 +1,6 @@
-package com.railcab.dms.config;
+package com.heuristiq.documents.config;
 
-import com.railcab.dms.common.DmsCommonConstants;
+import com.heuristiq.documents.common.DmsCommonConstants;
 import com.mongodb.MongoClientSettings;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;

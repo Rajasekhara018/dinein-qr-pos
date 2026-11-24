@@ -1,10 +1,10 @@
-package com.railcab.dms.document.application;
+package com.heuristiq.documents.document.application;
 
-import com.railcab.dms.config.DmsProperties;
-import com.railcab.dms.exception.DmsException;
-import com.railcab.dms.scan.DocumentContentSniffer;
-import com.railcab.dms.scan.ScanProviderRegistry;
-import com.railcab.dms.scan.basic.BasicScanProvider;
+import com.heuristiq.documents.config.DmsProperties;
+import com.heuristiq.documents.exception.DmsException;
+import com.heuristiq.documents.scan.DocumentContentSniffer;
+import com.heuristiq.documents.scan.ScanProviderRegistry;
+import com.heuristiq.documents.scan.basic.BasicScanProvider;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockMultipartFile;
 

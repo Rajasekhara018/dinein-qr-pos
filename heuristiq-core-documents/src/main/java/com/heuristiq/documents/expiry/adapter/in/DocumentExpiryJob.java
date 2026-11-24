@@ -1,4 +1,4 @@
-package com.railcab.dms.expiry.adapter.in;
+package com.heuristiq.documents.expiry.adapter.in;
 
 import java.util.UUID;
 
@@ -7,10 +7,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import com.railcab.dms.common.lock.DistributedLock;
-import com.railcab.dms.expiry.application.DocumentExpiryService;
-import com.railcab.dms.expiry.application.ExpiryConstants;
-import com.railcab.dms.expiry.config.DocumentExpiryProperties;
+import com.heuristiq.documents.common.lock.DistributedLock;
+import com.heuristiq.documents.expiry.application.DocumentExpiryService;
+import com.heuristiq.documents.expiry.application.ExpiryConstants;
+import com.heuristiq.documents.expiry.config.DocumentExpiryProperties;
 
 /**
  * Sends the day's document expiry reminders (D12). Every replica fires the cron, so a {@link DistributedLock} lease lets only one

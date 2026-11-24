@@ -1,11 +1,11 @@
-package com.railcab.dms.search.projection;
+package com.heuristiq.documents.search.projection;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.railcab.dms.common.paging.PagedResult;
-import com.railcab.dms.document.persistence.DocumentSearchCriteria;
-import com.railcab.dms.documenttype.application.DocumentTypeQueryService;
-import com.railcab.dms.documenttype.domain.DocumentTypeRepository;
-import com.railcab.dms.lifecycle.application.LifecycleQueryService;
+import com.heuristiq.documents.common.paging.PagedResult;
+import com.heuristiq.documents.document.persistence.DocumentSearchCriteria;
+import com.heuristiq.documents.documenttype.application.DocumentTypeQueryService;
+import com.heuristiq.documents.documenttype.domain.DocumentTypeRepository;
+import com.heuristiq.documents.lifecycle.application.LifecycleQueryService;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;

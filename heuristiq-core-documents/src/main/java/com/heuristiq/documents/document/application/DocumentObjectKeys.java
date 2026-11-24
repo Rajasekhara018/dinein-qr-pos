@@ -1,7 +1,7 @@
-package com.railcab.dms.document.application;
+package com.heuristiq.documents.document.application;
 
-import com.railcab.dms.document.audit.DocumentReasonCodes;
-import com.railcab.dms.exception.DmsException;
+import com.heuristiq.documents.document.audit.DocumentReasonCodes;
+import com.heuristiq.documents.exception.DmsException;
 import org.springframework.util.StringUtils;
 
 import java.util.Locale;

@@ -1,15 +1,15 @@
-package com.railcab.dms.document.application;
+package com.heuristiq.documents.document.application;
 
 import java.time.Instant;
 
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import com.railcab.dms.common.DmsCommonConstants;
-import com.railcab.dms.document.audit.DocumentAuditAction;
-import com.railcab.dms.document.domain.DocumentMetadata;
-import com.railcab.dms.document.persistence.DocumentMetadataStore;
-import com.railcab.dms.exception.DmsException;
+import com.heuristiq.documents.common.DmsCommonConstants;
+import com.heuristiq.documents.document.audit.DocumentAuditAction;
+import com.heuristiq.documents.document.domain.DocumentMetadata;
+import com.heuristiq.documents.document.persistence.DocumentMetadataStore;
+import com.heuristiq.documents.exception.DmsException;
 
 /**
  * Download links for another platform service (for example Rider_CommerceService showing a product's picture to shoppers). An

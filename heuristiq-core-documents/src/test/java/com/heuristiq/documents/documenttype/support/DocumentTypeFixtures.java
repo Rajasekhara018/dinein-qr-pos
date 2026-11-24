@@ -1,8 +1,8 @@
-package com.railcab.dms.documenttype.support;
+package com.heuristiq.documents.documenttype.support;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.railcab.dms.documenttype.application.CallerContext;
-import com.railcab.dms.documenttype.domain.DocumentTypeFields;
+import com.heuristiq.documents.documenttype.application.CallerContext;
+import com.heuristiq.documents.documenttype.domain.DocumentTypeFields;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -37,7 +37,7 @@ public final class DocumentTypeFixtures {
             payload.put("subjectId", submission.subjectId());
             payload.put("before", submission.before());
             payload.put("after", submission.after());
-            payload.put("beforeHash", com.railcab.dms.documenttype.application.CanonicalJson.sha256(
+            payload.put("beforeHash", com.heuristiq.documents.documenttype.application.CanonicalJson.sha256(
                     MAPPER.valueToTree(submission.before())));
             payload.put("approvedBy", approvedBy);
             payload.put("approvedAt", "2026-01-01T00:00:00Z");

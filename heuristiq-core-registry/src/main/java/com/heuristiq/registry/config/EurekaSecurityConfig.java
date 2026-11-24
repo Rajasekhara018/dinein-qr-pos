@@ -1,4 +1,4 @@
-package com.railcab.serviceregistry.config;
+package com.heuristiq.registry.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

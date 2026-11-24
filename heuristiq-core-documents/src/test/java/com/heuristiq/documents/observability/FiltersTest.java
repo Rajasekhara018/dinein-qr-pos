@@ -1,7 +1,7 @@
-package com.railcab.dms.observability;
+package com.heuristiq.documents.observability;
 
-import com.railcab.dms.common.DmsCommonConstants;
-import com.railcab.dms.security.DmsPrincipal;
+import com.heuristiq.documents.common.DmsCommonConstants;
+import com.heuristiq.documents.security.DmsPrincipal;
 import jakarta.servlet.ServletException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;

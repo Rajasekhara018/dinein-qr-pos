@@ -1,11 +1,11 @@
-package com.railcab.dms.storage.local;
+package com.heuristiq.documents.storage.local;
 
-import com.railcab.dms.config.DmsProperties;
-import com.railcab.dms.exception.DmsException;
-import com.railcab.dms.storage.StorageDigests;
-import com.railcab.dms.storage.StorageProvider;
-import com.railcab.dms.storage.encryption.EncryptionCapability;
-import com.railcab.dms.storage.encryption.StorageEncryptionPolicy;
+import com.heuristiq.documents.config.DmsProperties;
+import com.heuristiq.documents.exception.DmsException;
+import com.heuristiq.documents.storage.StorageDigests;
+import com.heuristiq.documents.storage.StorageProvider;
+import com.heuristiq.documents.storage.encryption.EncryptionCapability;
+import com.heuristiq.documents.storage.encryption.StorageEncryptionPolicy;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Component;

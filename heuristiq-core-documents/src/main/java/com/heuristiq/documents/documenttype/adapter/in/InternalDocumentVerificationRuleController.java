@@ -1,7 +1,7 @@
-package com.railcab.dms.documenttype.adapter.in;
+package com.heuristiq.documents.documenttype.adapter.in;
 
-import com.railcab.dms.common.dto.CommonResponseObject;
-import com.railcab.dms.documenttype.application.DocumentTypeQueryService;
+import com.heuristiq.documents.common.dto.CommonResponseObject;
+import com.heuristiq.documents.documenttype.application.DocumentTypeQueryService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;

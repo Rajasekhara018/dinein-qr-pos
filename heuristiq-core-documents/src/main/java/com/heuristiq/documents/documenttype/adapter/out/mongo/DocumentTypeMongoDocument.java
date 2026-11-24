@@ -1,8 +1,8 @@
-package com.railcab.dms.documenttype.adapter.out.mongo;
+package com.heuristiq.documents.documenttype.adapter.out.mongo;
 
-import com.railcab.dms.documenttype.domain.DocumentFormat;
-import com.railcab.dms.documenttype.domain.DocumentType;
-import com.railcab.dms.documenttype.domain.VerificationMethod;
+import com.heuristiq.documents.documenttype.domain.DocumentFormat;
+import com.heuristiq.documents.documenttype.domain.DocumentType;
+import com.heuristiq.documents.documenttype.domain.VerificationMethod;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Version;
 import org.springframework.data.mongodb.core.index.CompoundIndex;

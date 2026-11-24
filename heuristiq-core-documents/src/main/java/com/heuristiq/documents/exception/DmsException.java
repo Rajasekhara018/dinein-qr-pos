@@ -1,4 +1,4 @@
-package com.railcab.dms.exception;
+package com.heuristiq.documents.exception;
 
 import org.springframework.http.HttpStatus;
 

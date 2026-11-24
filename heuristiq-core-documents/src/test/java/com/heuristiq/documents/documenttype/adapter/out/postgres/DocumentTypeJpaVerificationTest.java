@@ -1,10 +1,10 @@
-package com.railcab.dms.documenttype.adapter.out.postgres;
+package com.heuristiq.documents.documenttype.adapter.out.postgres;
 
-import com.railcab.dms.documenttype.application.DefaultDocumentTypeService;
-import com.railcab.dms.documenttype.domain.DocumentFormat;
-import com.railcab.dms.documenttype.domain.DocumentType;
-import com.railcab.dms.documenttype.domain.PrebuiltDocumentTypes;
-import com.railcab.dms.documenttype.domain.VerificationMethod;
+import com.heuristiq.documents.documenttype.application.DefaultDocumentTypeService;
+import com.heuristiq.documents.documenttype.domain.DocumentFormat;
+import com.heuristiq.documents.documenttype.domain.DocumentType;
+import com.heuristiq.documents.documenttype.domain.PrebuiltDocumentTypes;
+import com.heuristiq.documents.documenttype.domain.VerificationMethod;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 

@@ -1,4 +1,4 @@
-package com.railcab.dms.scan;
+package com.heuristiq.documents.scan;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockMultipartFile;

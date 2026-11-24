@@ -1,10 +1,10 @@
-package com.railcab.dms.lifecycle.adapter.in;
+package com.heuristiq.documents.lifecycle.adapter.in;
 
-import com.railcab.dms.common.dto.CommonResponseObject;
-import com.railcab.dms.document.persistence.DocumentSearchCriteria;
-import com.railcab.dms.exception.DmsException;
-import com.railcab.dms.lifecycle.application.LifecycleQueryService;
-import com.railcab.dms.security.DmsSecurityContext;
+import com.heuristiq.documents.common.dto.CommonResponseObject;
+import com.heuristiq.documents.document.persistence.DocumentSearchCriteria;
+import com.heuristiq.documents.exception.DmsException;
+import com.heuristiq.documents.lifecycle.application.LifecycleQueryService;
+import com.heuristiq.documents.security.DmsSecurityContext;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;

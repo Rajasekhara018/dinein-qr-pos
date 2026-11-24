@@ -1,7 +1,7 @@
-package com.railcab.dms.documenttype.domain;
+package com.heuristiq.documents.documenttype.domain;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.railcab.dms.documenttype.application.DocumentTypeSnapshots;
+import com.heuristiq.documents.documenttype.application.DocumentTypeSnapshots;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;

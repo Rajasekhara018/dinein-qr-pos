@@ -1,7 +1,7 @@
-package com.railcab.dms.readiness.application;
+package com.heuristiq.documents.readiness.application;
 
-import com.railcab.dms.readiness.domain.ReadinessCheck;
-import com.railcab.dms.readiness.domain.ReadinessStatus;
+import com.heuristiq.documents.readiness.domain.ReadinessCheck;
+import com.heuristiq.documents.readiness.domain.ReadinessStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -1,4 +1,4 @@
-package com.railcab.dms.documenttype.application;
+package com.heuristiq.documents.documenttype.application;
 
 /**
  * Answer to a submitted create or update: nothing is stored until a checker approves.

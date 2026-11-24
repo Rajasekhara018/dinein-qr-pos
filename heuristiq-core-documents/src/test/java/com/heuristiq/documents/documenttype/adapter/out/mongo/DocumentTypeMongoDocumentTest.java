@@ -1,7 +1,7 @@
-package com.railcab.dms.documenttype.adapter.out.mongo;
+package com.heuristiq.documents.documenttype.adapter.out.mongo;
 
-import com.railcab.dms.documenttype.domain.DocumentFormat;
-import com.railcab.dms.documenttype.domain.DocumentType;
+import com.heuristiq.documents.documenttype.domain.DocumentFormat;
+import com.heuristiq.documents.documenttype.domain.DocumentType;
 import org.junit.jupiter.api.Test;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.OptimisticLockingFailureException;
@@ -64,12 +64,12 @@ class DocumentTypeMongoDocumentTest {
         MongoDocumentTypeRepository adapter = new MongoDocumentTypeRepository(spring);
 
         org.mockito.Mockito.doThrow(new OptimisticLockingFailureException("stale")).when(spring).save(any());
-        assertEquals(com.railcab.dms.documenttype.domain.DocumentTypeException.Kind.CONFLICT,
-                assertThrows(com.railcab.dms.documenttype.domain.DocumentTypeException.class, () -> adapter.save(sample())).kind());
+        assertEquals(com.heuristiq.documents.documenttype.domain.DocumentTypeException.Kind.CONFLICT,
+                assertThrows(com.heuristiq.documents.documenttype.domain.DocumentTypeException.class, () -> adapter.save(sample())).kind());
 
         org.mockito.Mockito.doThrow(new DuplicateKeyException("dup")).when(spring).save(any());
-        assertEquals(com.railcab.dms.documenttype.domain.DocumentTypeException.Kind.CONFLICT,
-                assertThrows(com.railcab.dms.documenttype.domain.DocumentTypeException.class, () -> adapter.save(sample())).kind());
+        assertEquals(com.heuristiq.documents.documenttype.domain.DocumentTypeException.Kind.CONFLICT,
+                assertThrows(com.heuristiq.documents.documenttype.domain.DocumentTypeException.class, () -> adapter.save(sample())).kind());
     }
 
     @Test

@@ -1,4 +1,4 @@
-package com.railcab.dms.storage;
+package com.heuristiq.documents.storage;
 
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.HealthIndicator;

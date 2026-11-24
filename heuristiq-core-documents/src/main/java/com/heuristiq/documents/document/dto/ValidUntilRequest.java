@@ -1,4 +1,4 @@
-package com.railcab.dms.document.dto;
+package com.heuristiq.documents.document.dto;
 
 import java.time.LocalDate;
 

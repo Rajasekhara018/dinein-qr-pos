@@ -1,9 +1,9 @@
-package com.railcab.dms.document.application;
+package com.heuristiq.documents.document.application;
 
-import com.railcab.dms.common.lock.DistributedLock;
-import com.railcab.dms.config.DmsProperties;
-import com.railcab.dms.document.domain.DocumentMetadata;
-import com.railcab.dms.document.persistence.DocumentMetadataStore;
+import com.heuristiq.documents.common.lock.DistributedLock;
+import com.heuristiq.documents.config.DmsProperties;
+import com.heuristiq.documents.document.domain.DocumentMetadata;
+import com.heuristiq.documents.document.persistence.DocumentMetadataStore;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;

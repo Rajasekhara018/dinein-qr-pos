@@ -1,8 +1,8 @@
-package com.railcab.dms.documenttype.adapter.out.postgres;
+package com.heuristiq.documents.documenttype.adapter.out.postgres;
 
-import com.railcab.dms.documenttype.domain.DocumentFormat;
-import com.railcab.dms.documenttype.domain.DocumentType;
-import com.railcab.dms.documenttype.domain.VerificationMethod;
+import com.heuristiq.documents.documenttype.domain.DocumentFormat;
+import com.heuristiq.documents.documenttype.domain.DocumentType;
+import com.heuristiq.documents.documenttype.domain.VerificationMethod;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;

@@ -1,10 +1,10 @@
-package com.railcab.dms.lifecycle.application;
+package com.heuristiq.documents.lifecycle.application;
 
-import com.railcab.dms.common.paging.PagedResult;
-import com.railcab.dms.document.domain.DocumentMetadata;
-import com.railcab.dms.document.persistence.DocumentMetadataStore;
-import com.railcab.dms.document.persistence.DocumentSearchCriteria;
-import com.railcab.dms.exception.DmsException;
+import com.heuristiq.documents.common.paging.PagedResult;
+import com.heuristiq.documents.document.domain.DocumentMetadata;
+import com.heuristiq.documents.document.persistence.DocumentMetadataStore;
+import com.heuristiq.documents.document.persistence.DocumentSearchCriteria;
+import com.heuristiq.documents.exception.DmsException;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 

@@ -1,7 +1,7 @@
-package com.railcab.dms.centralaudit.postgres;
+package com.heuristiq.documents.centralaudit.postgres;
 
-import com.railcab.dms.centralaudit.OutboxEntry;
-import com.railcab.dms.centralaudit.OutboxStatus;
+import com.heuristiq.documents.centralaudit.OutboxEntry;
+import com.heuristiq.documents.centralaudit.OutboxStatus;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;

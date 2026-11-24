@@ -1,4 +1,4 @@
-package com.railcab.serviceregistry.config;
+package com.heuristiq.registry.config;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

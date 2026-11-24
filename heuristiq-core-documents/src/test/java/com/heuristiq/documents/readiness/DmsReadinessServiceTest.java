@@ -1,17 +1,17 @@
-package com.railcab.dms.readiness;
+package com.heuristiq.documents.readiness;
 
-import com.railcab.dms.documenttype.application.BlockedFileTypes;
-import com.railcab.dms.documenttype.application.DocumentTypeQueryService;
-import com.railcab.dms.documenttype.domain.DocumentFormat;
-import com.railcab.dms.documenttype.domain.DocumentType;
-import com.railcab.dms.documenttype.domain.DocumentTypeRepository;
-import com.railcab.dms.documenttype.support.InMemoryDocumentTypeRepository;
-import com.railcab.dms.readiness.application.DmsReadinessService;
-import com.railcab.dms.readiness.application.ReadinessCheckRunner;
-import com.railcab.dms.readiness.config.ReadinessProperties;
-import com.railcab.dms.readiness.domain.ReadinessCheck;
-import com.railcab.dms.readiness.domain.ReadinessReport;
-import com.railcab.dms.readiness.domain.ReadinessStatus;
+import com.heuristiq.documents.documenttype.application.BlockedFileTypes;
+import com.heuristiq.documents.documenttype.application.DocumentTypeQueryService;
+import com.heuristiq.documents.documenttype.domain.DocumentFormat;
+import com.heuristiq.documents.documenttype.domain.DocumentType;
+import com.heuristiq.documents.documenttype.domain.DocumentTypeRepository;
+import com.heuristiq.documents.documenttype.support.InMemoryDocumentTypeRepository;
+import com.heuristiq.documents.readiness.application.DmsReadinessService;
+import com.heuristiq.documents.readiness.application.ReadinessCheckRunner;
+import com.heuristiq.documents.readiness.config.ReadinessProperties;
+import com.heuristiq.documents.readiness.domain.ReadinessCheck;
+import com.heuristiq.documents.readiness.domain.ReadinessReport;
+import com.heuristiq.documents.readiness.domain.ReadinessStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

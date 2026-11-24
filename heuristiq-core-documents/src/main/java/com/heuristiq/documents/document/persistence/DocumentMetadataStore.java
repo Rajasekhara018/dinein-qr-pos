@@ -1,8 +1,8 @@
-package com.railcab.dms.document.persistence;
+package com.heuristiq.documents.document.persistence;
 
-import com.railcab.dms.document.domain.DocumentMetadata;
+import com.heuristiq.documents.document.domain.DocumentMetadata;
 
-import com.railcab.dms.common.paging.PagedResult;
+import com.heuristiq.documents.common.paging.PagedResult;
 
 import java.time.Instant;
 import java.time.LocalDate;

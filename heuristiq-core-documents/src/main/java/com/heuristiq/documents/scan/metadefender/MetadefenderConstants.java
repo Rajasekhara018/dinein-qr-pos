@@ -1,4 +1,4 @@
-package com.railcab.dms.scan.metadefender;
+package com.heuristiq.documents.scan.metadefender;
 
 /** Wire and wiring values of the MetaDefender Cloud v4 scan adapter. */
 public final class MetadefenderConstants {

@@ -1,4 +1,4 @@
-package com.railcab.dms.centralaudit;
+package com.heuristiq.documents.centralaudit;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;

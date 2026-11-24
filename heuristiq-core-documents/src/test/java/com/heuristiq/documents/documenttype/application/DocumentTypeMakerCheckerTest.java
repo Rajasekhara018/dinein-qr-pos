@@ -1,13 +1,13 @@
-package com.railcab.dms.documenttype.application;
+package com.heuristiq.documents.documenttype.application;
 
-import com.railcab.dms.documenttype.domain.DocumentType;
-import com.railcab.dms.documenttype.domain.DocumentTypeConstants;
-import com.railcab.dms.documenttype.domain.DocumentTypeException;
-import com.railcab.dms.documenttype.domain.DocumentTypeFields;
-import com.railcab.dms.documenttype.domain.DocumentTypeRepository;
-import com.railcab.dms.documenttype.domain.DocumentTypeRule;
-import com.railcab.dms.documenttype.support.FakeChangeRequestGateway;
-import com.railcab.dms.documenttype.support.InMemoryDocumentTypeRepository;
+import com.heuristiq.documents.documenttype.domain.DocumentType;
+import com.heuristiq.documents.documenttype.domain.DocumentTypeConstants;
+import com.heuristiq.documents.documenttype.domain.DocumentTypeException;
+import com.heuristiq.documents.documenttype.domain.DocumentTypeFields;
+import com.heuristiq.documents.documenttype.domain.DocumentTypeRepository;
+import com.heuristiq.documents.documenttype.domain.DocumentTypeRule;
+import com.heuristiq.documents.documenttype.support.FakeChangeRequestGateway;
+import com.heuristiq.documents.documenttype.support.InMemoryDocumentTypeRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -17,12 +17,12 @@ import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Map;
 
-import static com.railcab.dms.documenttype.support.DocumentTypeFixtures.MAPPER;
-import static com.railcab.dms.documenttype.support.DocumentTypeFixtures.ORG_A;
-import static com.railcab.dms.documenttype.support.DocumentTypeFixtures.ORG_B;
-import static com.railcab.dms.documenttype.support.DocumentTypeFixtures.applyPayload;
-import static com.railcab.dms.documenttype.support.DocumentTypeFixtures.caller;
-import static com.railcab.dms.documenttype.support.DocumentTypeFixtures.fields;
+import static com.heuristiq.documents.documenttype.support.DocumentTypeFixtures.MAPPER;
+import static com.heuristiq.documents.documenttype.support.DocumentTypeFixtures.ORG_A;
+import static com.heuristiq.documents.documenttype.support.DocumentTypeFixtures.ORG_B;
+import static com.heuristiq.documents.documenttype.support.DocumentTypeFixtures.applyPayload;
+import static com.heuristiq.documents.documenttype.support.DocumentTypeFixtures.caller;
+import static com.heuristiq.documents.documenttype.support.DocumentTypeFixtures.fields;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;

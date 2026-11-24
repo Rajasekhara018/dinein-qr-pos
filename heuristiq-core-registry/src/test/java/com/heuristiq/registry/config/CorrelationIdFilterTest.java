@@ -1,4 +1,4 @@
-package com.railcab.serviceregistry.config;
+package com.heuristiq.registry.config;
 
 import jakarta.servlet.FilterChain;
 import org.junit.jupiter.api.AfterEach;

@@ -1,4 +1,4 @@
-package com.railcab.dms.config;
+package com.heuristiq.documents.config;
 
 /** Fixed security values of DMS configuration. */
 public final class DmsSecurityDefaults {

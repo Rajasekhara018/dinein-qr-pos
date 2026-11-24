@@ -1,13 +1,13 @@
-package com.railcab.dms.documenttype.adapter.out.workflow;
+package com.heuristiq.documents.documenttype.adapter.out.workflow;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.railcab.dms.common.DmsCommonConstants;
-import com.railcab.dms.documenttype.application.ChangeRequestGateway;
-import com.railcab.dms.documenttype.config.DocumentTypeWorkflowProperties;
-import com.railcab.dms.documenttype.domain.DocumentTypeConstants;
-import com.railcab.dms.documenttype.domain.DocumentTypeException;
+import com.heuristiq.documents.common.DmsCommonConstants;
+import com.heuristiq.documents.documenttype.application.ChangeRequestGateway;
+import com.heuristiq.documents.documenttype.config.DocumentTypeWorkflowProperties;
+import com.heuristiq.documents.documenttype.domain.DocumentTypeConstants;
+import com.heuristiq.documents.documenttype.domain.DocumentTypeException;
 import com.heuristiq.resilient.DownstreamUnavailableException;
 import com.heuristiq.resilient.Idempotency;
 import com.heuristiq.resilient.ResilientCaller;

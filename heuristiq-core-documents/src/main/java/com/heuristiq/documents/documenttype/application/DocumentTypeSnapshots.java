@@ -1,13 +1,13 @@
-package com.railcab.dms.documenttype.application;
+package com.heuristiq.documents.documenttype.application;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.railcab.dms.documenttype.domain.DocumentFormat;
-import com.railcab.dms.documenttype.domain.DocumentType;
-import com.railcab.dms.documenttype.domain.DocumentTypeConstants;
-import com.railcab.dms.documenttype.domain.DocumentTypeDraft;
-import com.railcab.dms.documenttype.domain.DocumentTypeFields;
-import com.railcab.dms.documenttype.domain.VerificationMethod;
+import com.heuristiq.documents.documenttype.domain.DocumentFormat;
+import com.heuristiq.documents.documenttype.domain.DocumentType;
+import com.heuristiq.documents.documenttype.domain.DocumentTypeConstants;
+import com.heuristiq.documents.documenttype.domain.DocumentTypeDraft;
+import com.heuristiq.documents.documenttype.domain.DocumentTypeFields;
+import com.heuristiq.documents.documenttype.domain.VerificationMethod;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;

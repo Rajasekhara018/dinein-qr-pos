@@ -1,11 +1,11 @@
-package com.railcab.dms.document.application;
+package com.heuristiq.documents.document.application;
 
 import java.time.Duration;
 
 /**
  * Fixed values of the document feature: lifecycle and scan status values, audit statuses, object-key rules, metric
  * names and the retention job's lock. Stable machine reason codes stay in
- * {@link com.railcab.dms.document.audit.DocumentReasonCodes}.
+ * {@link com.heuristiq.documents.document.audit.DocumentReasonCodes}.
  */
 public final class DocumentConstants {
 

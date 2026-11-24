@@ -1,6 +1,6 @@
-package com.railcab.dms.security;
+package com.heuristiq.documents.security;
 
-import com.railcab.dms.common.DmsCommonConstants;
+import com.heuristiq.documents.common.DmsCommonConstants;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.junit.jupiter.api.Test;

@@ -1,8 +1,8 @@
-package com.railcab.dms.exception;
+package com.heuristiq.documents.exception;
 
-import com.railcab.dms.common.dto.CommonResponseObject;
-import com.railcab.dms.common.dto.FieldValidationError;
-import com.railcab.dms.documenttype.domain.DocumentTypeException;
+import com.heuristiq.documents.common.dto.CommonResponseObject;
+import com.heuristiq.documents.common.dto.FieldValidationError;
+import com.heuristiq.documents.documenttype.domain.DocumentTypeException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Path;

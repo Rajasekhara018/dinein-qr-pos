@@ -1,8 +1,8 @@
-package com.railcab.dms.document.api;
+package com.heuristiq.documents.document.api;
 
-import com.railcab.dms.common.dto.CommonResponseObject;
-import com.railcab.dms.search.SearchReindexUseCase;
-import com.railcab.dms.security.DmsSecurityContext;
+import com.heuristiq.documents.common.dto.CommonResponseObject;
+import com.heuristiq.documents.search.SearchReindexUseCase;
+import com.heuristiq.documents.security.DmsSecurityContext;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;

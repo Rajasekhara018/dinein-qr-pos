@@ -1,12 +1,12 @@
-package com.railcab.dms.documenttype.adapter.in;
+package com.heuristiq.documents.documenttype.adapter.in;
 
-import com.railcab.dms.common.dto.CommonResponseObject;
-import com.railcab.dms.documenttype.application.CallerContext;
-import com.railcab.dms.documenttype.application.DocumentTypeFileCheckService;
-import com.railcab.dms.documenttype.application.DocumentTypeQueryService;
-import com.railcab.dms.documenttype.application.DocumentTypeSubmitService;
-import com.railcab.dms.documenttype.application.SubmissionResult;
-import com.railcab.dms.security.DmsSecurityContext;
+import com.heuristiq.documents.common.dto.CommonResponseObject;
+import com.heuristiq.documents.documenttype.application.CallerContext;
+import com.heuristiq.documents.documenttype.application.DocumentTypeFileCheckService;
+import com.heuristiq.documents.documenttype.application.DocumentTypeQueryService;
+import com.heuristiq.documents.documenttype.application.DocumentTypeSubmitService;
+import com.heuristiq.documents.documenttype.application.SubmissionResult;
+import com.heuristiq.documents.security.DmsSecurityContext;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;

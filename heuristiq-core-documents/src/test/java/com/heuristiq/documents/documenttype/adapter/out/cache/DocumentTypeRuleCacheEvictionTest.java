@@ -1,19 +1,19 @@
-package com.railcab.dms.documenttype.adapter.out.cache;
+package com.heuristiq.documents.documenttype.adapter.out.cache;
 
 import com.github.benmanes.caffeine.cache.Ticker;
-import com.railcab.dms.common.cache.DmsCacheProperties;
-import com.railcab.dms.documenttype.application.BlockedFileTypes;
-import com.railcab.dms.documenttype.application.DocumentTypeApplyService;
-import com.railcab.dms.documenttype.application.DocumentTypeQueryService;
-import com.railcab.dms.documenttype.application.DocumentTypeSubmitService;
-import com.railcab.dms.documenttype.domain.DocumentType;
-import com.railcab.dms.documenttype.domain.DocumentTypeConstants;
-import com.railcab.dms.documenttype.domain.DocumentTypeException;
-import com.railcab.dms.documenttype.domain.DocumentTypeFields;
-import com.railcab.dms.documenttype.domain.DocumentTypeRepository;
-import com.railcab.dms.documenttype.domain.DocumentTypeRule;
-import com.railcab.dms.documenttype.support.FakeChangeRequestGateway;
-import com.railcab.dms.documenttype.support.InMemoryDocumentTypeRepository;
+import com.heuristiq.documents.common.cache.DmsCacheProperties;
+import com.heuristiq.documents.documenttype.application.BlockedFileTypes;
+import com.heuristiq.documents.documenttype.application.DocumentTypeApplyService;
+import com.heuristiq.documents.documenttype.application.DocumentTypeQueryService;
+import com.heuristiq.documents.documenttype.application.DocumentTypeSubmitService;
+import com.heuristiq.documents.documenttype.domain.DocumentType;
+import com.heuristiq.documents.documenttype.domain.DocumentTypeConstants;
+import com.heuristiq.documents.documenttype.domain.DocumentTypeException;
+import com.heuristiq.documents.documenttype.domain.DocumentTypeFields;
+import com.heuristiq.documents.documenttype.domain.DocumentTypeRepository;
+import com.heuristiq.documents.documenttype.domain.DocumentTypeRule;
+import com.heuristiq.documents.documenttype.support.FakeChangeRequestGateway;
+import com.heuristiq.documents.documenttype.support.InMemoryDocumentTypeRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -26,12 +26,12 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static com.railcab.dms.documenttype.support.DocumentTypeFixtures.MAPPER;
-import static com.railcab.dms.documenttype.support.DocumentTypeFixtures.ORG_A;
-import static com.railcab.dms.documenttype.support.DocumentTypeFixtures.ORG_B;
-import static com.railcab.dms.documenttype.support.DocumentTypeFixtures.applyPayload;
-import static com.railcab.dms.documenttype.support.DocumentTypeFixtures.caller;
-import static com.railcab.dms.documenttype.support.DocumentTypeFixtures.fields;
+import static com.heuristiq.documents.documenttype.support.DocumentTypeFixtures.MAPPER;
+import static com.heuristiq.documents.documenttype.support.DocumentTypeFixtures.ORG_A;
+import static com.heuristiq.documents.documenttype.support.DocumentTypeFixtures.ORG_B;
+import static com.heuristiq.documents.documenttype.support.DocumentTypeFixtures.applyPayload;
+import static com.heuristiq.documents.documenttype.support.DocumentTypeFixtures.caller;
+import static com.heuristiq.documents.documenttype.support.DocumentTypeFixtures.fields;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 

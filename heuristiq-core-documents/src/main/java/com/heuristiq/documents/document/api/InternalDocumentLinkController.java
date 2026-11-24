@@ -1,4 +1,4 @@
-package com.railcab.dms.document.api;
+package com.heuristiq.documents.document.api;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -6,9 +6,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.railcab.dms.common.dto.CommonResponseObject;
-import com.railcab.dms.document.application.InternalDocumentLinkService;
-import com.railcab.dms.document.application.InternalLinkConstants;
+import com.heuristiq.documents.common.dto.CommonResponseObject;
+import com.heuristiq.documents.document.application.InternalDocumentLinkService;
+import com.heuristiq.documents.document.application.InternalLinkConstants;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

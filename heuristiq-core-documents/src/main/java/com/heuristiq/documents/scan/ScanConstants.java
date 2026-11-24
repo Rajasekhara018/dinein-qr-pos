@@ -1,4 +1,4 @@
-package com.railcab.dms.scan;
+package com.heuristiq.documents.scan;
 
 /** Fixed values of the malware scan feature: provider names and the basic provider's sample size. */
 public final class ScanConstants {

@@ -1,6 +1,6 @@
-package com.railcab.dms.document.persistence.postgres;
+package com.heuristiq.documents.document.persistence.postgres;
 
-import com.railcab.dms.document.domain.DocumentMetadata;
+import com.heuristiq.documents.document.domain.DocumentMetadata;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;

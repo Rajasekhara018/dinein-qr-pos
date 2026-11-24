@@ -1,8 +1,8 @@
-package com.railcab.dms.document.persistence;
+package com.heuristiq.documents.document.persistence;
 
-import com.railcab.dms.document.domain.DocumentMetadata;
-import com.railcab.dms.document.persistence.mongo.DocumentMetadataMongoDocument;
-import com.railcab.dms.document.persistence.postgres.DocumentMetadataJpaEntity;
+import com.heuristiq.documents.document.domain.DocumentMetadata;
+import com.heuristiq.documents.document.persistence.mongo.DocumentMetadataMongoDocument;
+import com.heuristiq.documents.document.persistence.postgres.DocumentMetadataJpaEntity;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;

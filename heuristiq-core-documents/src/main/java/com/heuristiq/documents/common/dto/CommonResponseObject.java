@@ -1,4 +1,4 @@
-package com.railcab.dms.common.dto;
+package com.heuristiq.documents.common.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;

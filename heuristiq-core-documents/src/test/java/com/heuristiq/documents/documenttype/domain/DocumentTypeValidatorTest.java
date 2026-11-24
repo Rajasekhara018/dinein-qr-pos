@@ -1,6 +1,6 @@
-package com.railcab.dms.documenttype.domain;
+package com.heuristiq.documents.documenttype.domain;
 
-import com.railcab.dms.config.DmsProperties;
+import com.heuristiq.documents.config.DmsProperties;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;

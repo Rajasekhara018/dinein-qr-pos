@@ -1,4 +1,4 @@
-package com.railcab.dms.centralaudit;
+package com.heuristiq.documents.centralaudit;
 
 import jakarta.validation.constraints.Min;
 import org.springframework.boot.context.properties.ConfigurationProperties;

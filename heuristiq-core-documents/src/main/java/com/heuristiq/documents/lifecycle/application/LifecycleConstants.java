@@ -1,4 +1,4 @@
-package com.railcab.dms.lifecycle.application;
+package com.heuristiq.documents.lifecycle.application;
 
 /** Fixed values of the document lifecycle (troubleshooting) queries. */
 public final class LifecycleConstants {

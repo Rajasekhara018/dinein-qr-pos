@@ -1,9 +1,9 @@
-package com.railcab.dms.document.application;
+package com.heuristiq.documents.document.application;
 
-import com.railcab.dms.config.DmsProperties;
-import com.railcab.dms.document.domain.DocumentMetadata;
-import com.railcab.dms.exception.DmsException;
-import com.railcab.dms.security.DmsPrincipal;
+import com.heuristiq.documents.config.DmsProperties;
+import com.heuristiq.documents.document.domain.DocumentMetadata;
+import com.heuristiq.documents.exception.DmsException;
+import com.heuristiq.documents.security.DmsPrincipal;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

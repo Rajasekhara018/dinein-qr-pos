@@ -1,6 +1,6 @@
-package com.railcab.dms.storage;
+package com.heuristiq.documents.storage;
 
-import com.railcab.dms.exception.DmsException;
+import com.heuristiq.documents.exception.DmsException;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.actuate.health.Status;
 

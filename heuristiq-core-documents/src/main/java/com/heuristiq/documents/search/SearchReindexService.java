@@ -1,10 +1,10 @@
-package com.railcab.dms.search;
+package com.heuristiq.documents.search;
 
-import com.railcab.dms.document.domain.DocumentMetadata;
-import com.railcab.dms.document.persistence.DocumentMetadataStore;
-import com.railcab.dms.common.DmsCommonConstants;
-import com.railcab.dms.exception.DmsException;
-import com.railcab.dms.search.projection.WebProjectionPublisher;
+import com.heuristiq.documents.document.domain.DocumentMetadata;
+import com.heuristiq.documents.document.persistence.DocumentMetadataStore;
+import com.heuristiq.documents.common.DmsCommonConstants;
+import com.heuristiq.documents.exception.DmsException;
+import com.heuristiq.documents.search.projection.WebProjectionPublisher;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;

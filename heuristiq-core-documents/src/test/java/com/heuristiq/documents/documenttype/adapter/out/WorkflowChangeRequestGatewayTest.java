@@ -1,9 +1,9 @@
-package com.railcab.dms.documenttype.adapter.out;
+package com.heuristiq.documents.documenttype.adapter.out;
 
-import com.railcab.dms.documenttype.adapter.out.workflow.WorkflowChangeRequestGateway;
-import com.railcab.dms.documenttype.application.ChangeRequestGateway;
-import com.railcab.dms.documenttype.config.DocumentTypeWorkflowProperties;
-import com.railcab.dms.documenttype.domain.DocumentTypeException;
+import com.heuristiq.documents.documenttype.adapter.out.workflow.WorkflowChangeRequestGateway;
+import com.heuristiq.documents.documenttype.application.ChangeRequestGateway;
+import com.heuristiq.documents.documenttype.config.DocumentTypeWorkflowProperties;
+import com.heuristiq.documents.documenttype.domain.DocumentTypeException;
 import com.heuristiq.resilient.ResilienceProfile;
 import com.heuristiq.resilient.ResilientCaller;
 import org.junit.jupiter.api.Test;
@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static com.railcab.dms.documenttype.support.DocumentTypeFixtures.MAPPER;
+import static com.heuristiq.documents.documenttype.support.DocumentTypeFixtures.MAPPER;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 

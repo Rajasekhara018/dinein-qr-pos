@@ -1,7 +1,7 @@
-package com.railcab.dms.documenttype.support;
+package com.heuristiq.documents.documenttype.support;
 
-import com.railcab.dms.documenttype.application.ChangeRequestGateway;
-import com.railcab.dms.documenttype.domain.DocumentTypeException;
+import com.heuristiq.documents.documenttype.application.ChangeRequestGateway;
+import com.heuristiq.documents.documenttype.domain.DocumentTypeException;
 
 import java.util.ArrayList;
 import java.util.List;

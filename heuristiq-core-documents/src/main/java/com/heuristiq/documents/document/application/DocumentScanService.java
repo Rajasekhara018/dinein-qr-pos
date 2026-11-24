@@ -1,11 +1,11 @@
-package com.railcab.dms.document.application;
+package com.heuristiq.documents.document.application;
 
-import com.railcab.dms.config.DmsProperties;
-import com.railcab.dms.document.audit.DocumentReasonCodes;
-import com.railcab.dms.exception.DmsException;
-import com.railcab.dms.scan.DocumentContentSniffer;
-import com.railcab.dms.scan.ScanProvider;
-import com.railcab.dms.scan.ScanProviderRegistry;
+import com.heuristiq.documents.config.DmsProperties;
+import com.heuristiq.documents.document.audit.DocumentReasonCodes;
+import com.heuristiq.documents.exception.DmsException;
+import com.heuristiq.documents.scan.DocumentContentSniffer;
+import com.heuristiq.documents.scan.ScanProvider;
+import com.heuristiq.documents.scan.ScanProviderRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;

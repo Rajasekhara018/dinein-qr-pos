@@ -1,10 +1,10 @@
-package com.railcab.dms.documenttype.adapter.in;
+package com.heuristiq.documents.documenttype.adapter.in;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.railcab.dms.documenttype.domain.DocumentFormat;
-import com.railcab.dms.documenttype.domain.DocumentType;
-import com.railcab.dms.documenttype.domain.DocumentTypeFields;
-import com.railcab.dms.documenttype.domain.VerificationMethod;
+import com.heuristiq.documents.documenttype.domain.DocumentFormat;
+import com.heuristiq.documents.documenttype.domain.DocumentType;
+import com.heuristiq.documents.documenttype.domain.DocumentTypeFields;
+import com.heuristiq.documents.documenttype.domain.VerificationMethod;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;

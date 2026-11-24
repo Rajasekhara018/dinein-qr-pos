@@ -1,8 +1,8 @@
-package com.railcab.dms.storage.gcp;
+package com.heuristiq.documents.storage.gcp;
 
 import com.google.cloud.storage.Storage;
-import com.railcab.dms.config.DmsProperties;
-import com.railcab.dms.storage.encryption.EncryptionMode;
+import com.heuristiq.documents.config.DmsProperties;
+import com.heuristiq.documents.storage.encryption.EncryptionMode;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

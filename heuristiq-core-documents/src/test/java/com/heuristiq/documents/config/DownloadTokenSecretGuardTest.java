@@ -1,4 +1,4 @@
-package com.railcab.dms.config;
+package com.heuristiq.documents.config;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;

@@ -1,11 +1,11 @@
-package com.railcab.dms.document.application;
+package com.heuristiq.documents.document.application;
 
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
-import com.railcab.dms.document.audit.DocumentAuditAction;
-import com.railcab.dms.document.domain.DocumentMetadata;
-import com.railcab.dms.document.persistence.DocumentMetadataStore;
-import com.railcab.dms.exception.DmsException;
-import com.railcab.dms.security.DmsPrincipal;
+import com.heuristiq.documents.document.audit.DocumentAuditAction;
+import com.heuristiq.documents.document.domain.DocumentMetadata;
+import com.heuristiq.documents.document.persistence.DocumentMetadataStore;
+import com.heuristiq.documents.exception.DmsException;
+import com.heuristiq.documents.security.DmsPrincipal;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;

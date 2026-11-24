@@ -1,7 +1,7 @@
-package com.railcab.dms.scan.metadefender;
+package com.heuristiq.documents.scan.metadefender;
 
-import com.railcab.dms.config.DmsProperties;
-import com.railcab.dms.scan.ScanProvider;
+import com.heuristiq.documents.config.DmsProperties;
+import com.heuristiq.documents.scan.ScanProvider;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;

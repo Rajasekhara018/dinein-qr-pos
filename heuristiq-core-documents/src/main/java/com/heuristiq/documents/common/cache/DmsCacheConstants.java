@@ -1,4 +1,4 @@
-package com.railcab.dms.common.cache;
+package com.heuristiq.documents.common.cache;
 
 /** Fixed values of the DMS read caches: cache names (also the metric tag) and property defaults. */
 public final class DmsCacheConstants {

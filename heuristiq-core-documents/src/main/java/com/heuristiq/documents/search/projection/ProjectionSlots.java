@@ -1,4 +1,4 @@
-package com.railcab.dms.search.projection;
+package com.heuristiq.documents.search.projection;
 
 import java.time.Instant;
 import java.util.Locale;

@@ -1,17 +1,17 @@
-package com.railcab.dms.storage.gcp;
+package com.heuristiq.documents.storage.gcp;
 
 import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
-import com.railcab.dms.config.DmsProperties;
-import com.railcab.dms.exception.DmsException;
-import com.railcab.dms.storage.StorageDigests;
-import com.railcab.dms.storage.StorageProvider;
-import com.railcab.dms.storage.encryption.EncryptionCapability;
-import com.railcab.dms.storage.encryption.EncryptionMode;
-import com.railcab.dms.storage.encryption.StorageEncryptionPolicy;
+import com.heuristiq.documents.config.DmsProperties;
+import com.heuristiq.documents.exception.DmsException;
+import com.heuristiq.documents.storage.StorageDigests;
+import com.heuristiq.documents.storage.StorageProvider;
+import com.heuristiq.documents.storage.encryption.EncryptionCapability;
+import com.heuristiq.documents.storage.encryption.EncryptionMode;
+import com.heuristiq.documents.storage.encryption.StorageEncryptionPolicy;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;

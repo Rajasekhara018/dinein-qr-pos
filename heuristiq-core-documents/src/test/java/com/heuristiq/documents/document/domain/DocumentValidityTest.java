@@ -1,4 +1,4 @@
-package com.railcab.dms.document.domain;
+package com.heuristiq.documents.document.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

@@ -1,4 +1,4 @@
-package com.railcab.dms.config;
+package com.heuristiq.documents.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

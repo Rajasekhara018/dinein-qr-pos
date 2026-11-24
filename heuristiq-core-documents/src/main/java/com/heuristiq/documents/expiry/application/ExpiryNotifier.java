@@ -1,4 +1,4 @@
-package com.railcab.dms.expiry.application;
+package com.heuristiq.documents.expiry.application;
 
 import java.time.LocalDate;
 

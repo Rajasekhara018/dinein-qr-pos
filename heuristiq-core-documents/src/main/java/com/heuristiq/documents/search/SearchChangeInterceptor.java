@@ -1,6 +1,6 @@
-package com.railcab.dms.search;
+package com.heuristiq.documents.search;
 
-import com.railcab.dms.security.DmsSecurityContext;
+import com.heuristiq.documents.security.DmsSecurityContext;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Configuration;

@@ -1,17 +1,17 @@
-package com.railcab.dms.documenttype.application;
+package com.heuristiq.documents.documenttype.application;
 
 import com.github.benmanes.caffeine.cache.Ticker;
-import com.railcab.dms.common.cache.DmsCacheProperties;
-import com.railcab.dms.documenttype.adapter.out.cache.CachingDocumentTypeRules;
-import com.railcab.dms.documenttype.domain.DocumentFormat;
-import com.railcab.dms.documenttype.domain.DocumentType;
-import com.railcab.dms.documenttype.domain.DocumentTypeConstants;
-import com.railcab.dms.documenttype.domain.DocumentTypeException;
-import com.railcab.dms.documenttype.domain.DocumentTypeRepository;
-import com.railcab.dms.documenttype.domain.DocumentTypeRule;
-import com.railcab.dms.documenttype.domain.PrebuiltDocumentTypes;
-import com.railcab.dms.documenttype.domain.VerificationMethod;
-import com.railcab.dms.documenttype.support.InMemoryDocumentTypeRepository;
+import com.heuristiq.documents.common.cache.DmsCacheProperties;
+import com.heuristiq.documents.documenttype.adapter.out.cache.CachingDocumentTypeRules;
+import com.heuristiq.documents.documenttype.domain.DocumentFormat;
+import com.heuristiq.documents.documenttype.domain.DocumentType;
+import com.heuristiq.documents.documenttype.domain.DocumentTypeConstants;
+import com.heuristiq.documents.documenttype.domain.DocumentTypeException;
+import com.heuristiq.documents.documenttype.domain.DocumentTypeRepository;
+import com.heuristiq.documents.documenttype.domain.DocumentTypeRule;
+import com.heuristiq.documents.documenttype.domain.PrebuiltDocumentTypes;
+import com.heuristiq.documents.documenttype.domain.VerificationMethod;
+import com.heuristiq.documents.documenttype.support.InMemoryDocumentTypeRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

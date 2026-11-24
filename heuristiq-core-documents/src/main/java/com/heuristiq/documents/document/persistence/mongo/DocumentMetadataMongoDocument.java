@@ -1,6 +1,6 @@
-package com.railcab.dms.document.persistence.mongo;
+package com.heuristiq.documents.document.persistence.mongo;
 
-import com.railcab.dms.document.domain.DocumentMetadata;
+import com.heuristiq.documents.document.domain.DocumentMetadata;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;

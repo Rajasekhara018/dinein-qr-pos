@@ -1,8 +1,8 @@
-package com.railcab.dms.documenttype.adapter.out.postgres;
+package com.heuristiq.documents.documenttype.adapter.out.postgres;
 
-import com.railcab.dms.documenttype.domain.DocumentFormat;
-import com.railcab.dms.documenttype.domain.DocumentType;
-import com.railcab.dms.documenttype.domain.DocumentTypeException;
+import com.heuristiq.documents.documenttype.domain.DocumentFormat;
+import com.heuristiq.documents.documenttype.domain.DocumentType;
+import com.heuristiq.documents.documenttype.domain.DocumentTypeException;
 import jakarta.persistence.Table;
 import org.junit.jupiter.api.Test;
 import org.springframework.dao.DataIntegrityViolationException;

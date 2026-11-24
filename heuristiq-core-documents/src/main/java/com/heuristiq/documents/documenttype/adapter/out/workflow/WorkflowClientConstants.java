@@ -1,4 +1,4 @@
-package com.railcab.dms.documenttype.adapter.out.workflow;
+package com.heuristiq.documents.documenttype.adapter.out.workflow;
 
 import java.time.Duration;
 

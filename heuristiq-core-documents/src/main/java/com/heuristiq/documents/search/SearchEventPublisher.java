@@ -1,4 +1,4 @@
-package com.railcab.dms.search;
+package com.heuristiq.documents.search;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;

@@ -1,9 +1,9 @@
-package com.railcab.dms.document.application;
+package com.heuristiq.documents.document.application;
 
-import com.railcab.dms.common.DmsCommonConstants;
-import com.railcab.dms.config.DmsProperties;
-import com.railcab.dms.storage.StorageProvider;
-import com.railcab.dms.storage.StorageProviderRegistry;
+import com.heuristiq.documents.common.DmsCommonConstants;
+import com.heuristiq.documents.config.DmsProperties;
+import com.heuristiq.documents.storage.StorageProvider;
+import com.heuristiq.documents.storage.StorageProviderRegistry;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;

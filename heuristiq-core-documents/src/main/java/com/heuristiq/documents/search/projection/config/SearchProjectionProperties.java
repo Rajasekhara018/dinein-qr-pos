@@ -1,4 +1,4 @@
-package com.railcab.dms.search.projection.config;
+package com.heuristiq.documents.search.projection.config;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;

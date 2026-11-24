@@ -1,13 +1,13 @@
-package com.railcab.dms.storage.encryption;
+package com.heuristiq.documents.storage.encryption;
 
-import com.railcab.dms.config.DmsProperties;
-import com.railcab.dms.storage.StorageProvider;
-import com.railcab.dms.storage.StorageProviderRegistry;
-import com.railcab.dms.storage.aws.S3StorageProvider;
-import com.railcab.dms.storage.azure.AzureBlobStorageProvider;
-import com.railcab.dms.storage.gcp.GcpStorageProvider;
-import com.railcab.dms.storage.local.LocalStorageProvider;
-import com.railcab.dms.storage.minio.MinioStorageProvider;
+import com.heuristiq.documents.config.DmsProperties;
+import com.heuristiq.documents.storage.StorageProvider;
+import com.heuristiq.documents.storage.StorageProviderRegistry;
+import com.heuristiq.documents.storage.aws.S3StorageProvider;
+import com.heuristiq.documents.storage.azure.AzureBlobStorageProvider;
+import com.heuristiq.documents.storage.gcp.GcpStorageProvider;
+import com.heuristiq.documents.storage.local.LocalStorageProvider;
+import com.heuristiq.documents.storage.minio.MinioStorageProvider;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;

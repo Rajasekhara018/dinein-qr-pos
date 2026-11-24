@@ -1,4 +1,4 @@
-package com.railcab.dms.search;
+package com.heuristiq.documents.search;
 
 /**
  * Re-publishes existing documents to the search index, for data saved before search was running, and backfills the

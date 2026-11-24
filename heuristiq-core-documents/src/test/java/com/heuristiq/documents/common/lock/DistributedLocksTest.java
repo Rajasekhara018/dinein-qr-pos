@@ -1,7 +1,7 @@
-package com.railcab.dms.common.lock;
+package com.heuristiq.documents.common.lock;
 
-import com.railcab.dms.common.lock.mongo.MongoDistributedLock;
-import com.railcab.dms.common.lock.postgres.PostgresDistributedLock;
+import com.heuristiq.documents.common.lock.mongo.MongoDistributedLock;
+import com.heuristiq.documents.common.lock.postgres.PostgresDistributedLock;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.dao.DuplicateKeyException;
@@ -30,7 +30,7 @@ import static org.mockito.Mockito.when;
 class DistributedLocksTest {
 
     private static Object jobLock(String owner) throws Exception {
-        Class<?> type = Class.forName("com.railcab.dms.common.lock.mongo.MongoDistributedLock$JobLock");
+        Class<?> type = Class.forName("com.heuristiq.documents.common.lock.mongo.MongoDistributedLock$JobLock");
         Constructor<?> ctor = type.getDeclaredConstructor();
         ctor.setAccessible(true);
         Object lock = ctor.newInstance();

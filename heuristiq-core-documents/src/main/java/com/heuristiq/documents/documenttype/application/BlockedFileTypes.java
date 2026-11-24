@@ -1,4 +1,4 @@
-package com.railcab.dms.documenttype.application;
+package com.heuristiq.documents.documenttype.application;
 
 import java.util.Collection;
 

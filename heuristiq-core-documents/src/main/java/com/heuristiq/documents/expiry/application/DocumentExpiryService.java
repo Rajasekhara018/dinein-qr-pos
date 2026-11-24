@@ -1,4 +1,4 @@
-package com.railcab.dms.expiry.application;
+package com.heuristiq.documents.expiry.application;
 
 import java.time.Clock;
 import java.time.LocalDate;
@@ -17,12 +17,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.railcab.dms.document.domain.DocumentMetadata;
-import com.railcab.dms.document.domain.DocumentValidity;
-import com.railcab.dms.document.domain.DocumentValidityConstants;
-import com.railcab.dms.document.persistence.DocumentMetadataStore;
-import com.railcab.dms.exception.DmsException;
-import com.railcab.dms.expiry.config.DocumentExpiryProperties;
+import com.heuristiq.documents.document.domain.DocumentMetadata;
+import com.heuristiq.documents.document.domain.DocumentValidity;
+import com.heuristiq.documents.document.domain.DocumentValidityConstants;
+import com.heuristiq.documents.document.persistence.DocumentMetadataStore;
+import com.heuristiq.documents.exception.DmsException;
+import com.heuristiq.documents.expiry.config.DocumentExpiryProperties;
 
 /**
  * Document expiry (D12): which drivers have a lapsed document (asked by Rider_DispatchService, which blocks them from going online and

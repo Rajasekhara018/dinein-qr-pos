@@ -1,6 +1,6 @@
-package com.railcab.dms.scan;
+package com.heuristiq.documents.scan;
 
-import com.railcab.dms.exception.DmsException;
+import com.heuristiq.documents.exception.DmsException;
 import org.apache.tika.Tika;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;

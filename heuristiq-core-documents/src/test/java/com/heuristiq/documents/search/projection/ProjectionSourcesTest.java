@@ -1,17 +1,17 @@
-package com.railcab.dms.search.projection;
+package com.heuristiq.documents.search.projection;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.json.JsonMapper;
-import com.railcab.dms.common.paging.PagedResult;
-import com.railcab.dms.document.domain.DocumentMetadata;
-import com.railcab.dms.document.persistence.DocumentSearchCriteria;
-import com.railcab.dms.documenttype.application.DocumentTypeQueryService;
-import com.railcab.dms.documenttype.domain.DocumentFormat;
-import com.railcab.dms.documenttype.domain.DocumentType;
-import com.railcab.dms.documenttype.domain.DocumentTypeRepository;
-import com.railcab.dms.documenttype.domain.VerificationMethod;
-import com.railcab.dms.lifecycle.application.LifecycleQueryService;
+import com.heuristiq.documents.common.paging.PagedResult;
+import com.heuristiq.documents.document.domain.DocumentMetadata;
+import com.heuristiq.documents.document.persistence.DocumentSearchCriteria;
+import com.heuristiq.documents.documenttype.application.DocumentTypeQueryService;
+import com.heuristiq.documents.documenttype.domain.DocumentFormat;
+import com.heuristiq.documents.documenttype.domain.DocumentType;
+import com.heuristiq.documents.documenttype.domain.DocumentTypeRepository;
+import com.heuristiq.documents.documenttype.domain.VerificationMethod;
+import com.heuristiq.documents.lifecycle.application.LifecycleQueryService;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;

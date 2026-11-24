@@ -1,9 +1,9 @@
-package com.railcab.dms.documenttype.adapter.in;
+package com.heuristiq.documents.documenttype.adapter.in;
 
-import com.railcab.dms.common.DmsCommonConstants;
-import com.railcab.dms.documenttype.application.CallerContext;
-import com.railcab.dms.security.DmsPrincipal;
-import com.railcab.dms.security.DmsSecurityContext;
+import com.heuristiq.documents.common.DmsCommonConstants;
+import com.heuristiq.documents.documenttype.application.CallerContext;
+import com.heuristiq.documents.security.DmsPrincipal;
+import com.heuristiq.documents.security.DmsSecurityContext;
 
 /** Resolves the caller from the verified session (gateway headers) and the request's own bearer token. Stateless. */
 final class CallerContextResolver {

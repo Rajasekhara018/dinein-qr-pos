@@ -1,11 +1,11 @@
-package com.railcab.dms.search.projection;
+package com.heuristiq.documents.search.projection;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.railcab.dms.documenttype.adapter.in.DocumentTypeResponse;
-import com.railcab.dms.documenttype.adapter.in.DocumentTypeWebMapper;
-import com.railcab.dms.documenttype.application.DocumentTypeQueryService;
-import com.railcab.dms.documenttype.domain.DocumentTypeRepository;
+import com.heuristiq.documents.documenttype.adapter.in.DocumentTypeResponse;
+import com.heuristiq.documents.documenttype.adapter.in.DocumentTypeWebMapper;
+import com.heuristiq.documents.documenttype.application.DocumentTypeQueryService;
+import com.heuristiq.documents.documenttype.domain.DocumentTypeRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;

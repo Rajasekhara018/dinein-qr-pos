@@ -1,6 +1,6 @@
-package com.railcab.dms.document.persistence.postgres;
+package com.heuristiq.documents.document.persistence.postgres;
 
-import com.railcab.dms.document.persistence.DocumentSearchCriteria;
+import com.heuristiq.documents.document.persistence.DocumentSearchCriteria;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Path;

@@ -1,4 +1,4 @@
-package com.railcab.dms.expiry.config;
+package com.heuristiq.documents.expiry.config;
 
 import java.time.Duration;
 
@@ -9,8 +9,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import com.railcab.dms.common.DmsCommonConstants;
-import com.railcab.dms.expiry.adapter.out.nms.ExpiryNmsConstants;
+import com.heuristiq.documents.common.DmsCommonConstants;
+import com.heuristiq.documents.expiry.adapter.out.nms.ExpiryNmsConstants;
 import com.heuristiq.resilient.CorrelationIdPropagation;
 import com.heuristiq.resilient.ResilienceProfile;
 import com.heuristiq.resilient.ResilientCaller;

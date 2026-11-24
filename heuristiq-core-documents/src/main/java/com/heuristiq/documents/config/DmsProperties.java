@@ -1,10 +1,10 @@
-package com.railcab.dms.config;
+package com.heuristiq.documents.config;
 
-import com.railcab.dms.common.DmsCommonConstants;
-import com.railcab.dms.scan.ScanConstants;
+import com.heuristiq.documents.common.DmsCommonConstants;
+import com.heuristiq.documents.scan.ScanConstants;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-import com.railcab.dms.storage.encryption.EncryptionMode;
+import com.heuristiq.documents.storage.encryption.EncryptionMode;
 
 import java.util.HashMap;
 import java.util.List;
@@ -320,7 +320,7 @@ public class DmsProperties {
         /**
          * Transitional escape hatch, EMPTY by default: role names whose holders may reach other people's documents
          * through the owner check. Access is decided by the owner, by a trusted internal service
-         * ({@link com.railcab.dms.security.DmsPrincipal#isInternalService()}), and for staff by catalogue privileges
+         * ({@link com.heuristiq.documents.security.DmsPrincipal#isInternalService()}), and for staff by catalogue privileges
          * enforced at the gateway - not by role names. Set only to keep an old deployment working while its staff
          * flows move to privileges, then remove it.
          */

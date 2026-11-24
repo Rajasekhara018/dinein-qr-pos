@@ -1,9 +1,9 @@
-package com.railcab.dms.storage.aws;
+package com.heuristiq.documents.storage.aws;
 
-import com.railcab.dms.config.DmsProperties;
-import com.railcab.dms.storage.StorageProvider;
-import com.railcab.dms.storage.encryption.EncryptionMode;
-import com.railcab.dms.storage.minio.MinioStorageProvider;
+import com.heuristiq.documents.config.DmsProperties;
+import com.heuristiq.documents.storage.StorageProvider;
+import com.heuristiq.documents.storage.encryption.EncryptionMode;
+import com.heuristiq.documents.storage.minio.MinioStorageProvider;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.mock.web.MockMultipartFile;

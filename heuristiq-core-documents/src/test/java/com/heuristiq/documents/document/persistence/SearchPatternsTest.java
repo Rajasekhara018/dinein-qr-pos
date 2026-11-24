@@ -1,4 +1,4 @@
-package com.railcab.dms.document.persistence;
+package com.heuristiq.documents.document.persistence;
 
 import org.junit.jupiter.api.Test;
 

@@ -1,4 +1,4 @@
-package com.railcab.dms.common.cache;
+package com.heuristiq.documents.common.cache;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;

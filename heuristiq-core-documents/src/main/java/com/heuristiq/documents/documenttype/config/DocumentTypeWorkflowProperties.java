@@ -1,4 +1,4 @@
-package com.railcab.dms.documenttype.config;
+package com.heuristiq.documents.documenttype.config;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;

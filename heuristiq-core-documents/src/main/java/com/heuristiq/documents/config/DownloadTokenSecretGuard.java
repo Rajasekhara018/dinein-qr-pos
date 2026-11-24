@@ -1,4 +1,4 @@
-package com.railcab.dms.config;
+package com.heuristiq.documents.config;
 
 import jakarta.annotation.PostConstruct;
 import org.springframework.context.annotation.Profile;

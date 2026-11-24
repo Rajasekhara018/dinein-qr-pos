@@ -1,4 +1,4 @@
-package com.railcab.dms.expiry.application;
+package com.heuristiq.documents.expiry.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -23,11 +23,11 @@ import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.railcab.dms.document.domain.DocumentMetadata;
-import com.railcab.dms.document.domain.DocumentValidityConstants;
-import com.railcab.dms.document.persistence.DocumentMetadataStore;
-import com.railcab.dms.exception.DmsException;
-import com.railcab.dms.expiry.config.DocumentExpiryProperties;
+import com.heuristiq.documents.document.domain.DocumentMetadata;
+import com.heuristiq.documents.document.domain.DocumentValidityConstants;
+import com.heuristiq.documents.document.persistence.DocumentMetadataStore;
+import com.heuristiq.documents.exception.DmsException;
+import com.heuristiq.documents.expiry.config.DocumentExpiryProperties;
 
 /** D12: the lapse check Dispatch asks for (organization-scoped) and the daily reminders. */
 class DocumentExpiryServiceTest {

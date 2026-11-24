@@ -1,7 +1,7 @@
-package com.railcab.dms.document.persistence.mongo;
+package com.heuristiq.documents.document.persistence.mongo;
 
-import com.railcab.dms.document.persistence.DocumentSearchCriteria;
-import com.railcab.dms.document.persistence.SearchPatterns;
+import com.heuristiq.documents.document.persistence.DocumentSearchCriteria;
+import com.heuristiq.documents.document.persistence.SearchPatterns;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.util.StringUtils;

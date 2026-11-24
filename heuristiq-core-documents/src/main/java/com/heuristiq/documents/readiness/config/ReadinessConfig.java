@@ -1,7 +1,7 @@
-package com.railcab.dms.readiness.config;
+package com.heuristiq.documents.readiness.config;
 
-import com.railcab.dms.documenttype.application.DocumentTypeQueryService;
-import com.railcab.dms.readiness.application.DmsReadinessService;
+import com.heuristiq.documents.documenttype.application.DocumentTypeQueryService;
+import com.heuristiq.documents.readiness.application.DmsReadinessService;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

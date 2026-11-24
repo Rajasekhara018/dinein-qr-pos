@@ -1,4 +1,4 @@
-package com.railcab.dms.storage.encryption;
+package com.heuristiq.documents.storage.encryption;
 
 /** Fixed values of the encryption-at-rest feature. */
 public final class StorageEncryptionConstants {

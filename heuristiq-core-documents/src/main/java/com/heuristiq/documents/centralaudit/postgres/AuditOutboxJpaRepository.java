@@ -1,6 +1,6 @@
-package com.railcab.dms.centralaudit.postgres;
+package com.heuristiq.documents.centralaudit.postgres;
 
-import com.railcab.dms.centralaudit.OutboxStatus;
+import com.heuristiq.documents.centralaudit.OutboxStatus;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;

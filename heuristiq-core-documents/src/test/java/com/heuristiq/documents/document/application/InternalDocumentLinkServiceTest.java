@@ -1,4 +1,4 @@
-package com.railcab.dms.document.application;
+package com.heuristiq.documents.document.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -16,12 +16,12 @@ import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.railcab.dms.common.DmsCommonConstants;
-import com.railcab.dms.document.audit.DocumentAuditAction;
-import com.railcab.dms.document.domain.DocumentMetadata;
-import com.railcab.dms.document.persistence.DocumentMetadataStore;
-import com.railcab.dms.exception.DmsException;
-import com.railcab.dms.storage.StorageProvider;
+import com.heuristiq.documents.common.DmsCommonConstants;
+import com.heuristiq.documents.document.audit.DocumentAuditAction;
+import com.heuristiq.documents.document.domain.DocumentMetadata;
+import com.heuristiq.documents.document.persistence.DocumentMetadataStore;
+import com.heuristiq.documents.exception.DmsException;
+import com.heuristiq.documents.storage.StorageProvider;
 
 /** A platform service gets a link only to a document of the organization it names. */
 class InternalDocumentLinkServiceTest {

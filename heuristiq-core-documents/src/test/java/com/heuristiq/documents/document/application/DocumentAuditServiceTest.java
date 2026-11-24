@@ -1,12 +1,12 @@
-package com.railcab.dms.document.application;
+package com.heuristiq.documents.document.application;
 
-import com.railcab.dms.centralaudit.CentralAuditPublisher;
-import com.railcab.dms.centralaudit.DmsAuditEvent;
-import com.railcab.dms.document.audit.DocumentAuditAction;
-import com.railcab.dms.document.audit.DocumentAuditEvent;
-import com.railcab.dms.document.audit.DocumentAuditStore;
-import com.railcab.dms.document.domain.DocumentMetadata;
-import com.railcab.dms.security.DmsPrincipal;
+import com.heuristiq.documents.centralaudit.CentralAuditPublisher;
+import com.heuristiq.documents.centralaudit.DmsAuditEvent;
+import com.heuristiq.documents.document.audit.DocumentAuditAction;
+import com.heuristiq.documents.document.audit.DocumentAuditEvent;
+import com.heuristiq.documents.document.audit.DocumentAuditStore;
+import com.heuristiq.documents.document.domain.DocumentMetadata;
+import com.heuristiq.documents.security.DmsPrincipal;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

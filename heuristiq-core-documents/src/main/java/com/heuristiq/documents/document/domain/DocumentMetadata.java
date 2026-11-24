@@ -1,8 +1,8 @@
-package com.railcab.dms.document.domain;
+package com.heuristiq.documents.document.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.railcab.dms.search.SearchConstants;
-import com.railcab.dms.search.SearchIndexable;
+import com.heuristiq.documents.search.SearchConstants;
+import com.heuristiq.documents.search.SearchIndexable;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

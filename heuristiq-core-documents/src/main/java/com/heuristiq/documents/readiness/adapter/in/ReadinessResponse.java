@@ -1,8 +1,8 @@
-package com.railcab.dms.readiness.adapter.in;
+package com.heuristiq.documents.readiness.adapter.in;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.railcab.dms.readiness.domain.ReadinessCheck;
-import com.railcab.dms.readiness.domain.ReadinessReport;
+import com.heuristiq.documents.readiness.domain.ReadinessCheck;
+import com.heuristiq.documents.readiness.domain.ReadinessReport;
 
 import java.util.List;
 import java.util.Map;

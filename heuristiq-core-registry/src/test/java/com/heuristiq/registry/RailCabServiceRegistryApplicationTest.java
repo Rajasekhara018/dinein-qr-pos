@@ -1,7 +1,7 @@
-package com.railcab.serviceregistry;
+package com.heuristiq.registry;
 
-import com.railcab.serviceregistry.config.CorrelationIdFilter;
-import com.railcab.serviceregistry.config.EurekaSecurityConfig;
+import com.heuristiq.registry.config.CorrelationIdFilter;
+import com.heuristiq.registry.config.EurekaSecurityConfig;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

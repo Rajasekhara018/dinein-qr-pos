@@ -1,7 +1,7 @@
-package com.railcab.dms.document.audit;
+package com.heuristiq.documents.document.audit;
 
 /**
- * Persistence port for audit events. See {@link com.railcab.dms.document.persistence.DocumentMetadataStore}
+ * Persistence port for audit events. See {@link com.heuristiq.documents.document.persistence.DocumentMetadataStore}
  * for why this indirection exists.
  */
 public interface DocumentAuditStore {

@@ -1,4 +1,4 @@
-package com.railcab.dms.common.paging;
+package com.heuristiq.documents.common.paging;
 
 import java.util.List;
 import java.util.function.Function;

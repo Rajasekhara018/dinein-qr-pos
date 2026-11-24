@@ -1,8 +1,8 @@
-package com.railcab.dms.document.audit.mongo;
+package com.heuristiq.documents.document.audit.mongo;
 
-import com.railcab.dms.common.DmsCommonConstants;
-import com.railcab.dms.document.audit.DocumentAuditEvent;
-import com.railcab.dms.document.audit.DocumentAuditStore;
+import com.heuristiq.documents.common.DmsCommonConstants;
+import com.heuristiq.documents.document.audit.DocumentAuditEvent;
+import com.heuristiq.documents.document.audit.DocumentAuditStore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 

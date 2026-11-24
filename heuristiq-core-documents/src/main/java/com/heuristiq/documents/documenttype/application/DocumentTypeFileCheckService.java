@@ -1,11 +1,11 @@
-package com.railcab.dms.documenttype.application;
+package com.heuristiq.documents.documenttype.application;
 
-import com.railcab.dms.config.DmsProperties;
-import com.railcab.dms.document.application.DocumentScanService;
-import com.railcab.dms.document.application.DocumentValidationService;
-import com.railcab.dms.documenttype.domain.DocumentTypeConstants;
-import com.railcab.dms.documenttype.domain.DocumentTypeRule;
-import com.railcab.dms.exception.DmsException;
+import com.heuristiq.documents.config.DmsProperties;
+import com.heuristiq.documents.document.application.DocumentScanService;
+import com.heuristiq.documents.document.application.DocumentValidationService;
+import com.heuristiq.documents.documenttype.domain.DocumentTypeConstants;
+import com.heuristiq.documents.documenttype.domain.DocumentTypeRule;
+import com.heuristiq.documents.exception.DmsException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -42,7 +42,7 @@ public class DocumentTypeFileCheckService {
      * @param documentTypeCode the type's code
      * @param file             the sample file
      * @return the verdict with the rule that was applied
-     * @throws com.railcab.dms.documenttype.domain.DocumentTypeException INVALID for an unknown or inactive type
+     * @throws com.heuristiq.documents.documenttype.domain.DocumentTypeException INVALID for an unknown or inactive type
      */
     public Result check(String tenantId, String category, String documentTypeCode, MultipartFile file) {
         DocumentTypeRule rule = rules.resolveRule(tenantId, category, documentTypeCode);

@@ -1,7 +1,7 @@
-package com.railcab.dms.search;
+package com.heuristiq.documents.search;
 
-import com.railcab.dms.search.projection.ProjectionConstants;
-import com.railcab.dms.search.projection.WebProjectionPublisher;
+import com.heuristiq.documents.search.projection.ProjectionConstants;
+import com.heuristiq.documents.search.projection.WebProjectionPublisher;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 

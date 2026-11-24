@@ -1,6 +1,6 @@
-package com.railcab.dms.storage;
+package com.heuristiq.documents.storage;
 
-import com.railcab.dms.storage.encryption.EncryptionCapability;
+import com.heuristiq.documents.storage.encryption.EncryptionCapability;
 import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
 

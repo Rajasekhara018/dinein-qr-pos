@@ -1,7 +1,7 @@
-package com.railcab.dms.document.persistence.postgres;
+package com.heuristiq.documents.document.persistence.postgres;
 
-import com.railcab.dms.document.persistence.DocumentSearchCriteria;
-import com.railcab.dms.document.persistence.SearchPatterns;
+import com.heuristiq.documents.document.persistence.DocumentSearchCriteria;
+import com.heuristiq.documents.document.persistence.SearchPatterns;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.util.StringUtils;

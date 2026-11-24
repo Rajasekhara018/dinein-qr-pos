@@ -1,6 +1,6 @@
-package com.railcab.dms.security;
+package com.heuristiq.documents.security;
 
-import com.railcab.dms.common.DmsCommonConstants;
+import com.heuristiq.documents.common.DmsCommonConstants;
 
 /** Fixed values of DMS request authentication: gateway headers, roles, authorities, open paths and JWT claim names. */
 public final class DmsSecurityConstants {

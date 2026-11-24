@@ -1,13 +1,13 @@
-package com.railcab.dms.readiness;
+package com.heuristiq.documents.readiness;
 
-import com.railcab.dms.common.DmsCommonConstants;
-import com.railcab.dms.documenttype.application.DocumentTypeQueryService;
-import com.railcab.dms.documenttype.domain.DocumentTypeRepository;
-import com.railcab.dms.exception.GlobalExceptionHandler;
-import com.railcab.dms.readiness.adapter.in.InternalReadinessController;
-import com.railcab.dms.readiness.application.DmsReadinessService;
-import com.railcab.dms.security.InternalAuthProperties;
-import com.railcab.dms.security.InternalServiceAuthFilter;
+import com.heuristiq.documents.common.DmsCommonConstants;
+import com.heuristiq.documents.documenttype.application.DocumentTypeQueryService;
+import com.heuristiq.documents.documenttype.domain.DocumentTypeRepository;
+import com.heuristiq.documents.exception.GlobalExceptionHandler;
+import com.heuristiq.documents.readiness.adapter.in.InternalReadinessController;
+import com.heuristiq.documents.readiness.application.DmsReadinessService;
+import com.heuristiq.documents.security.InternalAuthProperties;
+import com.heuristiq.documents.security.InternalServiceAuthFilter;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.junit.jupiter.api.BeforeEach;
