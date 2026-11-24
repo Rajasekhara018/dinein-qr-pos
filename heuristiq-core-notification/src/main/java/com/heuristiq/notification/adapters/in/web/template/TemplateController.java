@@ -1,6 +1,6 @@
-package com.railcab.nms.adapters.in.web.template;
+package com.heuristiq.notification.adapters.in.web.template;
 
-import com.railcab.nms.adapters.in.web.WebApiConstants;
+import com.heuristiq.notification.adapters.in.web.WebApiConstants;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
@@ -16,18 +16,18 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.railcab.nms.adapters.in.web.WebPaginationSupport;
-import com.railcab.nms.application.dto.TemplateTestSendRequest;
-import com.railcab.nms.application.port.in.TemplateTestSendUseCase;
-import com.railcab.nms.application.port.in.TemplateUseCase;
-import com.railcab.nms.application.security.NmsPrincipal;
-import com.railcab.nms.domain.model.NotificationTemplate;
-import com.railcab.nms.domain.model.NotificationChannel;
-import com.railcab.nms.shared.CommonRequestMapper;
-import com.railcab.nms.shared.CommonRequestObject;
-import com.railcab.nms.shared.CommonResponseObject;
-import com.railcab.nms.shared.NmsNotFoundException;
-import com.railcab.nms.shared.RequestObjectType;
+import com.heuristiq.notification.adapters.in.web.WebPaginationSupport;
+import com.heuristiq.notification.application.dto.TemplateTestSendRequest;
+import com.heuristiq.notification.application.port.in.TemplateTestSendUseCase;
+import com.heuristiq.notification.application.port.in.TemplateUseCase;
+import com.heuristiq.notification.application.security.NmsPrincipal;
+import com.heuristiq.notification.domain.model.NotificationTemplate;
+import com.heuristiq.notification.domain.model.NotificationChannel;
+import com.heuristiq.notification.shared.CommonRequestMapper;
+import com.heuristiq.notification.shared.CommonRequestObject;
+import com.heuristiq.notification.shared.CommonResponseObject;
+import com.heuristiq.notification.shared.NmsNotFoundException;
+import com.heuristiq.notification.shared.RequestObjectType;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

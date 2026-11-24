@@ -1,7 +1,7 @@
-package com.railcab.nms.application.usecase;
+package com.heuristiq.notification.application.usecase;
 
-import com.railcab.nms.application.security.TenantAccess;
-import com.railcab.nms.application.security.NotificationTenantContext;
+import com.heuristiq.notification.application.security.TenantAccess;
+import com.heuristiq.notification.application.security.NotificationTenantContext;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,23 +13,23 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.railcab.nms.domain.model.NotificationTemplate;
-import com.railcab.nms.application.dto.NotificationDispatchResult;
-import com.railcab.nms.application.dto.NotificationRequest;
-import com.railcab.nms.application.port.in.NotificationDispatchUseCase;
-import com.railcab.nms.application.port.out.ChannelProvider;
-import com.railcab.nms.application.port.out.RecipientResolver;
-import com.railcab.nms.domain.model.NotificationChannel;
-import com.railcab.nms.application.usecase.NotificationMessageService.Reservation;
-import com.railcab.nms.application.usecase.support.ChannelResilienceDecorator;
-import com.railcab.nms.application.usecase.support.NotificationAuditRecorder;
-import com.railcab.nms.application.usecase.support.NotificationDispatchMetrics;
-import com.railcab.nms.application.usecase.support.OrganizationVariables;
-import com.railcab.nms.application.usecase.support.PushDataBuilder;
-import com.railcab.nms.application.usecase.support.RecipientMasker;
-import com.railcab.nms.application.usecase.support.TemplateRenderer;
-import com.railcab.nms.application.dto.ChannelSendOutcome;
-import com.railcab.nms.application.port.in.TemplateUseCase;
+import com.heuristiq.notification.domain.model.NotificationTemplate;
+import com.heuristiq.notification.application.dto.NotificationDispatchResult;
+import com.heuristiq.notification.application.dto.NotificationRequest;
+import com.heuristiq.notification.application.port.in.NotificationDispatchUseCase;
+import com.heuristiq.notification.application.port.out.ChannelProvider;
+import com.heuristiq.notification.application.port.out.RecipientResolver;
+import com.heuristiq.notification.domain.model.NotificationChannel;
+import com.heuristiq.notification.application.usecase.NotificationMessageService.Reservation;
+import com.heuristiq.notification.application.usecase.support.ChannelResilienceDecorator;
+import com.heuristiq.notification.application.usecase.support.NotificationAuditRecorder;
+import com.heuristiq.notification.application.usecase.support.NotificationDispatchMetrics;
+import com.heuristiq.notification.application.usecase.support.OrganizationVariables;
+import com.heuristiq.notification.application.usecase.support.PushDataBuilder;
+import com.heuristiq.notification.application.usecase.support.RecipientMasker;
+import com.heuristiq.notification.application.usecase.support.TemplateRenderer;
+import com.heuristiq.notification.application.dto.ChannelSendOutcome;
+import com.heuristiq.notification.application.port.in.TemplateUseCase;
 
 import lombok.RequiredArgsConstructor;
 

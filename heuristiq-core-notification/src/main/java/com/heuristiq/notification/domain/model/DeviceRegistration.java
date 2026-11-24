@@ -1,4 +1,4 @@
-package com.railcab.nms.domain.model;
+package com.heuristiq.notification.domain.model;
 
 /**
  * What a client reports when it registers an FCM token, beyond the token itself. Everything except

@@ -1,13 +1,13 @@
-package com.railcab.nms.application.usecase;
+package com.heuristiq.notification.application.usecase;
 
-import com.railcab.nms.application.security.TenantAccess;
+import com.heuristiq.notification.application.security.TenantAccess;
 import org.springframework.stereotype.Service;
 
-import com.railcab.nms.application.port.in.NotificationAttemptQueryUseCase;
-import com.railcab.nms.domain.model.NotificationAttempt;
-import com.railcab.nms.domain.repository.INotificationAttemptRepository;
-import com.railcab.nms.domain.repository.PageQuery;
-import com.railcab.nms.domain.repository.PageResult;
+import com.heuristiq.notification.application.port.in.NotificationAttemptQueryUseCase;
+import com.heuristiq.notification.domain.model.NotificationAttempt;
+import com.heuristiq.notification.domain.repository.INotificationAttemptRepository;
+import com.heuristiq.notification.domain.repository.PageQuery;
+import com.heuristiq.notification.domain.repository.PageResult;
 
 import lombok.RequiredArgsConstructor;
 

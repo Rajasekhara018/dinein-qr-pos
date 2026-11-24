@@ -1,4 +1,4 @@
-package com.railcab.nms.infrastructure.config;
+package com.heuristiq.notification.infrastructure.config;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -14,8 +14,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.UUID;
 
-import static com.railcab.nms.infrastructure.config.NmsConfigConstants.HEADER_CORRELATION_ID;
-import static com.railcab.nms.infrastructure.config.NmsConfigConstants.MDC_CORRELATION_ID;
+import static com.heuristiq.notification.infrastructure.config.NmsConfigConstants.HEADER_CORRELATION_ID;
+import static com.heuristiq.notification.infrastructure.config.NmsConfigConstants.MDC_CORRELATION_ID;
 
 /**
  * Reads/generates X-Correlation-ID (the same header the API Gateway's CorrelationIdFilter sets)

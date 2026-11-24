@@ -1,6 +1,6 @@
-package com.railcab.nms.adapters.in.web.event;
+package com.heuristiq.notification.adapters.in.web.event;
 
-import com.railcab.nms.adapters.in.web.WebApiConstants;
+import com.heuristiq.notification.adapters.in.web.WebApiConstants;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,12 +13,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.railcab.nms.application.port.in.EventDefinitionUseCase;
-import com.railcab.nms.domain.model.NotificationEventDefinition;
-import com.railcab.nms.shared.CommonRequestMapper;
-import com.railcab.nms.shared.CommonRequestObject;
-import com.railcab.nms.shared.CommonResponseObject;
-import com.railcab.nms.shared.RequestObjectType;
+import com.heuristiq.notification.application.port.in.EventDefinitionUseCase;
+import com.heuristiq.notification.domain.model.NotificationEventDefinition;
+import com.heuristiq.notification.shared.CommonRequestMapper;
+import com.heuristiq.notification.shared.CommonRequestObject;
+import com.heuristiq.notification.shared.CommonResponseObject;
+import com.heuristiq.notification.shared.RequestObjectType;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

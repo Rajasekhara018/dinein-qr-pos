@@ -1,10 +1,10 @@
-package com.railcab.nms.adapters.out.persistence.jpa;
+package com.heuristiq.notification.adapters.out.persistence.jpa;
 
 import java.time.LocalDateTime;
 
 import org.hibernate.annotations.UuidGenerator;
 
-import com.railcab.nms.domain.model.AuditOutboxStatus;
+import com.heuristiq.notification.domain.model.AuditOutboxStatus;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

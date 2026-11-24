@@ -1,4 +1,4 @@
-package com.railcab.nms.domain.model;
+package com.heuristiq.notification.domain.model;
 
 /**
  * Delivery channels NMS can send on. Stored by name (JPA {@code EnumType.STRING}, Mongo string), so a new value needs no

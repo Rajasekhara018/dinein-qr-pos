@@ -1,4 +1,4 @@
-package com.railcab.nms.adapters.out.persistence.mongo;
+package com.heuristiq.notification.adapters.out.persistence.mongo;
 
 import java.util.List;
 import java.util.Optional;
@@ -7,8 +7,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
-import com.railcab.nms.domain.model.NotificationChannel;
-import com.railcab.nms.adapters.out.persistence.mongo.NotificationTemplateDocument;
+import com.heuristiq.notification.domain.model.NotificationChannel;
+import com.heuristiq.notification.adapters.out.persistence.mongo.NotificationTemplateDocument;
 
 interface TemplateMongoSpringRepository extends MongoRepository<NotificationTemplateDocument, String> {
 

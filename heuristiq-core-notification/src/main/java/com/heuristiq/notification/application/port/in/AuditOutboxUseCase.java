@@ -1,4 +1,4 @@
-package com.railcab.nms.application.port.in;
+package com.heuristiq.notification.application.port.in;
 
 /** Pushes queued communication audit events to the central audit service. */
 public interface AuditOutboxUseCase {

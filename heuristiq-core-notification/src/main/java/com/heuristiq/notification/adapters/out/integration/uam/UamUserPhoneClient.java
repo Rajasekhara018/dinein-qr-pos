@@ -1,4 +1,4 @@
-package com.railcab.nms.adapters.out.integration.uam;
+package com.heuristiq.notification.adapters.out.integration.uam;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -12,9 +12,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.railcab.nms.application.dto.UamUserSummary;
-import com.railcab.nms.application.port.out.UserPhoneDirectory;
-import com.railcab.nms.infrastructure.config.NmsProperties;
+import com.heuristiq.notification.application.dto.UamUserSummary;
+import com.heuristiq.notification.application.port.out.UserPhoneDirectory;
+import com.heuristiq.notification.infrastructure.config.NmsProperties;
 import com.heuristiq.resilient.Idempotency;
 import com.heuristiq.resilient.ResilientCaller;
 

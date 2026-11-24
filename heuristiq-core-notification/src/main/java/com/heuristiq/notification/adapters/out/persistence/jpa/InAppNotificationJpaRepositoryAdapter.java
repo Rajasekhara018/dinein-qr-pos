@@ -1,16 +1,16 @@
-package com.railcab.nms.adapters.out.persistence.jpa;
+package com.heuristiq.notification.adapters.out.persistence.jpa;
 
-import com.railcab.nms.domain.repository.TenantScope;
+import com.heuristiq.notification.domain.repository.TenantScope;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.railcab.nms.adapters.out.persistence.PaginationMapper;
-import com.railcab.nms.domain.model.InAppNotification;
-import com.railcab.nms.domain.repository.IInAppNotificationRepository;
-import com.railcab.nms.domain.repository.PageQuery;
-import com.railcab.nms.domain.repository.PageResult;
-import com.railcab.nms.adapters.out.persistence.jpa.InAppNotificationEntity;
+import com.heuristiq.notification.adapters.out.persistence.PaginationMapper;
+import com.heuristiq.notification.domain.model.InAppNotification;
+import com.heuristiq.notification.domain.repository.IInAppNotificationRepository;
+import com.heuristiq.notification.domain.repository.PageQuery;
+import com.heuristiq.notification.domain.repository.PageResult;
+import com.heuristiq.notification.adapters.out.persistence.jpa.InAppNotificationEntity;
 
 @Repository
 @ConditionalOnExpression("'${nms.persistence.type:mongo}' == 'mysql' or '${nms.persistence.type:mongo}' == 'postgres'")

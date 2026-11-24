@@ -1,4 +1,4 @@
-package com.railcab.nms.application.usecase;
+package com.heuristiq.notification.application.usecase;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -9,17 +9,17 @@ import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import com.railcab.nms.application.dto.NotificationRequest;
-import com.railcab.nms.application.dto.UamUserSummary;
-import com.railcab.nms.application.port.in.NotificationDispatchUseCase;
-import com.railcab.nms.application.port.out.AudienceResolutionException;
-import com.railcab.nms.application.port.out.BroadcastAudienceResolver;
-import com.railcab.nms.application.usecase.support.NotificationRequestBuilder;
-import com.railcab.nms.application.usecase.support.NmsOriginConstants;
-import com.railcab.nms.domain.model.Broadcast;
-import com.railcab.nms.domain.model.BroadcastStatus;
-import com.railcab.nms.domain.model.NotificationChannel;
-import com.railcab.nms.domain.repository.IBroadcastRepository;
+import com.heuristiq.notification.application.dto.NotificationRequest;
+import com.heuristiq.notification.application.dto.UamUserSummary;
+import com.heuristiq.notification.application.port.in.NotificationDispatchUseCase;
+import com.heuristiq.notification.application.port.out.AudienceResolutionException;
+import com.heuristiq.notification.application.port.out.BroadcastAudienceResolver;
+import com.heuristiq.notification.application.usecase.support.NotificationRequestBuilder;
+import com.heuristiq.notification.application.usecase.support.NmsOriginConstants;
+import com.heuristiq.notification.domain.model.Broadcast;
+import com.heuristiq.notification.domain.model.BroadcastStatus;
+import com.heuristiq.notification.domain.model.NotificationChannel;
+import com.heuristiq.notification.domain.repository.IBroadcastRepository;
 
 import lombok.RequiredArgsConstructor;
 

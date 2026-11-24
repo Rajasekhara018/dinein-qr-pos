@@ -1,6 +1,6 @@
-package com.railcab.nms.adapters.out.channel.email.smtp;
+package com.heuristiq.notification.adapters.out.channel.email.smtp;
 
-import com.railcab.nms.infrastructure.config.NmsProperties;
+import com.heuristiq.notification.infrastructure.config.NmsProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -9,12 +9,12 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import com.railcab.nms.adapters.out.channel.email.EmailProvider;
+import com.heuristiq.notification.adapters.out.channel.email.EmailProvider;
 
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 
-import static com.railcab.nms.application.port.out.ChannelProviderConstants.*;
+import static com.heuristiq.notification.application.port.out.ChannelProviderConstants.*;
 
 @Component("smtpEmailProvider")
 @RequiredArgsConstructor

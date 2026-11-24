@@ -1,4 +1,4 @@
-package com.railcab.nms.adapters.out.integration.uam;
+package com.heuristiq.notification.adapters.out.integration.uam;
 
 import java.util.Optional;
 
@@ -8,9 +8,9 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.railcab.nms.application.dto.OrganizationProfile;
-import com.railcab.nms.application.port.out.OrganizationProfileSource;
-import com.railcab.nms.infrastructure.config.NmsProperties;
+import com.heuristiq.notification.application.dto.OrganizationProfile;
+import com.heuristiq.notification.application.port.out.OrganizationProfileSource;
+import com.heuristiq.notification.infrastructure.config.NmsProperties;
 import com.heuristiq.resilient.Idempotency;
 import com.heuristiq.resilient.ResilientCaller;
 

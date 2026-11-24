@@ -1,4 +1,4 @@
-package com.railcab.nms.application.usecase.support;
+package com.heuristiq.notification.application.usecase.support;
 
 import java.time.Clock;
 import java.time.LocalDateTime;
@@ -8,23 +8,23 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import com.railcab.nms.application.dto.ChannelSendOutcome;
-import com.railcab.nms.application.dto.ChannelSendOutcome.AttemptResult;
-import com.railcab.nms.application.dto.NotificationOrigin;
-import com.railcab.nms.application.dto.NotificationRequest;
-import com.railcab.nms.application.port.out.ChannelProvider;
-import com.railcab.nms.domain.model.DeliveryStatus;
-import com.railcab.nms.domain.model.NotificationAttempt;
-import com.railcab.nms.domain.model.NotificationLog;
-import com.railcab.nms.domain.repository.INotificationAttemptRepository;
-import com.railcab.nms.domain.repository.INotificationLogRepository;
-import com.railcab.nms.infrastructure.config.NmsProperties;
+import com.heuristiq.notification.application.dto.ChannelSendOutcome;
+import com.heuristiq.notification.application.dto.ChannelSendOutcome.AttemptResult;
+import com.heuristiq.notification.application.dto.NotificationOrigin;
+import com.heuristiq.notification.application.dto.NotificationRequest;
+import com.heuristiq.notification.application.port.out.ChannelProvider;
+import com.heuristiq.notification.domain.model.DeliveryStatus;
+import com.heuristiq.notification.domain.model.NotificationAttempt;
+import com.heuristiq.notification.domain.model.NotificationLog;
+import com.heuristiq.notification.domain.repository.INotificationAttemptRepository;
+import com.heuristiq.notification.domain.repository.INotificationLogRepository;
+import com.heuristiq.notification.infrastructure.config.NmsProperties;
 
 import lombok.RequiredArgsConstructor;
 
 /**
  * Owns delivery-record persistence and recipient PII masking for dispatch attempts -- split out of
- * {@link com.railcab.nms.application.usecase.NotificationDispatchService} so audit/masking rules can
+ * {@link com.heuristiq.notification.application.usecase.NotificationDispatchService} so audit/masking rules can
  * change without touching orchestration logic, and vice versa.
  *
  * <p>Per recipient and channel it writes one {@link NotificationLog} summary row (unchanged

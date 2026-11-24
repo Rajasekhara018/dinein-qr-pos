@@ -1,13 +1,13 @@
-package com.railcab.nms.application.port.in;
+package com.heuristiq.notification.application.port.in;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.railcab.nms.application.dto.NotificationChannelStatsResponse;
-import com.railcab.nms.domain.model.NotificationLog;
-import com.railcab.nms.domain.model.NotificationChannel;
-import com.railcab.nms.domain.repository.PageQuery;
-import com.railcab.nms.domain.repository.PageResult;
+import com.heuristiq.notification.application.dto.NotificationChannelStatsResponse;
+import com.heuristiq.notification.domain.model.NotificationLog;
+import com.heuristiq.notification.domain.model.NotificationChannel;
+import com.heuristiq.notification.domain.repository.PageQuery;
+import com.heuristiq.notification.domain.repository.PageResult;
 
 /** Port the web adapter depends on instead of the raw repository. */
 public interface NotificationLogUseCase {

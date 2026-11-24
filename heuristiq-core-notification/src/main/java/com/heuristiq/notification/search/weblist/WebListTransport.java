@@ -1,4 +1,4 @@
-package com.railcab.nms.search.weblist;
+package com.heuristiq.notification.search.weblist;
 
 import java.io.IOException;
 import java.net.URI;

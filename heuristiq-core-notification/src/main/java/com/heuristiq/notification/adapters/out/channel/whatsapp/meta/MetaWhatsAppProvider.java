@@ -1,6 +1,6 @@
-package com.railcab.nms.adapters.out.channel.whatsapp.meta;
+package com.heuristiq.notification.adapters.out.channel.whatsapp.meta;
 
-import com.railcab.nms.adapters.out.channel.VendorPhoneFormat;
+import com.heuristiq.notification.adapters.out.channel.VendorPhoneFormat;
 import java.time.Duration;
 
 import org.slf4j.Logger;
@@ -13,13 +13,13 @@ import org.springframework.web.reactive.function.client.WebClient;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.railcab.nms.infrastructure.config.NmsProperties;
-import com.railcab.nms.adapters.out.channel.whatsapp.WhatsAppProvider;
-import com.railcab.nms.application.port.out.ProviderSendResult;
+import com.heuristiq.notification.infrastructure.config.NmsProperties;
+import com.heuristiq.notification.adapters.out.channel.whatsapp.WhatsAppProvider;
+import com.heuristiq.notification.application.port.out.ProviderSendResult;
 
 import lombok.RequiredArgsConstructor;
 
-import static com.railcab.nms.application.port.out.ChannelProviderConstants.*;
+import static com.heuristiq.notification.application.port.out.ChannelProviderConstants.*;
 
 @Component("metaWhatsAppProvider")
 @RequiredArgsConstructor

@@ -1,10 +1,10 @@
-package com.railcab.nms.domain.repository;
+package com.heuristiq.notification.domain.repository;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-import com.railcab.nms.domain.model.NotificationMessage;
-import com.railcab.nms.domain.model.NotificationMessageStatus;
+import com.heuristiq.notification.domain.model.NotificationMessage;
+import com.heuristiq.notification.domain.model.NotificationMessageStatus;
 
 public interface INotificationMessageRepository {
 

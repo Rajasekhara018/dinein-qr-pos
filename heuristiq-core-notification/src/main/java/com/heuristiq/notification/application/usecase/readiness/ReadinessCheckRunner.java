@@ -1,7 +1,7 @@
-package com.railcab.nms.application.usecase.readiness;
+package com.heuristiq.notification.application.usecase.readiness;
 
-import com.railcab.nms.domain.model.readiness.ReadinessCheck;
-import com.railcab.nms.domain.model.readiness.ReadinessStatus;
+import com.heuristiq.notification.domain.model.readiness.ReadinessCheck;
+import com.heuristiq.notification.domain.model.readiness.ReadinessStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

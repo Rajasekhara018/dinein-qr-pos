@@ -1,8 +1,8 @@
-package com.railcab.nms.application.dto;
+package com.heuristiq.notification.application.dto;
 
 import java.time.LocalDateTime;
 
-import com.railcab.nms.domain.model.DeliveryStatus;
+import com.heuristiq.notification.domain.model.DeliveryStatus;
 
 /**
  * A provider's report on a message it accepted earlier (SMS DLR, WhatsApp status, email event),

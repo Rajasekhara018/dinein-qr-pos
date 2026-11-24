@@ -1,11 +1,11 @@
-package com.railcab.nms.adapters.out.persistence.mongo;
+package com.heuristiq.notification.adapters.out.persistence.mongo;
 
 import java.time.LocalDateTime;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.railcab.nms.domain.model.AuditOutboxStatus;
+import com.heuristiq.notification.domain.model.AuditOutboxStatus;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

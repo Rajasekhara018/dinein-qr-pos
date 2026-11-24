@@ -1,7 +1,7 @@
-package com.railcab.nms.adapters.out.channel.inapp;
+package com.heuristiq.notification.adapters.out.channel.inapp;
 
-import com.railcab.nms.adapters.out.channel.ChannelAdapterConstants;
-import com.railcab.nms.application.security.NotificationTenantContext;
+import com.heuristiq.notification.adapters.out.channel.ChannelAdapterConstants;
+import com.heuristiq.notification.application.security.NotificationTenantContext;
 import java.time.LocalDateTime;
 import java.util.Map;
 
@@ -11,10 +11,10 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import com.railcab.nms.domain.model.InAppNotification;
-import com.railcab.nms.domain.repository.IInAppNotificationRepository;
-import com.railcab.nms.application.port.out.ChannelProvider;
-import com.railcab.nms.domain.model.NotificationChannel;
+import com.heuristiq.notification.domain.model.InAppNotification;
+import com.heuristiq.notification.domain.repository.IInAppNotificationRepository;
+import com.heuristiq.notification.application.port.out.ChannelProvider;
+import com.heuristiq.notification.domain.model.NotificationChannel;
 
 import lombok.RequiredArgsConstructor;
 

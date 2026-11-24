@@ -1,4 +1,4 @@
-package com.railcab.nms.adapters.out.channel.voice.exotel;
+package com.heuristiq.notification.adapters.out.channel.voice.exotel;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;

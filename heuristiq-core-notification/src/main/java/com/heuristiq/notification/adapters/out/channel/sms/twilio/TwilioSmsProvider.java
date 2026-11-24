@@ -1,6 +1,6 @@
-package com.railcab.nms.adapters.out.channel.sms.twilio;
+package com.heuristiq.notification.adapters.out.channel.sms.twilio;
 
-import com.railcab.nms.adapters.out.channel.VendorPhoneFormat;
+import com.heuristiq.notification.adapters.out.channel.VendorPhoneFormat;
 import java.net.URI;
 
 import org.slf4j.Logger;
@@ -8,9 +8,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import com.railcab.nms.infrastructure.config.NmsProperties;
-import com.railcab.nms.adapters.out.channel.sms.SmsProvider;
-import com.railcab.nms.application.port.out.ProviderSendResult;
+import com.heuristiq.notification.infrastructure.config.NmsProperties;
+import com.heuristiq.notification.adapters.out.channel.sms.SmsProvider;
+import com.heuristiq.notification.application.port.out.ProviderSendResult;
 import com.twilio.Twilio;
 import com.twilio.rest.api.v2010.account.Message;
 import com.twilio.rest.api.v2010.account.MessageCreator;
@@ -18,7 +18,7 @@ import com.twilio.type.PhoneNumber;
 
 import lombok.RequiredArgsConstructor;
 
-import static com.railcab.nms.application.port.out.ChannelProviderConstants.*;
+import static com.heuristiq.notification.application.port.out.ChannelProviderConstants.*;
 
 @Component("twilioSmsProvider")
 @RequiredArgsConstructor

@@ -1,9 +1,9 @@
-package com.railcab.nms.domain.repository;
+package com.heuristiq.notification.domain.repository;
 
 import java.time.LocalDateTime;
 
-import com.railcab.nms.domain.model.NotificationLog;
-import com.railcab.nms.domain.model.NotificationChannel;
+import com.heuristiq.notification.domain.model.NotificationLog;
+import com.heuristiq.notification.domain.model.NotificationChannel;
 
 public interface INotificationLogRepository {
 

@@ -1,6 +1,6 @@
-package com.railcab.nms.domain.repository;
+package com.heuristiq.notification.domain.repository;
 
-import com.railcab.nms.domain.model.InAppNotification;
+import com.heuristiq.notification.domain.model.InAppNotification;
 
 public interface IInAppNotificationRepository {
 

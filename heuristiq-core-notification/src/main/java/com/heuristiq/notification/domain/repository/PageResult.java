@@ -1,4 +1,4 @@
-package com.railcab.nms.domain.repository;
+package com.heuristiq.notification.domain.repository;
 
 import java.util.List;
 

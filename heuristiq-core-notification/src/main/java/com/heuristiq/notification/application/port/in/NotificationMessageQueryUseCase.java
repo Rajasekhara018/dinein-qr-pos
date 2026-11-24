@@ -1,9 +1,9 @@
-package com.railcab.nms.application.port.in;
+package com.heuristiq.notification.application.port.in;
 
-import com.railcab.nms.domain.model.NotificationMessage;
-import com.railcab.nms.domain.model.NotificationMessageStatus;
-import com.railcab.nms.domain.repository.PageQuery;
-import com.railcab.nms.domain.repository.PageResult;
+import com.heuristiq.notification.domain.model.NotificationMessage;
+import com.heuristiq.notification.domain.model.NotificationMessageStatus;
+import com.heuristiq.notification.domain.repository.PageQuery;
+import com.heuristiq.notification.domain.repository.PageResult;
 
 /**
  * Port the web adapter depends on instead of the raw repository. Kept separate from

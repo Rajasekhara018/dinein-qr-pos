@@ -1,4 +1,4 @@
-package com.railcab.nms.adapters.out.channel.email.mailgun;
+package com.heuristiq.notification.adapters.out.channel.email.mailgun;
 
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
@@ -14,13 +14,13 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import com.railcab.nms.infrastructure.config.NmsProperties;
-import com.railcab.nms.adapters.out.channel.email.EmailProvider;
-import com.railcab.nms.application.port.out.ProviderSendResult;
+import com.heuristiq.notification.infrastructure.config.NmsProperties;
+import com.heuristiq.notification.adapters.out.channel.email.EmailProvider;
+import com.heuristiq.notification.application.port.out.ProviderSendResult;
 
 import lombok.RequiredArgsConstructor;
 
-import static com.railcab.nms.application.port.out.ChannelProviderConstants.*;
+import static com.heuristiq.notification.application.port.out.ChannelProviderConstants.*;
 
 @Component("mailgunEmailProvider")
 @RequiredArgsConstructor

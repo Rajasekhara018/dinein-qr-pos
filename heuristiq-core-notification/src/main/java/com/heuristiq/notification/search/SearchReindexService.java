@@ -1,11 +1,11 @@
-package com.railcab.nms.search;
+package com.heuristiq.notification.search;
 
-import com.railcab.nms.domain.model.NotificationDomainConstants;
+import com.heuristiq.notification.domain.model.NotificationDomainConstants;
 
-import com.railcab.nms.domain.model.NotificationTemplate;
-import com.railcab.nms.domain.repository.ITemplateRepository;
-import com.railcab.nms.domain.repository.PageQuery;
-import com.railcab.nms.domain.repository.PageResult;
+import com.heuristiq.notification.domain.model.NotificationTemplate;
+import com.heuristiq.notification.domain.repository.ITemplateRepository;
+import com.heuristiq.notification.domain.repository.PageQuery;
+import com.heuristiq.notification.domain.repository.PageResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

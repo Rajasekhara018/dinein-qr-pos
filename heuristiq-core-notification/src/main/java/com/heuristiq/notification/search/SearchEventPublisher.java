@@ -1,4 +1,4 @@
-package com.railcab.nms.search;
+package com.heuristiq.notification.search;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;

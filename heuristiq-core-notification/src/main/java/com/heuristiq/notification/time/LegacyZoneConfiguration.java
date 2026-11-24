@@ -1,4 +1,4 @@
-package com.railcab.nms.time;
+package com.heuristiq.notification.time;
 
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;

@@ -1,6 +1,6 @@
-package com.railcab.nms.adapters.out.channel.sms;
+package com.heuristiq.notification.adapters.out.channel.sms;
 
-import com.railcab.nms.application.port.out.ProviderSendResult;
+import com.heuristiq.notification.application.port.out.ProviderSendResult;
 
 /**
  * SPI for SMS delivery providers.

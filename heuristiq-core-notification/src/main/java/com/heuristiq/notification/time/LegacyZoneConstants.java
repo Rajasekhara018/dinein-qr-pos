@@ -1,4 +1,4 @@
-package com.railcab.nms.time;
+package com.heuristiq.notification.time;
 
 /**
  * Fixed names and defaults for the legacy time zone setting. The zone itself is configuration

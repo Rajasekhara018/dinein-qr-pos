@@ -1,4 +1,4 @@
-package com.railcab.nms.application.usecase;
+package com.heuristiq.notification.application.usecase;
 
 import java.time.Clock;
 import java.time.LocalDateTime;
@@ -10,16 +10,16 @@ import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import com.railcab.nms.application.dto.DeliveryReceipt;
-import com.railcab.nms.application.dto.ReceiptOutcome;
-import com.railcab.nms.application.port.in.DeliveryReceiptUseCase;
-import com.railcab.nms.application.usecase.support.CommunicationAuditPublisher;
-import com.railcab.nms.application.usecase.support.ErrorSanitizer;
-import com.railcab.nms.domain.model.DeliveryStatus;
-import com.railcab.nms.domain.model.NotificationAttempt;
-import com.railcab.nms.domain.model.NotificationLog;
-import com.railcab.nms.domain.repository.INotificationAttemptRepository;
-import com.railcab.nms.domain.repository.INotificationLogRepository;
+import com.heuristiq.notification.application.dto.DeliveryReceipt;
+import com.heuristiq.notification.application.dto.ReceiptOutcome;
+import com.heuristiq.notification.application.port.in.DeliveryReceiptUseCase;
+import com.heuristiq.notification.application.usecase.support.CommunicationAuditPublisher;
+import com.heuristiq.notification.application.usecase.support.ErrorSanitizer;
+import com.heuristiq.notification.domain.model.DeliveryStatus;
+import com.heuristiq.notification.domain.model.NotificationAttempt;
+import com.heuristiq.notification.domain.model.NotificationLog;
+import com.heuristiq.notification.domain.repository.INotificationAttemptRepository;
+import com.heuristiq.notification.domain.repository.INotificationLogRepository;
 
 import lombok.RequiredArgsConstructor;
 

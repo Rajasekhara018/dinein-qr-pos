@@ -1,10 +1,10 @@
-package com.railcab.nms.application.port.in;
+package com.heuristiq.notification.application.port.in;
 
 import java.util.List;
 import java.util.Map;
 
-import com.railcab.nms.application.dto.EventConfigResponse;
-import com.railcab.nms.domain.model.NotificationEventDefinition;
+import com.heuristiq.notification.application.dto.EventConfigResponse;
+import com.heuristiq.notification.domain.model.NotificationEventDefinition;
 
 /** Port the web adapter depends on instead of the concrete event-definition service. */
 public interface EventDefinitionUseCase {

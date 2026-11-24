@@ -1,4 +1,4 @@
-package com.railcab.nms.adapters.out.persistence.jpa;
+package com.heuristiq.notification.adapters.out.persistence.jpa;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -10,7 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.railcab.nms.domain.model.AuditOutboxStatus;
+import com.heuristiq.notification.domain.model.AuditOutboxStatus;
 
 interface AuditOutboxJpaSpringRepository extends JpaRepository<AuditOutboxEntity, String> {
 

@@ -1,4 +1,4 @@
-package com.railcab.nms.adapters.out.persistence.jpa;
+package com.heuristiq.notification.adapters.out.persistence.jpa;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -26,9 +26,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.UuidGenerator;
 
-import com.railcab.nms.domain.model.BroadcastSegment;
-import com.railcab.nms.domain.model.BroadcastStatus;
-import com.railcab.nms.domain.model.NotificationChannel;
+import com.heuristiq.notification.domain.model.BroadcastSegment;
+import com.heuristiq.notification.domain.model.BroadcastStatus;
+import com.heuristiq.notification.domain.model.NotificationChannel;
 
 @Data
 @Builder(toBuilder = true)

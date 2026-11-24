@@ -1,4 +1,4 @@
-package com.railcab.nms.application.usecase;
+package com.heuristiq.notification.application.usecase;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -10,14 +10,14 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import com.railcab.nms.application.dto.EventConfigResponse;
-import com.railcab.nms.application.port.in.EventDefinitionUseCase;
-import com.railcab.nms.domain.model.NotificationEvent;
-import com.railcab.nms.domain.model.NotificationEventDefinition;
-import com.railcab.nms.domain.model.EventAttributesConfig;
-import com.railcab.nms.domain.repository.IEventDefinitionRepository;
-import com.railcab.nms.shared.NmsConflictException;
-import com.railcab.nms.shared.NmsNotFoundException;
+import com.heuristiq.notification.application.dto.EventConfigResponse;
+import com.heuristiq.notification.application.port.in.EventDefinitionUseCase;
+import com.heuristiq.notification.domain.model.NotificationEvent;
+import com.heuristiq.notification.domain.model.NotificationEventDefinition;
+import com.heuristiq.notification.domain.model.EventAttributesConfig;
+import com.heuristiq.notification.domain.repository.IEventDefinitionRepository;
+import com.heuristiq.notification.shared.NmsConflictException;
+import com.heuristiq.notification.shared.NmsNotFoundException;
 
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;

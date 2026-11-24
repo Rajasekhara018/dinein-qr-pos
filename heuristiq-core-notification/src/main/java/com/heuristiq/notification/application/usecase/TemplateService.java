@@ -1,4 +1,4 @@
-package com.railcab.nms.application.usecase;
+package com.heuristiq.notification.application.usecase;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
@@ -17,18 +17,18 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import com.railcab.nms.domain.model.DefaultNotificationTemplates;
-import com.railcab.nms.domain.model.NotificationTemplate;
-import com.railcab.nms.domain.repository.ITemplateRepository;
-import com.railcab.nms.domain.repository.PageQuery;
-import com.railcab.nms.domain.repository.PageResult;
-import com.railcab.nms.domain.repository.TenantScope;
-import com.railcab.nms.domain.model.NotificationChannel;
-import com.railcab.nms.application.port.in.TemplateUseCase;
-import com.railcab.nms.application.port.out.TemplateLookupCache;
-import com.railcab.nms.application.security.TenantAccess;
-import com.railcab.nms.infrastructure.config.NmsProperties;
-import com.railcab.nms.shared.NmsNotFoundException;
+import com.heuristiq.notification.domain.model.DefaultNotificationTemplates;
+import com.heuristiq.notification.domain.model.NotificationTemplate;
+import com.heuristiq.notification.domain.repository.ITemplateRepository;
+import com.heuristiq.notification.domain.repository.PageQuery;
+import com.heuristiq.notification.domain.repository.PageResult;
+import com.heuristiq.notification.domain.repository.TenantScope;
+import com.heuristiq.notification.domain.model.NotificationChannel;
+import com.heuristiq.notification.application.port.in.TemplateUseCase;
+import com.heuristiq.notification.application.port.out.TemplateLookupCache;
+import com.heuristiq.notification.application.security.TenantAccess;
+import com.heuristiq.notification.infrastructure.config.NmsProperties;
+import com.heuristiq.notification.shared.NmsNotFoundException;
 
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;

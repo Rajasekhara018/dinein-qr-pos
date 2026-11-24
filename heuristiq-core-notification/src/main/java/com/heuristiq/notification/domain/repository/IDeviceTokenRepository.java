@@ -1,6 +1,6 @@
-package com.railcab.nms.domain.repository;
+package com.heuristiq.notification.domain.repository;
 
-import com.railcab.nms.domain.model.DeviceRegistration;
+import com.heuristiq.notification.domain.model.DeviceRegistration;
 
 import java.util.Collection;
 import java.util.List;

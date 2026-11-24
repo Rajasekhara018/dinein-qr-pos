@@ -1,4 +1,4 @@
-package com.railcab.nms.search.weblist;
+package com.heuristiq.notification.search.weblist;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;

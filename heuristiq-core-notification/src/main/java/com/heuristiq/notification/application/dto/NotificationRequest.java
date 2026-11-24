@@ -1,9 +1,9 @@
-package com.railcab.nms.application.dto;
+package com.heuristiq.notification.application.dto;
 
 import java.util.List;
 import java.util.Map;
 
-import com.railcab.nms.domain.model.NotificationChannel;
+import com.heuristiq.notification.domain.model.NotificationChannel;
 
 import com.heuristiq.phone.validation.ValidPhone;
 import io.swagger.v3.oas.annotations.media.Schema;

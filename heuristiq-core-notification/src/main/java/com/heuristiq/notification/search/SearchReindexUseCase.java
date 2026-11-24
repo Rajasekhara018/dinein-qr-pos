@@ -1,4 +1,4 @@
-package com.railcab.nms.search;
+package com.heuristiq.notification.search;
 
 /** Re-publishes existing notification templates to the search index, for data saved before search was running. */
 public interface SearchReindexUseCase {

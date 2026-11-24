@@ -1,4 +1,4 @@
-package com.railcab.nms.application.port.out;
+package com.heuristiq.notification.application.port.out;
 
 /**
  * What one provider call answered, beyond the plain success flag of {@link ChannelProvider#send}:

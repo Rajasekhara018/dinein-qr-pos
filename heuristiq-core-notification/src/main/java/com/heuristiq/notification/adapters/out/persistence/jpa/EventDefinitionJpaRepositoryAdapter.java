@@ -1,4 +1,4 @@
-package com.railcab.nms.adapters.out.persistence.jpa;
+package com.heuristiq.notification.adapters.out.persistence.jpa;
 
 import java.util.List;
 import java.util.Optional;
@@ -6,9 +6,9 @@ import java.util.Optional;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.stereotype.Repository;
 
-import com.railcab.nms.domain.model.NotificationEventDefinition;
-import com.railcab.nms.domain.repository.IEventDefinitionRepository;
-import com.railcab.nms.adapters.out.persistence.jpa.NotificationEventDefinitionEntity;
+import com.heuristiq.notification.domain.model.NotificationEventDefinition;
+import com.heuristiq.notification.domain.repository.IEventDefinitionRepository;
+import com.heuristiq.notification.adapters.out.persistence.jpa.NotificationEventDefinitionEntity;
 
 @Repository
 @ConditionalOnExpression("'${nms.persistence.type:mongo}' == 'mysql' or '${nms.persistence.type:mongo}' == 'postgres'")

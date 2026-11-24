@@ -1,10 +1,10 @@
-package com.railcab.nms.adapters.out.persistence;
+package com.heuristiq.notification.adapters.out.persistence;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import com.railcab.nms.domain.repository.PageQuery;
-import com.railcab.nms.domain.repository.PageResult;
+import com.heuristiq.notification.domain.repository.PageQuery;
+import com.heuristiq.notification.domain.repository.PageResult;
 
 /**
  * Shared conversion between the domain-owned pagination contract ({@link PageQuery}/

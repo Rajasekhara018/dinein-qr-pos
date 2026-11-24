@@ -1,4 +1,4 @@
-package com.railcab.nms.application.port.in;
+package com.heuristiq.notification.application.port.in;
 
 import java.util.List;
 import java.util.Map;

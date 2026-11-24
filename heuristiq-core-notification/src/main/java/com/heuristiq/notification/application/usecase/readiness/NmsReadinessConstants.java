@@ -1,4 +1,4 @@
-package com.railcab.nms.application.usecase.readiness;
+package com.heuristiq.notification.application.usecase.readiness;
 
 import java.util.List;
 import java.util.Map;

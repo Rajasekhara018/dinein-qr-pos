@@ -1,4 +1,4 @@
-package com.railcab.nms;
+package com.heuristiq.notification;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -6,7 +6,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
-import com.railcab.nms.infrastructure.config.NmsProperties;
+import com.heuristiq.notification.infrastructure.config.NmsProperties;
 
 @SpringBootApplication
 @EnableConfigurationProperties(NmsProperties.class)

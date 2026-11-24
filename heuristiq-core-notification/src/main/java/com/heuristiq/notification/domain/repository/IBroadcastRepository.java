@@ -1,10 +1,10 @@
-package com.railcab.nms.domain.repository;
+package com.heuristiq.notification.domain.repository;
 
 import java.util.List;
 import java.util.Optional;
 
-import com.railcab.nms.domain.model.Broadcast;
-import com.railcab.nms.domain.model.BroadcastStatus;
+import com.heuristiq.notification.domain.model.Broadcast;
+import com.heuristiq.notification.domain.model.BroadcastStatus;
 
 public interface IBroadcastRepository {
 

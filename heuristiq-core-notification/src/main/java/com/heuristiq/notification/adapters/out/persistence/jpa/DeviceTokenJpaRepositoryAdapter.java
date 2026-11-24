@@ -1,7 +1,7 @@
-package com.railcab.nms.adapters.out.persistence.jpa;
+package com.heuristiq.notification.adapters.out.persistence.jpa;
 
-import com.railcab.nms.domain.repository.TenantScope;
-import com.railcab.nms.domain.model.DeviceRegistration;
+import com.heuristiq.notification.domain.repository.TenantScope;
+import com.heuristiq.notification.domain.model.DeviceRegistration;
 import org.springframework.transaction.annotation.Transactional;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -14,8 +14,8 @@ import java.util.List;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.stereotype.Repository;
 
-import com.railcab.nms.domain.repository.IDeviceTokenRepository;
-import com.railcab.nms.adapters.out.persistence.jpa.DeviceTokenEntity;
+import com.heuristiq.notification.domain.repository.IDeviceTokenRepository;
+import com.heuristiq.notification.adapters.out.persistence.jpa.DeviceTokenEntity;
 
 @Repository
 @ConditionalOnExpression("'${nms.persistence.type:mongo}' == 'mysql' or '${nms.persistence.type:mongo}' == 'postgres'")

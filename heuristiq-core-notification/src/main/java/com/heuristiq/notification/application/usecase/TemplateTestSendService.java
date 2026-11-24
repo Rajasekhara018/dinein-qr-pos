@@ -1,4 +1,4 @@
-package com.railcab.nms.application.usecase;
+package com.heuristiq.notification.application.usecase;
 
 import java.time.Clock;
 import java.util.List;
@@ -9,18 +9,18 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import com.railcab.nms.application.dto.TemplateTestSendRequest;
-import com.railcab.nms.application.dto.TemplateTestSendResponse;
-import com.railcab.nms.application.port.in.TemplateTestSendUseCase;
-import com.railcab.nms.application.port.out.ChannelProvider;
-import com.railcab.nms.application.port.out.ProviderSendResult;
-import com.railcab.nms.application.usecase.support.OrganizationVariables;
-import com.railcab.nms.application.usecase.support.TemplateRenderer;
-import com.railcab.nms.application.usecase.support.TemplateTestSendConstants;
-import com.railcab.nms.application.usecase.support.TestSendRateLimiter;
-import com.railcab.nms.domain.model.NotificationChannel;
-import com.railcab.nms.infrastructure.config.NmsProperties;
-import com.railcab.nms.shared.NmsTooManyRequestsException;
+import com.heuristiq.notification.application.dto.TemplateTestSendRequest;
+import com.heuristiq.notification.application.dto.TemplateTestSendResponse;
+import com.heuristiq.notification.application.port.in.TemplateTestSendUseCase;
+import com.heuristiq.notification.application.port.out.ChannelProvider;
+import com.heuristiq.notification.application.port.out.ProviderSendResult;
+import com.heuristiq.notification.application.usecase.support.OrganizationVariables;
+import com.heuristiq.notification.application.usecase.support.TemplateRenderer;
+import com.heuristiq.notification.application.usecase.support.TemplateTestSendConstants;
+import com.heuristiq.notification.application.usecase.support.TestSendRateLimiter;
+import com.heuristiq.notification.domain.model.NotificationChannel;
+import com.heuristiq.notification.infrastructure.config.NmsProperties;
+import com.heuristiq.notification.shared.NmsTooManyRequestsException;
 
 /**
  * Renders the template exactly as typed in the editor (placeholders filled the same way real sends do,

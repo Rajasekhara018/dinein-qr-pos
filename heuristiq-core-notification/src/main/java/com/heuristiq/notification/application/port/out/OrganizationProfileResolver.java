@@ -1,8 +1,8 @@
-package com.railcab.nms.application.port.out;
+package com.heuristiq.notification.application.port.out;
 
 import java.util.Optional;
 
-import com.railcab.nms.application.dto.OrganizationProfile;
+import com.heuristiq.notification.application.dto.OrganizationProfile;
 
 /** Looks up the name and support details of an organization, for the variables every message gets. */
 public interface OrganizationProfileResolver {

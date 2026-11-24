@@ -1,6 +1,6 @@
-package com.railcab.nms.application.port.in;
+package com.heuristiq.notification.application.port.in;
 
-import com.railcab.nms.application.dto.VoiceCallback;
+import com.heuristiq.notification.application.dto.VoiceCallback;
 
 /** Handles a voice provider's call report: records it on the attempt and publishes the call's answer. */
 public interface VoiceCallbackUseCase {

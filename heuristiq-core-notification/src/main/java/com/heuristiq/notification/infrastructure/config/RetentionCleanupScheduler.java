@@ -1,4 +1,4 @@
-package com.railcab.nms.infrastructure.config;
+package com.heuristiq.notification.infrastructure.config;
 
 import java.time.LocalDateTime;
 
@@ -7,10 +7,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import com.railcab.nms.domain.repository.IAuditOutboxRepository;
-import com.railcab.nms.domain.repository.INotificationAttemptRepository;
-import com.railcab.nms.domain.repository.INotificationLogRepository;
-import com.railcab.nms.domain.repository.INotificationMessageRepository;
+import com.heuristiq.notification.domain.repository.IAuditOutboxRepository;
+import com.heuristiq.notification.domain.repository.INotificationAttemptRepository;
+import com.heuristiq.notification.domain.repository.INotificationLogRepository;
+import com.heuristiq.notification.domain.repository.INotificationMessageRepository;
 
 import lombok.RequiredArgsConstructor;
 

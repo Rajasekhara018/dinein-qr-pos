@@ -1,4 +1,4 @@
-package com.railcab.nms.application.usecase.support;
+package com.heuristiq.notification.application.usecase.support;
 
 /** Fixed values of the COMMUNICATION audit events NMS publishes to the central audit service. */
 public final class CommunicationAuditConstants {

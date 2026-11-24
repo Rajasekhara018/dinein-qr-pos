@@ -1,4 +1,4 @@
-package com.railcab.nms.domain.model;
+package com.heuristiq.notification.domain.model;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -6,8 +6,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import com.railcab.nms.domain.model.NotificationChannel;
-import com.railcab.nms.search.SearchIndexable;
+import com.heuristiq.notification.domain.model.NotificationChannel;
+import com.heuristiq.notification.search.SearchIndexable;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;

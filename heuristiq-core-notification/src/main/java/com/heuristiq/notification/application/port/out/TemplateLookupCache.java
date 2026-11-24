@@ -1,10 +1,10 @@
-package com.railcab.nms.application.port.out;
+package com.heuristiq.notification.application.port.out;
 
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import com.railcab.nms.domain.model.NotificationChannel;
-import com.railcab.nms.domain.model.NotificationTemplate;
+import com.heuristiq.notification.domain.model.NotificationChannel;
+import com.heuristiq.notification.domain.model.NotificationTemplate;
 
 /**
  * Remembers which template a send resolves to, per organization (or shared), event and channel, so the send path does not

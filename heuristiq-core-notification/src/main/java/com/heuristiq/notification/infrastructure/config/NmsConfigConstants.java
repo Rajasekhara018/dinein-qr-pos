@@ -1,11 +1,11 @@
-package com.railcab.nms.infrastructure.config;
+package com.heuristiq.notification.infrastructure.config;
 
 import java.time.Duration;
 import java.util.List;
 
-import com.railcab.nms.adapters.in.web.WebApiConstants;
-import com.railcab.nms.adapters.in.web.callback.CallbackConstants;
-import com.railcab.nms.adapters.in.web.readiness.ReadinessWebConstants;
+import com.heuristiq.notification.adapters.in.web.WebApiConstants;
+import com.heuristiq.notification.adapters.in.web.callback.CallbackConstants;
+import com.heuristiq.notification.adapters.in.web.readiness.ReadinessWebConstants;
 
 /**
  * Fixed values of NMS's bootstrap/wiring layer: request headers and MDC keys, security-exempt paths, JWT claim names,

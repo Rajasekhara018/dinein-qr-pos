@@ -1,10 +1,10 @@
-package com.railcab.nms.domain.model;
+package com.heuristiq.notification.domain.model;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import com.railcab.nms.domain.model.DefaultNotificationTemplates.Seed;
+import com.heuristiq.notification.domain.model.DefaultNotificationTemplates.Seed;
 
 /**
  * Default texts of the November 2026 ride flow events (docs/RIDE_FLOW_FIXES_2026-11.md section 3): driver nearby, waiting

@@ -1,12 +1,12 @@
-package com.railcab.nms.application.port.in;
+package com.heuristiq.notification.application.port.in;
 
 import java.util.List;
 import java.util.Optional;
 
-import com.railcab.nms.domain.model.NotificationTemplate;
-import com.railcab.nms.domain.model.NotificationChannel;
-import com.railcab.nms.domain.repository.PageQuery;
-import com.railcab.nms.domain.repository.PageResult;
+import com.heuristiq.notification.domain.model.NotificationTemplate;
+import com.heuristiq.notification.domain.model.NotificationChannel;
+import com.heuristiq.notification.domain.repository.PageQuery;
+import com.heuristiq.notification.domain.repository.PageResult;
 
 /** Port the web adapter depends on instead of the concrete template service. */
 public interface TemplateUseCase {

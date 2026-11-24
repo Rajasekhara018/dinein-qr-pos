@@ -1,8 +1,8 @@
-package com.railcab.nms.application.port.out;
+package com.heuristiq.notification.application.port.out;
 
 import java.util.Optional;
 
-import com.railcab.nms.application.dto.OrganizationProfile;
+import com.heuristiq.notification.application.dto.OrganizationProfile;
 
 /**
  * Reads an organization's profile from where it is owned (UAM), without any caching or degrading. Unlike

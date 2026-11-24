@@ -1,17 +1,17 @@
-package com.railcab.nms.application.usecase.support;
+package com.heuristiq.notification.application.usecase.support;
 
 import java.time.Duration;
 
 import org.springframework.stereotype.Component;
 
-import com.railcab.nms.application.dto.ChannelSendOutcome;
-import com.railcab.nms.application.port.out.ChannelProvider;
+import com.heuristiq.notification.application.dto.ChannelSendOutcome;
+import com.heuristiq.notification.application.port.out.ChannelProvider;
 
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Timer;
 import lombok.RequiredArgsConstructor;
 
-import static com.railcab.nms.application.usecase.support.DispatchMetricsConstants.*;
+import static com.heuristiq.notification.application.usecase.support.DispatchMetricsConstants.*;
 
 /**
  * Owns Micrometer metric recording for dispatch attempts -- split out of

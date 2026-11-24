@@ -1,4 +1,4 @@
-package com.railcab.nms.infrastructure.config;
+package com.heuristiq.notification.infrastructure.config;
 
 import java.util.LinkedHashMap;
 
@@ -6,7 +6,7 @@ import org.springdoc.core.customizers.GlobalOperationComponentsCustomizer;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 
-import com.railcab.nms.shared.RequestObjectType;
+import com.heuristiq.notification.shared.RequestObjectType;
 
 import io.swagger.v3.core.converter.AnnotatedType;
 import io.swagger.v3.core.converter.ModelConverters;

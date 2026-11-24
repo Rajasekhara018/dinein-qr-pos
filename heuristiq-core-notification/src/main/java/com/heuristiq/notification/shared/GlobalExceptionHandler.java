@@ -1,4 +1,4 @@
-package com.railcab.nms.shared;
+package com.heuristiq.notification.shared;
 
 import jakarta.validation.ConstraintViolationException;
 import org.slf4j.Logger;

@@ -1,4 +1,4 @@
-package com.railcab.nms.adapters.out.channel.voice.exotel;
+package com.heuristiq.notification.adapters.out.channel.voice.exotel;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
@@ -22,13 +22,13 @@ import org.springframework.web.util.UriComponentsBuilder;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.railcab.nms.adapters.out.channel.VendorPhoneFormat;
-import com.railcab.nms.adapters.out.channel.voice.VoiceProvider;
-import com.railcab.nms.application.port.out.ChannelProviderConstants;
-import com.railcab.nms.application.port.out.ProviderSendResult;
-import com.railcab.nms.application.usecase.support.PushDataConstants;
-import com.railcab.nms.application.usecase.support.RecipientMasker;
-import com.railcab.nms.infrastructure.config.NmsProperties;
+import com.heuristiq.notification.adapters.out.channel.VendorPhoneFormat;
+import com.heuristiq.notification.adapters.out.channel.voice.VoiceProvider;
+import com.heuristiq.notification.application.port.out.ChannelProviderConstants;
+import com.heuristiq.notification.application.port.out.ProviderSendResult;
+import com.heuristiq.notification.application.usecase.support.PushDataConstants;
+import com.heuristiq.notification.application.usecase.support.RecipientMasker;
+import com.heuristiq.notification.infrastructure.config.NmsProperties;
 
 /**
  * Exotel voice provider: the v1 {@code Calls/connect} API calls the customer ({@code From}) from the ExoPhone

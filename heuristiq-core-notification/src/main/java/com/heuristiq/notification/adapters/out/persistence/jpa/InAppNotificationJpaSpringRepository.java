@@ -1,4 +1,4 @@
-package com.railcab.nms.adapters.out.persistence.jpa;
+package com.heuristiq.notification.adapters.out.persistence.jpa;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import com.railcab.nms.adapters.out.persistence.jpa.InAppNotificationEntity;
+import com.heuristiq.notification.adapters.out.persistence.jpa.InAppNotificationEntity;
 
 interface InAppNotificationJpaSpringRepository extends JpaRepository<InAppNotificationEntity, String> {
 

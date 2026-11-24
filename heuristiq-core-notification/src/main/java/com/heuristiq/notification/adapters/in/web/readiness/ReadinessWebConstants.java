@@ -1,6 +1,6 @@
-package com.railcab.nms.adapters.in.web.readiness;
+package com.heuristiq.notification.adapters.in.web.readiness;
 
-import com.railcab.nms.adapters.in.web.WebApiConstants;
+import com.heuristiq.notification.adapters.in.web.WebApiConstants;
 
 /** Wire values of NMS's internal (service-to-service) endpoints and of the readiness endpoint. */
 public final class ReadinessWebConstants {

@@ -1,4 +1,4 @@
-package com.railcab.nms.adapters.in.web.callback;
+package com.heuristiq.notification.adapters.in.web.callback;
 
 import java.util.List;
 import java.util.Map;

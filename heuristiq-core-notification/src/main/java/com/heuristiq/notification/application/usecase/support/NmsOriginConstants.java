@@ -1,4 +1,4 @@
-package com.railcab.nms.application.usecase.support;
+package com.heuristiq.notification.application.usecase.support;
 
 /** Origin values NMS stamps on notifications it starts itself. */
 public final class NmsOriginConstants {

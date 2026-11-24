@@ -1,10 +1,10 @@
-package com.railcab.nms.adapters.in.web.log;
+package com.heuristiq.notification.adapters.in.web.log;
 
 import java.time.LocalDateTime;
 
-import com.railcab.nms.domain.model.DeliveryStatus;
-import com.railcab.nms.domain.model.NotificationAttempt;
-import com.railcab.nms.domain.model.NotificationChannel;
+import com.heuristiq.notification.domain.model.DeliveryStatus;
+import com.heuristiq.notification.domain.model.NotificationAttempt;
+import com.heuristiq.notification.domain.model.NotificationChannel;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 

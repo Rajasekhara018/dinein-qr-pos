@@ -1,12 +1,12 @@
-package com.railcab.nms.application.usecase.readiness;
+package com.heuristiq.notification.application.usecase.readiness;
 
-import com.railcab.nms.application.usecase.readiness.ReadinessCheckRunner.CheckTask;
-import com.railcab.nms.domain.model.NotificationTemplate;
-import com.railcab.nms.domain.model.readiness.ReadinessCheck;
-import com.railcab.nms.domain.model.readiness.ReadinessReport;
-import com.railcab.nms.domain.model.readiness.ReadinessStatus;
-import com.railcab.nms.domain.repository.ITemplateRepository;
-import com.railcab.nms.domain.repository.TenantScope;
+import com.heuristiq.notification.application.usecase.readiness.ReadinessCheckRunner.CheckTask;
+import com.heuristiq.notification.domain.model.NotificationTemplate;
+import com.heuristiq.notification.domain.model.readiness.ReadinessCheck;
+import com.heuristiq.notification.domain.model.readiness.ReadinessReport;
+import com.heuristiq.notification.domain.model.readiness.ReadinessStatus;
+import com.heuristiq.notification.domain.repository.ITemplateRepository;
+import com.heuristiq.notification.domain.repository.TenantScope;
 
 import java.time.Clock;
 import java.time.Duration;

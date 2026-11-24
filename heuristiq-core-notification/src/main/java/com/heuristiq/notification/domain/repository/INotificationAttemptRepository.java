@@ -1,10 +1,10 @@
-package com.railcab.nms.domain.repository;
+package com.heuristiq.notification.domain.repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import com.railcab.nms.domain.model.NotificationAttempt;
+import com.heuristiq.notification.domain.model.NotificationAttempt;
 
 /** Port for per-attempt delivery records. */
 public interface INotificationAttemptRepository {

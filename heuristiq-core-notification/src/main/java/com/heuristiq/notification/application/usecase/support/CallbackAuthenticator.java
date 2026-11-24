@@ -1,4 +1,4 @@
-package com.railcab.nms.application.usecase.support;
+package com.heuristiq.notification.application.usecase.support;
 
 import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
@@ -15,8 +15,8 @@ import javax.crypto.spec.SecretKeySpec;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import com.railcab.nms.application.port.in.CallbackAuthenticationUseCase;
-import com.railcab.nms.infrastructure.config.NmsProperties;
+import com.heuristiq.notification.application.port.in.CallbackAuthenticationUseCase;
+import com.heuristiq.notification.infrastructure.config.NmsProperties;
 
 import lombok.RequiredArgsConstructor;
 

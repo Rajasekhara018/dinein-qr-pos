@@ -1,4 +1,4 @@
-package com.railcab.nms.adapters.out.channel.voice.exotel;
+package com.heuristiq.notification.adapters.out.channel.voice.exotel;
 
 /** Wire values of the Exotel v1 Calls/connect API (call a number and hand it to an IVR flow). */
 public final class ExotelConstants {

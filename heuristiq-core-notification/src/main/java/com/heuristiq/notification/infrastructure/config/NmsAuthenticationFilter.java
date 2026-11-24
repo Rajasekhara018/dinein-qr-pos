@@ -1,4 +1,4 @@
-package com.railcab.nms.infrastructure.config;
+package com.heuristiq.notification.infrastructure.config;
 
 import java.io.IOException;
 import java.util.List;
@@ -14,8 +14,8 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.railcab.nms.application.security.NmsPrincipal;
-import com.railcab.nms.shared.CommonResponseObject;
+import com.heuristiq.notification.application.security.NmsPrincipal;
+import com.heuristiq.notification.shared.CommonResponseObject;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -23,7 +23,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
-import static com.railcab.nms.infrastructure.config.NmsConfigConstants.*;
+import static com.heuristiq.notification.infrastructure.config.NmsConfigConstants.*;
 
 @Component
 @RequiredArgsConstructor

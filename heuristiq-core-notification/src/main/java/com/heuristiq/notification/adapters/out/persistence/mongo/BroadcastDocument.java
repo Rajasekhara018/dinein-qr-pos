@@ -1,4 +1,4 @@
-package com.railcab.nms.adapters.out.persistence.mongo;
+package com.heuristiq.notification.adapters.out.persistence.mongo;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -8,9 +8,9 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.railcab.nms.domain.model.BroadcastSegment;
-import com.railcab.nms.domain.model.BroadcastStatus;
-import com.railcab.nms.domain.model.NotificationChannel;
+import com.heuristiq.notification.domain.model.BroadcastSegment;
+import com.heuristiq.notification.domain.model.BroadcastStatus;
+import com.heuristiq.notification.domain.model.NotificationChannel;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

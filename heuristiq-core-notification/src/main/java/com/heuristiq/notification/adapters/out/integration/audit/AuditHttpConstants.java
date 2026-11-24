@@ -1,4 +1,4 @@
-package com.railcab.nms.adapters.out.integration.audit;
+package com.heuristiq.notification.adapters.out.integration.audit;
 
 /** Wire constants of the audit service ingest API. */
 final class AuditHttpConstants {

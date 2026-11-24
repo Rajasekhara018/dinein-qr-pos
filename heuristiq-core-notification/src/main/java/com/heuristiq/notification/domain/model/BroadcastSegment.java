@@ -1,4 +1,4 @@
-package com.railcab.nms.domain.model;
+package com.heuristiq.notification.domain.model;
 
 /**
  * Who a broadcast targets. Resolved against UAM's UserType (see UamUserClient) -- there is no

@@ -1,8 +1,8 @@
-package com.railcab.nms.adapters.out.channel.voice;
+package com.heuristiq.notification.adapters.out.channel.voice;
 
 import java.util.Map;
 
-import com.railcab.nms.application.port.out.ProviderSendResult;
+import com.heuristiq.notification.application.port.out.ProviderSendResult;
 
 /**
  * SPI for automated voice-call (IVR) providers. Implementations: {@code ExotelVoiceProvider}.

@@ -1,4 +1,4 @@
-package com.railcab.nms.domain.model.readiness;
+package com.heuristiq.notification.domain.model.readiness;
 
 import java.util.Collections;
 import java.util.LinkedHashMap;

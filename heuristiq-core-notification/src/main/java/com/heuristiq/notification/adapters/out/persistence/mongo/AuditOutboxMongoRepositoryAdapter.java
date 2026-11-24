@@ -1,4 +1,4 @@
-package com.railcab.nms.adapters.out.persistence.mongo;
+package com.heuristiq.notification.adapters.out.persistence.mongo;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -13,9 +13,9 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
 
-import com.railcab.nms.domain.model.AuditOutboxEntry;
-import com.railcab.nms.domain.model.AuditOutboxStatus;
-import com.railcab.nms.domain.repository.IAuditOutboxRepository;
+import com.heuristiq.notification.domain.model.AuditOutboxEntry;
+import com.heuristiq.notification.domain.model.AuditOutboxStatus;
+import com.heuristiq.notification.domain.repository.IAuditOutboxRepository;
 
 /**
  * Mongo implementation of {@link IAuditOutboxRepository}. The lease is a single conditional

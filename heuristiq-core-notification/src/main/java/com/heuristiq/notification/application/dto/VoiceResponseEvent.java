@@ -1,4 +1,4 @@
-package com.railcab.nms.application.dto;
+package com.heuristiq.notification.application.dto;
 
 /**
  * Record published on {@code nms-voice-responses} (ride flow contract, section 4). Consumers are idempotent on

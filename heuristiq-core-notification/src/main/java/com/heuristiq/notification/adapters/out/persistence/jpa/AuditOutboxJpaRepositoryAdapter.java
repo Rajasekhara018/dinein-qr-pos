@@ -1,4 +1,4 @@
-package com.railcab.nms.adapters.out.persistence.jpa;
+package com.heuristiq.notification.adapters.out.persistence.jpa;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -8,9 +8,9 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Repository;
 
-import com.railcab.nms.domain.model.AuditOutboxEntry;
-import com.railcab.nms.domain.model.AuditOutboxStatus;
-import com.railcab.nms.domain.repository.IAuditOutboxRepository;
+import com.heuristiq.notification.domain.model.AuditOutboxEntry;
+import com.heuristiq.notification.domain.model.AuditOutboxStatus;
+import com.heuristiq.notification.domain.repository.IAuditOutboxRepository;
 
 /** JPA (MySQL/Postgres) implementation of {@link IAuditOutboxRepository}. */
 @Repository

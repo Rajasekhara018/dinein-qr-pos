@@ -1,4 +1,4 @@
-package com.railcab.nms.domain.model;
+package com.heuristiq.notification.domain.model;
 
 /** Fixed values of the NMS domain model. */
 public final class NotificationDomainConstants {

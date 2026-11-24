@@ -1,4 +1,4 @@
-package com.railcab.nms.adapters.out.channel;
+package com.heuristiq.notification.adapters.out.channel;
 
 import com.heuristiq.phone.PhoneNumbers;
 

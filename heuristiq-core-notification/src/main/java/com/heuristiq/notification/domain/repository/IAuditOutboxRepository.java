@@ -1,10 +1,10 @@
-package com.railcab.nms.domain.repository;
+package com.heuristiq.notification.domain.repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.railcab.nms.domain.model.AuditOutboxEntry;
-import com.railcab.nms.domain.model.AuditOutboxStatus;
+import com.heuristiq.notification.domain.model.AuditOutboxEntry;
+import com.heuristiq.notification.domain.model.AuditOutboxStatus;
 
 /** Port for the audit outbox. */
 public interface IAuditOutboxRepository {

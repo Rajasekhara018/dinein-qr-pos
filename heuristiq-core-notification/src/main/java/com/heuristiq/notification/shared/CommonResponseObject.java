@@ -1,4 +1,4 @@
-package com.railcab.nms.shared;
+package com.heuristiq.notification.shared;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;

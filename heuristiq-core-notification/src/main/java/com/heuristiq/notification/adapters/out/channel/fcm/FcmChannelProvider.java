@@ -1,4 +1,4 @@
-package com.railcab.nms.adapters.out.channel.fcm;
+package com.heuristiq.notification.adapters.out.channel.fcm;
 
 import java.util.List;
 import java.util.Map;
@@ -8,11 +8,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import com.railcab.nms.infrastructure.config.NmsProperties;
-import com.railcab.nms.application.port.out.ChannelProvider;
-import com.railcab.nms.application.port.out.ChannelProviderConstants;
-import com.railcab.nms.application.port.out.ProviderSendResult;
-import com.railcab.nms.domain.model.NotificationChannel;
+import com.heuristiq.notification.infrastructure.config.NmsProperties;
+import com.heuristiq.notification.application.port.out.ChannelProvider;
+import com.heuristiq.notification.application.port.out.ChannelProviderConstants;
+import com.heuristiq.notification.application.port.out.ProviderSendResult;
+import com.heuristiq.notification.domain.model.NotificationChannel;
 
 import lombok.RequiredArgsConstructor;
 
