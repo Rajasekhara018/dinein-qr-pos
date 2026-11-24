@@ -1,0 +1,21 @@
+<section class="api-docs-page">
+  <div class="page-hero">
+    <span class="eyebrow">{{ 'apiDocs.eyebrow' | translate }}</span>
+    <h1>{{ 'apiDocs.javaDocs.title' | translate }}</h1>
+    <p>{{ 'apiDocs.javaDocs.copy' | translate: { appName: branding.appName } }}</p>
+    <span class="eyebrow">{{ 'apiDocs.javaDocs.eyebrow2' | translate }}</span>
+  </div>
+
+  <div class="jd-groups">
+    <div class="jd-group" *ngFor="let entry of groups; trackBy: trackByGroup">
+      <h2 class="jd-group__title">{{ entry.labelKey | translate }}</h2>
+      <div class="jd-grid">
+        <a class="jd-card" *ngFor="let service of entry.services; trackBy: trackByService"
+           [routerLink]="['/api-docs/java-doc', service.id]">
+          <span class="jd-card__name">{{ service.name }}</span>
+          <span class="jd-card__path">{{ service.path }}</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>

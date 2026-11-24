@@ -1,0 +1,12 @@
+:host {
+  display: block;
+}
+
+// Channel tabs: the same pill look as the Profile tabs (rounded, bordered, accent fill when open), so the screen matches the rest of the app.
+.channel-tabs {
+  display: block;
+  margin: 0 0 1.35rem;
+}
+
+@media (max-width: 576px) {
+}

@@ -1,0 +1,65 @@
+<div class="ffp">
+  <hq-page-header
+    [kicker]="'nav.sections.accessManagement' | translate"
+    [title]="'agentKyc.title' | translate"
+    [subtitle]="'agentKyc.subtitle' | translate">
+  </hq-page-header>
+
+  <p *ngIf="isLoading" role="status">{{ 'agentKyc.loading' | translate }}</p>
+  <hq-error-state *ngIf="loadFailed" [title]="'agentKyc.loadFailed' | translate"></hq-error-state>
+
+  <section class="table-surface" *ngIf="data">
+    <div class="table-surface__header">
+      <div class="table-heading">
+        <span class="table-kicker">{{ 'agentKyc.documents' | translate }}</span>
+        <p class="ffp__hint">{{ 'agentKyc.rule' | translate }}</p>
+      </div>
+      <hq-status-badge [tone]="tone(data.status)" data-testid="agent-kyc-status">{{ 'agentKyc.status.' + data.status | translate }}</hq-status-badge>
+    </div>
+    <div class="table-surface__body">
+      <p class="ffp__muted" *ngIf="!data.documents.length">{{ 'franchiseOnboarding.kyc.none' | translate }}</p>
+      <div class="ob-docs" *ngIf="data.documents.length">
+        <div class="ob-doc" *ngFor="let doc of data.documents" data-testid="agent-kyc-document">
+          <div class="ob-doc__main">
+            <strong>{{ 'franchiseOnboarding.documentTypes.' + doc.type | translate }}</strong>
+            <span class="ffp__hint" *ngIf="doc.number">{{ doc.number }}</span>
+            <a class="ob-link" (click)="viewFile(doc.dmsDocumentId, doc.fileName)"><i class="bi bi-file-earmark"></i> {{ doc.fileName }}</a>
+            <span class="ffp__error" *ngIf="doc.status === 'REJECTED' && doc.rejectReason">{{ doc.rejectReason }}</span>
+          </div>
+          <hq-status-badge [tone]="doc.status === 'VERIFIED' ? 'success' : doc.status === 'REJECTED' ? 'danger' : 'warning'">{{ 'franchiseOnboarding.state.' + doc.status | translate }}</hq-status-badge>
+          <div class="ob-doc__actions" *ngIf="canReview">
+            <button hqButton="secondary" *ngIf="doc.status !== 'VERIFIED'" type="button" data-testid="verify-agent-document" [disabled]="busy" (click)="reviewDocument(doc, 'VERIFY')">{{ 'franchiseOnboarding.review.verify' | translate }}</button>
+            <button hqButton="secondary" *ngIf="doc.status !== 'REJECTED'" type="button" data-testid="reject-agent-document" [disabled]="busy" (click)="reviewDocument(doc, 'REJECT')">{{ 'franchiseOnboarding.review.reject' | translate }}</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="ob-add" *ngIf="canAdd">
+        <h3 class="ob-subtitle">{{ 'franchiseOnboarding.kyc.add' | translate }}</h3>
+        <hq-form-grid cols="2" gap="lg">
+          <hq-form-field for="agent-doc-type" [label]="'franchiseOnboarding.kyc.type' | translate">
+            <hq-searchable-select inputId="agent-doc-type" [allowOther]="false" [(ngModel)]="documentForm.type" name="agentDocType"
+                                   [ariaLabel]="'franchiseOnboarding.kyc.type' | translate">
+              <hq-ss-option *ngFor="let type of documentTypes" [value]="type" [label]="'franchiseOnboarding.documentTypes.' + type | translate"></hq-ss-option>
+            </hq-searchable-select>
+          </hq-form-field>
+          <hq-field type="text" inputId="agent-doc-number" [maxLength]="limits.documentNumber" [(ngModel)]="documentForm.number" name="agentDocNumber" [showCounter]="false" [label]="'franchiseOnboarding.kyc.number' | translate"></hq-field>
+          <div class="ffp__field hq-span-full">
+            <hq-doc-upload [accept]="uploadAccept" [maxSizeMB]="uploadMaxSizeMB" [hints]="'franchiseOnboarding.upload.hints' | translate"
+                            [label]="'franchiseOnboarding.kyc.file' | translate" [category]="dmsCategory" [documentType]="dmsDocumentType" [ownerId]="memberId"
+                            inputId="agent-kyc-file" [value]="documentForm.file" (uploaded)="onUploaded($event)" (removed)="onRemoved()"></hq-doc-upload>
+          </div>
+        </hq-form-grid>
+        <hq-form-actions align="start" class="hq-span-full">
+          <button hqButton="accent" type="button" data-testid="add-agent-document" [disabled]="busy || !documentForm.file" (click)="addDocument()">
+            {{ 'franchiseOnboarding.kyc.submit' | translate }}
+          </button>
+        </hq-form-actions>
+      </div>
+    </div>
+  </section>
+
+  <hq-form-actions align="start" class="hq-span-full">
+    <button hqButton="secondary" type="button" (click)="back()">{{ 'agentKyc.back' | translate }}</button>
+  </hq-form-actions>
+</div>

@@ -1,0 +1,79 @@
+<div class="inapp-page container-fluid py-4">
+
+  <hq-page-header
+    [kicker]="'notifications.kicker' | translate"
+    [title]="'notifications.title' | translate"
+    [subtitle]="'notifications.subtitle' | translate">
+  </hq-page-header>
+
+<hq-screen-help screen="inAppNotifications"></hq-screen-help>
+
+  <!-- Tabs + Mark all -->
+  <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-3">
+    <hq-tabs class="filter-tabs" appearance="pills" [value]="activeTab" (valueChange)="setTab($any($event))" [ariaLabel]="'notifications.tabs.all' | translate">
+      <hq-tab value="all" [badge]="notifications.length" [label]="'notifications.tabs.all' | translate"></hq-tab>
+      <hq-tab value="unread" [badge]="unreadCount > 0 ? unreadCount : null" [label]="'notifications.tabs.unread' | translate"></hq-tab>
+    </hq-tabs>
+
+    <ng-container *hqHasPrivilege="['NMS_IN_APP_NOTIFICATION_MARK_ALL_READ', 'NMS_IN_APP_ACCESS', 'NMS_MANAGE']">
+      <button hqButton="secondary" appearance="outline" (click)="markAllRead()" [disabled]="unreadCount === 0">
+        <i class="bi bi-check2-all"></i> {{ 'notifications.markAllRead' | translate }}
+      </button>
+    </ng-container>
+  </div>
+
+  <!-- Loading skeleton -->
+  <ng-container *ngIf="isLoading && notifications.length === 0">
+    <!-- One loading announcement for the whole list: the later placeholders are hidden from screen readers. -->
+    <hq-skeleton class="inapp-skeleton-card" variant="card" [lines]="2" *ngFor="let i of [1, 2, 3, 4, 5]"
+                  [attr.aria-hidden]="i > 1 ? 'true' : null"></hq-skeleton>
+  </ng-container>
+
+  <!-- List -->
+  <ng-container *ngIf="!isLoading || notifications.length > 0">
+    <ng-container *ngIf="filtered.length > 0; else emptyState">
+      <div class="inapp-card" [class.inapp-card--unread]="!n.read"
+        *ngFor="let n of filtered" (click)="onItemClick(n)">
+
+        <div class="inapp-icon" [ngClass]="notificationIconColor(n.type)">
+          <i class="bi" [ngClass]="notificationIcon(n.type)"></i>
+        </div>
+
+        <div class="inapp-body">
+          <div class="inapp-top">
+            <span class="inapp-title">{{ n.title }}</span>
+            <hq-status-badge tone="neutral" class="ms-2">{{ typeLabel(n.type) }}</hq-status-badge>
+            <hq-status-badge tone="info" class="ms-auto" *ngIf="!n.read">{{ 'notifications.new' | translate }}</hq-status-badge>
+          </div>
+          <p class="inapp-message">{{ n.message }}</p>
+          <div class="inapp-meta">
+            <span><i class="bi bi-clock me-1"></i>{{ formatDate(n.createdAt) }}</span>
+            <span *ngIf="n.referenceId" class="ms-3">
+              <i class="bi bi-link-45deg me-1"></i>{{ n.referenceType }} · {{ n.referenceId | slice:0:8 }}
+            </span>
+          </div>
+        </div>
+
+        <i class="bi bi-chevron-right inapp-chevron" *ngIf="n.referenceId"></i>
+      </div>
+    </ng-container>
+
+    <ng-template #emptyState>
+      <hq-empty-state icon="bi-bell-slash"
+        [title]="(activeTab === 'unread' ? 'notifications.empty.unreadTitle' : 'notifications.empty.allTitle') | translate"
+        [message]="(activeTab === 'unread' ? 'notifications.empty.unreadMessage' : 'notifications.empty.allMessage') | translate"></hq-empty-state>
+    </ng-template>
+  </ng-container>
+
+  <!-- Load more -->
+  <div class="text-center mt-4" *ngIf="hasMore && !isLoading">
+    <button hqButton="secondary" appearance="outline" (click)="loadMore()">
+      <i class="bi bi-arrow-down"></i> {{ 'notifications.loadMore' | translate }}
+    </button>
+  </div>
+
+  <div class="d-flex justify-content-center mt-3" *ngIf="isLoading && notifications.length > 0">
+    <hq-spinner size="sm"></hq-spinner>
+  </div>
+
+</div>

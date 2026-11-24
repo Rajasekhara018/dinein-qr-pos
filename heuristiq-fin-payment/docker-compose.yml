@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: rider-payment-postgres
+    environment:
+      POSTGRES_DB: rider_payment
+      POSTGRES_USER: rider
+      POSTGRES_PASSWORD: rider
+    ports:
+      - "5433:5432"
+    volumes:
+      - rider_payment_pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U rider -d rider_payment"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  payment-service:
+    build: .
+    container_name: rider-payment-service
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: local
+      DATASOURCE_URL: jdbc:postgresql://postgres:5432/rider_payment
+      DATASOURCE_USERNAME: rider
+      DATASOURCE_PASSWORD: rider
+      RIDE_SERVICE_URL: http://host.docker.internal:9115
+      JWT_SECRET: rider-admin-super-secret-key-change-in-production-min-256bit
+      GATEWAY_FORWARD_KEY: ${GATEWAY_FORWARD_KEY:-}
+      RAZORPAY_KEY_ID: rzp_test_SYcoE53g3bDHZo
+      RAZORPAY_KEY_SECRET: ""
+      RAZORPAY_WEBHOOK_SECRET: ""
+    ports:
+      - "9113:9113"
+
+volumes:
+  rider_payment_pg_data:

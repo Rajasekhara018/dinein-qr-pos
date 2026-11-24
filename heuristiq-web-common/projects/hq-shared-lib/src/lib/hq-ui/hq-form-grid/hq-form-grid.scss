@@ -1,0 +1,26 @@
+// Grid of form fields. The child span helpers (.hq-span-2 / -3 / -full) are global, in theme/styles.scss.
+:host {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+  min-width: 0;
+}
+
+:host(.hq-form-grid--cols-1) { grid-template-columns: minmax(0, 1fr); }
+:host(.hq-form-grid--cols-2) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+:host(.hq-form-grid--cols-3) { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+:host(.hq-form-grid--cols-4) { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+
+:host(.hq-form-grid--gap-sm) { gap: 0.75rem; }
+:host(.hq-form-grid--gap-md) { gap: 1rem 1.25rem; }
+:host(.hq-form-grid--gap-lg) { gap: 1.5rem 1.75rem; }
+
+@media (max-width: 991.98px) {
+  :host(.hq-form-grid--cols-3), :host(.hq-form-grid--cols-4) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 575.98px) {
+  :host, :host(.hq-form-grid--cols-2), :host(.hq-form-grid--cols-3), :host(.hq-form-grid--cols-4) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

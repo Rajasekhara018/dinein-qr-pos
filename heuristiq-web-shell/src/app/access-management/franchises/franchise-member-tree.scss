@@ -1,0 +1,103 @@
+// Members and agents as a tree: application → franchises → agents.
+.mt {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.mt__filters {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1.4fr) auto;
+  gap: 0.75rem;
+  align-items: center;
+
+  @media (max-width: 767px) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.mt__app-group {
+  border: 1px solid var(--workspace-border, rgba(0, 0, 0, 0.1));
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.mt__app-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.85rem 1rem;
+  border: 0;
+  background: color-mix(in srgb, var(--hq-primary, #0b6e4f) 6%, var(--workspace-panel, #fff));
+  color: var(--edu-ink, #1f2937);
+  text-align: start;
+  cursor: pointer;
+}
+
+.mt__app-name {
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.mt__count {
+  color: var(--edu-muted, #64748b);
+  font-size: 0.85rem;
+}
+
+.mt__usage {
+  margin-inline-start: auto;
+  margin-bottom: 0;
+}
+
+.mt__franchises {
+  display: flex;
+  flex-direction: column;
+}
+
+.mt__franchise {
+  border-top: 1px solid var(--workspace-border, rgba(0, 0, 0, 0.08));
+}
+
+.mt__franchise-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem 1rem;
+  padding: 0.65rem 1rem 0.65rem 2rem;
+}
+
+.mt__toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border: 0;
+  background: transparent;
+  color: var(--hq-link, var(--hq-primary, #0b6e4f));
+  cursor: pointer;
+  padding: 0;
+}
+
+.mt__owner,
+.mt__place {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  color: var(--edu-muted, #64748b);
+  font-size: 0.85rem;
+}
+
+.mt__agents {
+  padding: 0 1rem 0.9rem 3rem;
+  overflow-x: auto;
+}
+
+.mt__table {
+  display: block;
+  font-size: 0.875rem;
+}
+
+.mt__more {
+  margin-top: 0.6rem;
+}

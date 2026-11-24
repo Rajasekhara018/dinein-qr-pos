@@ -1,0 +1,24 @@
+<div class="hq-ic" [class.hq-ic--danger]="variant === 'danger'" [class.hq-ic--warning]="variant === 'warning'"
+     role="alert" aria-live="assertive" (keydown.escape)="cancel()">
+  <i class="bi hq-ic__icon" [ngClass]="variant === 'danger' ? 'bi-exclamation-octagon-fill' : 'bi-exclamation-triangle-fill'" aria-hidden="true"></i>
+  <div class="hq-ic__body">
+    <strong class="hq-ic__title" *ngIf="title">{{ title }}</strong>
+    <p class="hq-ic__message" *ngIf="message">{{ message }}</p>
+    <ng-content></ng-content>
+    <div class="hq-ic__reason" *ngIf="withReason">
+      <label class="hq-ic__label" [for]="uid">{{ reasonLabel }}<span *ngIf="reasonRequired" aria-hidden="true"> *</span></label>
+      <hq-field #firstControl type="textarea" [rows]="reasonRows" [inputId]="uid" [maxLength]="maxLength" [showCounter]="false"
+                 [(ngModel)]="reason" [ngModelOptions]="{ standalone: true }" [disabled]="busy" [invalid]="touched && reasonInvalid"></hq-field>
+      <div class="hq-ic__error" *ngIf="touched && reasonInvalid" role="alert">{{ texts.reasonRequired(reasonLabel) }}</div>
+    </div>
+    <div class="hq-ic__actions">
+      <button [hqButton]="variant === 'danger' ? 'warn' : 'primary'" size="sm" type="button"
+              [disabled]="busy || confirmDisabled" [loading]="busy" (click)="submit()">{{ confirmLabel || texts.confirm() }}</button>
+      @if (withReason) {
+        <button hqButton="secondary" appearance="outline" size="sm" type="button" [disabled]="busy" (click)="cancel()">{{ cancelLabel || texts.cancel() }}</button>
+      } @else {
+        <button #firstControl hqButton="secondary" appearance="outline" size="sm" type="button" [disabled]="busy" (click)="cancel()">{{ cancelLabel || texts.cancel() }}</button>
+      }
+    </div>
+  </div>
+</div>

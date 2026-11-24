@@ -1,0 +1,68 @@
+<hq-page-header
+  [kicker]="'nav.sections.accessManagement' | translate"
+  [title]="(franchiseCode ? 'accessManagement.franchiseDrivers.titleWithCode' : 'accessManagement.franchiseDrivers.title') | translate: { code: franchiseCode }"
+  [subtitle]="'accessManagement.franchiseDrivers.subtitle' | translate">
+  <div actions class="drivers-actions">
+    <a hqButton="secondary" routerLink="/access-management/my-franchises">
+      <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'accessManagement.franchiseDrivers.backToMyFranchises' | translate }}
+    </a>
+    <button hqButton="accent" *hqHasPrivilege="privileges.onboardDriver" type="button" data-testid="onboard-driver"
+            (click)="onboardDriver()">
+      <i class="bi bi-person-plus" aria-hidden="true"></i> {{ 'accessManagement.franchiseDrivers.onboard' | translate }}
+    </button>
+  </div>
+</hq-page-header>
+
+<hq-stat-cards *ngIf="result && !errorMessage" class="drivers-stats" [stats]="stats"></hq-stat-cards>
+
+<div class="table-surface">
+  <div class="table-surface__header">
+    <div class="table-heading">
+      <h2>{{ 'accessManagement.franchiseDrivers.tableTitle' | translate }}</h2>
+      <p class="drivers-hint">{{ 'accessManagement.franchiseDrivers.tableHint' | translate }}</p>
+    </div>
+  </div>
+  <div class="table-surface__body">
+    <hq-loading-state *ngIf="isLoading && !result" [label]="'accessManagement.franchiseDrivers.loading' | translate"></hq-loading-state>
+    <hq-error-state *ngIf="errorMessage" data-testid="drivers-error" [title]="errorMessage"></hq-error-state>
+
+    <ng-container *hqHasPrivilege="privileges.listDrivers">
+      <ng-container *ngIf="!errorMessage">
+        <hq-common-table
+          [columns]="columns"
+          [rows]="drivers"
+          [isLoading]="isLoading"
+          [showActionsColumn]="canSubscribe"
+          [actionsLabel]="'accessManagement.franchiseDrivers.actions' | translate"
+          [emptyMessage]="'accessManagement.franchiseDrivers.noDrivers' | translate">
+          <ng-template hqCell="name" let-driver>
+            <span class="driver-name">
+              <span class="driver-name__avatar" aria-hidden="true">{{ initial(driver.name) }}</span>
+              <span class="driver-name__text">{{ driver.name || '—' }}</span>
+            </span>
+          </ng-template>
+          <ng-template hqCell="phone" let-driver>{{ driver.phone || '—' }}</ng-template>
+          <ng-template hqCell="email" let-driver>{{ driver.email || '—' }}</ng-template>
+          <ng-template hqCell="onboardedAt" let-driver>{{ day(driver.onboardedAt) }}</ng-template>
+          <ng-template #rowActions let-driver>
+            <button *ngIf="canSubscribe" hqButton="secondary" size="sm" type="button" data-testid="driver-subscription"
+                    (click)="openSubscription(driver)">
+              <i class="bi bi-card-checklist" aria-hidden="true"></i> {{ 'accessManagement.driverSubscription.open' | translate }}
+            </button>
+          </ng-template>
+        </hq-common-table>
+        <hq-table-footer
+          [page]="page"
+          [size]="pageSize"
+          [itemCount]="drivers.length"
+          [hasMore]="!isLast"
+          [totalItems]="total"
+          [loading]="isLoading"
+          [sizeOptions]="pageSizeOptions"
+          (pageChange)="goToPage($event)"
+          (sizeChange)="onPageSizeChange($event)">
+        </hq-table-footer>
+      </ng-container>
+    </ng-container>
+  </div>
+</div>

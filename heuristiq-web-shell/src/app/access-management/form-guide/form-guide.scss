@@ -1,0 +1,68 @@
+:host { display: block; min-width: 0; }
+
+/* Beside a form on a wide screen: stays in view and scrolls on its own. */
+:host(.is-sticky) {
+  @media (min-width: 1200px) {
+    position: sticky;
+    top: 1rem;
+    max-height: calc(100vh - 6rem);
+    overflow-y: auto;
+  }
+}
+
+.form-guide {
+  display: grid;
+  gap: 0.75rem;
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--theme-soft-border);
+  border-radius: 16px;
+  background: var(--workspace-panel);
+  font-size: 0.82rem;
+  line-height: 1.45;
+
+  &.is-folded { padding-block: 0.6rem; }
+
+  p { margin: 0; }
+  dl { display: grid; gap: 0.35rem; margin: 0.35rem 0 0; }
+  dt { font-weight: 700; font-size: 0.75rem; letter-spacing: 0.02em; overflow-wrap: anywhere; }
+  dd { margin: 0 0 0.25rem; opacity: 0.8; }
+}
+
+.form-guide__title {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0;
+  font-size: 1rem;
+
+  .bi-lightbulb { color: #e0a800; }
+}
+
+.form-guide__toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+.form-guide__toggle-text { flex: 1; min-width: 0; }
+.form-guide__toggle-hint { font-size: 0.78rem; font-weight: 400; opacity: 0.75; white-space: nowrap; }
+
+.form-guide__intro { opacity: 0.85; }
+
+.form-guide__sections { display: grid; gap: 0.75rem; }
+/* Above a step there is room for the sections side by side. */
+.form-guide__sections--wide { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+
+.form-guide__section {
+  padding-top: 0.6rem;
+  border-top: 1px solid color-mix(in srgb, currentColor 10%, transparent);
+
+  h3 { margin: 0 0 0.25rem; font-size: 0.85rem; }
+}

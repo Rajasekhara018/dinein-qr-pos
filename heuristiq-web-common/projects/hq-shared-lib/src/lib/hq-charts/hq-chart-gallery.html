@@ -1,0 +1,35 @@
+<section class="gallery" aria-labelledby="gallery-title">
+  <header class="gallery-heading">
+    <div><span class="eyebrow">COMPONENT DEMO · SAMPLE DATA</span>
+      <h1 id="gallery-title">Chart gallery</h1>
+      <p>Explore {{ items.length }} ways to tell a story with data. Compare trends, distributions and the parts of a whole.</p>
+    </div>
+    <div class="period"><span>Sample period</span><hq-date-range [value]="range" (valueChange)="changeRange($event)" /></div>
+  </header>
+  <div class="toolbar">
+    <div class="filters" role="group" aria-label="Chart family">
+      @for (filter of filters; track filter.value) {
+        <button type="button" [class.active]="family === filter.value" [attr.aria-pressed]="family === filter.value" (click)="family = filter.value">{{ filter.label }}</button>
+      }
+    </div>
+    <label class="search"><span>Find a chart</span><input type="search" [(ngModel)]="search" placeholder="Search charts…" /></label>
+  </div>
+  <p class="results" role="status">Showing {{ visibleItems.length }} of {{ items.length }} charts · Generated demo data</p>
+  <div class="chart-grid">
+    @for (item of visibleItems; track item.type) {
+      <article [class.wide]="item.wide">
+        <hq-chart-card [title]="item.title" [subtitle]="item.description" [tableColumns]="item.tableColumns" [tableRows]="item.tableRows">
+          @defer (on viewport) {
+            <hq-chart [spec]="item.spec" [ariaLabel]="item.title + ' sample chart'" />
+          } @placeholder { <div class="chart-placeholder">{{ item.title }} preview</div> }
+        </hq-chart-card>
+        <div class="card-footer">
+          <span class="badge">{{ item.premium ? 'Premium · trial preview' : item.type }}</span>
+          <details><summary>Usage example</summary><pre><code>{{ item.snippet }}</code></pre></details>
+        </div>
+      </article>
+    } @empty {
+      <div class="empty"><h2>No charts found</h2><p>Try another chart name or choose a different family.</p><button type="button" (click)="search = ''; family = 'all'">Show all charts</button></div>
+    }
+  </div>
+</section>

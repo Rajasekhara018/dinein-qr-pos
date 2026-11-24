@@ -1,0 +1,324 @@
+// Colours come from the theme tokens (--field-*, --edu-*, --hq-link), so every theme and dark mode follow. The size comes from
+// --hq-control-height (theme/styles.scss), the one height shared by every single-line control.
+
+:host {
+  display: block;
+  min-width: 0;
+}
+
+.hq-dt {
+  min-width: 0;
+}
+
+// ---- the box: the same as the common input field ---------------------------------------------------------------
+
+.hq-dt__box {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-width: 0;
+  box-sizing: border-box;
+  height: var(--hq-control-height, 2.75rem);
+  padding: 0 0.35rem 0 0.85rem;
+  border: var(--hq-control-border-width, 1.5px) solid var(--field-border);
+  border-radius: var(--hq-control-radius, 12px);
+  background: var(--field-bg);
+  color: var(--field-text);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+  &:hover {
+    border-color: color-mix(in srgb, var(--field-focus-ring, var(--hq-link, #003580)) 45%, var(--field-border));
+  }
+
+  &:focus-within {
+    border-color: var(--field-focus-ring, var(--hq-link, #003580));
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--hq-link, #003580) 14%, transparent);
+  }
+}
+
+.is-open .hq-dt__box {
+  border-color: var(--field-focus-ring, var(--hq-link, #003580));
+}
+
+.has-error .hq-dt__box {
+  border-color: #dc2626;
+
+  &:focus-within {
+    box-shadow: 0 0 0 3px color-mix(in srgb, #dc2626 14%, transparent);
+  }
+}
+
+.is-disabled .hq-dt__box {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.hq-dt__control {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: var(--hq-control-font-size, 0.95rem);
+
+  &::placeholder {
+    color: var(--field-placeholder);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+}
+
+.hq-dt__toggle {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--edu-muted);
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    color: var(--edu-ink);
+    background: color-mix(in srgb, var(--edu-muted) 12%, transparent);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--field-focus-ring, var(--hq-link, #003580));
+    outline-offset: 1px;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+}
+
+// ---- the panel (drawn in the overlay) ----------------------------------------------------------------------------
+
+.hq-dt-panel {
+  box-sizing: border-box;
+  // An opaque surface: the theme's panel colour is translucent, so it is laid over a solid base.
+  --hq-dt-base: #ffffff;
+  min-width: 17.5rem;
+  padding: 0.75rem;
+  border: 1px solid var(--field-border, #cbd5e1);
+  border-radius: 14px;
+  background: linear-gradient(var(--workspace-panel, #fff), var(--workspace-panel, #fff)), var(--hq-dt-base);
+  color: var(--field-text, #1b2a4a);
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.16), 0 2px 6px rgba(15, 23, 42, 0.08);
+}
+
+[data-theme='dark'] .hq-dt-panel {
+  --hq-dt-base: #16213e;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.5), 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.hq-dt-panel__body {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.hq-dt-cal {
+  flex: 1 1 auto;
+  min-width: 15.5rem;
+}
+
+.hq-dt-cal__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.4rem;
+}
+
+.hq-dt-cal__title {
+  font-weight: 700;
+  font-size: 0.92rem;
+  color: var(--edu-ink, #1b2a4a);
+}
+
+.hq-dt-cal__nav {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--edu-muted, #5a6a7e);
+  cursor: pointer;
+
+  &:hover {
+    background: color-mix(in srgb, var(--hq-link, #003580) 10%, transparent);
+    color: var(--edu-ink, #1b2a4a);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--field-focus-ring, var(--hq-link, #003580));
+  }
+}
+
+[dir='rtl'] .hq-dt-cal__nav svg {
+  transform: scaleX(-1);
+}
+
+.hq-dt-cal__weekdays,
+.hq-dt-cal__week {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+}
+
+.hq-dt-cal__weekdays span {
+  padding: 0.25rem 0;
+  text-align: center;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--edu-muted, #5a6a7e);
+}
+
+.hq-dt-cal__day {
+  display: grid;
+  place-items: center;
+  height: 2.1rem;
+  margin: 1px;
+  padding: 0;
+  border: 1.5px solid transparent;
+  border-radius: 9px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+
+  &:hover:not(:disabled):not(.is-selected) {
+    background: color-mix(in srgb, var(--hq-link, #003580) 10%, transparent);
+  }
+
+  &:focus-visible {
+    outline: none;
+    border-color: var(--field-focus-ring, var(--hq-link, #003580));
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--hq-link, #003580) 18%, transparent);
+  }
+
+  &.is-outside {
+    color: var(--edu-muted, #5a6a7e);
+    opacity: 0.6;
+  }
+
+  &.is-today:not(.is-selected) {
+    border-color: color-mix(in srgb, var(--hq-link, #003580) 55%, transparent);
+    font-weight: 700;
+  }
+
+  &.is-selected {
+    background: var(--hq-link, #003580);
+    color: #fff;
+    font-weight: 700;
+    opacity: 1;
+  }
+
+  &:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+}
+
+.hq-dt-clock {
+  display: flex;
+  gap: 0.35rem;
+}
+
+.hq-dt-clock__column {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 3rem;
+  max-height: 15rem;
+  padding-inline-end: 2px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.hq-dt-clock__cell {
+  flex: none;
+  height: 2rem;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+
+  &:hover:not(.is-selected) {
+    background: color-mix(in srgb, var(--hq-link, #003580) 10%, transparent);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--field-focus-ring, var(--hq-link, #003580));
+    outline-offset: -2px;
+  }
+
+  &.is-selected {
+    background: var(--hq-link, #003580);
+    color: #fff;
+    font-weight: 700;
+  }
+}
+
+.hq-dt-panel__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--field-border, #cbd5e1);
+}
+
+.hq-dt-panel__link {
+  padding: 0.25rem 0.4rem;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--hq-link, #003580);
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:hover {
+    background: color-mix(in srgb, var(--hq-link, #003580) 10%, transparent);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--field-focus-ring, var(--hq-link, #003580));
+  }
+}
+
+.hq-dt-panel__done {
+  padding: 0.3rem 0.9rem;
+  border: 0;
+  border-radius: 8px;
+  background: var(--hq-link, #003580);
+  color: #fff;
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+
+  &:focus-visible {
+    outline: 2px solid var(--field-focus-ring, var(--hq-link, #003580));
+    outline-offset: 2px;
+  }
+}

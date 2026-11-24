@@ -1,0 +1,81 @@
+@use '@angular/material' as mat;
+
+:host { display: inline-block; max-width: 100%; }
+
+.hq-toggle {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: var(--hq-toggle-gap, .5rem);
+  min-height: 44px;
+}
+
+.hq-toggle mat-slide-toggle {
+  width: 100%;
+  @include mat.slide-toggle-overrides((
+    selected-track-color: var(--hq-toggle-active, var(--button-accent-start, #176b45)),
+    selected-hover-track-color: var(--hq-toggle-active, var(--button-accent-start, #176b45)),
+    selected-focus-track-color: var(--hq-toggle-active, var(--button-accent-start, #176b45)),
+    selected-pressed-track-color: var(--hq-toggle-active, var(--button-accent-start, #176b45)),
+    selected-handle-color: var(--hq-toggle-handle, #fff),
+    selected-hover-handle-color: var(--hq-toggle-handle, #fff),
+    selected-focus-handle-color: var(--hq-toggle-handle, #fff),
+    selected-pressed-handle-color: var(--hq-toggle-handle, #fff),
+    unselected-track-color: var(--hq-toggle-inactive, var(--field-border, #74777f)),
+    unselected-handle-color: var(--hq-toggle-handle, #fff),
+    label-text-color: var(--hq-toggle-label-color, var(--edu-ink, #172b24)),
+    disabled-label-text-color: var(--hq-toggle-label-color, var(--edu-ink, #172b24)),
+    label-text-font: inherit,
+    label-text-size: var(--hq-toggle-font-size, .875rem),
+    label-text-weight: inherit,
+  ));
+}
+
+.hq-toggle--compact mat-slide-toggle {
+  @include mat.slide-toggle-overrides((
+    track-width: 36px,
+    track-height: 20px,
+    handle-width: 16px,
+    handle-height: 16px,
+    selected-handle-size: 16px,
+    unselected-handle-size: 16px,
+    with-icon-handle-size: 16px,
+    pressed-handle-size: 16px,
+    selected-handle-horizontal-margin: 0 -2px,
+    selected-with-icon-handle-horizontal-margin: 0 -2px,
+    selected-pressed-handle-horizontal-margin: 0 -2px,
+    unselected-handle-horizontal-margin: 0 2px,
+    unselected-with-icon-handle-horizontal-margin: 0 2px,
+    unselected-pressed-handle-horizontal-margin: 0 2px,
+    track-shape: 10px,
+  ));
+}
+
+.hq-toggle__spinner {
+  flex: none;
+  width: .875rem;
+  height: .875rem;
+  border: 2px solid var(--field-border, #74777f);
+  border-top-color: var(--hq-toggle-active, var(--button-accent-start, #176b45));
+  border-radius: 50%;
+  animation: hq-toggle-spin .8s linear infinite;
+}
+@keyframes hq-toggle-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .hq-toggle__spinner { animation: none; } }
+
+:host ::ng-deep .hq-toggle .mat-internal-form-field {
+  width: 100%;
+  gap: var(--hq-toggle-gap, .75rem);
+}
+:host ::ng-deep .hq-toggle .mdc-label {
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+  line-height: 1.45;
+}
+:host ::ng-deep .hq-toggle .mdc-form-field--align-end .mdc-label {
+  flex: 1;
+}
+:host ::ng-deep .hq-toggle .mdc-switch {
+  flex: none;
+}

@@ -1,0 +1,76 @@
+.field-dialog {
+  font-family: var(--hq-font);
+  display: flex;
+  flex-direction: column;
+  max-height: 82vh;
+}
+
+.dialog-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--workspace-border);
+
+  .dialog-icon {
+    color: var(--hq-link);
+    font-size: 1.15rem;
+  }
+
+  .dialog-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--edu-ink);
+  }
+
+  .close-btn {
+    border: 0;
+    background: none;
+    padding: 0;
+    color: var(--edu-muted);
+    font-size: 1.1rem;
+    cursor: pointer;
+
+    &:hover {
+      color: var(--edu-ink);
+    }
+  }
+}
+
+.dialog-body {
+  padding: 1.25rem 1.5rem 1.5rem;
+  overflow-y: auto;
+}
+.options-list {
+  display: grid;
+  gap: 8px;
+}
+
+.option-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+}
+
+.add-option-btn {
+  padding: 0.4rem 0.8rem;
+  font-size: 0.8rem;
+}
+
+.icon-btn {
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--workspace-border);
+  border-radius: 7px;
+  display: inline-grid;
+  place-items: center;
+  background: var(--workspace-panel);
+  color: var(--edu-muted);
+  cursor: pointer;
+
+  &.danger:hover {
+    color: #b91c1c;
+    background: #fee2e2;
+  }
+}

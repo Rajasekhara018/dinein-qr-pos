@@ -1,0 +1,256 @@
+<hq-page-header
+  [kicker]="'nav.sections.admin' | translate"
+  [title]="'onboardingForms.title' | translate"
+  [subtitle]="'onboardingForms.subtitle' | translate">
+</hq-page-header>
+
+<hq-screen-help screen="onboardingForms"></hq-screen-help>
+
+<!-- New type inline form -->
+<div class="table-surface mb-4" *ngIf="showNewTypeForm">
+  <div class="table-surface__body">
+    <form [formGroup]="newTypeForm" (ngSubmit)="createType()">
+      <hq-form-grid cols="2" gap="md">
+        <hq-field type="text" formControlName="code" required [label]="'onboardingForms.newType.code' | translate" [placeholder]="'onboardingForms.newType.codePlaceholder' | translate"></hq-field>
+        <hq-field type="text" formControlName="displayName" required [label]="'onboardingForms.newType.displayName' | translate" [placeholder]="'onboardingForms.newType.displayNamePlaceholder' | translate"></hq-field>
+        <hq-checkbox class="hq-span-full" inputId="requiresReview" formControlName="requiresReview">{{ 'onboardingForms.newType.requiresReview' | translate }}
+            <span class="hint d-block">{{ 'onboardingForms.newType.requiresReviewHint' | translate }}</span></hq-checkbox>
+      </hq-form-grid>
+      <hq-form-actions align="start" class="mt-3">
+        <button hqButton="accent" type="submit" [disabled]="newTypeForm.invalid || isCreatingType">
+          {{ (isCreatingType ? 'onboardingForms.newType.creating' : 'onboardingForms.newType.create') | translate }}
+        </button>
+        <button hqButton="secondary" type="button" (click)="toggleNewTypeForm()">{{ 'shared.adminCrud.cancel' | translate }}</button>
+      </hq-form-actions>
+    </form>
+  </div>
+</div>
+
+<div class="row g-4">
+  <!-- Left: types list -->
+  <div class="col-lg-4">
+    <div class="table-surface">
+      <div class="table-surface__header">
+        <div class="table-heading">
+          <span class="table-kicker">{{ 'onboardingForms.types.title' | translate }}</span>
+        </div>
+        <ng-container *hqHasPrivilege="['ONBOARDING_ADMIN_TYPE_CREATE', 'RIDER_ONBOARDING_ADMIN_ACCESS']">
+          <button type="button" class="table-create-btn" (click)="toggleNewTypeForm()">
+            <i class="bi bi-plus-lg"></i> {{ 'onboardingForms.newType.button' | translate }}
+          </button>
+        </ng-container>
+      </div>
+      <div class="table-surface__body">
+        <hq-loading-state *ngIf="isLoadingTypes" [label]="'onboardingForms.types.loading' | translate"></hq-loading-state>
+        <hq-empty-state *ngIf="!isLoadingTypes && types.length === 0" [title]="'onboardingForms.types.empty' | translate" icon="bi-diagram-3"></hq-empty-state>
+        <div
+          *ngFor="let type of types"
+          class="type-row"
+          [class.selected]="selectedType?.code === type.code"
+          (click)="selectType(type)"
+        >
+          <div>
+            <span class="fw-semibold d-block">{{ type.displayName }}</span>
+            <span class="hint font-monospace">{{ type.code }}</span>
+          </div>
+          <div class="d-flex align-items-center gap-2 flex-wrap justify-content-end">
+            <span
+              [class.clickable]="canToggleRequiresReview"
+              [ngClass]="type.requiresReview ? 'badge-success' : 'badge-warning'"
+              [attr.role]="canToggleRequiresReview ? 'button' : null"
+              (click)="canToggleRequiresReview && toggleRequiresReview(type, $event)"
+              [title]="(type.requiresReview ? 'onboardingForms.types.reviewRequiredTitle' : 'onboardingForms.types.autoApproveTitle') | translate"
+            >
+              {{ (type.requiresReview ? 'onboardingForms.types.reviewRequired' : 'onboardingForms.types.autoApprove') | translate }}
+            </span>
+            <hq-status-badge [tone]="type.active ? 'success' : 'neutral'">
+              {{ (type.active ? 'onboardingForms.types.active' : 'onboardingForms.types.inactive') | translate }}
+            </hq-status-badge>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right: schema version history + builder -->
+  <div class="col-lg-8">
+    <div class="table-surface" *ngIf="!selectedType">
+      <hq-empty-state [title]="'onboardingForms.types.selectPrompt' | translate" icon="bi-hand-index-thumb"></hq-empty-state>
+    </div>
+
+    <ng-container *ngIf="selectedType">
+      <!-- Version history -->
+      <div class="table-surface mb-4" *ngIf="!builderOpen">
+        <div class="table-surface__header">
+          <div class="table-heading">
+            <span class="panel-title">{{ selectedType.displayName }}</span>
+            <span class="hint font-monospace">{{ selectedType.code }}</span>
+          </div>
+          <ng-container *hqHasPrivilege="['ONBOARDING_ADMIN_SCHEMA_CREATE', 'RIDER_ONBOARDING_ADMIN_ACCESS']">
+            <button type="button" class="table-create-btn" (click)="newDraft()">
+              <i class="bi bi-file-earmark-plus"></i> {{ 'onboardingForms.versions.newDraft' | translate }}
+            </button>
+          </ng-container>
+        </div>
+        <div class="table-surface__body">
+          <hq-loading-state *ngIf="isLoadingVersions" [label]="'onboardingForms.versions.loading' | translate"></hq-loading-state>
+          <hq-empty-state *ngIf="!isLoadingVersions && schemaVersions.length === 0" [title]="'onboardingForms.versions.empty' | translate" icon="bi-file-earmark-x"></hq-empty-state>
+          <div class="versions-table-wrap" *ngIf="!isLoadingVersions && schemaVersions.length > 0">
+            <hq-common-table [columns]="versionColumns" [rows]="schemaVersions" [actionsLabel]="' '">
+              <ng-template hqCell="version" let-version><span class="fw-semibold">v{{ version.version }}</span></ng-template>
+              <ng-template hqCell="status" let-version>
+                <hq-status-badge [tone]="statusTone(version.status)">{{ 'onboardingForms.statuses.' + version.status | translate }}</hq-status-badge>
+              </ng-template>
+              <ng-template hqCell="steps" let-version><span class="hint">{{ 'onboardingForms.versions.stepsCount' | translate: { count: version.definition.steps.length } }}</span></ng-template>
+              <ng-template hqCell="published" let-version><span class="hint">{{ formatDate(version.publishedAt) }}</span></ng-template>
+              <ng-template hqCell="created" let-version><span class="hint">{{ formatDate(version.createdAt) }}</span></ng-template>
+              <ng-template #rowActions let-version>
+                <span class="version-actions">
+                  <button hqButton="primary" appearance="text" type="button" (click)="previewVersion(version)" [title]="'onboardingForms.versions.previewTitle' | translate">
+                    <i class="bi bi-phone"></i>{{ 'onboardingForms.versions.preview' | translate }}
+                  </button>
+                  <ng-container *hqHasPrivilege="['ONBOARDING_ADMIN_SCHEMA_UPDATE', 'RIDER_ONBOARDING_ADMIN_ACCESS']">
+                    <button hqButton="primary" appearance="text" type="button" *ngIf="version.status === 'DRAFT'" (click)="editDraft(version)">
+                      <i class="bi bi-pencil-square"></i>{{ 'onboardingForms.versions.editDraft' | translate }}
+                    </button>
+                  </ng-container>
+                  <ng-container *hqHasPrivilege="['ONBOARDING_ADMIN_SCHEMA_PUBLISH', 'RIDER_ONBOARDING_ADMIN_ACCESS']">
+                    <button hqButton="primary" appearance="text" type="button" *ngIf="version.status === 'DRAFT'" (click)="publish(version)" [disabled]="isPublishing">
+                      <i class="bi bi-cloud-arrow-up"></i>{{ 'onboardingForms.versions.publish' | translate }}
+                    </button>
+                  </ng-container>
+                  <ng-container *hqHasPrivilege="'RIDER_ONBOARDING_ADMIN_ACCESS'">
+                    <button hqButton="primary" appearance="text"
+                      type="button"
+                     
+                      *ngIf="version.status === 'ARCHIVED'"
+                      (click)="republish(version)"
+                      [disabled]="isPublishing"
+                      [title]="'onboardingForms.versions.restoreTitle' | translate"
+                    >
+                      <i class="bi bi-arrow-counterclockwise"></i>{{ 'onboardingForms.versions.restore' | translate }}
+                    </button>
+                  </ng-container>
+                </span>
+              </ng-template>
+            </hq-common-table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Builder -->
+      <div class="table-surface" *ngIf="builderOpen">
+        <div class="table-surface__header builder-header">
+          <div class="table-heading">
+            <span class="panel-title">
+              {{ editingVersion ? ('onboardingForms.builder.titleEdit' | translate: { version: editingVersion.version }) : ('onboardingForms.builder.titleNew' | translate) }}
+            </span>
+            <span class="hint">{{ 'onboardingForms.builder.summary' | translate: { steps: builderSteps.length, fields: totalFieldCount } }}</span>
+          </div>
+          <div class="builder-actions">
+            <hq-status-badge tone="warning" *ngIf="hasChanges">
+              <i class="bi bi-dot"></i> {{ 'shared.adminCrud.unsavedChanges' | translate }}
+            </hq-status-badge>
+            <hq-searchable-select
+              class="copy-select"
+              *ngIf="copySourceTypes.length > 0"
+              [allowOther]="false"
+              [disabled]="isCopyingFromType"
+              [(ngModel)]="copySourceCode"
+              (ngModelChange)="copyFromType($event)"
+              name="copySourceCode"
+              [placeholder]="(isCopyingFromType ? 'onboardingForms.builder.copying' : 'onboardingForms.builder.copyFrom') | translate"
+              [ariaLabel]="'onboardingForms.builder.copyFromTitle' | translate"
+              [title]="'onboardingForms.builder.copyFromTitle' | translate"
+            >
+              <hq-ss-option *ngFor="let t of copySourceTypes" [value]="t.code" [label]="t.displayName + ' (' + t.code + ')'"></hq-ss-option>
+            </hq-searchable-select>
+            <button hqButton="secondary"
+              type="button"
+              class="btn-sm-action"
+              *ngIf="hasDefaultDefinition"
+              (click)="loadDefaults()"
+              [disabled]="isLoadingDefaults"
+              [title]="'onboardingForms.builder.loadDefaultsTitle' | translate"
+            >
+              <i class="bi bi-arrow-clockwise"></i> {{ (isLoadingDefaults ? 'onboardingForms.builder.loadingDefaults' : 'onboardingForms.builder.loadDefaults') | translate }}
+            </button>
+            <button hqButton="secondary"
+              type="button"
+              class="btn-sm-action"
+              (click)="openPreview()"
+              [disabled]="builderSteps.length === 0"
+              [title]="'onboardingForms.builder.previewTitle' | translate"
+            >
+              <i class="bi bi-phone"></i> {{ 'onboardingForms.builder.preview' | translate }}
+            </button>
+            <button hqButton="secondary" type="button" class="btn-sm-action" (click)="closeBuilder()">{{ 'shared.adminCrud.cancel' | translate }}</button>
+            <ng-container *hqHasPrivilege="['ONBOARDING_ADMIN_SCHEMA_CREATE', 'ONBOARDING_ADMIN_SCHEMA_UPDATE', 'RIDER_ONBOARDING_ADMIN_ACCESS']">
+              <button hqButton="accent" type="button" class="btn-sm-action" (click)="saveDraft()" [disabled]="isSavingDraft">
+                <i class="bi bi-save"></i> {{ (isSavingDraft ? 'onboardingForms.builder.saving' : 'onboardingForms.builder.saveDraft') | translate }}
+              </button>
+            </ng-container>
+          </div>
+        </div>
+
+        <div class="table-surface__body">
+          <hq-empty-state *ngIf="builderSteps.length === 0" [title]="'onboardingForms.builder.emptySteps' | translate" icon="bi-layout-text-window"></hq-empty-state>
+
+          <div cdkDropList class="steps-list" (cdkDropListDropped)="dropStep($event)">
+            <div class="step-card" *ngFor="let step of builderSteps; let stepIndex = index" cdkDrag>
+              <div class="step-header">
+                <span class="drag-handle" cdkDragHandle><i class="bi bi-grip-vertical"></i></span>
+                <div class="step-fields-header flex-fill">
+                  <hq-field
+                    type="text"
+                    class="rf-step-title-input"
+                    [value]="step.title"
+                    (change)="setStepTitle(stepIndex, inputValue($event))"
+                    [placeholder]="'onboardingForms.builder.stepTitlePlaceholder' | translate"></hq-field>
+                  <hq-field
+                    type="text"
+                    class="rf-step-key-input"
+                    [value]="step.key"
+                    (change)="setStepKey(stepIndex, inputValue($event))"
+                    [placeholder]="'onboardingForms.builder.stepKeyPlaceholder' | translate"></hq-field>
+                </div>
+                <button type="button" class="row-action-btn" (click)="addField(stepIndex)" [title]="'onboardingForms.builder.addField' | translate">
+                  <i class="bi bi-plus-lg"></i>
+                </button>
+                <button type="button" class="row-action-btn danger" (click)="removeStep(stepIndex)" [title]="'onboardingForms.builder.removeStep' | translate">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </div>
+
+              <div cdkDropList class="fields-list" (cdkDropListDropped)="dropField($event, stepIndex)">
+                <hq-empty-state *ngIf="step.fields.length === 0" class="inline-empty" icon="bi-cursor" [title]="'onboardingForms.builder.noFields' | translate"></hq-empty-state>
+                <div class="field-row" *ngFor="let field of step.fields; let fieldIndex = index" cdkDrag>
+                  <span class="drag-handle" cdkDragHandle><i class="bi bi-grip-vertical"></i></span>
+                  <i class="bi field-type-icon {{ fieldTypeIcon(field.type) }}"></i>
+                  <div class="field-info">
+                    <span class="fw-semibold">{{ field.label }}</span>
+                    <span class="hint font-monospace">{{ field.key }}</span>
+                  </div>
+                  <hq-status-badge tone="neutral">{{ 'onboardingForms.fieldTypes.' + field.type | translate }}</hq-status-badge>
+                  <hq-status-badge tone="danger" *ngIf="field.required">{{ 'onboardingForms.builder.required' | translate }}</hq-status-badge>
+                  <div class="field-actions">
+                    <button type="button" class="row-action-btn" (click)="editField(stepIndex, fieldIndex)" [title]="'onboardingForms.builder.editField' | translate">
+                      <i class="bi bi-pencil-square"></i>
+                    </button>
+                    <button type="button" class="row-action-btn danger" (click)="removeField(stepIndex, fieldIndex)" [title]="'onboardingForms.builder.removeField' | translate">
+                      <i class="bi bi-trash"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <button hqButton="secondary" type="button" class="add-step-btn" (click)="addStep()">
+            <i class="bi bi-plus-lg"></i> {{ 'onboardingForms.builder.addStep' | translate }}
+          </button>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</div>

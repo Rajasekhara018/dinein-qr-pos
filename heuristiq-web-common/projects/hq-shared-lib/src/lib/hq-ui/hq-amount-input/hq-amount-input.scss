@@ -1,0 +1,96 @@
+// An amount field: [₹ | 1,00,000.00 | INR], or [INR v | 1,00,000.00] when the currency can be chosen. Theme tokens only, so
+// dark mode and every theme follow; numbers line up at the end.
+.amount-input {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.amount-input__label {
+  margin-bottom: 0;
+  font-weight: 600;
+  color: var(--edu-ink);
+}
+
+.amount-input__required {
+  margin-left: 0.25rem;
+  color: #dc2626;
+}
+
+.amount-input__field {
+  display: flex;
+  align-items: stretch;
+  box-sizing: border-box;
+  height: var(--hq-control-height, 2.75rem);
+  border: 1.5px solid var(--field-border);
+  border-radius: 12px;
+  background: var(--field-bg);
+  overflow: hidden;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+  &.is-focused {
+    border-color: var(--hq-primary, #0B6E4F);
+    box-shadow: 0 0 0 3px var(--field-focus-ring, rgba(11, 110, 79, 0.15));
+  }
+
+  &.has-error {
+    border-color: #dc2626;
+  }
+}
+
+.amount-input__symbol,
+.amount-input__code {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 0.75rem;
+  font-weight: 600;
+  color: var(--edu-muted, #5a6a7e);
+  white-space: nowrap;
+}
+
+.amount-input__symbol {
+  border-inline-end: 1px solid var(--field-border);
+}
+
+.amount-input__code {
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+}
+
+// The currency picker sits inside the amount box: borderless and compact, with a divider before the number.
+.amount-input__currency {
+  flex: 0 0 auto;
+  inline-size: 6.5rem;
+  align-self: stretch;
+  border-inline-end: 1px solid var(--field-border);
+  font-weight: 600;
+  --hq-ss-height: 100%;
+  --hq-ss-border-width: 0;
+  --hq-ss-radius: 0;
+  --hq-ss-bg: transparent;
+}
+
+.amount-input__control {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 0 0.75rem;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: var(--field-text, var(--edu-ink));
+  font-variant-numeric: tabular-nums;
+  text-align: end;
+
+  &::placeholder {
+    color: var(--field-placeholder);
+  }
+}
+
+.amount-input.is-disabled .amount-input__field {
+  opacity: 0.65;
+}
+
+.amount-input__error {
+  font-size: 0.8rem;
+  color: #dc2626;
+}

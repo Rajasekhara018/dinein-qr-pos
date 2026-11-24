@@ -1,0 +1,143 @@
+// Same look as the apps' old side drawer (workspace-ui `drawer` mixin), built from theme tokens only.
+:host { display: contents; }
+
+.hq-drawer {
+  --_brand: var(--theme-hero-start, var(--hq-primary, #0B6E4F));
+  display: flex;
+  flex-direction: column;
+  block-size: 100%;
+  max-inline-size: 100vw;
+  background: var(--workspace-panel, #fff);
+  backdrop-filter: blur(20px);
+  color: var(--edu-ink, #1b2a4a);
+  font-family: var(--hq-font);
+  border-inline-start: 1px solid var(--workspace-border, rgba(11, 110, 79, 0.08));
+  box-shadow: -12px 0 40px color-mix(in srgb, var(--_brand) 16%, transparent);
+  animation: hq-drawer-in-end 0.2s ease-out;
+
+  &--start {
+    border-inline-start: 0;
+    border-inline-end: 1px solid var(--workspace-border, rgba(11, 110, 79, 0.08));
+    box-shadow: 12px 0 40px color-mix(in srgb, var(--_brand) 16%, transparent);
+    animation-name: hq-drawer-in-start;
+  }
+}
+
+:host-context([dir='rtl']) .hq-drawer {
+  box-shadow: 12px 0 40px color-mix(in srgb, var(--_brand) 16%, transparent);
+  animation-name: hq-drawer-in-start;
+
+  &--start {
+    box-shadow: -12px 0 40px color-mix(in srgb, var(--_brand) 16%, transparent);
+    animation-name: hq-drawer-in-end;
+  }
+}
+
+.hq-drawer__header {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 1.1rem 1.4rem;
+  border-block-end: 1px solid var(--theme-soft-border, rgba(11, 110, 79, 0.08));
+}
+
+.hq-drawer__heading {
+  flex: 1 1 auto;
+  min-inline-size: 0;
+}
+
+.hq-drawer__title {
+  margin: 0;
+  font-family: var(--hq-font);
+  font-size: 1.1rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: var(--edu-ink, #1b2a4a);
+  overflow-wrap: anywhere;
+}
+
+.hq-drawer__subtitle {
+  margin: 2px 0 0;
+  font-size: 0.8rem;
+  color: var(--edu-muted, #5a6a7e);
+}
+
+.hq-drawer__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-shrink: 0;
+
+  &:empty { display: none; }
+}
+
+.hq-drawer__close {
+  display: grid;
+  place-items: center;
+  inline-size: 34px;
+  block-size: 34px;
+  flex-shrink: 0;
+  border: 1px solid var(--theme-soft-border, rgba(11, 110, 79, 0.08));
+  border-radius: 10px;
+  background: transparent;
+  color: var(--edu-muted, #5a6a7e);
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+
+  &:hover {
+    background: var(--theme-highlight-soft, rgba(11, 110, 79, 0.07));
+    color: var(--_brand);
+    border-color: color-mix(in srgb, var(--_brand) 25%, transparent);
+  }
+
+  &:focus-visible {
+    outline: 3px solid var(--field-focus-ring, rgba(11, 110, 79, 0.15));
+    outline-offset: 2px;
+  }
+}
+
+.hq-drawer__body {
+  flex: 1 1 auto;
+  min-block-size: 0;
+  overflow-y: auto;
+  padding: 1.1rem 1.4rem;
+}
+
+.hq-drawer__footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  padding: 0.85rem 1.4rem;
+  border-block-start: 1px solid var(--theme-soft-border, rgba(11, 110, 79, 0.08));
+  background: color-mix(in srgb, var(--theme-soft-surface, #f0f4f8) 55%, transparent);
+
+  &:not(:has(> *)) { display: none; }
+
+  ::ng-deep > [hqDrawerFooter],
+  ::ng-deep > [drawer-footer] {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    inline-size: 100%;
+  }
+}
+
+@keyframes hq-drawer-in-end {
+  from { transform: translateX(24px); opacity: 0; }
+  to { transform: none; opacity: 1; }
+}
+
+@keyframes hq-drawer-in-start {
+  from { transform: translateX(-24px); opacity: 0; }
+  to { transform: none; opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hq-drawer { animation: none; }
+  .hq-drawer__close { transition: none; }
+}
+
+:host-context([data-reduced-motion='true']) .hq-drawer { animation: none; }

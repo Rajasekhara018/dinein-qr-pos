@@ -1,0 +1,356 @@
+[
+  {
+    "service": "admin",
+    "path": "/api/v1/admin/drivers",
+    "filters": [
+      "search",
+      "status",
+      "vendorId"
+    ],
+    "paged": true
+  },
+  {
+    "service": "admin",
+    "path": "/api/v1/admin/drivers/pending",
+    "filters": [
+      "vendorId"
+    ],
+    "paged": true
+  },
+  {
+    "service": "admin",
+    "path": "/api/v1/admin/vendors",
+    "filters": [
+      "status"
+    ],
+    "paged": true
+  },
+  {
+    "service": "admin",
+    "path": "/api/v1/admin/vendors/pending-approval",
+    "filters": [],
+    "paged": true
+  },
+  {
+    "service": "admin",
+    "path": "/api/v1/admin/vehicles",
+    "filters": [
+      "search",
+      "status",
+      "vendorId"
+    ],
+    "paged": true
+  },
+  {
+    "service": "admin",
+    "path": "/api/v1/admin/vehicles/maintenance-alerts",
+    "filters": [
+      "days"
+    ],
+    "paged": false
+  },
+  {
+    "service": "admin",
+    "path": "/api/v1/admin/rides",
+    "filters": [
+      "driverId",
+      "driver_id",
+      "userId",
+      "user_id",
+      "status",
+      "vehicleType",
+      "vehicle_type",
+      "from",
+      "to"
+    ],
+    "paged": true
+  },
+  {
+    "service": "admin",
+    "path": "/api/v1/admin/admin-users",
+    "filters": [],
+    "paged": true
+  },
+  {
+    "service": "admin",
+    "path": "/api/v1/admin/notifications",
+    "filters": [],
+    "paged": true
+  },
+  {
+    "service": "admin",
+    "path": "/api/v1/admin/notifications/templates",
+    "filters": [],
+    "paged": false
+  },
+  {
+    "service": "admin",
+    "path": "/api/v1/admin/support/tickets",
+    "filters": [
+      "status",
+      "assignedTo"
+    ],
+    "paged": true
+  },
+  {
+    "service": "admin",
+    "path": "/api/v1/admin/support/reviews",
+    "filters": [],
+    "paged": false
+  },
+  {
+    "service": "admin",
+    "path": "/api/v1/admin/payouts",
+    "filters": [],
+    "paged": true
+  },
+  {
+    "service": "admin",
+    "path": "/api/v1/admin/disputes",
+    "filters": [
+      "status"
+    ],
+    "paged": true
+  },
+  {
+    "service": "admin",
+    "path": "/api/v1/admin/invoices",
+    "filters": [],
+    "paged": true
+  },
+  {
+    "service": "admin",
+    "path": "/api/v1/admin/surge/zones",
+    "filters": [],
+    "paged": false
+  },
+  {
+    "service": "admin",
+    "path": "/api/v1/admin/surge/history",
+    "filters": [
+      "zoneId"
+    ],
+    "paged": false
+  },
+  {
+    "service": "admin",
+    "path": "/api/v1/admin/registry/apps",
+    "filters": [],
+    "paged": false
+  },
+  {
+    "service": "admin",
+    "path": "/api/v1/admin/rides/disputes",
+    "filters": [
+      "status"
+    ],
+    "paged": true
+  },
+  {
+    "service": "rider-wallet",
+    "path": "/api/v1/wallet/admin/accounts",
+    "filters": [
+      "scope",
+      "ownerType",
+      "ownerId",
+      "type",
+      "status",
+      "appCode"
+    ],
+    "paged": true
+  },
+  {
+    "service": "rider-wallet",
+    "path": "/api/v1/wallet/admin/accounts/{accountId}/entries",
+    "filters": [
+      "scope",
+      "app",
+      "direction",
+      "from",
+      "to"
+    ],
+    "paged": true
+  },
+  {
+    "service": "rider-wallet",
+    "path": "/api/v1/wallet/admin/journals",
+    "filters": [
+      "scope",
+      "type",
+      "app",
+      "user",
+      "agent",
+      "status",
+      "from",
+      "to"
+    ],
+    "paged": true
+  },
+  {
+    "service": "rider-wallet",
+    "path": "/api/v1/wallet/admin/apps",
+    "filters": [],
+    "paged": false
+  },
+  {
+    "service": "rider-wallet",
+    "path": "/api/v1/wallet/admin/apps/available",
+    "filters": [],
+    "paged": false
+  },
+  {
+    "service": "rider-wallet",
+    "path": "/api/v1/wallet/admin/department-heads",
+    "filters": [],
+    "paged": false
+  },
+  {
+    "service": "rider-wallet",
+    "path": "/api/v1/wallet/admin/agent-links",
+    "filters": [
+      "customer",
+      "agent",
+      "status"
+    ],
+    "paged": true
+  },
+  {
+    "service": "rider-wallet",
+    "path": "/api/v1/wallet/admin/reconciliation/runs",
+    "filters": [],
+    "paged": true
+  },
+  {
+    "service": "rider-wallet",
+    "path": "/api/v1/wallet/admin/disputes",
+    "filters": [
+      "status"
+    ],
+    "paged": false
+  },
+  {
+    "service": "rider-wallet",
+    "path": "/api/v1/wallet/admin/period-closes",
+    "filters": [],
+    "paged": false
+  },
+  {
+    "service": "rider-wallet",
+    "path": "/api/v1/wallet/admin/alerts",
+    "filters": [
+      "status"
+    ],
+    "paged": false
+  },
+  {
+    "service": "rider-wallet",
+    "path": "/api/v1/wallet/admin/cash-handovers",
+    "filters": [
+      "status"
+    ],
+    "paged": false
+  },
+  {
+    "service": "rider-wallet",
+    "path": "/api/v1/wallet/agent/cash-handovers",
+    "filters": [],
+    "paged": false
+  },
+  {
+    "service": "rider-wallet",
+    "path": "/api/v1/wallet/admin/payouts",
+    "filters": [
+      "ownerType",
+      "ownerId",
+      "status"
+    ],
+    "paged": true
+  },
+  {
+    "service": "rider-wallet",
+    "path": "/api/v1/wallet/admin/sales/offline-holdings",
+    "filters": [
+      "appCode",
+      "heldOnly"
+    ],
+    "paged": true
+  },
+  {
+    "service": "rider-wallet",
+    "path": "/api/v1/wallet/admin/partner-float-alerts",
+    "filters": [],
+    "paged": true
+  },
+  {
+    "service": "rider-wallet",
+    "path": "/api/v1/wallet/agent/apps",
+    "filters": [],
+    "paged": false
+  },
+  {
+    "service": "rider-wallet",
+    "path": "/api/v1/wallet/agent/me/transactions",
+    "filters": [
+      "account",
+      "app",
+      "direction",
+      "from",
+      "to"
+    ],
+    "paged": true
+  },
+  {
+    "service": "rider-wallet",
+    "path": "/api/v1/wallet/agent/me/customers",
+    "filters": [],
+    "paged": true
+  },
+  {
+    "service": "rider-wallet",
+    "path": "/api/v1/wallet/agent/me/earnings",
+    "filters": [
+      "app",
+      "from",
+      "to"
+    ],
+    "paged": true
+  },
+  {
+    "service": "rider-wallet",
+    "path": "/api/v1/wallet/agent/customers/lookup",
+    "filters": [
+      "q"
+    ],
+    "paged": false
+  },
+  {
+    "service": "rider-wallet",
+    "path": "/api/v1/wallet/me/transactions",
+    "filters": [
+      "app",
+      "direction",
+      "type",
+      "from",
+      "to"
+    ],
+    "paged": true
+  },
+  {
+    "service": "rider-wallet",
+    "path": "/api/v1/wallet/me/payouts",
+    "filters": [],
+    "paged": true
+  },
+  {
+    "service": "rider-wallet",
+    "path": "/api/v1/wallet/me/franchises/{franchiseId}/payouts",
+    "filters": [],
+    "paged": true
+  },
+  {
+    "service": "rider-wallet",
+    "path": "/api/v1/wallet/me/team",
+    "filters": [],
+    "paged": false
+  }
+]

@@ -1,0 +1,112 @@
+<div class="te-page">
+  <div class="te-header">
+    <div class="d-flex align-items-center gap-2">
+      <button type="button" class="te-back-btn" (click)="back()" [title]="'nmsTemplates.events.backToTemplates' | translate">
+        <i class="bi bi-arrow-left-short"></i>
+      </button>
+      <div>
+        <h1 class="te-title">{{ 'nmsTemplates.events.title' | translate }}</h1>
+        <nav class="te-breadcrumb">
+          <span class="te-bc-link" (click)="back()">{{ 'pageMeta.nmsTemplates.title' | translate }}</span>
+          <i class="bi bi-chevron-right te-bc-sep"></i>
+          <span class="te-bc-active">{{ 'nmsTemplates.events.breadcrumb' | translate }}</span>
+        </nav>
+      </div>
+    </div>
+    <div class="te-actions" *ngIf="!loading">
+      <hq-status-badge tone="warning" *ngIf="hasChanges">
+        <i class="bi bi-dot"></i> {{ 'shared.adminCrud.unsavedChanges' | translate }}
+      </hq-status-badge>
+      <ng-container *hqHasPrivilege="['NMS_EVENT_RESET_DEFAULTS', 'NMS_MANAGE']">
+        <button hqButton="warn" appearance="outline" size="sm" type="button" (click)="restoreDefaults()" [title]="'nmsTemplates.events.restoreDefaultsHint' | translate">
+          <i class="bi bi-arrow-counterclockwise me-1"></i> {{ 'nmsTemplates.events.restoreDefaults' | translate }}
+        </button>
+      </ng-container>
+      <ng-container *hqHasPrivilege="['NMS_EVENT_CREATE', 'NMS_EVENT_UPDATE', 'NMS_EVENT_DELETE', 'NMS_MANAGE']">
+        <button [loading]="saving" hqButton="primary" size="sm" type="button" (click)="save()" [disabled]="saving || !hasChanges || hasDuplicate">
+          <i *ngIf="!saving" class="bi bi-check-lg me-1"></i> {{ 'shared.adminCrud.save' | translate }}
+        </button>
+      </ng-container>
+    </div>
+  </div>
+
+  <hq-loading-state *ngIf="loading"></hq-loading-state>
+
+  <hq-empty-state *ngIf="!loading && events.length === 0" icon="bi-calendar-event" [title]="'nmsTemplates.events.noneConfigured' | translate">
+    <ng-container *hqHasPrivilege="['NMS_EVENT_CREATE', 'NMS_MANAGE']">
+      <button hqButton="primary" size="sm" type="button" (click)="addEvent()">
+        <i class="bi bi-plus-lg me-1"></i> {{ 'nmsTemplates.events.addEvent' | translate }}
+      </button>
+    </ng-container>
+  </hq-empty-state>
+
+  <div *ngIf="!loading && events.length > 0" class="te-layout">
+    <hq-card padding="none" [title]="'nmsTemplates.events.breadcrumb' | translate"
+              [subtitle]="'nmsTemplates.events.configuredCount' | translate: { count: events.length }">
+      <div hqCardActions>
+        <ng-container *hqHasPrivilege="['NMS_EVENT_CREATE', 'NMS_MANAGE']">
+          <button hqButton="primary" appearance="outline" size="sm" type="button" class="te-add-btn" (click)="addEvent()" [title]="'nmsTemplates.events.addEvent' | translate">
+            <i class="bi bi-plus-lg me-1"></i> {{ 'nmsTemplates.events.addEvent' | translate }}
+          </button>
+        </ng-container>
+      </div>
+
+      <div class="te-event-list">
+        <button
+          *ngFor="let event of events; let i = index"
+          type="button"
+          class="te-event-row"
+          [class.active]="i === selectedIndex"
+          [class.te-event-row--duplicate]="isDuplicate(event)"
+          (click)="selectEvent(i)"
+        >
+          <span class="te-event-label">{{ event.label }}</span>
+          <span class="te-event-value">{{ event.value }}</span>
+        </button>
+      </div>
+    </hq-card>
+
+    <hq-card padding="none" *ngIf="selected as event" [title]="'nmsTemplates.events.eventDetails' | translate"
+              [subtitle]="'nmsTemplates.events.eventDetailsDesc' | translate">
+      <div hqCardActions>
+        <ng-container *hqHasPrivilege="['NMS_EVENT_DELETE', 'NMS_MANAGE']">
+          <button hqButton="warn" appearance="outline" size="sm" type="button" (click)="deleteSelected()">
+            <i class="bi bi-trash3 me-1"></i> {{ 'shared.listPage.rowActions.delete' | translate }}
+          </button>
+        </ng-container>
+      </div>
+
+      <hq-form-grid cols="2" gap="md" class="te-form-grid">
+        <hq-field type="text" [ngModel]="event.label" (ngModelChange)="updateLabel($event)" [placeholder]="'nmsTemplates.events.eventLabelPlaceholder' | translate" [label]="'nmsTemplates.events.eventLabel' | translate"></hq-field>
+        <hq-field type="text" [invalid]="isDuplicate(event)" [ngModel]="event.value" (ngModelChange)="updateValue($event)" placeholder="PASSWORD_RESET" [label]="'nmsTemplates.events.eventValue' | translate" [error]="isDuplicate(event) ? ('nmsTemplates.events.messages.duplicateValue' | translate: { value: event.value }) : null"></hq-field>
+      </hq-form-grid>
+
+      <div class="te-attributes">
+        <label class="te-label">{{ 'nmsTemplates.events.attributes' | translate }}</label>
+        <div class="te-attr-entry">
+          <hq-field
+            type="text"
+            [(ngModel)]="attrDraft"
+            (keyup.enter)="addAttribute()"
+            [placeholder]="'passengerName or {{passengerName}}'"></hq-field>
+          <button hqButton="primary" appearance="outline" type="button" (click)="addAttribute()">
+            <i class="bi bi-plus-lg me-1"></i> {{ 'nmsTemplates.events.add' | translate }}
+          </button>
+        </div>
+
+        <div class="te-chip-wrap" *ngIf="event.attributes.length; else noAttrs">
+          <span class="te-chip" *ngFor="let attr of event.attributes">
+            {{ attr }}
+            <button type="button" (click)="removeAttribute(attr)" [title]="('nmsTemplates.events.removeAttr' | translate: { attr: attr })">
+              <i class="bi bi-x"></i>
+            </button>
+          </span>
+        </div>
+
+        <ng-template #noAttrs>
+          <p class="te-empty">{{ 'nmsTemplates.events.noAttributes' | translate }}</p>
+        </ng-template>
+      </div>
+    </hq-card>
+  </div>
+</div>

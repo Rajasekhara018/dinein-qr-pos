@@ -1,0 +1,12 @@
+rootProject.name = 'realboom-resilient-client'
+
+// The live-config client ships from this same build (artifact com.heuristiq:realboom-config-client) so that a service's
+// single includeBuild('../heuristiq-core-resilient-client') provides both libraries.
+include 'realboom-config-client'
+project(':realboom-config-client').projectDir = file('config-client')
+
+// Phone-number parsing, E.164 normalisation and validation (artifact com.heuristiq:realboom-phone) for every service, so a
+// number from any country is accepted, compared and stored the same way. Same reasoning as the config client: it ships
+// from this build so a service's single includeBuild('../heuristiq-core-resilient-client') provides it.
+include 'realboom-phone'
+project(':realboom-phone').projectDir = file('phone')

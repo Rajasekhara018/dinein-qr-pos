@@ -1,0 +1,99 @@
+<hq-page-header
+  [kicker]="'nav.sections.accessManagement' | translate"
+  [title]="'nav.items.setupChecklist' | translate"
+  [subtitle]="'accessManagement.setupChecklist.subtitle' | translate">
+  <button hqButton="secondary" type="button" *hqHasPrivilege="privileges.read" [disabled]="isLoading" (click)="load()">
+    <i class="bi bi-arrow-clockwise"></i> {{ 'accessManagement.setupChecklist.refresh' | translate }}
+  </button>
+</hq-page-header>
+
+<div class="table-surface" *hqHasPrivilege="privileges.read">
+  <div class="table-surface__body">
+    <p class="setup-note" *ngIf="isLoading">{{ 'accessManagement.setupChecklist.loading' | translate }}</p>
+    <hq-error-state *ngIf="hasError" [title]="'accessManagement.setupChecklist.errorMessage' | translate" (retry)="load()"></hq-error-state>
+
+    <ng-container *ngIf="checklist as list">
+      <section class="setup-summary" [class.setup-summary--done]="list.complete">
+        <i class="bi" [class.bi-check-circle]="list.complete" [class.bi-exclamation-circle]="!list.complete"></i>
+        <span *ngIf="list.complete">{{ 'accessManagement.setupChecklist.allDone' | translate }}</span>
+        <span *ngIf="!list.complete && list.applications.length">
+          {{ 'accessManagement.setupChecklist.notDone' | translate: { count: missing(list) } }}
+        </span>
+        <span *ngIf="!list.applications.length">{{ 'accessManagement.setupChecklist.noApplications' | translate }}</span>
+      </section>
+
+      <ul class="setup-items">
+        <li>
+          <span class="setup-items__label">{{ 'accessManagement.setupChecklist.model' | translate }}</span>
+          <span class="franchise-badge">{{ modelLabel(list.operatingModel) }}</span>
+          <a class="setup-items__link" [routerLink]="links.operatingModel">{{ 'accessManagement.setupChecklist.changeModel' | translate }}</a>
+        </li>
+        <li>
+          <span class="setup-items__label">{{ 'accessManagement.setupChecklist.places' | translate }}</span>
+          <span class="setup-state" [ngClass]="'setup-state--' + state(placesValue(list))">
+            {{ stateLabelKey(placesValue(list)) | translate }}
+          </span>
+          <a class="setup-items__link" *ngIf="list.franchisesUsed && !list.placesLoaded" [routerLink]="links.places">
+            {{ 'accessManagement.setupChecklist.fix' | translate }}
+          </a>
+        </li>
+      </ul>
+
+      <hq-common-table class="setup-table" *ngIf="list.applications.length" [columns]="applicationColumns" [rows]="list.applications"
+                        [showActionsColumn]="false">
+        <ng-template hqCell="applicationCode" let-app><span class="franchise-badge">{{ app.applicationCode }}</span></ng-template>
+        <ng-template hqCell="commissionPlan" let-app>
+          <ng-container *ngTemplateOutlet="itemCell; context: { $implicit: app, item: 'commissionPlan' }"></ng-container>
+        </ng-template>
+        <ng-template hqCell="packageTemplate" let-app>
+          <ng-container *ngTemplateOutlet="itemCell; context: { $implicit: app, item: 'packageTemplate' }"></ng-container>
+        </ng-template>
+        <ng-template hqCell="franchisePlan" let-app>
+          <ng-container *ngTemplateOutlet="itemCell; context: { $implicit: app, item: 'franchisePlan' }"></ng-container>
+        </ng-template>
+      </hq-common-table>
+      <ng-template #itemCell let-app let-item="item">
+        <span class="setup-state" [ngClass]="'setup-state--' + state(itemValue(app, item))">
+          {{ stateLabelKey(itemValue(app, item)) | translate }}
+        </span>
+        <a class="setup-items__link" *ngIf="itemValue(app, item) === false" [routerLink]="linkFor(item)">
+          {{ 'accessManagement.setupChecklist.fix' | translate }}
+        </a>
+      </ng-template>
+
+      <section class="setup-places" *ngIf="placeless(list).length">
+        <h3>{{ 'accessManagement.setupChecklist.placeless.title' | translate }}</h3>
+        <p class="setup-note">{{ 'accessManagement.setupChecklist.placeless.hint' | translate }}</p>
+        <hq-common-table class="setup-table" [columns]="placelessColumns" [rows]="placeless(list)" [showActionsColumn]="false">
+          <ng-template hqCell="applicationCode" let-row><span class="franchise-badge">{{ row.applicationCode }}</span></ng-template>
+          <ng-template hqCell="effect" let-row>
+            <span class="setup-state" [ngClass]="row.locationBased ? 'setup-state--missing' : 'setup-state--notNeeded'">
+              {{ (row.locationBased ? 'accessManagement.setupChecklist.placeless.noSales' : 'accessManagement.setupChecklist.placeless.optional') | translate }}
+            </span>
+          </ng-template>
+          <ng-template hqCell="action" let-row>
+            <a class="setup-items__link" *hqHasPrivilege="privileges.setPlace" [routerLink]="setPlaceLink(row)">
+              {{ 'accessManagement.setupChecklist.placeless.setPlace' | translate }}
+            </a>
+          </ng-template>
+        </hq-common-table>
+      </section>
+
+      <section class="setup-places" *ngIf="citiesWithoutPlace(list).length">
+        <h3>{{ 'accessManagement.setupChecklist.cities.title' | translate }}</h3>
+        <p class="setup-note">{{ 'accessManagement.setupChecklist.cities.hint' | translate }}</p>
+        <ul class="setup-items">
+          <li *ngFor="let city of citiesWithoutPlace(list)">
+            <span class="setup-items__label">{{ city.cityName }} <span class="franchise-badge">{{ city.cityCode }}</span></span>
+            <span class="setup-state setup-state--missing">
+              {{ (city.locationId ? 'accessManagement.setupChecklist.cities.badPlace' : 'accessManagement.setupChecklist.cities.noPlace') | translate }}
+            </span>
+            <a class="setup-items__link" *hqHasPrivilege="privileges.cities" [routerLink]="links.cities">
+              {{ 'accessManagement.setupChecklist.cities.link' | translate }}
+            </a>
+          </li>
+        </ul>
+      </section>
+    </ng-container>
+  </div>
+</div>

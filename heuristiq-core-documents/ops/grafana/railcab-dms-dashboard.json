@@ -1,0 +1,80 @@
+{
+  "title": "RailCab DMS",
+  "schemaVersion": 39,
+  "version": 1,
+  "refresh": "30s",
+  "tags": ["railcab", "dms"],
+  "timezone": "browser",
+  "panels": [
+    {
+      "type": "stat",
+      "title": "Request Rate",
+      "gridPos": {"x": 0, "y": 0, "w": 6, "h": 4},
+      "targets": [
+        {
+          "expr": "sum(rate(http_server_requests_seconds_count{application=\"railcab-dms\"}[5m]))",
+          "legendFormat": "requests/sec"
+        }
+      ]
+    },
+    {
+      "type": "stat",
+      "title": "5xx Rate",
+      "gridPos": {"x": 6, "y": 0, "w": 6, "h": 4},
+      "targets": [
+        {
+          "expr": "sum(rate(http_server_requests_seconds_count{application=\"railcab-dms\",status=~\"5..\"}[5m]))",
+          "legendFormat": "5xx/sec"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Latency p95",
+      "gridPos": {"x": 0, "y": 4, "w": 12, "h": 8},
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.95, sum(rate(http_server_requests_seconds_bucket{application=\"railcab-dms\"}[5m])) by (le))",
+          "legendFormat": "p95"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "JVM Memory Used",
+      "gridPos": {"x": 12, "y": 4, "w": 12, "h": 8},
+      "targets": [
+        {
+          "expr": "sum(jvm_memory_used_bytes{application=\"railcab-dms\"}) by (area)",
+          "legendFormat": "{{area}}"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "CPU Usage",
+      "gridPos": {"x": 0, "y": 12, "w": 12, "h": 8},
+      "targets": [
+        {
+          "expr": "process_cpu_usage{application=\"railcab-dms\"}",
+          "legendFormat": "process"
+        },
+        {
+          "expr": "system_cpu_usage{application=\"railcab-dms\"}",
+          "legendFormat": "system"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "HTTP Status Classes",
+      "gridPos": {"x": 12, "y": 12, "w": 12, "h": 8},
+      "targets": [
+        {
+          "expr": "sum(rate(http_server_requests_seconds_count{application=\"railcab-dms\"}[5m])) by (status)",
+          "legendFormat": "{{status}}"
+        }
+      ]
+    }
+  ]
+}

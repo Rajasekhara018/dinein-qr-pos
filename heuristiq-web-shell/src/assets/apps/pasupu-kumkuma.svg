@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Pasupu Kumkuma Matrimony">
+  <!-- Pasupu Kumkuma glyph: the two joined circles inside the ring of the matrimony logo. One colour on transparent: the app paints
+       it in the theme colour through a CSS mask; the second circle is lighter so the pair still reads in a single colour. -->
+  <path fill="#000" fill-rule="evenodd"
+    d="M64 10a54 54 0 1 1 0 108A54 54 0 0 1 64 10zm0 7a47 47 0 1 0 0 94a47 47 0 0 0 0-94z" />
+  <path fill="#000" d="M64 2l4 9-4 6-4-6z" />
+  <circle cx="50" cy="64" r="28" fill="#000" />
+  <circle cx="78" cy="64" r="28" fill="#000" fill-opacity=".55" />
+</svg>

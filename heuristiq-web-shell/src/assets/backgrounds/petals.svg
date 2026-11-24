@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" fill="#ffffff" fill-opacity="0.08">
+  <!-- Seamless tile of small scattered petals and dots, used as a faint texture. Original artwork. -->
+  <path d="M30 20 c 6 -8 14 -8 16 0 c -2 8 -10 8 -16 0 z" transform="rotate(-30 38 20)"/>
+  <path d="M110 50 c 6 -8 14 -8 16 0 c -2 8 -10 8 -16 0 z" transform="rotate(40 118 50)"/>
+  <path d="M60 110 c 6 -8 14 -8 16 0 c -2 8 -10 8 -16 0 z" transform="rotate(10 68 110)"/>
+  <path d="M130 135 c 6 -8 14 -8 16 0 c -2 8 -10 8 -16 0 z" transform="rotate(-60 138 135)"/>
+  <circle cx="85" cy="25" r="2.5"/><circle cx="20" cy="75" r="2"/><circle cx="145" cy="95" r="2.5"/><circle cx="100" cy="150" r="2"/><circle cx="35" cy="145" r="2.5"/>
+</svg>

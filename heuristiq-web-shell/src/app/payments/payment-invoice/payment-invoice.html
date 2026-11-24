@@ -1,0 +1,171 @@
+<section class="payment-invoice-page" *ngIf="!loading && !loadError"
+    [ngClass]="isSuccess ? 'invoice-success' : (isFailure ? 'invoice-failure' : 'invoice-pending')">
+    <div class="invoice-hero">
+        <div class="hero-copy">
+            <div class="outcome-row">
+                <div class="outcome-symbol">
+                    <i class="bi" [ngClass]="isSuccess ? 'bi-patch-check-fill' : (isFailure ? 'bi-x-octagon-fill' : 'bi-hourglass-split')"></i>
+                </div>
+                <div class="outcome-copy">
+                    <hq-status-badge [tone]="isSuccess ? 'success' : isFailure ? 'danger' : 'warning'">{{ statusText }}</hq-status-badge>
+                    <h1>{{ (isSuccess ? 'payments.invoice.hero.titleSuccess' : (isFailure ? 'payments.invoice.hero.titleFailure' : 'payments.invoice.hero.titlePending')) | translate }}</h1>
+                </div>
+            </div>
+            <p>{{ statusDetail }}</p>
+            <div class="hero-note" *ngIf="isSuccess">{{ 'payments.invoice.hero.noteSuccess' | translate }}</div>
+            <div class="hero-note" *ngIf="isFailure">{{ 'payments.invoice.hero.noteFailure' | translate }}</div>
+            <div class="hero-note" *ngIf="isPending">{{ 'payments.invoice.hero.notePending' | translate }}</div>
+
+            <div class="status-legend">
+                <article class="legend-card">
+                    <span class="legend-label">{{ 'payments.invoice.legend.processorStatus' | translate }}</span>
+                    <strong>{{ statusText }}</strong>
+                </article>
+                <article class="legend-card">
+                    <span class="legend-label">{{ 'payments.invoice.legend.gateway' | translate }}</span>
+                    <strong>{{ display(transaction?.gateway) }}</strong>
+                </article>
+                <article class="legend-card">
+                    <span class="legend-label">{{ 'payments.invoice.legend.reference' | translate }}</span>
+                    <strong>{{ display(transaction?.rrn || transaction?.transactionId) }}</strong>
+                </article>
+            </div>
+        </div>
+
+        <div class="hero-summary">
+            <div class="summary-card amount-card">
+                <span>{{ 'payments.invoice.summary.processedAmount' | translate }}</span>
+                <strong>{{ 'payments.invoice.summary.amountPrefix' | translate }} {{ amountDisplay }}</strong>
+                <p>{{ statusDetail }}</p>
+            </div>
+
+            <div class="summary-card">
+                <span>{{ 'payments.invoice.summary.paymentId' | translate }}</span>
+                <strong>{{ paymentId }}</strong>
+                <p>{{ display(transaction?.gateway) }} | {{ display(transaction?.paymentMode) }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="invoice-layout">
+        <section class="panel invoice-sheet">
+            <div class="sheet-head">
+                <div>
+                    <span class="section-kicker">{{ 'payments.invoice.sheet.kicker' | translate }}</span>
+                    <h2>{{ 'payments.invoice.sheet.title' | translate }}</h2>
+                </div>
+                <hq-status-badge [tone]="isSuccess ? 'success' : isFailure ? 'danger' : 'warning'">{{ statusText }}</hq-status-badge>
+            </div>
+
+            <div class="receipt-banner" [ngClass]="isSuccess ? 'banner-success' : (isFailure ? 'banner-failure' : 'banner-pending')">
+                <div class="receipt-banner-icon">
+                    <i class="bi" [ngClass]="isSuccess ? 'bi-check-circle-fill' : (isFailure ? 'bi-exclamation-triangle-fill' : 'bi-arrow-repeat')"></i>
+                </div>
+                <div>
+                    <strong>{{ (isSuccess ? 'payments.invoice.banner.titleSuccess' : (isFailure ? 'payments.invoice.banner.titleFailure' : 'payments.invoice.banner.titlePending')) | translate }}</strong>
+                    <p>
+                        {{ (isSuccess
+                        ? 'payments.invoice.banner.copySuccess'
+                        : (isFailure
+                            ? 'payments.invoice.banner.copyFailure'
+                            : 'payments.invoice.banner.copyPending')) | translate }}
+                    </p>
+                </div>
+            </div>
+
+            <div class="invoice-grid">
+                <article class="detail-card">
+                    <span>{{ 'payments.invoice.details.customerName' | translate }}</span>
+                    <strong>{{ display(transaction?.customerName) }}</strong>
+                </article>
+                <article class="detail-card">
+                    <span>{{ 'payments.invoice.details.email' | translate }}</span>
+                    <strong>{{ display(transaction?.email) }}</strong>
+                </article>
+                <article class="detail-card">
+                    <span>{{ 'payments.invoice.details.phone' | translate }}</span>
+                    <strong>{{ display(transaction?.mobile) }}</strong>
+                </article>
+                <article class="detail-card">
+                    <span>{{ 'payments.invoice.details.processedAt' | translate }}</span>
+                    <strong>{{ processedAtDisplay }}</strong>
+                </article>
+                <article class="detail-card">
+                    <span>{{ 'payments.invoice.summary.paymentId' | translate }}</span>
+                    <strong>{{ paymentId }}</strong>
+                </article>
+                <article class="detail-card">
+                    <span>{{ 'payments.invoice.details.transactionId' | translate }}</span>
+                    <strong>{{ display(transaction?.transactionId) }}</strong>
+                </article>
+                <article class="detail-card">
+                    <span>{{ 'payments.invoice.details.rideId' | translate }}</span>
+                    <strong>{{ display(transaction?.rideId) }}</strong>
+                </article>
+                <article class="detail-card" *ngIf="transaction?.receiptNumber">
+                    <span>{{ 'payments.invoice.details.receiptNumber' | translate }}</span>
+                    <strong>{{ display(transaction?.receiptNumber) }}</strong>
+                </article>
+                <article class="detail-card">
+                    <span>{{ 'payments.invoice.legend.gateway' | translate }}</span>
+                    <strong>{{ display(transaction?.gateway) }}</strong>
+                </article>
+                <article class="detail-card">
+                    <span>{{ 'payments.invoice.details.collectionMode' | translate }}</span>
+                    <strong>{{ display(transaction?.paymentMode) }}</strong>
+                </article>
+            </div>
+
+            <div class="reason-box" *ngIf="isFailure && transaction?.errorMessage">
+                <span>{{ 'payments.invoice.details.failureReason' | translate }}</span>
+                <strong>{{ transaction?.errorMessage }}</strong>
+            </div>
+
+            <div class="sheet-actions">
+                <button hqButton="primary" appearance="outline" type="button" *ngIf="isPending" (click)="loadStatus()">{{ 'payments.invoice.actions.refreshStatus' | translate }}</button>
+                <a hqButton="primary" routerLink="/payments/make-payment">{{ 'payments.invoice.actions.createAnother' | translate }}</a>
+            </div>
+        </section>
+
+        <aside class="panel support-panel">
+            <div class="panel-head">
+                <div>
+                    <span class="section-kicker">{{ 'payments.invoice.trail.kicker' | translate }}</span>
+                    <h2>{{ 'payments.invoice.trail.title' | translate }}</h2>
+                </div>
+                <p>{{ 'payments.invoice.trail.subtitle' | translate }}</p>
+            </div>
+
+            <div class="timeline">
+                <p *ngIf="lifecycle.length === 0">{{ 'payments.invoice.trail.empty' | translate }}</p>
+                <article class="timeline-item" *ngFor="let step of lifecycle; let i = index">
+                    <div class="timeline-index">{{ i + 1 < 10 ? '0' + (i + 1) : i + 1 }}</div>
+                    <div>
+                        <strong>{{ stepStatusLabel(step.toStatus) }}</strong>
+                        <span>{{ display(step.transitionedAt) }}</span>
+                        <p *ngIf="step.reason">{{ step.reason }}</p>
+                        <p *ngIf="step.source">{{ stepSourceLabel(step.source) }}</p>
+                    </div>
+                </article>
+            </div>
+        </aside>
+    </div>
+</section>
+
+<section class="payment-invoice-page invoice-loading" *ngIf="loading">
+    <div class="panel loading-panel">
+        <hq-loading-state [label]="'payments.invoice.loading' | translate"></hq-loading-state>
+    </div>
+</section>
+
+<section class="payment-invoice-page invoice-error" *ngIf="!loading && loadError">
+    <div class="panel error-panel">
+        <i class="bi bi-exclamation-octagon-fill"></i>
+        <h2>{{ 'payments.invoice.error.title' | translate }}</h2>
+        <p>{{ loadError }}</p>
+        <div class="sheet-actions">
+            <button hqButton="primary" appearance="outline" type="button" (click)="loadStatus()">{{ 'payments.invoice.error.tryAgain' | translate }}</button>
+            <a hqButton="primary" routerLink="/payments/make-payment">{{ 'payments.invoice.error.backToMakePayment' | translate }}</a>
+        </div>
+    </div>
+</section>

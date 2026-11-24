@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="-200 -200 400 400" fill="none" stroke="#ffffff" stroke-linecap="round">
+  <!-- Decorative mandala (original artwork for the matrimony web app). White line art, tinted by the page's opacity. -->
+  <defs>
+    <path id="petal-l" d="M0 -60 C 22 -95 22 -140 0 -178 C -22 -140 -22 -95 0 -60 Z"/>
+    <path id="petal-m" d="M0 -48 C 16 -70 16 -98 0 -120 C -16 -98 -16 -70 0 -48 Z"/>
+    <path id="petal-s" d="M0 -26 C 9 -36 9 -48 0 -58 C -9 -48 -9 -36 0 -26 Z"/>
+    <circle id="dot" cx="0" cy="-188" r="4"/>
+  </defs>
+  <g stroke-width="2.2">
+    <circle r="190" stroke-dasharray="2 9"/>
+    <circle r="182"/>
+    <circle r="124"/>
+    <circle r="62"/>
+    <circle r="20"/>
+    <circle r="8" fill="#ffffff"/>
+  </g>
+  <g stroke-width="1.8">
+    <use xlink:href="#petal-l"/><use xlink:href="#petal-l" transform="rotate(22.5)"/><use xlink:href="#petal-l" transform="rotate(45)"/><use xlink:href="#petal-l" transform="rotate(67.5)"/>
+    <use xlink:href="#petal-l" transform="rotate(90)"/><use xlink:href="#petal-l" transform="rotate(112.5)"/><use xlink:href="#petal-l" transform="rotate(135)"/><use xlink:href="#petal-l" transform="rotate(157.5)"/>
+    <use xlink:href="#petal-l" transform="rotate(180)"/><use xlink:href="#petal-l" transform="rotate(202.5)"/><use xlink:href="#petal-l" transform="rotate(225)"/><use xlink:href="#petal-l" transform="rotate(247.5)"/>
+    <use xlink:href="#petal-l" transform="rotate(270)"/><use xlink:href="#petal-l" transform="rotate(292.5)"/><use xlink:href="#petal-l" transform="rotate(315)"/><use xlink:href="#petal-l" transform="rotate(337.5)"/>
+  </g>
+  <g stroke-width="1.6" transform="rotate(11.25)">
+    <use xlink:href="#petal-m"/><use xlink:href="#petal-m" transform="rotate(22.5)"/><use xlink:href="#petal-m" transform="rotate(45)"/><use xlink:href="#petal-m" transform="rotate(67.5)"/>
+    <use xlink:href="#petal-m" transform="rotate(90)"/><use xlink:href="#petal-m" transform="rotate(112.5)"/><use xlink:href="#petal-m" transform="rotate(135)"/><use xlink:href="#petal-m" transform="rotate(157.5)"/>
+    <use xlink:href="#petal-m" transform="rotate(180)"/><use xlink:href="#petal-m" transform="rotate(202.5)"/><use xlink:href="#petal-m" transform="rotate(225)"/><use xlink:href="#petal-m" transform="rotate(247.5)"/>
+    <use xlink:href="#petal-m" transform="rotate(270)"/><use xlink:href="#petal-m" transform="rotate(292.5)"/><use xlink:href="#petal-m" transform="rotate(315)"/><use xlink:href="#petal-m" transform="rotate(337.5)"/>
+  </g>
+  <g stroke-width="1.5">
+    <use xlink:href="#petal-s"/><use xlink:href="#petal-s" transform="rotate(45)"/><use xlink:href="#petal-s" transform="rotate(90)"/><use xlink:href="#petal-s" transform="rotate(135)"/>
+    <use xlink:href="#petal-s" transform="rotate(180)"/><use xlink:href="#petal-s" transform="rotate(225)"/><use xlink:href="#petal-s" transform="rotate(270)"/><use xlink:href="#petal-s" transform="rotate(315)"/>
+  </g>
+  <g fill="#ffffff" stroke="none">
+    <use xlink:href="#dot"/><use xlink:href="#dot" transform="rotate(30)"/><use xlink:href="#dot" transform="rotate(60)"/><use xlink:href="#dot" transform="rotate(90)"/>
+    <use xlink:href="#dot" transform="rotate(120)"/><use xlink:href="#dot" transform="rotate(150)"/><use xlink:href="#dot" transform="rotate(180)"/><use xlink:href="#dot" transform="rotate(210)"/>
+    <use xlink:href="#dot" transform="rotate(240)"/><use xlink:href="#dot" transform="rotate(270)"/><use xlink:href="#dot" transform="rotate(300)"/><use xlink:href="#dot" transform="rotate(330)"/>
+  </g>
+</svg>

@@ -1,0 +1,128 @@
+<hq-page-header
+  [kicker]="'nav.sections.documentManagement' | translate"
+  [title]="'documentManagement.lifecycle.list.title' | translate"
+  [subtitle]="(organizationName$ | async) ? ('documentManagement.lifecycle.list.subtitleOrg' | translate: { organization: (organizationName$ | async) }) : ('documentManagement.lifecycle.list.subtitle' | translate)"
+  [loading]="isLoading"
+  [loadingLabel]="'shared.pageHeader.loading' | translate">
+</hq-page-header>
+
+<nav class="lc-tabs" [attr.aria-label]="'documentManagement.lifecycle.tabs.label' | translate">
+  <a [routerLink]="lifecycleRoute" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">{{ 'documentManagement.lifecycle.tabs.documents' | translate }}</a>
+  <ng-container *hqHasPrivilege="privileges.audit">
+    <a class="lc-tab-link" [routerLink]="auditRoute" [queryParams]="auditFailedQuery">
+      <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i> {{ 'documentManagement.lifecycle.tabs.failuresInAudit' | translate }}
+    </a>
+  </ng-container>
+</nav>
+
+<div class="table-surface">
+  <div class="table-surface__header">
+    <div class="table-heading">
+      <span class="table-kicker">{{ 'shared.listPage.total' | translate: { count: totalElements } }}</span>
+    </div>
+  </div>
+
+  <div class="table-surface__body">
+    <hq-filter-bar collapsible>
+      <hq-field
+             type="search"
+             style="flex: 2 1 240px"
+             [(ngModel)]="filter.query"
+             name="query"
+             (keyup.enter)="applyFilters()"
+             [placeholder]="'documentManagement.lifecycle.filters.query' | translate"
+             [ariaLabel]="'documentManagement.lifecycle.filters.query' | translate"></hq-field>
+      <hq-field
+             type="text"
+             [(ngModel)]="filter.ownerId"
+             name="ownerId"
+             (keyup.enter)="applyFilters()"
+             [placeholder]="'documentManagement.lifecycle.filters.owner' | translate"
+             [ariaLabel]="'documentManagement.lifecycle.filters.owner' | translate"></hq-field>
+      <hq-field
+             type="text"
+             [(ngModel)]="filter.category"
+             name="category"
+             (keyup.enter)="applyFilters()"
+             [placeholder]="'documentManagement.lifecycle.filters.category' | translate"
+             [ariaLabel]="'documentManagement.lifecycle.filters.category' | translate"></hq-field>
+      <hq-field
+             type="text"
+             [(ngModel)]="filter.documentType"
+             name="documentType"
+             (keyup.enter)="applyFilters()"
+             [placeholder]="'documentManagement.lifecycle.filters.documentType' | translate"
+             [ariaLabel]="'documentManagement.lifecycle.filters.documentType' | translate"></hq-field>
+      <hq-searchable-select
+        [(ngModel)]="filter.status"
+        name="status"
+        [ariaLabel]="'documentManagement.lifecycle.filters.status' | translate"
+        [allowOther]="false"
+        [placeholder]="'documentManagement.lifecycle.filters.anyStatus' | translate">
+        <hq-ss-option *ngFor="let s of documentStatuses" [value]="s" [label]="statusLabel(s)"></hq-ss-option>
+      </hq-searchable-select>
+      <hq-searchable-select
+        [(ngModel)]="filter.scanStatus"
+        name="scanStatus"
+        [ariaLabel]="'documentManagement.lifecycle.filters.scanStatus' | translate"
+        [allowOther]="false"
+        [placeholder]="'documentManagement.lifecycle.filters.anyScan' | translate">
+        <hq-ss-option *ngFor="let s of scanStatuses" [value]="s" [label]="statusLabel(s)"></hq-ss-option>
+      </hq-searchable-select>
+      <hq-field type="date" inputId="lcFrom" [(ngModel)]="filter.from" name="from" class="lc-field" [label]="'documentManagement.lifecycle.filters.from' | translate"></hq-field>
+      <hq-field type="date" inputId="lcTo" [(ngModel)]="filter.to" name="to" class="lc-field" [label]="'documentManagement.lifecycle.filters.to' | translate"></hq-field>
+      <hq-checkbox class="lc-check" [(ngModel)]="filter.includeDeleted" name="includeDeleted">{{ 'documentManagement.lifecycle.filters.includeDeleted' | translate }}</hq-checkbox>
+      <div hqFilterActions>
+        <button hqButton="accent" type="button" (click)="applyFilters()"><i class="bi bi-search"></i> {{ 'documentManagement.lifecycle.filters.search' | translate }}</button>
+        <button hqButton="secondary" type="button" (click)="clearFilters()">{{ 'shared.listPage.clear' | translate }}</button>
+      </div>
+    </hq-filter-bar>
+
+    <hq-loading-state *ngIf="isLoading && !rows.length" [label]="'documentManagement.lifecycle.loading' | translate"></hq-loading-state>
+    <hq-error-state *ngIf="hasError && !isLoading" [title]="'documentManagement.lifecycle.list.loadFailed' | translate"></hq-error-state>
+    <hq-empty-state *ngIf="searched && !hasError && !isLoading && !rows.length" [title]="'documentManagement.lifecycle.list.empty' | translate"></hq-empty-state>
+
+    <div class="lc-table-wrap" *ngIf="rows.length">
+      <hq-common-table [columns]="columns" [rows]="rows" [clickableRows]="true" (rowClick)="open($event)" [actionsLabel]="' '">
+        <ng-template hqCell="file" let-row>
+          <div class="fw-semibold">{{ row.originalFileName || '—' }}</div>
+          <div class="lc-muted lc-mono">{{ row.id }}</div>
+        </ng-template>
+        <ng-template hqCell="documentType" let-row>
+          <div>{{ row.documentType || '—' }}</div>
+          <div class="lc-muted">{{ row.category || '' }}</div>
+        </ng-template>
+        <ng-template hqCell="ownerId" let-row><span class="lc-mono">{{ row.ownerId || '—' }}</span></ng-template>
+        <ng-template hqCell="size" let-row>{{ size(row.sizeBytes) }}</ng-template>
+        <ng-template hqCell="status" let-row>
+          <hq-status-badge [tone]="tone(row.deleted ? 'DELETED' : row.status)">{{ statusLabel(row.deleted ? 'DELETED' : row.status) || '—' }}</hq-status-badge>
+          <hq-status-badge tone="warning" class="ms-1" *ngIf="row.legalHold" [title]="'documentManagement.lifecycle.legalHoldTitle' | translate"><i class="bi bi-lock-fill"></i> {{ 'documentManagement.lifecycle.legalHold' | translate }}</hq-status-badge>
+        </ng-template>
+        <ng-template hqCell="scan" let-row><hq-status-badge [tone]="tone(row.scanStatus)" *ngIf="row.scanStatus">{{ statusLabel(row.scanStatus) }}</hq-status-badge></ng-template>
+        <ng-template hqCell="uploaded" let-row>
+          <div>{{ absolute(row.createdAt) || '—' }}</div>
+          <div class="lc-muted">{{ relative(row.createdAt) }}</div>
+        </ng-template>
+        <ng-template #rowActions let-row>
+          <ng-container *hqHasPrivilege="privileges.read">
+            <button type="button" class="row-action-btn" [title]="'documentManagement.lifecycle.view' | translate" [attr.aria-label]="'documentManagement.lifecycle.view' | translate" (click)="open(row); $event.stopPropagation()">
+              <i class="bi bi-eye"></i>
+            </button>
+          </ng-container>
+        </ng-template>
+      </hq-common-table>
+    </div>
+
+    <hq-table-footer
+      [page]="page"
+      [size]="pageSize"
+      [itemCount]="rows.length"
+      [hasMore]="page + 1 < totalPages"
+      [totalItems]="totalElements"
+      [loading]="isLoading"
+      [sizeOptions]="pageSizeOptions"
+      (pageChange)="goToPage($event)"
+      (sizeChange)="onPageSizeChange($event)">
+    </hq-table-footer>
+  </div>
+</div>

@@ -1,0 +1,28 @@
+<section class="tl" [attr.aria-label]="'workspace.timeline.title' | translate">
+  <h4 class="tl__title"><i class="bi bi-chat-left-text" aria-hidden="true"></i> {{ 'workspace.timeline.title' | translate }}</h4>
+
+  <p class="tl__muted" *ngIf="loading && !entries.length">{{ 'workspace.loading' | translate }}</p>
+  <hq-error-state *ngIf="loadFailed" [title]="'workspace.timeline.loadFailed' | translate" (retry)="load()"></hq-error-state>
+  <p class="tl__muted" *ngIf="!loading && !loadFailed && !entries.length">{{ 'workspace.timeline.empty' | translate }}</p>
+
+  <ol class="tl__list" *ngIf="entries.length">
+    <li *ngFor="let e of entries; trackBy: trackEntry" class="tl__entry" [class.tl__entry--comment]="e.kind === 'comment'" [class.is-mine]="e.mine">
+      <span class="tl__dot" aria-hidden="true"><i class="bi" [ngClass]="e.kind === 'comment' ? 'bi-chat-dots' : 'bi-clock-history'"></i></span>
+      <div class="tl__body">
+        <p class="tl__meta"><strong>{{ e.author }}</strong> · <time [attr.datetime]="e.at">{{ e.at | hqDate: 'medium' }}</time></p>
+        <p class="tl__text" *ngIf="e.kind === 'comment'">{{ e.text }}</p>
+        <p class="tl__activity" *ngIf="e.kind === 'activity'">{{ e.key | translate: e.params }}</p>
+      </div>
+    </li>
+  </ol>
+
+  <form class="tl__form" *hqHasPrivilege="privileges.create" (ngSubmit)="post()">
+    <hq-field type="textarea" name="comment" [rows]="2" [(ngModel)]="draft" [maxLength]="maxComment" [showCounter]="false"
+               [placeholder]="'workspace.timeline.placeholder' | translate" [ariaLabel]="'workspace.timeline.placeholder' | translate"></hq-field>
+    <hq-form-actions align="end">
+      <button hqButton="accent" size="sm" type="submit" [disabled]="posting || !draft.trim()">
+        <i class="bi bi-send" aria-hidden="true"></i> {{ 'workspace.timeline.post' | translate }}
+      </button>
+    </hq-form-actions>
+  </form>
+</section>

@@ -1,0 +1,30 @@
+<div class="doc-dialog">
+  <div class="doc-header">
+    <div class="doc-heading">
+      <h2>{{ data.title }}</h2>
+      <p *ngIf="data.fileName">{{ data.fileName }}</p>
+    </div>
+    <button type="button" class="doc-close" [attr.aria-label]="'onboardingSubmissions.documents.close' | translate" (click)="close()">
+      <i class="bi bi-x-lg"></i>
+    </button>
+  </div>
+
+  <div class="doc-body">
+    <hq-loading-state *ngIf="loading" [label]="'onboardingSubmissions.documents.loading' | translate"></hq-loading-state>
+
+    <hq-error-state *ngIf="failed" [title]="'onboardingSubmissions.documents.openFailed' | translate" [message]="errorDetail || ''"></hq-error-state>
+
+    <img *ngIf="!loading && !failed && kind === 'image'" class="doc-image" [src]="objectUrl" [alt]="data.title" />
+
+    <iframe *ngIf="!loading && !failed && kind === 'pdf'" class="doc-pdf" [src]="pdfUrl" [title]="data.title"></iframe>
+
+    <hq-empty-state *ngIf="!loading && !failed && kind === 'other'" icon="bi-file-earmark" [title]="'onboardingSubmissions.documents.unsupported' | translate"></hq-empty-state>
+  </div>
+
+  <div class="doc-actions">
+    <a hqButton="secondary" *ngIf="objectUrl" [href]="objectUrl" [attr.download]="data.fileName || data.title">
+      <i class="bi bi-download"></i> {{ 'onboardingSubmissions.documents.download' | translate }}
+    </a>
+    <button hqButton="accent" type="button" (click)="close()">{{ 'onboardingSubmissions.documents.close' | translate }}</button>
+  </div>
+</div>

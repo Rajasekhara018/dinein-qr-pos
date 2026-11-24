@@ -1,0 +1,79 @@
+// Same look as Rider_Web's `.list-filters` row: controls wrap, each takes a fair share, actions at the end.
+:host {
+  display: block;
+  margin-block-end: 1.25rem;
+}
+
+:host(.hq-filter-bar--dense) { margin-block-end: 0; }
+
+.hq-filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.6rem;
+
+  &[hidden] { display: none; }
+}
+
+:host(.hq-filter-bar--dense) .hq-filter-bar { gap: 0.4rem; }
+
+.hq-filter-bar__controls {
+  display: flex;
+  flex: 1 1 auto;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: inherit;
+  min-inline-size: 0;
+
+  // Every projected control takes a fair share of the row and never gets too narrow.
+  ::ng-deep > * {
+    flex: 1 1 180px;
+    min-inline-size: 150px;
+  }
+}
+
+:host ::ng-deep .hq-filter-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-inline-start: auto;
+}
+
+.hq-filter-bar__toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-block-end: 0.6rem;
+  padding: 0.45rem 0.85rem;
+  border: 1px solid var(--workspace-border, rgba(11, 110, 79, 0.08));
+  border-radius: 10px;
+  background: var(--workspace-panel, #fff);
+  color: var(--edu-ink, #1b2a4a);
+  font-family: var(--hq-font);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+
+  > .bi-funnel { color: var(--theme-hero-start, var(--hq-primary, #0B6E4F)); }
+
+  &:hover { background: var(--theme-row-hover, #f5f9ff); }
+
+  &:focus-visible {
+    outline: 3px solid var(--field-focus-ring, rgba(11, 110, 79, 0.15));
+    outline-offset: 2px;
+  }
+}
+
+.hq-filter-bar__chevron { font-size: 0.75rem; color: var(--edu-muted, #5a6a7e); }
+
+@media (max-width: 575.98px) {
+  .hq-filter-bar__controls ::ng-deep > * { flex-basis: 100%; }
+
+  :host ::ng-deep .hq-filter-actions {
+    inline-size: 100%;
+    margin-inline-start: 0;
+
+    > * { flex: 1 1 auto; }
+  }
+}

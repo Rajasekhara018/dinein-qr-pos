@@ -1,0 +1,264 @@
+// The create / change page of a franchise screen, laid out like the UAM form pages: a header with a back button and breadcrumbs,
+// then one card whose fields sit in an even two-column grid with the label above each control.
+.ffp {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+}
+
+.ffp__header {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.ffp__back {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: 12px;
+  border: 1px solid var(--workspace-border, rgba(0, 0, 0, 0.1));
+  background: var(--workspace-panel, #fff);
+  color: var(--hq-link, var(--hq-primary, #0B6E4F));
+  font-size: 1.4rem;
+  cursor: pointer;
+
+  &:hover {
+    background: color-mix(in srgb, var(--hq-primary, #0B6E4F) 8%, var(--workspace-panel, #fff));
+  }
+}
+
+.ffp__heading {
+  flex: 1 1 auto;
+  min-width: 0;
+
+  h1 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--edu-ink, #1b2a4a);
+  }
+}
+
+.ffp__crumbs {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0.15rem;
+  font-size: 0.78rem;
+  color: var(--edu-muted, #5a6a7e);
+
+  a {
+    cursor: pointer;
+    color: var(--hq-link, var(--hq-primary, #0B6E4F));
+  }
+
+  i {
+    font-size: 0.65rem;
+  }
+}
+
+.ffp__crumbs-current {
+  font-weight: 600;
+  color: var(--edu-ink, #1b2a4a);
+}
+
+.ffp__dirty {
+  padding: 0.2rem 0.65rem;
+  border-radius: 999px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  background: var(--theme-pending-pill-bg, #FBF0DC);
+  color: var(--theme-pending-pill-text, #8F5B00);
+}
+
+.ffp__muted {
+  margin: 0;
+  color: var(--edu-muted, #5a6a7e);
+}
+
+.ffp__error {
+  margin: 0;
+  color: var(--danger-text, #B3261E);
+}
+
+.ffp__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: 0;
+
+  > label {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    line-height: 1.4;
+    color: var(--edu-ink, #1b2a4a);
+  }
+
+  hq-searchable-select,
+  .input {
+    width: 100%;
+  }
+
+  &--wide {
+    grid-column: 1 / -1;
+  }
+}
+
+.ffp__req {
+  margin-left: 0.2rem;
+  font-style: normal;
+  color: var(--danger-text, #B3261E);
+}
+
+.ffp__hint {
+  margin: 0;
+  font-size: 0.78rem;
+  color: var(--edu-muted, #5a6a7e);
+}
+
+// The package form's plan pickers: the picked plan's terms, the hint shown without the list privilege, the links to the plan screens.
+.ffp__plan-summary {
+  color: var(--edu-ink, #1b2a4a);
+  font-weight: 600;
+}
+
+.ffp__plan-no-access {
+  font-style: italic;
+}
+
+.ffp__plan-link {
+  margin-left: 0.5rem;
+  cursor: pointer;
+}
+
+// A checkbox sits on the same line as the controls of its row, not above them.
+.ffp__check {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2.6rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.ffp__section {
+  grid-column: 1 / -1;
+  margin: 0.75rem 0 0;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--workspace-border, #e3e8ef);
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+// The place of an application: its levels (state, district, place ...) side by side in one row, wrapping onto the next
+// row only when there is no room, and one under the other on a phone. The picker is another component, so it is laid out here.
+.franchise-place {
+  > label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    width: 100%;
+  }
+
+  ::ng-deep .location-picker {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
+    gap: 0.75rem 1rem;
+    align-items: start;
+
+    @media (max-width: 767px) {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    > p,
+    > small {
+      grid-column: 1 / -1;
+      margin: 0;
+    }
+
+    .location-picker__level {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      min-width: 0;
+      margin: 0;
+
+      hq-searchable-select,
+      .input {
+        width: 100%;
+      }
+    }
+  }
+}
+
+/* Package form: the plans a franchise follows when no plan is picked ("Follow the rules that apply"). */
+.ffp__applies {
+  display: grid;
+  gap: 0.35rem;
+  margin-top: 0.35rem;
+  padding: 0.55rem 0.75rem;
+  border: 1px dashed var(--theme-soft-border);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--hq-primary) 4%, transparent);
+  font-size: 0.78rem;
+
+  ul { display: grid; gap: 0.25rem; margin: 0; padding: 0; list-style: none; }
+  li { display: flex; flex-wrap: wrap; gap: 0.35rem 0.6rem; }
+  strong { font-weight: 600; }
+}
+.ffp__applies-title { font-weight: 600; opacity: 0.8; }
+
+/* The commission and referral in force for one application of a managed franchise (setup, first step). */
+.franchise-rules {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  min-width: 180px;
+}
+.franchise-rules__row {
+  display: grid;
+  grid-template-columns: 84px 1fr;
+  column-gap: 8px;
+  align-items: baseline;
+}
+.franchise-rules__row dt {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-muted, inherit);
+}
+.franchise-rules__row dd {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  font-size: 0.8125rem;
+}
+
+/* The franchise status and its change buttons, on one line under the section title (wrapping on a narrow screen). */
+.ffp__status-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+/* The preview of an opening row: a button, then what the franchise will follow. */
+.franchise-preview {
+  display: grid;
+  gap: 8px;
+  justify-items: start;
+  app-franchise-plan-preview { justify-self: stretch; }
+}
+
+/* The package of an application of a managed franchise: its picker and, once another is picked, the Apply button. */
+.franchise-package {
+  display: grid;
+  gap: 6px;
+  min-width: 200px;
+  justify-items: start;
+  hq-searchable-select { justify-self: stretch; }
+}

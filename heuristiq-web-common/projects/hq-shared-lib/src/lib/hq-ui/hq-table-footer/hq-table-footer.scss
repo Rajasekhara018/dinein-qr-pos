@@ -1,0 +1,122 @@
+:host {
+  display: block;
+}
+
+.table-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 12px 16px;
+  background: var(--workspace-panel, #fff);
+  border: 1px solid var(--workspace-border, #e5e7eb);
+  border-top: none;
+  border-radius: 0 0 12px 12px;
+}
+
+.table-footer__range {
+  font-size: 0.8rem;
+  color: var(--edu-muted, #64748b);
+  white-space: nowrap;
+
+  strong {
+    color: var(--edu-ink, #111827);
+    font-weight: 700;
+  }
+}
+
+.table-footer__controls {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-left: auto;
+}
+
+.table-footer__size {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  color: var(--edu-muted, #64748b);
+}
+
+// The page-size picker stays compact: the searchable drop-down sized to the footer's small text.
+.table-footer__size-select {
+  inline-size: 5.5rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  --hq-ss-height: 2rem;
+  --hq-ss-radius: 8px;
+  --hq-ss-border-width: 1px;
+}
+
+.table-footer__pager {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  background: var(--theme-soft-surface, #f1f5f9);
+  border: 1px solid var(--workspace-border, #e5e7eb);
+  border-radius: 999px;
+  padding: 4px;
+}
+
+.table-footer__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  border: none;
+  background: transparent;
+  color: var(--edu-muted, #64748b);
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
+
+  &:hover:not(:disabled),
+  &:focus-visible {
+    background: var(--workspace-panel, #fff);
+    color: var(--hq-link, #003580);
+    outline: none;
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+}
+
+.table-footer__current {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 30px;
+  height: 30px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: linear-gradient(
+    135deg,
+    var(--button-accent-start, var(--hq-primary, #2d6cf2)),
+    var(--button-accent-end, var(--hq-link, #003580))
+  );
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.8rem;
+  box-shadow: 0 4px 10px color-mix(in srgb, var(--hq-link, #003580) 25%, transparent);
+}
+
+@media (max-width: 480px) {
+  .table-footer {
+    padding: 10px 12px;
+  }
+
+  .table-footer__controls {
+    width: 100%;
+    margin-left: 0;
+    justify-content: space-between;
+  }
+}

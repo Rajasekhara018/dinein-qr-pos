@@ -1,0 +1,39 @@
+:host {
+  display: block;
+}
+
+::ng-deep .mat-mdc-tab-body-wrapper {
+  padding-top: 0.5rem;
+}
+
+.login-security-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.login-security-item {
+  display: grid;
+  gap: 0.35rem;
+  padding: 1rem;
+  border-radius: 12px;
+  background: var(--theme-soft-surface);
+  border: 1px solid var(--theme-soft-border);
+
+  .label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--edu-muted);
+  }
+
+  strong {
+    font-size: 1.1rem;
+    color: var(--edu-ink);
+  }
+}
+
+.mt-3 {
+  margin-top: 1rem;
+}

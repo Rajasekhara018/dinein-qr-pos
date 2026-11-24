@@ -1,0 +1,45 @@
+<form class="sub-dialog" (ngSubmit)="submit()" autocomplete="off">
+  <header class="sub-dialog__head">
+    <span class="sub-dialog__icon" aria-hidden="true"><i class="bi bi-card-checklist"></i></span>
+    <div>
+      <h2 class="sub-dialog__title" [id]="titleId">{{ 'accessManagement.driverSubscription.title' | translate }}</h2>
+      <p class="sub-dialog__driver">{{ data.driverName || data.driverUserId }}</p>
+    </div>
+  </header>
+
+  <p class="sub-dialog__hint">{{ 'accessManagement.driverSubscription.hint' | translate }}</p>
+
+  <hq-loading-state *ngIf="loading" [label]="'accessManagement.driverSubscription.loading' | translate"></hq-loading-state>
+
+  <p class="sub-dialog__notice" role="status" *ngIf="!loading && (loadFailed || plans.length === 0)" data-testid="no-plans">
+    <i class="bi bi-exclamation-circle" aria-hidden="true"></i>
+    {{ (loadFailed ? 'accessManagement.driverSubscription.loadFailed' : 'accessManagement.driverSubscription.noPlans') | translate }}
+  </p>
+
+  <div class="sub-dialog__plans" role="radiogroup" *ngIf="!loading && plans.length > 0"
+       [attr.aria-label]="'accessManagement.driverSubscription.plan' | translate">
+    <button type="button" class="sub-plan" role="radio" *ngFor="let plan of plans"
+            [class.sub-plan--selected]="plan.id === planId" [attr.aria-checked]="plan.id === planId"
+            [disabled]="saving" (click)="select(plan)" [attr.data-testid]="'plan-' + plan.id">
+      <span class="sub-plan__check" aria-hidden="true"><i class="bi" [class.bi-check-circle-fill]="plan.id === planId" [class.bi-circle]="plan.id !== planId"></i></span>
+      <span class="sub-plan__body">
+        <span class="sub-plan__name">{{ plan.name }}</span>
+        <span class="sub-plan__meta">
+          {{ periodLabel(plan.period) }} · {{ 'accessManagement.driverSubscription.cashback' | translate: { percent: plan.cashbackPercent } }}
+        </span>
+      </span>
+      <span class="sub-plan__price">{{ plan.price | hqMoney }}</span>
+    </button>
+  </div>
+
+  <p class="sub-dialog__charge" *ngIf="!loading && plans.length > 0">
+    <i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'accessManagement.driverSubscription.chargeHint' | translate }}
+  </p>
+
+  <hq-form-actions align="end">
+    <button hqButton="secondary" type="button" [disabled]="saving" (click)="cancel()">{{ 'accessManagement.franchises.cancel' | translate }}</button>
+    <button hqButton="accent" type="submit" data-testid="subscribe-driver-submit" [disabled]="saving || loading || !planId">
+      <i class="bi bi-check2-circle" aria-hidden="true"></i> {{ 'accessManagement.driverSubscription.confirm' | translate }}
+    </button>
+  </hq-form-actions>
+</form>

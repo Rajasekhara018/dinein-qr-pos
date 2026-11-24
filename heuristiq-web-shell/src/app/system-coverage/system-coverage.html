@@ -1,0 +1,201 @@
+<hq-page-header
+  [kicker]="'nav.sections.adminSystem' | translate"
+  [title]="'systemCoverage.title' | translate"
+  [subtitle]="'systemCoverage.subtitle' | translate"
+  [loading]="isLoadingRuns || isLoadingDetail"
+  [loadingLabel]="'shared.pageHeader.loading' | translate">
+</hq-page-header>
+
+<div class="table-surface cov-toolbar">
+  <div class="table-surface__header">
+    <div class="table-heading">
+      <span class="table-kicker" *ngIf="selected">
+        {{ 'systemCoverage.showingRun' | translate: { time: (selected.createdAt | hqDate:'medium') } }}
+      </span>
+    </div>
+    <div class="cov-actions">
+      <span class="cov-live" role="status">
+        <i class="bi bi-broadcast"></i> {{ 'systemCoverage.autoRefresh' | translate: { seconds: autoRefreshSeconds } }}
+      </span>
+      <button hqButton="secondary" type="button" (click)="reload()" [disabled]="isLoadingRuns">
+        <i class="bi bi-arrow-clockwise"></i> {{ 'systemCoverage.refresh' | translate }}
+      </button>
+      <ng-container *hqHasPrivilege="privileges.create">
+        <hq-file-drop appearance="button" buttonClass="table-create-btn cov-upload" accept="application/json,.json"
+                       [validate]="false" [disabled]="isUploading" [showError]="false"
+                       [title]="'systemCoverage.upload.hint' | translate" (picked)="onFileSelected($event)">
+          <i class="bi bi-upload"></i> {{ (isUploading ? 'systemCoverage.upload.uploading' : 'systemCoverage.upload.button') | translate }}
+        </hq-file-drop>
+      </ng-container>
+    </div>
+  </div>
+</div>
+
+<ng-container *hqHasPrivilege="privileges.list">
+  <hq-error-state *ngIf="runsError" [title]="'systemCoverage.loadFailed' | translate"></hq-error-state>
+  <hq-loading-state *ngIf="isLoadingRuns && runs.length === 0 && !runsError" [label]="'systemCoverage.loading' | translate"></hq-loading-state>
+  <hq-empty-state *ngIf="!isLoadingRuns && !runsError && runs.length === 0" [title]="'systemCoverage.empty' | translate"></hq-empty-state>
+</ng-container>
+
+<ng-container *hqHasPrivilege="privileges.read">
+  <section class="cov-section" *ngIf="selected || detailError || isLoadingDetail" [attr.aria-label]="'systemCoverage.sections.latest' | translate">
+    <div class="cov-cards" *ngIf="selected as run">
+      <div class="cov-card">
+        <span class="cov-card__label">{{ 'systemCoverage.cards.runTime' | translate }}</span>
+        <strong class="cov-card__value">{{ run.createdAt | hqDate:'medium' }}</strong>
+        <span class="cov-card__sub" *ngIf="ageOfRun(run.createdAt) as age">{{ age.key | translate: { count: age.count } }}</span>
+      </div>
+      <div class="cov-card">
+        <span class="cov-card__label">{{ 'systemCoverage.cards.source' | translate }}</span>
+        <strong class="cov-card__value cov-mono">{{ run.gitBranch || '—' }}</strong>
+        <span class="cov-card__sub cov-mono">{{ run.gitCommit || '—' }}</span>
+      </div>
+      <div class="cov-card cov-card--danger">
+        <span class="cov-card__label">{{ 'systemCoverage.cards.belowFloor' | translate: { floor: document?.thresholds?.floor } }}</span>
+        <strong class="cov-card__value">{{ levelCounts.BELOW_FLOOR }}</strong>
+      </div>
+      <div class="cov-card cov-card--warning">
+        <span class="cov-card__label">{{ 'systemCoverage.cards.ok' | translate }}</span>
+        <strong class="cov-card__value">{{ levelCounts.OK }}</strong>
+      </div>
+      <div class="cov-card cov-card--success">
+        <span class="cov-card__label">{{ 'systemCoverage.cards.atTarget' | translate: { target: document?.thresholds?.target } }}</span>
+        <strong class="cov-card__value">{{ levelCounts.AT_TARGET }}</strong>
+      </div>
+      <div class="cov-card">
+        <span class="cov-card__label">{{ 'systemCoverage.cards.missing' | translate }}</span>
+        <strong class="cov-card__value">{{ levelCounts.MISSING }}</strong>
+      </div>
+    </div>
+
+    <div class="table-surface">
+      <div class="table-surface__header">
+        <div class="table-heading">
+          <span class="table-kicker">{{ 'shared.listPage.total' | translate: { count: visibleRows.length } }}</span>
+        </div>
+      </div>
+      <div class="table-surface__body">
+        <hq-filter-bar collapsible>
+          <hq-field
+                 type="text"
+                 [placeholder]="'systemCoverage.searchPlaceholder' | translate"
+                 [ariaLabel]="'systemCoverage.searchPlaceholder' | translate"
+                 [(ngModel)]="filters.query"
+                 (ngModelChange)="applyFilters()"></hq-field>
+          <hq-searchable-select
+            [(ngModel)]="filters.kind"
+            (ngModelChange)="applyFilters()"
+            [ariaLabel]="'systemCoverage.columns.kind' | translate"
+            [allowOther]="false"
+            [placeholder]="'systemCoverage.anyKind' | translate">
+            <hq-ss-option *ngFor="let k of kinds" [value]="k" [label]="kindLabel(k)"></hq-ss-option>
+          </hq-searchable-select>
+          <hq-searchable-select
+            [(ngModel)]="filters.level"
+            (ngModelChange)="applyFilters()"
+            [ariaLabel]="'systemCoverage.columns.status' | translate"
+            [allowOther]="false"
+            [placeholder]="'shared.listPage.anyStatus' | translate">
+            <hq-ss-option *ngFor="let l of levels" [value]="l" [label]="levelLabel(l)"></hq-ss-option>
+          </hq-searchable-select>
+          <hq-searchable-select
+            [(ngModel)]="sortMode"
+            (ngModelChange)="applyFilters()"
+            [ariaLabel]="'systemCoverage.sort.label' | translate"
+            [allowOther]="false">
+            <hq-ss-option *ngFor="let m of sortModes" [value]="m" [label]="sortLabel(m)"></hq-ss-option>
+          </hq-searchable-select>
+          <div hqFilterActions>
+            <button hqButton="secondary" type="button" (click)="clearFilters()">{{ 'shared.listPage.clear' | translate }}</button>
+          </div>
+        </hq-filter-bar>
+
+        <hq-error-state *ngIf="detailError" [title]="'systemCoverage.messages.runLoadFailed' | translate"></hq-error-state>
+        <hq-loading-state *ngIf="isLoadingDetail && rows.length === 0" [label]="'systemCoverage.loading' | translate"></hq-loading-state>
+        <hq-empty-state *ngIf="!isLoadingDetail && !detailError && visibleRows.length === 0" [title]="(hasActiveFilters ? 'systemCoverage.noneMatching' : 'systemCoverage.noProjects') | translate"></hq-empty-state>
+
+        <div class="cov-table-wrap" *ngIf="visibleRows.length > 0">
+          <hq-common-table class="cov-table" [columns]="columns" [rows]="visibleRows" [showActionsColumn]="false"
+                            [rowClass]="rowClasses" [isRowExpanded]="isRowExpanded">
+            <ng-template hqCell="project" let-r>
+              <button type="button" class="cov-toggle" (click)="toggle(r.key)" [attr.aria-expanded]="isExpanded(r.key)"
+                      [attr.aria-label]="'systemCoverage.toggleGroups' | translate: { project: r.key }">
+                <i class="bi" [ngClass]="isExpanded(r.key) ? 'bi-chevron-down' : 'bi-chevron-right'"></i>
+                <span class="cov-mono">{{ r.key }}</span>
+              </button>
+            </ng-template>
+            <ng-template hqCell="kind" let-r>{{ kindLabel(r.kind) }}</ng-template>
+            <ng-template hqCell="lines" let-r>{{ r.lines === null ? '—' : (r.lines | number:'1.0-2') + '%' }}</ng-template>
+            <ng-template hqCell="branches" let-r>{{ r.branches === null ? '—' : (r.branches | number:'1.0-2') + '%' }}</ng-template>
+            <ng-template hqCell="methods" let-r>{{ r.methodsOrFunctions === null ? '—' : (r.methodsOrFunctions | number:'1.0-2') + '%' }}</ng-template>
+            <ng-template hqCell="status" let-r><hq-status-badge [tone]="levelTone(r.level)">{{ levelLabel(r.level) }}</hq-status-badge></ng-template>
+            <ng-template hqCell="measured" let-r>
+              <ng-container *ngIf="r.measuredAt; else notMeasured">{{ r.measuredAt | hqDate:'medium' }}</ng-container>
+              <ng-template #notMeasured>—</ng-template>
+              <hq-status-badge tone="warning" class="cov-stale" *ngIf="r.stale">{{ 'systemCoverage.stale' | translate }}</hq-status-badge>
+            </ng-template>
+            <ng-template #rowDetail let-r>
+              <div class="cov-groups">
+                <hq-empty-state *ngIf="r.groups.length === 0" [title]="'systemCoverage.noGroups' | translate"></hq-empty-state>
+                <hq-common-table class="cov-groups__table" *ngIf="r.groups.length > 0" [columns]="groupColumns" [rows]="r.groups"
+                                  [showActionsColumn]="false">
+                  <ng-template hqCell="name" let-g><span class="cov-mono">{{ g.name }}</span></ng-template>
+                  <ng-template hqCell="pct" let-g>{{ g.lines.pct | number:'1.0-2' }}%</ng-template>
+                  <ng-template hqCell="coveredOfTotal" let-g>{{ g.lines.covered }} / {{ g.lines.total }}</ng-template>
+                  <ng-template hqCell="bar" let-g><hq-progress size="sm" [value]="g.lines.pct" [max]="100" format="percent" [label]="g.name"></hq-progress></ng-template>
+                </hq-common-table>
+              </div>
+            </ng-template>
+          </hq-common-table>
+        </div>
+      </div>
+    </div>
+
+    <hq-chart-card class="cov-trend-box" [title]="'systemCoverage.trend.title' | translate"
+                    [subtitle]="trendShown.length ? ('systemCoverage.trend.caption' | translate: { count: trendShown.length, value: latestTrendValue }) : ''"
+                    [range]="trendRange" (rangeChange)="onTrendRange($event)"
+                    [empty]="trendShown.length === 0" [emptyText]="'systemCoverage.trend.empty' | translate"
+                    [tableColumns]="trendColumns" [tableRows]="trendRows">
+      <hq-chart *ngIf="trendSpec && trendShown.length > 0" [spec]="trendSpec"
+                 [ariaLabel]="'systemCoverage.trend.caption' | translate: { count: trendShown.length, value: latestTrendValue }"></hq-chart>
+    </hq-chart-card>
+  </section>
+</ng-container>
+
+<ng-container *hqHasPrivilege="privileges.list">
+  <section class="table-surface cov-history" *ngIf="runs.length > 0" [attr.aria-label]="'systemCoverage.sections.history' | translate">
+    <div class="table-surface__header">
+      <div class="table-heading">
+        <span class="table-kicker">{{ 'systemCoverage.history.title' | translate }}</span>
+      </div>
+      <span class="table-kicker">{{ 'shared.listPage.total' | translate: { count: totalElements } }}</span>
+    </div>
+    <div class="table-surface__body">
+      <ul class="cov-history__list">
+        <li *ngFor="let run of runs; trackBy: trackByRun">
+          <button type="button" class="cov-run" [class.cov-run--active]="selected?.runId === run.runId"
+                  [attr.aria-current]="selected?.runId === run.runId ? 'true' : null"
+                  [disabled]="isLoadingDetail || !canRead" (click)="select(run.runId)">
+            <span class="cov-run__time">{{ run.createdAt | hqDate:'medium' }}</span>
+            <span class="cov-run__age" *ngIf="ageOfRun(run.createdAt) as age">{{ age.key | translate: { count: age.count } }}</span>
+            <span class="cov-run__src cov-mono">{{ run.gitBranch || '—' }} · {{ run.gitCommit || '—' }}</span>
+            <span class="cov-run__counts">
+              <hq-status-badge tone="danger" [title]="levelLabel('BELOW_FLOOR')">{{ run.summary.belowFloorCount }}</hq-status-badge>
+              <hq-status-badge tone="success" [title]="levelLabel('AT_TARGET')">{{ run.summary.atTargetCount }}</hq-status-badge>
+              <hq-status-badge tone="neutral" [title]="levelLabel('MISSING')">{{ run.summary.missingCount }}</hq-status-badge>
+            </span>
+          </button>
+        </li>
+      </ul>
+      <div class="cov-pager" *ngIf="totalPages > 1">
+        <button hqButton="secondary" type="button" (click)="previousPage()" [disabled]="page === 0 || isLoadingRuns">
+          <i class="bi bi-chevron-left"></i> {{ 'systemCoverage.history.previous' | translate }}
+        </button>
+        <span>{{ 'shared.listPage.pageOf' | translate: { page: page + 1, total: totalPages } }}</span>
+        <button hqButton="secondary" type="button" (click)="nextPage()" [disabled]="page + 1 >= totalPages || isLoadingRuns">
+          {{ 'systemCoverage.history.next' | translate }} <i class="bi bi-chevron-right"></i>
+        </button>
+      </div>
+    </div>
+  </section>
+</ng-container>

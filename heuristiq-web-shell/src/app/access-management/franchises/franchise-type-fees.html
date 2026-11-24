@@ -1,0 +1,85 @@
+<section class="tf" *hqHasPrivilege="[privileges.createPlan, privileges.updatePlan]">
+  <header class="tf__head">
+    <h2>{{ i18n + '.title' | translate }}</h2>
+    <p>{{ i18n + '.hint' | translate }}</p>
+    <p class="tf__wallet-note" data-testid="wallet-note">
+      <i class="bi bi-wallet2" aria-hidden="true"></i>
+      {{ i18n + '.walletNote' | translate: { times: walletMultiplier } }}
+    </p>
+  </header>
+
+  <div class="tf__filters">
+    <hq-form-field class="tf__field" [label]="i18n + '.application' | translate">
+      <hq-searchable-select
+        [options]="applicationLabels()"
+        [ngModel]="applicationLabel()"
+        (valueChange)="pickApplication($event)"
+        [ngModelOptions]="{ standalone: true }"
+        [allowOther]="false"
+        [placeholder]="'accessManagement.franchises.chooseApplication' | translate">
+      </hq-searchable-select>
+    </hq-form-field>
+    <hq-form-field class="tf__field" [label]="i18n + '.country' | translate">
+      <hq-searchable-select
+        [(ngModel)]="countryCode"
+        (ngModelChange)="onCountryChange()"
+        name="typeFeesCountry"
+        [allowOther]="false"
+        [placeholder]="'accessManagement.franchisePlans.chooseCountry' | translate">
+        <hq-ss-option *ngFor="let country of countries" [value]="country.code" [label]="country.name + ' (' + country.code + ')'"></hq-ss-option>
+      </hq-searchable-select>
+    </hq-form-field>
+    <hq-form-field class="tf__field tf__under" *ngIf="countryCode" [label]="i18n + '.under' | translate" [hint]="('accessManagement.franchisePlans.underHint' | translate)">
+      <app-location-picker [countryCode]="countryCode" [selectableTypes]="underTypes" (selected)="onUnderPicked($event)"></app-location-picker>
+    </hq-form-field>
+  </div>
+
+  <hq-empty-state *ngIf="!ready" icon="bi-info-circle" [title]="i18n + '.chooseFirst' | translate"></hq-empty-state>
+
+  <ng-container *ngIf="ready">
+    <div class="tf__table">
+      <hq-common-table
+        [columns]="columns"
+        [rows]="rows"
+        [isLoading]="loading"
+        [hasError]="failed"
+        [showActionsColumn]="false"
+        [emptyMessage]="i18n + '.loading' | translate"
+        [errorMessage]="i18n + '.loadFailed' | translate">
+        <ng-template hqCell="agentLimit" let-row>
+          <hq-field
+                 type="number"
+                 class="tf__input"
+                 min="1"
+                 step="1"
+                 [(ngModel)]="row.agentLimit"
+                 [disabled]="!canEdit(row) || saving"
+                 [name]="'agents' + row.type"
+                 [ariaLabel]="i18n + '.agents' | translate"></hq-field>
+        </ng-template>
+        <ng-template hqCell="fee" let-row>
+          <hq-amount-input class="tf__amount" data-testid="fee-amount" [showLabel]="false" [label]="i18n + '.fee' | translate"
+                            [currency]="row.currency" [ngModel]="feeAmount(row)" (ngModelChange)="setFee(row, $event)"
+                            [disabled]="!canEdit(row) || saving" [name]="'fee' + row.type"></hq-amount-input>
+        </ng-template>
+        <ng-template hqCell="wallet" let-row>
+          <span class="tf__readonly" data-testid="wallet-total" [title]="i18n + '.walletHint' | translate">
+            {{ wallet(row) | hqMoney: row.currency : '—' }}
+          </span>
+        </ng-template>
+        <ng-template hqCell="perAgent" let-row>
+          <span class="tf__readonly" data-testid="wallet-per-agent" [title]="i18n + '.perAgentHint' | translate">
+            {{ perAgent(row) | hqMoney: row.currency : '—' }}
+          </span>
+        </ng-template>
+        <ng-template hqCell="state" let-row>
+          <span class="tf__state" [ngClass]="'tf__state--' + stateOf(row)" *ngIf="stateOf(row) !== 'empty'">{{ stateLabel(row) }}</span>
+        </ng-template>
+      </hq-common-table>
+    </div>
+
+    <hq-form-actions align="end">
+      <button hqButton="accent" type="button" [disabled]="!canSave" (click)="save()">{{ i18n + '.save' | translate }}</button>
+    </hq-form-actions>
+  </ng-container>
+</section>

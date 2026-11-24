@@ -1,0 +1,7 @@
+// The vendor portal shell renders without the customer app's header/sidebar layout.
+// Individual page components own their full-page styles.
+.vp-shell {
+  display: block;
+  width: 100%;
+  min-height: 100vh;
+}

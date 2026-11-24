@@ -1,0 +1,4 @@
+<hq-chart-card [title]="title" [subtitle]="subtitle" [empty]="isEmpty" [emptyText]="'qaDashboard.charts.empty' | translate"
+                [tableColumns]="columns" [tableRows]="tableRows">
+  <hq-chart *ngIf="spec && !isEmpty" [spec]="spec" [ariaLabel]="labelKey | translate"></hq-chart>
+</hq-chart-card>

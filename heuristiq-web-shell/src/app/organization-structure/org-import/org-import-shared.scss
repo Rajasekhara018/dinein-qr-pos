@@ -1,0 +1,80 @@
+// Shared by the import screen and its "Loaded now" section, so every card looks the same.
+// Spacing scale: 0.5rem (tight), 1rem (inside a card), 1.5rem (between cards).
+
+/// The small uppercase title every card of the screen uses.
+@mixin card-title {
+  margin: 0;
+  font-family: var(--hq-font);
+  font-size: 0.75rem;
+  font-weight: 800;
+  line-height: 1.4;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--edu-muted);
+}
+
+/// Buttons and links styled as buttons: one size, one icon gap, no underline.
+@mixin button-base {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  line-height: 1.25;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+/// A row of equal stat tiles: the figure large, its label small beneath.
+@mixin stat-tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+
+  > div {
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 0.2rem;
+    min-width: 0;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--theme-soft-border);
+    border-radius: 12px;
+    background: var(--surface-soft);
+  }
+
+  dt {
+    margin: 0;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--edu-muted);
+  }
+
+  dd {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--edu-ink);
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/// Card header and body: same padding in every card, title on the start side, actions on the end side.
+@mixin card-parts {
+  .table-surface__header {
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 1rem 1.5rem;
+  }
+
+  .table-surface__body {
+    padding: 1rem 1.5rem 1.5rem;
+    gap: 1rem;
+
+    > p,
+    > h4 {
+      margin: 0;
+    }
+  }
+}

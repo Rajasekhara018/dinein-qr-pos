@@ -1,0 +1,192 @@
+// The lookup popup. Colours come from the theme tokens (--hq-link, --edu-*, --field-*), so every theme and dark mode follow;
+// the Material buttons and chips are tinted through their own design tokens, set on the element (old and new token names).
+
+.hq-lookup {
+  --hq-lk-accent: var(--hq-link, #003580);
+  --hq-lk-tint: color-mix(in srgb, var(--hq-lk-accent) 14%, transparent);
+  --hq-lk-neutral: color-mix(in srgb, var(--edu-muted, #5a6a7e) 14%, transparent);
+  --hq-lk-border: var(--field-border, #cbd5e1);
+
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 24px 28px;
+  max-height: 88vh;
+  overflow: auto;
+  color: var(--edu-ink, #1b2a4a);
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  &__title {
+    margin: 0;
+    font-size: 1.75rem;
+    font-weight: 500;
+    line-height: 1.2;
+  }
+
+  // CLOSE / DONE: a tonal button in the accent colour.
+  &__close {
+    border-radius: 8px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  // Text buttons (SEARCH, CLEAR RESULT, + Add conditions ...) in the accent colour.
+  &__link {
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  &__selection {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding-bottom: 4px;
+  }
+
+  &__modes {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 8px;
+  }
+
+  // The two lines above the column chips.
+  &__hint {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  &__lead {
+    margin: 0;
+    font-size: 1.1rem;
+    color: var(--edu-muted, #5a6a7e);
+  }
+
+  &__sub {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--edu-muted, #5a6a7e);
+  }
+
+  &__muted {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--edu-muted, #5a6a7e);
+  }
+
+  &__showing {
+    font-size: 1.05rem;
+
+    b {
+      color: var(--edu-ink, #1b2a4a);
+    }
+  }
+
+  // Column chips: grey pills, the active one filled in the accent colour.
+  &__fields {
+    display: block;
+  }
+
+  &__field {
+    --mat-chip-elevated-container-color: var(--hq-lk-neutral);
+    --mat-chip-elevated-selected-container-color: var(--hq-lk-accent);
+    --mat-chip-label-text-color: var(--edu-ink, #1b2a4a);
+    --mat-chip-selected-label-text-color: #fff;
+    --mat-chip-selected-trailing-icon-color: #fff;
+    --mdc-chip-elevated-container-color: var(--hq-lk-neutral);
+    --mdc-chip-elevated-selected-container-color: var(--hq-lk-accent);
+    --mdc-chip-label-text-color: var(--edu-ink, #1b2a4a);
+    --mdc-chip-selected-label-text-color: #fff;
+    border-radius: 999px;
+    font-weight: 500;
+  }
+
+  &__search,
+  &__condition {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  &__search-field {
+    width: 280px;
+    max-width: 100%;
+  }
+
+  &__go {
+    margin-top: 2px;
+  }
+
+  &__op {
+    width: 130px;
+  }
+
+  &__cond-field {
+    flex: 1 1 180px;
+    min-width: 150px;
+  }
+
+  // Results: one bordered block, the table and its footer together.
+  &__table {
+    max-height: 45vh;
+    overflow: auto;
+    border: 1px solid var(--hq-lk-border);
+
+    table {
+      width: 100%;
+      background: transparent;
+    }
+
+    th {
+      background: color-mix(in srgb, var(--edu-muted, #5a6a7e) 9%, var(--workspace-panel, #fff));
+      font-weight: 600;
+      color: var(--edu-ink, #1b2a4a);
+    }
+
+    tr.is-selected td {
+      background: var(--hq-lk-tint);
+    }
+  }
+
+  &__action {
+    text-align: right;
+  }
+
+  // The round button that picks a row.
+  &__pick {
+    border-radius: 999px;
+  }
+
+  &__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin-top: -12px;
+    border: 1px solid var(--hq-lk-border);
+    border-top: 0;
+  }
+
+  &__empty {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  &__error {
+    color: #dc2626;
+  }
+}

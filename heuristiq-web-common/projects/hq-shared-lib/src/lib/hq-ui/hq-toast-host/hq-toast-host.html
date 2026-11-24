@@ -1,0 +1,15 @@
+<div class="toast-stack" aria-live="polite" aria-atomic="false">
+  <div
+    class="toast-item toast-item--{{ t.type }}"
+    *ngFor="let t of toasts$ | async; trackBy: trackById"
+    role="alert">
+    <div class="toast-icon-wrap">
+      <i class="bi {{ icon(t.type) }}"></i>
+    </div>
+    <p class="toast-message">{{ t.message }}</p>
+    <button class="toast-close" (click)="dismiss(t.id)" [attr.aria-label]="dismissLabel">
+      <i class="bi bi-x"></i>
+    </button>
+    <div class="toast-progress" [style.animation-duration.ms]="t.duration"></div>
+  </div>
+</div>

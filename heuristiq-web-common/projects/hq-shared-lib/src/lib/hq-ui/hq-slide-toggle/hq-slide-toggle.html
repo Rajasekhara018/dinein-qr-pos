@@ -1,0 +1,16 @@
+<div class="hq-toggle" [class.hq-toggle--compact]="size === 'compact'" [attr.aria-busy]="loading ? 'true' : null">
+  <mat-slide-toggle
+    [checked]="checked"
+    [disabled]="isDisabled"
+    [disabledInteractive]="false"
+    [hideIcon]="hideIcon"
+    [labelPosition]="labelPosition"
+    [aria-label]="ariaLabel"
+    [aria-labelledby]="ariaLabelledby"
+    [aria-describedby]="ariaDescribedby || ''"
+    (change)="setChecked($event.checked)"
+    (focusout)="markTouched()">
+    <ng-content></ng-content>
+  </mat-slide-toggle>
+  @if (loading) { <span class="hq-toggle__spinner" aria-hidden="true"></span> }
+</div>

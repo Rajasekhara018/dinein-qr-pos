@@ -1,0 +1,156 @@
+<div class="today">
+  <header class="today__hero">
+    <div class="today__intro">
+      <div class="today__when">
+        <span class="today__date"><i class="bi bi-calendar3" aria-hidden="true"></i>{{ dateLabel }}</span>
+        <time class="today__date today__clock" [attr.datetime]="now.toISOString()"><i class="bi bi-clock" aria-hidden="true"></i>{{ clockLabel }}</time>
+      </div>
+      <h1 class="today__title">{{ 'today.greeting' | translate: { name: userName } }}</h1>
+      <p class="today__subtitle">{{ 'today.subtitle' | translate }}</p>
+    </div>
+    <div class="today__actions">
+      <span class="today__updated" *ngIf="lastUpdated" aria-live="polite">
+        <i class="bi bi-clock-history" aria-hidden="true"></i>
+        {{ 'today.updated' | translate: { time: (lastUpdated | hqDate: 'shortTime') } }}
+      </span>
+      <button type="button" class="today__refresh" (click)="refresh()" [disabled]="refreshing" [attr.aria-label]="'today.refresh' | translate">
+        <i class="bi bi-arrow-clockwise" [class.today__spin]="refreshing" aria-hidden="true"></i>
+        <span>{{ 'today.refresh' | translate }}</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Where things stand: the briefing banner, then what needs the user next to what is due today -->
+  <hq-briefing *ngIf="settled" [kicker]="dateLabel" [headline]="briefing.headline" [emphasis]="briefing.emphasis" [notes]="briefing.notes"></hq-briefing>
+
+  <div class="hq-home__split" *ngIf="settled">
+    <hq-decision-list [title]="'today.attentionTitle' | translate" [subtitle]="decisions.length ? ('today.briefing.waiting' | translate: { count: decisions.length }) : ''"
+      [items]="decisions" [emptyText]="'today.attentionNone' | translate"></hq-decision-list>
+    <hq-timeline [title]="'today.timeline.title' | translate" [entries]="timeline" [emptyText]="'today.timeline.empty' | translate"
+      [actionLabel]="priorityItems.length ? ('today.open' | translate) : ''" actionLink="/workspace"></hq-timeline>
+  </div>
+
+  <!-- Headline figures and charts: the same figures as the cards below, drawn so the biggest piles of work stand out -->
+  <section class="today-dash" *ngIf="settled && dashboard.kpis.length > 0" [attr.aria-label]="dashboardKey + '.title' | translate">
+    <div class="today-dash__kpis">
+      <a *ngFor="let kpi of dashboard.kpis" class="today-dash__kpi" [routerLink]="kpi.link">
+        <hq-kpi-card [label]="kpi.label" [value]="kpi.value" [caption]="kpi.caption" [icon]="kpi.icon" [tone]="kpi.tone"></hq-kpi-card>
+      </a>
+    </div>
+    <div class="today-dash__charts">
+      <hq-chart-card *ngIf="dashboard.byArea as spec" [title]="dashboardKey + '.byAreaTitle' | translate" [subtitle]="dashboardKey + '.byAreaSubtitle' | translate">
+        <hq-chart [spec]="spec" [emptyText]="dashboardKey + '.noData' | translate" [ariaLabel]="dashboardKey + '.byAreaTitle' | translate"></hq-chart>
+      </hq-chart-card>
+      <hq-chart-card *ngIf="dashboard.biggestQueues as spec" class="today-dash__wide" [title]="dashboardKey + '.queuesTitle' | translate" [subtitle]="dashboardKey + '.queuesSubtitle' | translate">
+        <hq-chart [spec]="spec" [emptyText]="dashboardKey + '.noData' | translate" [ariaLabel]="dashboardKey + '.queuesTitle' | translate"></hq-chart>
+      </hq-chart-card>
+      <hq-chart-card *ngIf="dashboard.clearCount < dashboard.areaCount && dashboard.clearShare as spec" [title]="dashboardKey + '.clearTitle' | translate"
+        [subtitle]="dashboardKey + '.clearSubtitle' | translate: { clear: dashboard.clearCount, total: dashboard.areaCount }">
+        <hq-chart [spec]="spec" [emptyText]="dashboardKey + '.noData' | translate" [ariaLabel]="dashboardKey + '.clearTitle' | translate"></hq-chart>
+      </hq-chart-card>
+    </div>
+  </section>
+
+  <!-- Analytics: how the matrimony business moves over the last month -->
+  <section class="hq-home__insights" *ngIf="insightCharts.activity || insightCharts.audience || insightCharts.revenue || insightCharts.funnel || insightCharts.trainBookings || insightCharts.trainRevenue || insightCharts.walletActivity || insightCharts.ridesTrend || insightCharts.ridesRevenue"
+    [attr.aria-label]="insightsKey + '.title' | translate">
+    <div class="hq-home__insights-top">
+      <hq-chart-card *ngIf="insightCharts.activity as spec" [title]="insightsKey + '.activityTitle' | translate" [subtitle]="insightsKey + '.activitySubtitle' | translate">
+        <a actions routerLink="/matrimony/insights">{{ 'today.open' | translate }}</a>
+        <hq-chart [spec]="spec" [emptyText]="'today.dashboard.noData' | translate" [ariaLabel]="insightsKey + '.activityTitle' | translate"></hq-chart>
+      </hq-chart-card>
+      <hq-chart-card *ngIf="insightCharts.audience as spec" [title]="insightsKey + '.audienceTitle' | translate" [subtitle]="insightsKey + '.audienceSubtitle' | translate">
+        <hq-chart [spec]="spec" [emptyText]="'today.dashboard.noData' | translate" [ariaLabel]="insightsKey + '.audienceTitle' | translate"></hq-chart>
+      </hq-chart-card>
+    </div>
+    <div class="hq-home__insights-bottom">
+      <hq-chart-card *ngIf="insightCharts.revenue as spec" [title]="insightsKey + '.revenueTitle' | translate" [subtitle]="insightsKey + '.revenueSubtitle' | translate">
+        <hq-chart [spec]="spec" [emptyText]="'today.dashboard.noData' | translate" [ariaLabel]="insightsKey + '.revenueTitle' | translate"></hq-chart>
+      </hq-chart-card>
+      <hq-chart-card *ngIf="insightCharts.funnel as spec" [title]="insightsKey + '.funnelTitle' | translate" [subtitle]="insightsKey + '.funnelSubtitle' | translate">
+        <hq-chart [spec]="spec" [emptyText]="'today.dashboard.noData' | translate" [ariaLabel]="insightsKey + '.funnelTitle' | translate"></hq-chart>
+      </hq-chart-card>
+    </div>
+    <hq-chart-card *ngIf="insightCharts.walletActivity as spec" [title]="insightsKey + '.walletTitle' | translate" [subtitle]="insightsKey + '.walletSubtitle' | translate">
+      <a actions routerLink="/wallet/admin">{{ 'today.open' | translate }}</a>
+      <hq-chart [spec]="spec" [emptyText]="'today.dashboard.noData' | translate" [ariaLabel]="insightsKey + '.walletTitle' | translate"></hq-chart>
+    </hq-chart-card>
+    <div class="hq-home__insights-bottom">
+      <hq-chart-card *ngIf="insightCharts.ridesTrend as spec" [title]="insightsKey + '.ridesTitle' | translate" [subtitle]="insightsKey + '.ridesSubtitle' | translate">
+        <a actions routerLink="/admin/rides">{{ 'today.open' | translate }}</a>
+        <hq-chart [spec]="spec" [emptyText]="'today.dashboard.noData' | translate" [ariaLabel]="insightsKey + '.ridesTitle' | translate"></hq-chart>
+      </hq-chart-card>
+      <hq-chart-card *ngIf="insightCharts.ridesRevenue as spec" [title]="insightsKey + '.ridesRevenueTitle' | translate" [subtitle]="insightsKey + '.ridesSubtitle' | translate">
+        <hq-chart [spec]="spec" [emptyText]="'today.dashboard.noData' | translate" [ariaLabel]="insightsKey + '.ridesRevenueTitle' | translate"></hq-chart>
+      </hq-chart-card>
+    </div>
+    <div class="hq-home__insights-bottom">
+      <hq-chart-card *ngIf="insightCharts.trainBookings as spec" [title]="insightsKey + '.trainBookingsTitle' | translate" [subtitle]="insightsKey + '.trainSubtitle' | translate">
+        <a actions routerLink="/admin/train-admin/dashboard">{{ 'today.open' | translate }}</a>
+        <hq-chart [spec]="spec" [emptyText]="'today.dashboard.noData' | translate" [ariaLabel]="insightsKey + '.trainBookingsTitle' | translate"></hq-chart>
+      </hq-chart-card>
+      <hq-chart-card *ngIf="insightCharts.trainRevenue as spec" [title]="insightsKey + '.trainRevenueTitle' | translate" [subtitle]="insightsKey + '.trainSubtitle' | translate">
+        <hq-chart [spec]="spec" [emptyText]="'today.dashboard.noData' | translate" [ariaLabel]="insightsKey + '.trainRevenueTitle' | translate"></hq-chart>
+      </hq-chart-card>
+    </div>
+  </section>
+
+  <hq-empty-state *ngIf="sections.length === 0" [title]="'today.empty' | translate" icon="bi-inbox"></hq-empty-state>
+
+  <div class="today__grid">
+    <section class="today-card" *ngFor="let section of sections; trackBy: trackSection" [attr.aria-labelledby]="'today-' + section.id">
+      <header class="today-card__head">
+        <span class="today-card__badge" aria-hidden="true"><i class="bi" [ngClass]="section.icon"></i></span>
+        <div class="today-card__heading">
+          <h2 class="today-card__title" [id]="'today-' + section.id">{{ section.titleKey | translate }}</h2>
+          <span class="today-card__attention" *ngIf="section.state === 'ready' && section.attention > 0">
+            {{ 'today.attention' | translate: { count: section.attention } }}
+          </span>
+          <span class="today-card__clear" *ngIf="section.state === 'ready' && section.attention === 0">
+            <i class="bi bi-check2-circle" aria-hidden="true"></i>{{ 'today.allClear' | translate }}
+          </span>
+        </div>
+        <a class="today-card__open" [routerLink]="section.link" [attr.aria-label]="('today.open' | translate) + ': ' + (section.titleKey | translate)">
+          {{ 'today.open' | translate }}
+          <i class="bi bi-arrow-right" aria-hidden="true"></i>
+        </a>
+      </header>
+
+      <div class="today-card__error" *ngIf="section.state === 'error'" role="alert">
+        <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+        <span>{{ 'today.error' | translate }}</span>
+        <button type="button" class="today-card__retry" (click)="refresh()">{{ 'today.retry' | translate }}</button>
+      </div>
+
+      <ul class="today-card__metrics" *ngIf="section.state !== 'error'">
+        <li *ngFor="let metric of section.metrics; let first = first" class="today-metric"
+          [class.today-metric--lead]="first" [class.today-metric--loading]="section.state === 'loading'">
+          <ng-container *ngIf="metric.link; else plain">
+            <a class="today-metric__body" [routerLink]="metric.link">
+              <ng-container *ngTemplateOutlet="figure; context: { $implicit: metric }"></ng-container>
+            </a>
+          </ng-container>
+          <ng-template #plain>
+            <div class="today-metric__body">
+              <ng-container *ngTemplateOutlet="figure; context: { $implicit: metric }"></ng-container>
+            </div>
+          </ng-template>
+        </li>
+      </ul>
+    </section>
+  </div>
+</div>
+
+<ng-template #figure let-metric>
+  <span class="today-metric__icon"
+    [class.today-metric__icon--pending]="metric.highlighted && metric.tone === 'pending'"
+    [class.today-metric__icon--bad]="metric.highlighted && metric.tone === 'bad'" aria-hidden="true">
+    <i class="bi" [ngClass]="metric.icon"></i>
+  </span>
+  <span class="today-metric__text">
+    <span class="today-metric__value"
+      [class.today-metric__value--pending]="metric.highlighted && metric.tone === 'pending'"
+      [class.today-metric__value--bad]="metric.highlighted && metric.tone === 'bad'">{{ metric.text ?? '—' }}</span>
+    <span class="today-metric__label">{{ metric.labelKey | translate }}</span>
+  </span>
+</ng-template>

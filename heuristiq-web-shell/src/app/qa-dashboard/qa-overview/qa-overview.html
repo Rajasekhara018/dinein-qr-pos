@@ -1,0 +1,55 @@
+<app-qa-header [title]="'qaDashboard.overview.title' | translate" [subtitle]="'qaDashboard.overview.subtitle' | translate"
+               [workspace]="workspace" [loading]="isLoading" (workspaceChange)="setWorkspace($event)" (refresh)="reload()">
+</app-qa-header>
+
+<ng-container *hqHasPrivilege="privileges.overviewRead">
+  <hq-tabs class="qa-mode qa-no-print" appearance="segmented" size="sm" [value]="mode" (valueChange)="setMode($any($event))"
+            [ariaLabel]="'qaDashboard.mode.label' | translate">
+    <hq-tab *ngFor="let m of modes" [value]="m" [attr.data-mode]="m" [label]="modeKeys[m] | translate"></hq-tab>
+  </hq-tabs>
+
+  <app-qa-filter-bar [facets]="facets" [filters]="filters" [showRange]="true" (filtersChange)="onFiltersChange($event)"></app-qa-filter-bar>
+
+  <hq-error-state *ngIf="hasError" [title]="'qaDashboard.loadFailed' | translate" (retry)="reload()"></hq-error-state>
+  <hq-loading-state *ngIf="isLoading && !hasData && !hasError" [label]="'qaDashboard.loading' | translate"></hq-loading-state>
+  <hq-empty-state *ngIf="!isLoading && !hasError && !hasData" [title]="'qaDashboard.overview.empty' | translate"></hq-empty-state>
+
+  <ng-container *ngIf="hasData">
+    <div class="qa-tiles">
+      <div class="qa-tile qa-tile--total">
+        <div class="qa-tile__label">{{ (mode === 'unique' ? 'qaDashboard.overview.totalUnique' : 'qaDashboard.overview.totalOverall') | translate }}</div>
+        <div class="qa-tile__value">{{ overview.totals.total }}</div>
+      </div>
+      <div class="qa-tile qa-tile--pass">
+        <div class="qa-tile__label">{{ 'qaDashboard.overview.passed' | translate }}</div>
+        <div class="qa-tile__value">{{ overview.totals.passed }}</div>
+        <div class="qa-tile__sub">{{ 'qaDashboard.overview.successPct' | translate: { percent: pct(overview.totals.successPct) } }}</div>
+      </div>
+      <div class="qa-tile qa-tile--fail">
+        <div class="qa-tile__label">{{ 'qaDashboard.overview.failed' | translate }}</div>
+        <div class="qa-tile__value">{{ overview.totals.failed }}</div>
+        <div class="qa-tile__sub">{{ 'qaDashboard.overview.failurePct' | translate: { percent: pct(overview.totals.failurePct) } }}</div>
+      </div>
+      <div class="qa-tile qa-tile--skip">
+        <div class="qa-tile__label">{{ 'qaDashboard.overview.skipped' | translate }}</div>
+        <div class="qa-tile__value">{{ overview.totals.skipped }}</div>
+        <div class="qa-tile__sub">{{ 'qaDashboard.overview.skippedPct' | translate: { percent: pct(overview.totals.skippedPct) } }}</div>
+      </div>
+      <div class="qa-tile qa-tile--duration">
+        <div class="qa-tile__label">{{ 'qaDashboard.overview.avgDuration' | translate }}</div>
+        <div class="qa-tile__value">{{ durationText(overview.totals.avgDurationMs) }}</div>
+      </div>
+    </div>
+
+    <hq-dashboard-grid cols="2">
+      <app-qa-release-chart [releases]="overview.releases" [title]="'qaDashboard.overview.releaseTitle' | translate"
+                            [subtitle]="'qaDashboard.overview.releaseSubtitle' | translate"></app-qa-release-chart>
+      <app-qa-donut-chart [totals]="overview.totals" [title]="'qaDashboard.overview.splitTitle' | translate"
+                          [subtitle]="'qaDashboard.overview.splitSubtitle' | translate"></app-qa-donut-chart>
+      <app-qa-line-chart [series]="trendSeries" labelKey="qaDashboard.overview.trendTitle" [title]="'qaDashboard.overview.trendTitle' | translate"
+                         [subtitle]="'qaDashboard.overview.trendSubtitle' | translate"></app-qa-line-chart>
+      <app-qa-line-chart [series]="volumeSeries" labelKey="qaDashboard.overview.volumeTitle" [title]="'qaDashboard.overview.volumeTitle' | translate"
+                         [subtitle]="'qaDashboard.overview.volumeSubtitle' | translate"></app-qa-line-chart>
+    </hq-dashboard-grid>
+  </ng-container>
+</ng-container>

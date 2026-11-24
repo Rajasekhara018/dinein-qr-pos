@@ -1,0 +1,32 @@
+{
+  "appName": "RealBoom",
+  "tagline": "Turning Dreams Into Reality.",
+  "poweredBy": "Powered by Heuristiq Gateway Solutions",
+  "logoImagePath": "assets/config/realboom/logo.png",
+  "favicon": "assets/config/realboom/logo.png",
+  "loginStory": {
+    "badge": "Turning Dreams Into Reality",
+    "headline": "Matrimony, rides, food delivery and more, on one platform.",
+    "copy": "Sign in to manage your matrimony, ride hailing and food delivery services, along with the associates and customers behind them.",
+    "illustration": "assets/illustrations/platform-hub.svg",
+    "features": [
+      "Matrimony: profiles, matches and member support",
+      "Ride hailing: bookings, drivers and live trips",
+      "Food delivery, and more services as we grow"
+    ],
+    "stats": [
+      {
+        "value": "3+",
+        "label": "Services in one place"
+      },
+      {
+        "value": "24/7",
+        "label": "Operations access"
+      },
+      {
+        "value": "Secure",
+        "label": "Protected sign-in"
+      }
+    ]
+  }
+}

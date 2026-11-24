@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="BestRide">
+  <!-- BestRide glyph: the steering wheel and leaf of the BestRide logo. One colour on transparent: the app paints it in the theme
+       colour through a CSS mask, so it follows the selected theme; the leaf is a lower opacity. -->
+  <path fill="#000" fill-rule="evenodd"
+    d="M64 12a52 52 0 1 1 0 104A52 52 0 0 1 64 12zm0 13a39 39 0 1 0 0 78a39 39 0 0 0 0-78z" />
+  <path fill="#000" d="M26 58c8-3 16-4 24-3v14c-8 0-16 1-24 3z" />
+  <path fill="#000" d="M102 58c-8-3-16-4-24-3v14c8 0 16 1 24 3z" />
+  <circle cx="64" cy="62" r="16" fill="#000" />
+  <path fill="#000" d="M56 74h16l3 30H53z" />
+  <path fill="#000" fill-opacity=".6" d="M79 101c-1-14 7-24 21-27c1 14-7 24-21 27z" />
+</svg>

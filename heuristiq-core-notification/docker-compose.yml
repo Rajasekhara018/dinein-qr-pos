@@ -1,0 +1,39 @@
+version: '3.9'
+
+services:
+  railcab-nms:
+    build: .
+    container_name: railcab-nms
+    ports:
+      - "8087:8087"
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      MONGO_URI: mongodb://mongo:27017/railcab_nms
+      KAFKA_BOOTSTRAP: kafka:9092
+      # Service discovery -- registers with realboom-service-registry (bring it up separately from
+      # 2026_RailCab_ServiceRegistry; both share the railcab-net external network below).
+      EUREKA_URL: ${EUREKA_URL:-http://service-registry:9100/eureka/}
+      SERVICE_ZONE: ${SERVICE_ZONE:-region1}
+    depends_on:
+      - mongo
+    networks:
+      - railcab-net
+
+  mongo:
+    image: mongo:7
+    container_name: railcab-nms-mongo
+    ports:
+      - "27020:27017"
+    volumes:
+      - nms-mongo-data:/data/db
+    networks:
+      - railcab-net
+
+volumes:
+  nms-mongo-data:
+
+networks:
+  # External: shared with the service registry and other services' compose files so they can
+  # resolve each other by container name. Create once: `docker network create railcab-net`.
+  railcab-net:
+    external: true

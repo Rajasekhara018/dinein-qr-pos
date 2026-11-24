@@ -1,0 +1,23 @@
+<div class="org-selector" *ngIf="context.organizations$ | async as list">
+  <label class="org-selector__label" for="org-selector-input">
+    <i class="bi bi-building"></i> {{ 'orgStructure.selector.label' | translate }}
+  </label>
+  <ng-container *ngIf="context.current$ | async as current">
+    <hq-searchable-select inputId="org-selector-input" class="org-selector__select" [allowOther]="false"
+                           [ariaLabel]="'orgStructure.selector.label' | translate"
+                           [disabled]="!context.canSwitch || list.length < 2"
+                           [ngModel]="current.tenantId" (ngModelChange)="choose(list, $event, current)">
+      <!-- An organization that is not active is listed but cannot be picked. -->
+      <hq-ss-option *ngFor="let organization of list; trackBy: trackOrganization" [value]="organization.tenantId"
+                     [label]="organization.name + ' (' + organization.code + ')'" [disabled]="organization.status !== 'ACTIVE'"></hq-ss-option>
+    </hq-searchable-select>
+  </ng-container>
+  <!-- Only an organization-wide user may add an organization or work in another one. -->
+  <ng-container *ngIf="context.canSwitch">
+    <a class="org-selector__add" routerLink="/access-management/organizations" *hqHasPrivilege="'ORGANIZATION_CREATE'">
+      <i class="bi bi-plus-circle"></i> {{ 'orgStructure.selector.addOrganization' | translate }}
+    </a>
+    <small class="org-selector__hint" *ngIf="list.length > 1">{{ 'orgStructure.selector.hint' | translate }}</small>
+    <small class="org-selector__hint" *ngIf="list.length === 1">{{ 'orgStructure.selector.single' | translate }}</small>
+  </ng-container>
+</div>

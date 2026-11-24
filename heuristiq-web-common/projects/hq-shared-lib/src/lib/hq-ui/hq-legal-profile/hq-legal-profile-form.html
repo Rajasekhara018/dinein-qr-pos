@@ -1,0 +1,144 @@
+<div class="legal-profile" [class.is-disabled]="disabled">
+  <section class="legal-profile__section" [hidden]="section !== 'all' && section !== 'entity'">
+    <h3 class="legal-profile__title">{{ texts.entitySection() }}</h3>
+    <div class="legal-profile__grid">
+      <div class="legal-profile__field" (focusout)="touch('entityType')">
+        <span class="legal-profile__label">{{ texts.entityTypeLabel() }}</span>
+        <hq-searchable-select class="legal-profile__select" data-testid="entity-type" [items]="entityTypeItems" [allowOther]="false"
+                               [placeholder]="texts.entityTypeNone()" [ariaLabel]="texts.entityTypeLabel()" [hasError]="!!fieldError('entityType')"
+                               [ngModel]="profile.entityType ?? ''" [ngModelOptions]="{ standalone: true }" [disabled]="disabled"
+                               (ngModelChange)="setField('entityType', $event)"></hq-searchable-select>
+        <span class="legal-profile__error" *ngIf="fieldError('entityType')">{{ fieldError('entityType') }}</span>
+      </div>
+
+      <div class="legal-profile__field" (focusout)="touch('registrationCountry')">
+        <span class="legal-profile__label">{{ texts.registrationCountryLabel() }}</span>
+        <hq-searchable-select class="legal-profile__select" data-testid="registration-country" [items]="countries" [allowOther]="false"
+                               [placeholder]="texts.countryNone()" [ariaLabel]="texts.registrationCountryLabel()" [hasError]="!!fieldError('registrationCountry')"
+                               [ngModel]="profile.registrationCountry ?? ''" [ngModelOptions]="{ standalone: true }" [disabled]="disabled"
+                               (ngModelChange)="setField('registrationCountry', $event)"></hq-searchable-select>
+        <span class="legal-profile__error" *ngIf="fieldError('registrationCountry')">{{ fieldError('registrationCountry') }}</span>
+      </div>
+
+      <div class="legal-profile__field">
+        <span class="legal-profile__label">{{ texts.legalNameLabel() }}</span>
+        <hq-field class="legal-profile__input" [maxLength]="limits.name" [showCounter]="false" [ariaLabel]="texts.legalNameLabel()" [disabled]="disabled" [ngModel]="profile.legalName ?? ''" [ngModelOptions]="{ standalone: true }" (ngModelChange)="setField('legalName', $event)" (blur)="touch('legalName')"></hq-field>
+        <span class="legal-profile__error" *ngIf="fieldError('legalName')">{{ fieldError('legalName') }}</span>
+      </div>
+
+      <div class="legal-profile__field">
+        <span class="legal-profile__label">{{ texts.tradingNameLabel() }}</span>
+        <hq-field class="legal-profile__input" [maxLength]="limits.name" [showCounter]="false" [ariaLabel]="texts.tradingNameLabel()" [disabled]="disabled" [ngModel]="profile.tradingName ?? ''" [ngModelOptions]="{ standalone: true }" (ngModelChange)="setField('tradingName', $event)" (blur)="touch('tradingName')"></hq-field>
+        <span class="legal-profile__error" *ngIf="fieldError('tradingName')">{{ fieldError('tradingName') }}</span>
+      </div>
+
+      <div class="legal-profile__field">
+        <span class="legal-profile__label">{{ texts.registrationNumberLabel() }}</span>
+        <hq-field class="legal-profile__input" [maxLength]="limits.registrationNumber" [showCounter]="false" [ariaLabel]="texts.registrationNumberLabel()" [disabled]="disabled" [ngModel]="profile.registrationNumber ?? ''" [ngModelOptions]="{ standalone: true }" (ngModelChange)="setField('registrationNumber', $event)" (blur)="touch('registrationNumber')"></hq-field>
+        <span class="legal-profile__error" *ngIf="fieldError('registrationNumber')">{{ fieldError('registrationNumber') }}</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="legal-profile__section" [hidden]="section !== 'all' && section !== 'tax'">
+    <h3 class="legal-profile__title">{{ texts.taxSection() }}</h3>
+    <hq-checkbox class="legal-profile__check" [disabled]="disabled" [checked]="profile.taxRegistered" [label]="texts.taxRegisteredLabel()"
+                  (checkedChange)="setTaxRegistered($event)"></hq-checkbox>
+
+    <p class="legal-profile__empty" *ngIf="!profile.taxIds.length">{{ texts.noTaxIds() }}</p>
+    <div class="legal-profile__tax-row" *ngFor="let taxId of profile.taxIds; let i = index; trackBy: trackIndex">
+      <div class="legal-profile__field" (focusout)="touch('taxIds.' + i + '.type')">
+        <span class="legal-profile__label">{{ texts.taxTypeLabel() }}</span>
+        <hq-searchable-select class="legal-profile__select" data-testid="tax-type" [items]="taxTypeItems" [allowOther]="false"
+                               [ariaLabel]="texts.taxTypeLabel()" [hasError]="!!fieldError('taxIds.' + i + '.type')"
+                               [ngModel]="taxId.type" [ngModelOptions]="{ standalone: true }" [disabled]="disabled"
+                               (ngModelChange)="setTaxId(i, 'type', $event)"></hq-searchable-select>
+        <span class="legal-profile__error" *ngIf="fieldError('taxIds.' + i + '.type')">{{ fieldError('taxIds.' + i + '.type') }}</span>
+      </div>
+      <div class="legal-profile__field legal-profile__field--grow">
+        <span class="legal-profile__label">{{ texts.taxValueLabel() }}</span>
+        <hq-field class="legal-profile__input" [maxLength]="40" [showCounter]="false" textTransform="uppercase" [ariaLabel]="texts.taxValueLabel()" [disabled]="disabled" [ngModel]="taxId.value" [ngModelOptions]="{ standalone: true }" (ngModelChange)="setTaxId(i, 'value', $event)" (blur)="touch('taxIds.' + i + '.value')"></hq-field>
+        <span class="legal-profile__hint" *ngIf="taxExample(taxId.type) && !fieldError('taxIds.' + i + '.value')">{{ taxExample(taxId.type) }}</span>
+        <span class="legal-profile__error" *ngIf="fieldError('taxIds.' + i + '.value')">{{ fieldError('taxIds.' + i + '.value') }}</span>
+      </div>
+      <button type="button" class="legal-profile__remove" [disabled]="disabled" [attr.aria-label]="texts.removeTaxId()" [title]="texts.removeTaxId()"
+              (click)="removeTaxId(i)"><i class="bi bi-trash"></i></button>
+    </div>
+    <span class="legal-profile__error" *ngIf="fieldError('taxIds')">{{ fieldError('taxIds') }}</span>
+    <button type="button" class="legal-profile__add" [disabled]="disabled || profile.taxIds.length >= limits.taxIds" (click)="addTaxId()">
+      <i class="bi bi-plus-lg"></i> {{ texts.addTaxId() }}
+    </button>
+  </section>
+
+  <section class="legal-profile__section" [hidden]="section !== 'all' && section !== 'addresses'">
+    <h3 class="legal-profile__title">{{ texts.addressSection() }}</h3>
+    <ng-container *ngTemplateOutlet="addressBlock; context: { kind: 'REGISTERED', title: texts.registeredAddress() }"></ng-container>
+    <hq-checkbox class="legal-profile__check" [disabled]="disabled" [checked]="hasOperatingAddress" [label]="texts.operatingDifferent()"
+                  (checkedChange)="setOperatingDifferent($event)"></hq-checkbox>
+    <ng-container *ngIf="hasOperatingAddress">
+      <ng-container *ngTemplateOutlet="addressBlock; context: { kind: 'OPERATING', title: texts.operatingAddress() }"></ng-container>
+    </ng-container>
+  </section>
+</div>
+
+<ng-template #addressBlock let-kind="kind" let-title="title">
+  <fieldset class="legal-profile__address">
+    <legend class="legal-profile__legend">{{ title }}</legend>
+    <div class="legal-profile__grid">
+      <div class="legal-profile__field legal-profile__field--full">
+        <span class="legal-profile__label">{{ texts.line1Label() }}</span>
+        <hq-field class="legal-profile__input" [maxLength]="limits.addressLine" [showCounter]="false" [ariaLabel]="texts.line1Label()" [disabled]="disabled" [ngModel]="addressView(kind).line1" [ngModelOptions]="{ standalone: true }" (ngModelChange)="setAddress(kind, 'line1', $event)" (blur)="touch('addresses.' + kind + '.line1')"></hq-field>
+        <span class="legal-profile__error" *ngIf="fieldError('addresses.' + kind + '.line1')">{{ fieldError('addresses.' + kind + '.line1') }}</span>
+      </div>
+      <div class="legal-profile__field legal-profile__field--full">
+        <span class="legal-profile__label">{{ texts.line2Label() }}</span>
+        <hq-field class="legal-profile__input" [maxLength]="limits.addressLine" [showCounter]="false" [ariaLabel]="texts.line2Label()" [disabled]="disabled" [ngModel]="addressView(kind).line2 ?? ''" [ngModelOptions]="{ standalone: true }" (ngModelChange)="setAddress(kind, 'line2', $event)" (blur)="touch('addresses.' + kind + '.line2')"></hq-field>
+      </div>
+
+      <!-- Country first: the state and the city / district below it depend on it. -->
+      <div class="legal-profile__field" (focusout)="touch('addresses.' + kind + '.country')">
+        <span class="legal-profile__label">{{ texts.addressCountryLabel() }}</span>
+        <hq-searchable-select class="legal-profile__select" [attr.data-testid]="'country-' + kind" [items]="countries" [allowOther]="false"
+                               [placeholder]="texts.countryNone()" [ariaLabel]="texts.addressCountryLabel()"
+                               [hasError]="!!fieldError('addresses.' + kind + '.country')"
+                               [ngModel]="addressView(kind).country" [ngModelOptions]="{ standalone: true }" [disabled]="disabled"
+                               (ngModelChange)="setAddress(kind, 'country', $event)"></hq-searchable-select>
+        <span class="legal-profile__error" *ngIf="fieldError('addresses.' + kind + '.country')">{{ fieldError('addresses.' + kind + '.country') }}</span>
+      </div>
+
+      <div class="legal-profile__field" (focusout)="touch('addresses.' + kind + '.region')">
+        <span class="legal-profile__label">{{ texts.regionLabel() }}</span>
+        <hq-searchable-select *ngIf="listsActive(kind); else regionText" class="legal-profile__select" [attr.data-testid]="'state-' + kind"
+                               [items]="stateItems(kind)" [loading]="statesStatus(kind) === 'loading'" [loadFailed]="statesStatus(kind) === 'failed'"
+                               [ariaLabel]="texts.regionLabel()" [hasError]="!!fieldError('addresses.' + kind + '.region')"
+                               [ngModel]="addressView(kind).region ?? ''" [ngModelOptions]="{ standalone: true }" [disabled]="disabled"
+                               (ngModelChange)="setAddress(kind, 'region', $event)" (retry)="retryStates(kind)"></hq-searchable-select>
+        <ng-template #regionText>
+          <hq-field class="legal-profile__input" [maxLength]="limits.region" [showCounter]="false" [ariaLabel]="texts.regionLabel()" [disabled]="disabled" [ngModel]="addressView(kind).region ?? ''" [ngModelOptions]="{ standalone: true }" (ngModelChange)="setAddress(kind, 'region', $event)"></hq-field>
+        </ng-template>
+        <span class="legal-profile__error" *ngIf="fieldError('addresses.' + kind + '.region')">{{ fieldError('addresses.' + kind + '.region') }}</span>
+      </div>
+
+      <div class="legal-profile__field" (focusout)="touch('addresses.' + kind + '.city')">
+        <span class="legal-profile__label">{{ cityLabel(kind) }}</span>
+        <hq-searchable-select *ngIf="listsActive(kind); else cityText" class="legal-profile__select" [attr.data-testid]="'district-' + kind"
+                               [items]="districtItems(kind)" [blockedHint]="districtBlockedHint(kind)"
+                               [loading]="districtsStatus(kind) === 'loading'" [loadFailed]="districtsStatus(kind) === 'failed'"
+                               [showUnavailableNotice]="false" [ariaLabel]="cityLabel(kind)" [hasError]="!!fieldError('addresses.' + kind + '.city')"
+                               [ngModel]="addressView(kind).city" [ngModelOptions]="{ standalone: true }" [disabled]="disabled"
+                               (ngModelChange)="setAddress(kind, 'city', $event)" (retry)="retryDistricts(kind)"></hq-searchable-select>
+        <ng-template #cityText>
+          <hq-field class="legal-profile__input" [maxLength]="limits.city" [showCounter]="false" [ariaLabel]="cityLabel(kind)" [disabled]="disabled" [ngModel]="addressView(kind).city" [ngModelOptions]="{ standalone: true }" (ngModelChange)="setAddress(kind, 'city', $event)"></hq-field>
+        </ng-template>
+        <span class="legal-profile__error" *ngIf="fieldError('addresses.' + kind + '.city')">{{ fieldError('addresses.' + kind + '.city') }}</span>
+      </div>
+
+      <div class="legal-profile__field">
+        <span class="legal-profile__label">{{ texts.postalCodeLabel() }}</span>
+        <hq-field class="legal-profile__input" [maxLength]="limits.postalCode" [showCounter]="false" textTransform="uppercase" [ariaLabel]="texts.postalCodeLabel()" [disabled]="disabled || noPostalCodes(kind)" [ngModel]="addressView(kind).postalCode ?? ''" [ngModelOptions]="{ standalone: true }" (ngModelChange)="setAddress(kind, 'postalCode', $event)" (blur)="touch('addresses.' + kind + '.postalCode')"></hq-field>
+        <span class="legal-profile__hint" *ngIf="noPostalCodes(kind)">{{ texts.noPostalCodes() }}</span>
+        <span class="legal-profile__error" *ngIf="fieldError('addresses.' + kind + '.postalCode')">{{ fieldError('addresses.' + kind + '.postalCode') }}</span>
+      </div>
+    </div>
+  </fieldset>
+</ng-template>

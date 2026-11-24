@@ -1,0 +1,42 @@
+<app-qa-header [title]="'qaDashboard.testSetRuns.title' | translate" [subtitle]="'qaDashboard.testSetRuns.subtitle' | translate"
+               [workspace]="workspace" [loading]="isLoading" (workspaceChange)="setWorkspace($event)" (refresh)="reload()">
+</app-qa-header>
+
+<ng-container *hqHasPrivilege="privileges.executionList">
+  <hq-error-state *ngIf="hasError" [title]="'qaDashboard.loadFailed' | translate" (retry)="reload()"></hq-error-state>
+  <hq-loading-state *ngIf="isLoading && !loaded && !hasError" [label]="'qaDashboard.loading' | translate"></hq-loading-state>
+  <hq-empty-state *ngIf="!isLoading && !hasError && loaded && executions.length === 0" [title]="'qaDashboard.testSetRuns.empty' | translate"></hq-empty-state>
+
+  <div class="table-surface" *ngIf="executions.length > 0">
+    <div class="table-surface__body">
+      <div class="qa-table-wrap">
+        <hq-common-table class="qa-table qa-sets" [columns]="columns" [rows]="executions" [rowClass]="rowClassOf"
+                          [actionsLabel]="'qaDashboard.columns.actions' | translate">
+          <ng-template hqCell="name" let-e><span class="qa-name">{{ e.name }}</span></ng-template>
+          <ng-template hqCell="suite" let-e>{{ suiteLabel(e.suite) }}</ng-template>
+          <!-- A set that never ran says so in its first run column; its other run columns stay blank. -->
+          <ng-template hqCell="release" let-e>
+            <span class="qa-mono" *ngIf="e.lastRun as run; else neverRun">{{ run.release || '—' }}</span>
+            <ng-template #neverRun><span class="qa-muted qa-never-run">{{ 'qaDashboard.testSetRuns.neverRun' | translate }}</span></ng-template>
+          </ng-template>
+          <ng-template hqCell="environment" let-e><ng-container *ngIf="e.lastRun as run">{{ environmentLabel(run.environment) }}</ng-container></ng-template>
+          <ng-template hqCell="status" let-e>
+            <hq-status-badge [tone]="statusTone(run.status)" *ngIf="e.lastRun as run">{{ statusLabel(run.status) }}</hq-status-badge>
+          </ng-template>
+          <ng-template hqCell="passed" let-e>{{ e.lastRun?.passed }}</ng-template>
+          <ng-template hqCell="failed" let-e>{{ e.lastRun?.failed }}</ng-template>
+          <ng-template hqCell="skipped" let-e>{{ e.lastRun?.skipped }}</ng-template>
+          <ng-template hqCell="duration" let-e><ng-container *ngIf="e.lastRun as run">{{ durationText(run.durationMs) }}</ng-container></ng-template>
+          <ng-template hqCell="date" let-e><ng-container *ngIf="e.lastRun as run">{{ run.startedAt | hqDate:'medium' }}</ng-container></ng-template>
+          <ng-template #rowActions let-e>
+            <ng-container *ngIf="e.lastRun as run">
+              <a hqButton="secondary" *ngIf="reportLink(run.reportUrl) as link" class="qa-report" [href]="link" target="_blank" [attr.rel]="linkRel">
+                <i class="bi bi-box-arrow-up-right"></i> {{ 'qaDashboard.openReport' | translate }}
+              </a>
+            </ng-container>
+          </ng-template>
+        </hq-common-table>
+      </div>
+    </div>
+  </div>
+</ng-container>

@@ -1,0 +1,25 @@
+<article class="kpi" [class.kpi--pending]="tone === 'pending'" [class.kpi--bad]="tone === 'bad'">
+  <header class="kpi__head">
+    <span class="kpi__label">{{ label }}</span>
+    @if (icon) {
+      <span class="kpi__badge" aria-hidden="true"><i class="bi" [class]="icon"></i></span>
+    }
+  </header>
+  <div class="kpi__value">{{ value }}</div>
+  <div class="kpi__foot">
+    @if (trendDirection; as direction) {
+      <span class="kpi__trend" [class.kpi__trend--good]="trendTone === 'good'" [class.kpi__trend--bad]="trendTone === 'bad'">
+        @if (direction !== 'flat') {
+          <i class="bi" [class.bi-arrow-up-short]="direction === 'up'" [class.bi-arrow-down-short]="direction === 'down'" aria-hidden="true"></i>
+        }
+        {{ trendText }}
+      </span>
+    }
+    @if (caption) {
+      <span class="kpi__caption">{{ caption }}</span>
+    }
+  </div>
+  @if (sparkline; as spec) {
+    <hq-chart class="kpi__spark" [spec]="spec" aria-hidden="true"></hq-chart>
+  }
+</article>

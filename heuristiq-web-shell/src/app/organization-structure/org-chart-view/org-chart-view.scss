@@ -1,0 +1,154 @@
+// Not scoped (ViewEncapsulation.None): d3-org-chart inserts the cards itself. Every class is prefixed "ocv-".
+app-org-chart-view { display: block; }
+
+.ocv {
+  position: relative;
+  border: 1px solid var(--theme-soft-border);
+  border-radius: 20px;
+  background: var(--workspace-panel);
+  overflow: hidden;
+}
+
+.ocv-toolbar {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 0.15rem;
+  padding: 0.25rem;
+  border: 1px solid var(--theme-soft-border);
+  border-radius: 14px;
+  background: var(--workspace-panel);
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--hq-primary) 12%, transparent);
+}
+
+.ocv-tool {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+
+  &:hover { background: color-mix(in srgb, var(--hq-primary) 14%, transparent); }
+}
+
+.ocv-sep { width: 1px; height: 20px; margin: 0 0.2rem; background: var(--theme-soft-border); }
+
+.ocv-canvas {
+  width: 100%;
+  cursor: grab;
+
+  &:active { cursor: grabbing; }
+  svg { display: block; }
+}
+
+// ---- the cards ------------------------------------------------------------------------------
+.ocv-card {
+  position: relative;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+  height: calc(100% - 18px);
+  margin-top: 18px;
+  padding: 1.35rem 0.9rem 0.7rem;
+  border: 1px solid var(--theme-soft-border);
+  border-radius: 20px;
+  background: var(--workspace-panel);
+  color: var(--edu-ink, inherit);
+  box-shadow: 0 6px 18px color-mix(in srgb, var(--hq-primary) 12%, transparent);
+  font-family: var(--hq-font);
+  text-align: center;
+
+  &--new { background: color-mix(in srgb, var(--hq-primary) 8%, var(--workspace-panel)); }
+  &--renamed, &--moved { border-color: color-mix(in srgb, #d97706 50%, transparent); }
+  &--root { border-style: dashed; }
+}
+
+.ocv-avatar {
+  position: absolute;
+  top: -18px;
+  left: 50%;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  margin-left: -18px;
+  border: 3px solid var(--workspace-panel);
+  border-radius: 50%;
+  background: linear-gradient(135deg, #12a374, var(--hq-primary));
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.ocv-card--renamed .ocv-avatar, .ocv-card--moved .ocv-avatar { background: linear-gradient(135deg, #f59e0b, #d97706); }
+
+.ocv-name { font-size: 0.92rem; font-weight: 700; line-height: 1.2; overflow-wrap: anywhere; }
+.ocv-code { font-size: 0.72rem; opacity: 0.6; }
+
+.ocv-state {
+  margin-top: 0.1rem;
+  padding: 0.05rem 0.5rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--hq-primary) 14%, transparent);
+  color: var(--hq-link);
+  font-size: 0.66rem;
+  font-weight: 700;
+  text-transform: uppercase;
+
+  &--renamed, &--moved { background: color-mix(in srgb, #d97706 16%, transparent); color: #b45309; }
+  &--archived { background: color-mix(in srgb, #d92d20 14%, transparent); color: #b42318; }
+}
+
+.ocv-people {
+  display: grid;
+  gap: 0.3rem;
+  width: 100%;
+  margin-top: 0.4rem;
+  padding-top: 0.4rem;
+  border-top: 1px dashed var(--theme-soft-border);
+  text-align: left;
+}
+
+.ocv-person { display: flex; align-items: center; gap: 0.4rem; height: 28px; }
+
+.ocv-person-avatar {
+  display: grid;
+  place-items: center;
+  flex: 0 0 24px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--hq-primary) 18%, transparent);
+  color: var(--hq-link);
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.ocv-person--pending .ocv-person-avatar { background: color-mix(in srgb, #d97706 20%, transparent); color: #b45309; }
+
+.ocv-person-text { display: flex; flex-direction: column; min-width: 0; line-height: 1.15; }
+.ocv-person-name { font-size: 0.78rem; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ocv-person-role { font-size: 0.68rem; opacity: 0.65; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ocv-more { font-size: 0.72rem; opacity: 0.7; text-align: center; }
+
+.ocv-person--head .ocv-person-avatar { background: color-mix(in srgb, #1f7a5a 22%, transparent); color: #1f7a5a; }
+.ocv-head {
+  margin-inline-start: 0.35rem;
+  padding: 0 0.35rem;
+  border-radius: 999px;
+  font-size: 0.62rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  background: color-mix(in srgb, #1f7a5a 18%, transparent);
+  color: #1f7a5a;
+}

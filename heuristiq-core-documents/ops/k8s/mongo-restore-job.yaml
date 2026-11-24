@@ -1,0 +1,39 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: railcab-dms-mongo-restore
+spec:
+  backoffLimit: 0
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: mongo-restore
+          image: mongo:7
+          env:
+            - name: DMS_MONGO_URI
+              valueFrom:
+                secretKeyRef:
+                  name: railcab-dms-secrets
+                  key: mongo-uri
+            - name: BACKUP_S3_URI
+              value: s3://replace-me/mongo/replace-me.archive.gz
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: railcab-dms-secrets
+                  key: backup-access-key
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: railcab-dms-secrets
+                  key: backup-secret-key
+          command:
+            - /bin/sh
+            - -c
+            - |
+              set -eu
+              apt-get update >/dev/null
+              apt-get install -y awscli >/dev/null
+              aws s3 cp "${BACKUP_S3_URI}" /tmp/restore.archive.gz
+              mongorestore --uri="${DMS_MONGO_URI}" --archive=/tmp/restore.archive.gz --gzip --drop

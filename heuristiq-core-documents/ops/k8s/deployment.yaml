@@ -1,0 +1,101 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: railcab-dms
+  labels:
+    app: railcab-dms
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: railcab-dms
+  template:
+    metadata:
+      labels:
+        app: railcab-dms
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/path: /api/v1/actuator/prometheus
+        prometheus.io/port: "9006"
+    spec:
+      containers:
+        - name: railcab-dms
+          image: railcab-dms:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 9006
+          env:
+            - name: DMS_PORT
+              value: "9006"
+            - name: DMS_MONGO_URI
+              valueFrom:
+                secretKeyRef:
+                  name: railcab-dms-secrets
+                  key: mongo-uri
+            - name: GATEWAY_FORWARD_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: railcab-dms-secrets
+                  key: gateway-forward-key
+            - name: DMS_DOWNLOAD_TOKEN_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: railcab-dms-secrets
+                  key: download-token-secret
+            - name: DMS_STORAGE_PROVIDER
+              value: s3
+            - name: DMS_AWS_BUCKET
+              valueFrom:
+                secretKeyRef:
+                  name: railcab-dms-secrets
+                  key: aws-bucket
+            - name: DMS_AWS_REGION
+              value: ap-south-1
+            - name: DMS_AWS_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: railcab-dms-secrets
+                  key: aws-access-key
+            - name: DMS_AWS_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: railcab-dms-secrets
+                  key: aws-secret-key
+          readinessProbe:
+            httpGet:
+              path: /api/v1/actuator/health
+              port: http
+            initialDelaySeconds: 20
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              path: /api/v1/actuator/health
+              port: http
+            initialDelaySeconds: 60
+            periodSeconds: 20
+            timeoutSeconds: 3
+            failureThreshold: 3
+          resources:
+            requests:
+              cpu: 250m
+              memory: 512Mi
+            limits:
+              cpu: "1"
+              memory: 1Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: railcab-dms
+  labels:
+    app: railcab-dms
+spec:
+  selector:
+    app: railcab-dms
+  ports:
+    - name: http
+      port: 9006
+      targetPort: http

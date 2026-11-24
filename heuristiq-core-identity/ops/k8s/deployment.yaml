@@ -1,0 +1,148 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: railcab-uam
+  labels:
+    app: railcab-uam
+spec:
+  # Baseline/initial count -- the HorizontalPodAutoscaler in hpa.yaml (minReplicas: 4) owns this field at
+  # runtime once applied.
+  replicas: 4
+  selector:
+    matchLabels:
+      app: railcab-uam
+  template:
+    metadata:
+      labels:
+        app: railcab-uam
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/path: /api/v1/uam/actuator/prometheus
+        prometheus.io/port: "9003"
+    spec:
+      # Greater than the preStop sleep (10s) plus the shutdown phase timeout (30s).
+      terminationGracePeriodSeconds: 50
+      containers:
+        - name: railcab-uam
+          image: railcab-uam:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 9003
+          env:
+            - name: UAM_PORT
+              value: "9003"
+            - name: UAM_MONGODB_URI
+              valueFrom:
+                secretKeyRef:
+                  name: railcab-uam-secrets
+                  key: mongo-uri
+            - name: GATEWAY_FORWARD_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: railcab-uam-secrets
+                  key: gateway-forward-key
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: railcab-uam-secrets
+                  key: jwt-secret
+            - name: UAM_BOOTSTRAP_ADMIN_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: railcab-uam-secrets
+                  key: bootstrap-admin-username
+            - name: UAM_BOOTSTRAP_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: railcab-uam-secrets
+                  key: bootstrap-admin-password
+            - name: UAM_BOOTSTRAP_ADMIN_EMAIL
+              valueFrom:
+                secretKeyRef:
+                  name: railcab-uam-secrets
+                  key: bootstrap-admin-email
+            - name: FIREBASE_ADMIN_CREDENTIALS_BASE64
+              valueFrom:
+                secretKeyRef:
+                  name: railcab-uam-secrets
+                  key: firebase-admin-credentials-base64
+            # Connection pool size per instance (the code default is 5 in application-postgres.properties; this value
+            # restates it, it does not change it). Only used with SPRING_PROFILES_ACTIVE=postgres. Total database
+            # connections = replicas x this value, so it must stay below Postgres max_connections minus headroom:
+            # see ops/SIZING.md before raising it. Validate with the load test.
+            - name: UAM_POSTGRES_MAX_POOL_SIZE
+              value: "5"
+            - name: UAM_POSTGRES_MIN_IDLE
+              value: "1"
+            # JVM flags: the image default (Dockerfile) is sized for a 640m container (SerialGC, 45% heap). With the 1Gi
+            # limit below it still works (heap about 460Mi). Uncomment to test a production profile in the load test:
+            # - name: JAVA_OPTS
+            #   value: "-XX:MaxRAMPercentage=65.0 -XX:InitialRAMPercentage=30.0 -XX:MaxMetaspaceSize=160m -XX:ReservedCodeCacheSize=64m -XX:MaxDirectMemorySize=64m -Xss512k -XX:+UseG1GC -XX:+ExitOnOutOfMemoryError"
+          # Probes use the actuator base path (management.endpoints.web.base-path) and the Boot probe groups
+          # (management.endpoint.health.probes.enabled=true). Startup probe: up to 5s x 36 = 3 minutes for the first
+          # start (UAM runs the default-organization setup and the Flyway migrations), during which liveness and
+          # readiness are not evaluated, so a slow start is not killed.
+          startupProbe:
+            httpGet:
+              path: /api/v1/uam/actuator/health/liveness
+              port: http
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 36
+          readinessProbe:
+            httpGet:
+              path: /api/v1/uam/actuator/health/readiness
+              port: http
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              path: /api/v1/uam/actuator/health/liveness
+              port: http
+            periodSeconds: 20
+            timeoutSeconds: 3
+            failureThreshold: 3
+          # Graceful shutdown: server.shutdown=graceful with spring.lifecycle.timeout-per-shutdown-phase=30s. The
+          # preStop sleep lets the endpoint and Eureka removal propagate before Tomcat stops accepting; the grace
+          # period must exceed preStop + 30s.
+          lifecycle:
+            preStop:
+              exec:
+                command: ["sh", "-c", "sleep 10"]
+          # CPU limit stays SET here, deliberately -- unlike a purely I/O-bound service, this pod's
+          # bcrypt worker pool (PasswordService) is sized from Runtime.availableProcessors() at
+          # startup, which reads the container's CPU limit (via -XX:+UseContainerSupport). Raised
+          # from 1 -> 4 cores specifically to grow that pool: at the new bcrypt strength 11
+          # (~202.5ms/op, measured), login throughput is cores * (1000/202.5) requests/sec, so
+          # 1 core/pod -> ~4.9 logins/sec/pod (barely better than the old single-digit baseline);
+          # 4 cores/pod -> ~19.8 logins/sec/pod. Read/token endpoints (permission checks, refresh)
+          # are I/O-bound and virtual-thread-served, so this same CPU headroom comfortably covers
+          # them too -- no separate measurement was possible for that path on this pass (see
+          # Stage 0 notes), so treat the replica count below as a starting point to validate, not
+          # a guaranteed number.
+          # Memory: request = limit = 1Gi so the scheduler reserves what the pod can really use (a pod that may burst
+          # above its request is the first to be evicted under node pressure). 1Gi is a conservative starting point
+          # for the 45% heap image default, not a measured figure: the load test decides between 1Gi and 2Gi.
+          resources:
+            requests:
+              cpu: "2"
+              memory: 1Gi
+            limits:
+              cpu: "4"
+              memory: 1Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: railcab-uam
+  labels:
+    app: railcab-uam
+spec:
+  selector:
+    app: railcab-uam
+  ports:
+    - name: http
+      port: 9003
+      targetPort: http

@@ -1,0 +1,29 @@
+<aside class="form-guide" data-testid="form-guide" [class.is-folded]="folded" [attr.aria-labelledby]="titleId">
+  <h2 class="form-guide__title" [id]="titleId" *ngIf="!collapsible">
+    <i class="bi bi-lightbulb" aria-hidden="true"></i> {{ guide.title | translate }}
+  </h2>
+  <h2 class="form-guide__title" *ngIf="collapsible">
+    <button type="button" class="form-guide__toggle" [id]="titleId" [attr.aria-expanded]="!folded" (click)="toggle()">
+      <i class="bi bi-lightbulb" aria-hidden="true"></i>
+      <span class="form-guide__toggle-text">{{ guide.title | translate }}</span>
+      <span class="form-guide__toggle-hint">{{ (folded ? 'shared.formGuide.show' : 'shared.formGuide.hide') | translate }}
+        <i class="bi" [ngClass]="folded ? 'bi-chevron-down' : 'bi-chevron-up'" aria-hidden="true"></i></span>
+    </button>
+  </h2>
+
+  <ng-container *ngIf="!folded">
+    <p class="form-guide__intro">{{ guide.intro | translate }}</p>
+    <div class="form-guide__sections" [class.form-guide__sections--wide]="collapsible">
+      <section class="form-guide__section" *ngFor="let section of guide.sections">
+        <h3>{{ section.title | translate }}</h3>
+        <p *ngIf="section.text">{{ section.text | translate }}</p>
+        <dl *ngIf="section.items?.length">
+          <ng-container *ngFor="let item of section.items">
+            <dt>{{ item.term | translate }}</dt>
+            <dd>{{ item.text | translate }}</dd>
+          </ng-container>
+        </dl>
+      </section>
+    </div>
+  </ng-container>
+</aside>

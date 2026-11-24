@@ -1,0 +1,204 @@
+<section class="desk" *hqHasPrivilege="privileges.list">
+  <!-- Headline counters: my open tickets, unassigned, overdue, urgent. -->
+  <hq-stat-cards *ngIf="stats.length" class="desk__stats" [stats]="stats"></hq-stat-cards>
+
+  <!-- Queues, layout switch and the new-ticket button. -->
+  <div class="desk__bar">
+    <hq-tabs class="desk__views" appearance="pills" size="sm" [value]="view.key" (valueChange)="selectView($any($event))"
+              [ariaLabel]="i18n + '.viewsLabel' | translate">
+      <hq-tab *ngFor="let v of views" [value]="v.key" [icon]="v.icon" [label]="i18n + '.views.' + v.key | translate"></hq-tab>
+    </hq-tabs>
+    <div class="desk__bar-end">
+      <hq-tabs appearance="segmented" size="sm" [value]="layout" (valueChange)="setLayout($any($event))" [ariaLabel]="i18n + '.layoutLabel' | translate">
+        <hq-tab value="list" icon="bi-list-ul" [label]="i18n + '.layout.list' | translate"></hq-tab>
+        <hq-tab value="board" icon="bi-kanban" [label]="i18n + '.layout.board' | translate"></hq-tab>
+      </hq-tabs>
+      <button *hqHasPrivilege="privileges.create" type="button" class="table-create-btn" data-testid="desk-new" (click)="openNew()">
+        <i class="bi bi-plus-lg" aria-hidden="true"></i> {{ i18n + '.newTicket' | translate }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Search and filters. -->
+  <hq-filter-bar class="desk__filters" [ariaLabel]="i18n + '.filtersLabel' | translate">
+    <hq-field type="search" class="desk__search" icon="bi-search" [ngModel]="search" (ngModelChange)="onSearch($event)"
+               [ngModelOptions]="{ standalone: true }" [placeholder]="i18n + '.searchPlaceholder' | translate"
+               [ariaLabel]="i18n + '.searchPlaceholder' | translate" [showCounter]="false"></hq-field>
+    <hq-searchable-select [(ngModel)]="priorityFilter" (ngModelChange)="onFilterChange()" [ngModelOptions]="{ standalone: true }"
+                           [allowOther]="false" [ariaLabel]="i18n + '.columns.priority' | translate">
+      <hq-ss-option value="" [label]="i18n + '.filters.anyPriority' | translate"></hq-ss-option>
+      <hq-ss-option *ngFor="let p of priorities" [value]="p" [label]="priorityLabelKey(p) | translate"></hq-ss-option>
+    </hq-searchable-select>
+    <hq-searchable-select [(ngModel)]="categoryFilter" [ngModelOptions]="{ standalone: true }"
+                           [allowOther]="false" [ariaLabel]="i18n + '.form.category' | translate">
+      <hq-ss-option value="" [label]="i18n + '.filters.anyCategory' | translate"></hq-ss-option>
+      <hq-ss-option *ngFor="let c of categories" [value]="c" [label]="codeLabel('categories', c)"></hq-ss-option>
+    </hq-searchable-select>
+    <hq-searchable-select [(ngModel)]="queueFilter" (ngModelChange)="onFilterChange()" [ngModelOptions]="{ standalone: true }"
+                           [allowOther]="false" [ariaLabel]="i18n + '.columns.queue' | translate">
+      <hq-ss-option value="" [label]="i18n + '.filters.anyQueue' | translate"></hq-ss-option>
+      <hq-ss-option *ngFor="let q of queues" [value]="q" [label]="codeLabel('queues', q)"></hq-ss-option>
+    </hq-searchable-select>
+    <button hqButton="secondary" appearance="text" size="sm" type="button" *ngIf="filtered" (click)="clearFilters()">
+      <i class="bi bi-x-lg" aria-hidden="true"></i> {{ i18n + '.filters.clear' | translate }}
+    </button>
+  </hq-filter-bar>
+
+  <hq-error-state *ngIf="loadError" [title]="'workspace.messages.loadFailed' | translate" (retry)="reload()"></hq-error-state>
+
+  <!-- List -->
+  <ng-container *ngIf="layout === 'list' && !loadError">
+    <hq-common-table [columns]="columns" [rows]="shown" [isLoading]="loading && !items.length" [clickableRows]="true"
+                      [keyboardRows]="true" (rowClick)="open($event)" [showActionsColumn]="false"
+                      [emptyMessage]="i18n + '.empty.' + view.key | translate">
+      <ng-template hqCell="ticketNumber" let-t>
+        <span class="desk__key"><i class="bi" [ngClass]="categoryIcon(t.category)" aria-hidden="true"></i> {{ ticketKey(t) }}</span>
+      </ng-template>
+      <ng-template hqCell="title" let-t>
+        <span class="desk__title">{{ t.title }}</span>
+        <span class="desk__labels" *ngIf="t.labels?.length">
+          <span class="desk__label" *ngFor="let label of t.labels">{{ label }}</span>
+        </span>
+      </ng-template>
+      <ng-template hqCell="priority" let-t>
+        <hq-status-badge [tone]="priorityTone(t.priority)">{{ priorityLabelKey(t.priority) | translate }}</hq-status-badge>
+      </ng-template>
+      <ng-template hqCell="status" let-t>
+        <hq-status-badge [tone]="statusTone(t.status)">{{ statusLabel(t.status) }}</hq-status-badge>
+      </ng-template>
+      <ng-template hqCell="assigneeId" let-t>
+        <span [class.desk__muted]="!t.assigneeId">{{ assigneeLabel(t) }}</span>
+      </ng-template>
+      <ng-template hqCell="queue" let-t>{{ codeLabel('queues', t.queue) || '—' }}</ng-template>
+      <ng-template hqCell="dueAt" let-t>
+        <hq-status-badge [tone]="slaTone(t)"><i class="bi bi-alarm" aria-hidden="true"></i> {{ slaText(t) }}</hq-status-badge>
+      </ng-template>
+    </hq-common-table>
+    <div class="desk__more" *ngIf="hasMore">
+      <button hqButton="secondary" type="button" (click)="loadMore()" [disabled]="loading">{{ 'workspace.loadMore' | translate }}</button>
+    </div>
+  </ng-container>
+
+  <!-- Board: drag a card to another column to move the ticket. -->
+  <div class="desk__board" *ngIf="layout === 'board' && !loadError" cdkDropListGroup>
+    <section class="desk__column" *ngFor="let status of columnsOfBoard" cdkDropList [cdkDropListData]="status"
+             [cdkDropListDisabled]="!canMove || busy" (cdkDropListDropped)="drop($any($event))" [attr.data-testid]="'column-' + status">
+      <header class="desk__column-head">
+        <hq-status-badge [tone]="statusTone(status)">{{ statusLabel(status) }}</hq-status-badge>
+        <span class="desk__count">{{ columnItems(status).length }}</span>
+      </header>
+      <article class="desk__card" *ngFor="let t of columnItems(status); trackBy: trackItem" cdkDrag [cdkDragData]="t"
+               [class.is-urgent]="t.priority === 'URGENT'" [class.is-breached]="sla(t) === 'breached'" tabindex="0"
+               (click)="open(t)" (keydown.enter)="open(t)">
+        <div class="desk__card-top">
+          <span class="desk__key"><i class="bi" [ngClass]="categoryIcon(t.category)" aria-hidden="true"></i> {{ ticketKey(t) }}</span>
+          <hq-status-badge [tone]="priorityTone(t.priority)">{{ priorityLabelKey(t.priority) | translate }}</hq-status-badge>
+        </div>
+        <p class="desk__card-title">{{ t.title }}</p>
+        <div class="desk__card-foot">
+          <span class="desk__assignee" [class.desk__muted]="!t.assigneeId"><i class="bi bi-person" aria-hidden="true"></i> {{ assigneeLabel(t) }}</span>
+          <hq-status-badge *ngIf="isActive(t)" [tone]="slaTone(t)">{{ slaText(t) }}</hq-status-badge>
+        </div>
+      </article>
+      <p class="desk__muted desk__column-empty" *ngIf="!columnItems(status).length">{{ i18n + '.columnEmpty' | translate }}</p>
+    </section>
+  </div>
+</section>
+
+<!-- One ticket: create, view, edit, pick up and move it along. -->
+<hq-drawer [open]="drawerOpen" size="lg" (closed)="closeDrawer()"
+            [title]="drawerTitle"
+            [subtitle]="selected ? (i18n + '.createdOn' | translate: { date: (selected.createdAt | hqDate: 'medium') }) : ''"
+            [closeLabel]="i18n + '.form.cancel' | translate">
+  <ng-container *ngIf="drawerOpen">
+    <!-- Where the ticket stands, and what can be done to it. -->
+    <div class="desk__state" *ngIf="selected as t">
+      <hq-status-badge [tone]="statusTone(t.status)">{{ statusLabel(t.status) }}</hq-status-badge>
+      <hq-status-badge [tone]="priorityTone(t.priority)">{{ priorityLabelKey(t.priority) | translate }}</hq-status-badge>
+      <hq-status-badge [tone]="slaTone(t)"><i class="bi bi-alarm" aria-hidden="true"></i> {{ slaText(t) }}</hq-status-badge>
+      <div class="desk__state-actions">
+        <ng-container *hqHasPrivilege="privileges.update">
+          <button hqButton="secondary" size="sm" type="button" *ngIf="t.assigneeId !== userId && isActive(t)" [disabled]="busy"
+                  data-testid="assign-me" (click)="assignToMe(t)">
+            <i class="bi bi-person-check" aria-hidden="true"></i> {{ i18n + '.actions.assignToMe' | translate }}
+          </button>
+        </ng-container>
+        <ng-container *hqHasPrivilege="privileges.status">
+          <button *ngFor="let next of transitions(t)" type="button" size="sm" [disabled]="busy"
+                  [hqButton]="next === 'RESOLVED' ? 'accent' : 'secondary'"
+                  [attr.data-testid]="'move-' + next" (click)="move(t, next)">
+            {{ actionLabelKey(next) | translate }}
+          </button>
+        </ng-container>
+      </div>
+    </div>
+    <div class="desk__resolution" *ngIf="selected?.resolution">
+      <h4>{{ i18n + '.resolve.label' | translate }}</h4>
+      <p>{{ selected?.resolution }}</p>
+    </div>
+
+    <form class="desk__form" (ngSubmit)="save()">
+      <hq-form-grid cols="2" gap="lg">
+        <hq-field type="text" class="hq-span-full" name="title" [(ngModel)]="form.title" [maxLength]="maxTitle" required
+                   [readonly]="!canEdit" [label]="i18n + '.form.title' | translate" [placeholder]="i18n + '.form.titlePlaceholder' | translate"></hq-field>
+        <hq-form-field [label]="i18n + '.form.category' | translate">
+          <hq-searchable-select name="category" [(ngModel)]="form.category" [allowOther]="false" [disabled]="!canEdit"
+                                 [ariaLabel]="i18n + '.form.category' | translate">
+            <hq-ss-option *ngFor="let c of categories" [value]="c" [label]="codeLabel('categories', c)"></hq-ss-option>
+          </hq-searchable-select>
+        </hq-form-field>
+        <hq-form-field [label]="i18n + '.columns.priority' | translate" [hint]="i18n + '.form.priorityHint' | translate">
+          <hq-searchable-select name="priority" [(ngModel)]="form.priority" [allowOther]="false" [disabled]="!canEdit"
+                                 [ariaLabel]="i18n + '.columns.priority' | translate">
+            <hq-ss-option *ngFor="let p of priorities" [value]="p" [label]="priorityLabelKey(p) | translate"></hq-ss-option>
+          </hq-searchable-select>
+        </hq-form-field>
+        <hq-form-field [label]="i18n + '.columns.queue' | translate">
+          <hq-searchable-select name="queue" [(ngModel)]="form.queue" [allowOther]="false" [disabled]="!canEdit"
+                                 [ariaLabel]="i18n + '.columns.queue' | translate">
+            <hq-ss-option value="" [label]="i18n + '.form.noQueue' | translate"></hq-ss-option>
+            <hq-ss-option *ngFor="let q of queues" [value]="q" [label]="codeLabel('queues', q)"></hq-ss-option>
+          </hq-searchable-select>
+        </hq-form-field>
+        <hq-form-field [label]="i18n + '.columns.assignee' | translate" [hint]="i18n + '.form.assigneeHint' | translate">
+          <div class="desk__assignee-pick">
+            <span class="desk__person" *ngIf="form.assigneeId; else nobody">
+              <i class="bi bi-person-circle" aria-hidden="true"></i> {{ form.assigneeName || form.assigneeId }}
+              <button type="button" class="desk__person-clear" *ngIf="canEdit" (click)="clearAssignee()" [attr.aria-label]="'workspace.people.clear' | translate">
+                <i class="bi bi-x" aria-hidden="true"></i>
+              </button>
+            </span>
+            <ng-template #nobody><span class="desk__muted">{{ i18n + '.unassigned' | translate }}</span></ng-template>
+            <button hqButton="secondary" size="sm" type="button" *ngIf="canEdit" (click)="pickAssignee()">
+              <i class="bi bi-search" aria-hidden="true"></i> {{ 'workspace.people.choose' | translate }}
+            </button>
+          </div>
+        </hq-form-field>
+        <hq-field type="datetime-local" name="due" [(ngModel)]="form.due" [readonly]="!canEdit"
+                   [label]="i18n + '.form.due' | translate" [hint]="i18n + '.form.dueHint' | translate"></hq-field>
+        <hq-field type="text" name="labels" [(ngModel)]="form.labels" [maxLength]="300" [showCounter]="false" [readonly]="!canEdit"
+                   [label]="i18n + '.form.labels' | translate" [hint]="i18n + '.form.labelsHint' | translate"></hq-field>
+        <hq-form-field [label]="i18n + '.form.recordType' | translate">
+          <hq-searchable-select name="refType" [(ngModel)]="form.refType" [allowOther]="false" [disabled]="!canEdit"
+                                 [ariaLabel]="i18n + '.form.recordType' | translate">
+            <hq-ss-option value="" [label]="i18n + '.form.noRecord' | translate"></hq-ss-option>
+            <hq-ss-option *ngFor="let r of recordTypes" [value]="r" [label]="codeLabel('recordTypes', r)"></hq-ss-option>
+          </hq-searchable-select>
+        </hq-form-field>
+        <hq-field type="text" name="refId" *ngIf="form.refType" [(ngModel)]="form.refId" [maxLength]="100" [showCounter]="false"
+                   [readonly]="!canEdit" [label]="i18n + '.form.recordId' | translate"></hq-field>
+        <hq-field type="textarea" class="hq-span-full" name="body" [rows]="6" [(ngModel)]="form.body" [maxLength]="maxBody" [readonly]="!canEdit"
+                   [label]="i18n + '.form.description' | translate" [placeholder]="i18n + '.form.descriptionPlaceholder' | translate"></hq-field>
+      </hq-form-grid>
+      <hq-form-actions align="end">
+        <button hqButton="secondary" type="button" (click)="closeDrawer()">{{ i18n + '.form.cancel' | translate }}</button>
+        <button hqButton="accent" type="submit" *ngIf="canEdit" [disabled]="!canSave" data-testid="desk-save">
+          <i class="bi bi-check2" aria-hidden="true"></i> {{ (creating ? i18n + '.form.create' : i18n + '.form.save') | translate }}
+        </button>
+      </hq-form-actions>
+    </form>
+
+    <!-- Comments and history of the open ticket. -->
+    <app-workspace-timeline *ngIf="selected" [itemId]="selected.id" [refreshKey]="timelineKey"></app-workspace-timeline>
+  </ng-container>
+</hq-drawer>

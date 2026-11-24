@@ -1,0 +1,401 @@
+.payment-invoice-page {
+    display: grid;
+    gap: 1.5rem;
+}
+
+.invoice-hero,
+.panel {
+    border-radius: 28px;
+    border: 1px solid var(--theme-soft-border);
+    box-shadow: var(--theme-soft-shadow);
+}
+
+.invoice-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(260px, 0.9fr);
+    gap: 1.25rem;
+    padding: 1.75rem;
+    color: #f8fafc;
+}
+
+.invoice-success .invoice-hero {
+    background: linear-gradient(135deg, var(--theme-success-start) 0%, var(--theme-hero-mid) 50%, var(--theme-hero-end) 100%);
+}
+
+.invoice-failure .invoice-hero {
+    background: linear-gradient(135deg, var(--theme-failed-start) 0%, var(--theme-hero-mid) 52%, var(--theme-hero-end) 100%);
+}
+
+.invoice-pending .invoice-hero {
+    background: linear-gradient(135deg, var(--theme-hero-start) 0%, var(--theme-hero-mid) 52%, var(--theme-hero-end) 100%);
+}
+
+.section-kicker {
+    display: inline-flex;
+    width: fit-content;
+    padding: 0.35rem 0.75rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.14);
+    font-size: 0.74rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.outcome-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.4rem;
+}
+
+.outcome-symbol {
+    width: 78px;
+    height: 78px;
+    border-radius: 24px;
+    display: grid;
+    place-items: center;
+    background: rgba(255, 255, 255, 0.16);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14);
+}
+
+.outcome-symbol i {
+    font-size: 2.4rem;
+    color: #ffffff;
+}
+
+.outcome-copy {
+    min-width: 0;
+}
+
+.hero-copy h1 {
+    margin: 0.35rem 0 0;
+    font-size: clamp(2rem, 4vw, 3.1rem);
+    line-height: 1.04;
+    letter-spacing: -0.04em;
+}
+
+.hero-copy p,
+.summary-card p {
+    margin: 0;
+    color: rgba(248, 250, 252, 0.84);
+    line-height: 1.7;
+}
+
+.hero-note {
+    margin-top: 1rem;
+    padding: 0.95rem 1rem;
+    border-radius: 18px;
+    background: rgba(15, 23, 42, 0.18);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: rgba(248, 250, 252, 0.92);
+}
+
+.hero-summary {
+    display: grid;
+    gap: 1rem;
+}
+
+.status-legend {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.85rem;
+    margin-top: 1rem;
+}
+
+.legend-card {
+    padding: 0.95rem 1rem;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.legend-label {
+    display: block;
+    color: rgba(248, 250, 252, 0.72);
+    font-size: 0.76rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.legend-card strong {
+    display: block;
+    margin-top: 0.35rem;
+    font-size: 1rem;
+    color: #ffffff;
+    word-break: break-word;
+}
+
+.summary-card {
+    padding: 1.15rem;
+    border-radius: 22px;
+    background: rgba(255, 255, 255, 0.14);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.summary-card span {
+    display: block;
+    color: rgba(248, 250, 252, 0.72);
+    font-size: 0.82rem;
+}
+
+.summary-card strong {
+    display: block;
+    margin: 0.4rem 0;
+    font-size: 1.55rem;
+}
+
+.invoice-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(320px, 0.8fr);
+    gap: 1.25rem;
+    align-items: start;
+}
+
+.panel {
+    padding: 1.4rem;
+    background: var(--workspace-panel);
+}
+
+.sheet-head,
+.panel-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    align-items: end;
+    margin-bottom: 1.15rem;
+}
+
+.sheet-head h2,
+.panel-head h2 {
+    margin: 0.35rem 0 0;
+    color: var(--edu-ink);
+    font-size: 1.55rem;
+}
+
+.panel-head p {
+    margin: 0;
+    max-width: 18rem;
+    color: var(--edu-muted);
+    line-height: 1.6;
+}
+
+.invoice-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+}
+
+.receipt-banner {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.95rem;
+    align-items: start;
+    padding: 1rem 1.05rem;
+    border-radius: 22px;
+    margin-bottom: 1rem;
+    border: 1px solid transparent;
+}
+
+.receipt-banner-icon {
+    width: 46px;
+    height: 46px;
+    border-radius: 14px;
+    display: grid;
+    place-items: center;
+    font-size: 1.3rem;
+}
+
+.receipt-banner strong {
+    display: block;
+    color: var(--edu-ink);
+}
+
+.receipt-banner p {
+    margin: 0.35rem 0 0;
+    color: var(--edu-muted);
+    line-height: 1.6;
+}
+
+.banner-success {
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.12), rgba(16, 185, 129, 0.08));
+    border-color: rgba(34, 197, 94, 0.2);
+}
+
+.banner-success .receipt-banner-icon {
+    background: rgba(34, 197, 94, 0.16);
+    color: var(--theme-success-pill-text);
+}
+
+.banner-failure {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.12), rgba(251, 113, 133, 0.08));
+    border-color: rgba(239, 68, 68, 0.2);
+}
+
+.banner-failure .receipt-banner-icon {
+    background: rgba(239, 68, 68, 0.16);
+    color: var(--theme-failed-pill-text);
+}
+
+.banner-pending {
+    background: var(--theme-highlight-soft);
+    border-color: var(--theme-soft-border);
+}
+
+.banner-pending .receipt-banner-icon {
+    background: var(--theme-highlight-soft);
+    color: var(--button-accent-start);
+}
+
+.loading-panel,
+.error-panel {
+    display: grid;
+    justify-items: center;
+    gap: 0.85rem;
+    padding: 3rem 1.5rem;
+    text-align: center;
+}
+
+.loading-panel .spinner-border {
+    color: var(--button-accent-start);
+}
+
+.error-panel i {
+    font-size: 2.4rem;
+    color: var(--theme-failed-pill-text);
+}
+
+.error-panel h2 {
+    margin: 0;
+    color: var(--edu-ink);
+}
+
+.error-panel p {
+    margin: 0;
+    color: var(--edu-muted);
+}
+
+.detail-card,
+.reason-box {
+    border-radius: 22px;
+    border: 1px solid var(--theme-soft-border);
+    background: linear-gradient(180deg, var(--theme-soft-surface) 0%, var(--workspace-panel) 100%);
+}
+
+.detail-card {
+    padding: 1rem 1.05rem;
+}
+
+.detail-card span,
+.reason-box span,
+.next-steps span {
+    display: block;
+    color: var(--edu-muted);
+    font-size: 0.82rem;
+    margin-bottom: 0.45rem;
+}
+
+.detail-card strong,
+.reason-box strong {
+    color: var(--edu-ink);
+    font-size: 1rem;
+    word-break: break-word;
+}
+
+.reason-box {
+    margin-top: 1rem;
+    padding: 1rem 1.05rem;
+}
+
+.sheet-actions {
+    display: flex;
+    gap: 0.85rem;
+    flex-wrap: wrap;
+    margin-top: 1.25rem;
+}
+
+.sheet-actions .btn {
+    min-height: 50px;
+    padding: 0.75rem 1.2rem;
+    border-radius: 999px;
+    font-weight: 700;
+}
+
+.sheet-actions .btn-primary {
+    border: none;
+    background: linear-gradient(135deg, var(--button-accent-start), var(--button-accent-end));
+}
+
+.sheet-actions .btn-outline-primary {
+    border-color: var(--button-accent-start);
+    color: var(--button-accent-start);
+}
+
+.timeline {
+    display: grid;
+    gap: 0.95rem;
+}
+
+.timeline-item {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.9rem;
+    padding: 1rem 1.05rem;
+    border-radius: 20px;
+    border: 1px solid var(--theme-soft-border);
+    background: linear-gradient(180deg, var(--theme-soft-surface) 0%, var(--workspace-panel) 100%);
+}
+
+.timeline-index {
+    width: 42px;
+    height: 42px;
+    display: grid;
+    place-items: center;
+    border-radius: 14px;
+    background: var(--theme-highlight-soft);
+    color: var(--button-accent-start);
+    font-weight: 800;
+}
+
+.timeline-item strong {
+    display: block;
+    color: var(--edu-ink);
+}
+
+.timeline-item span {
+    display: block;
+    margin-top: 0.1rem;
+    color: var(--button-accent-start);
+    font-size: 0.84rem;
+    font-weight: 600;
+}
+
+.timeline-item p {
+    margin: 0.45rem 0 0;
+    color: var(--edu-muted);
+    line-height: 1.6;
+}
+
+@media (max-width: 992px) {
+    .invoice-hero,
+    .invoice-layout,
+    .invoice-grid,
+    .status-legend {
+        grid-template-columns: 1fr;
+    }
+
+    .outcome-row {
+        align-items: flex-start;
+    }
+}
+
+@media (max-width: 576px) {
+    .outcome-row {
+        flex-direction: column;
+    }
+
+    .sheet-actions .btn {
+        width: 100%;
+    }
+}

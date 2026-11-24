@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Accounting">
+  <!-- Accounting glyph: a ledger page, its two columns of entries cut out, and the balance line. One colour on transparent: the
+       app paints it in the theme colour through a CSS mask; the heading band is a lower opacity. -->
+  <path fill="#000" fill-opacity=".55" d="M38 14h52a10 10 0 0 1 10 10v8H28v-8a10 10 0 0 1 10-10z" />
+  <path fill="#000" fill-rule="evenodd"
+    d="M28 36h72v68a10 10 0 0 1-10 10H38a10 10 0 0 1-10-10zm10 12v6h20v-6zm0 16v6h18v-6zm0 16v6h20v-6zm32-32v6h20v-6zm0 16v6h18v-6zm0 16v6h20v-6zm-32 16v6h52v-6z" />
+</svg>

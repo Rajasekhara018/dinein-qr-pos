@@ -1,0 +1,16 @@
+<div class="picker">
+  <hq-field
+    type="text"
+    autocomplete="off"
+    [placeholder]="placeholder"
+    [ngModel]="query"
+    (ngModelChange)="onInput($event)"
+    (focus)="onFocus()"
+    (blur)="onBlur()"></hq-field>
+
+  <ul class="picker__list" *ngIf="open" role="listbox">
+    <li *ngIf="isLoading && items.length === 0" class="picker__hint">{{ 'orgStructure.picker.loading' | translate }}</li>
+    <li *ngIf="!isLoading && items.length === 0" class="picker__hint">{{ 'orgStructure.picker.noResults' | translate }}</li>
+    <li *ngFor="let item of items" role="option" class="picker__item" (mousedown)="choose(item)">{{ item.label }}</li>
+  </ul>
+</div>

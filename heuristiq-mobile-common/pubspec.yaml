@@ -1,0 +1,37 @@
+name: hq_flutter_common
+description: >-
+  Shared Flutter widgets, theme, privilege checks and audit hooks for the RealBoom apps. The Flutter counterpart of
+  hq-shared-lib (Rider-angular-common). No translation dependency: every text is passed in.
+version: 0.1.0
+publish_to: none
+
+environment:
+  sdk: ^3.5.0
+  flutter: ">=3.24.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  http: ^1.2.2
+  fl_chart: 0.70.2
+  crypto: ^3.0.3
+  image: ^4.2.0
+  image_picker: ^1.1.2
+  file_picker: ^12.2.0
+  permission_handler: ^13.0.1
+  local_auth: ^2.3.0
+  qr_flutter: ^4.1.0
+  flutter_secure_storage: ^11.0.0
+  smart_auth: 4.0.0
+  local_auth_android: 1.0.56
+  local_auth_darwin: 1.6.1
+  biometric_signature: ^13.3.0
+
+dev_dependencies:
+  plugin_platform_interface: ^2.1.8
+  local_auth_platform_interface: ^1.0.10
+  flutter_test:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  flutter_lints: ^4.0.0

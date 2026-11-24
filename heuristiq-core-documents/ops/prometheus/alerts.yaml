@@ -1,0 +1,42 @@
+groups:
+  - name: railcab-dms
+    rules:
+      - alert: RailCabDmsDown
+        expr: up{job=~".*railcab-dms.*"} == 0
+        for: 2m
+        labels:
+          severity: critical
+          service: railcab-dms
+        annotations:
+          summary: RailCab DMS is down
+          description: No Prometheus target has been up for RailCab DMS for more than 2 minutes.
+
+      - alert: RailCabDmsHigh5xxRate
+        expr: sum(rate(http_server_requests_seconds_count{application="railcab-dms",status=~"5.."}[5m])) / sum(rate(http_server_requests_seconds_count{application="railcab-dms"}[5m])) > 0.05
+        for: 5m
+        labels:
+          severity: warning
+          service: railcab-dms
+        annotations:
+          summary: RailCab DMS 5xx rate is high
+          description: More than 5 percent of DMS requests are returning 5xx responses.
+
+      - alert: RailCabDmsHighLatencyP95
+        expr: histogram_quantile(0.95, sum(rate(http_server_requests_seconds_bucket{application="railcab-dms"}[5m])) by (le)) > 2
+        for: 10m
+        labels:
+          severity: warning
+          service: railcab-dms
+        annotations:
+          summary: RailCab DMS p95 latency is high
+          description: DMS p95 HTTP latency is above 2 seconds for 10 minutes.
+
+      - alert: RailCabDmsStorageHealthDown
+        expr: application_ready_time_seconds{application="railcab-dms"} unless up{job=~".*railcab-dms.*"} == 1
+        for: 5m
+        labels:
+          severity: warning
+          service: railcab-dms
+        annotations:
+          summary: RailCab DMS readiness degraded
+          description: DMS readiness metrics are missing or target scrape is unhealthy.

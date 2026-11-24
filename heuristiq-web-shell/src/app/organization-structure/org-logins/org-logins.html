@@ -1,0 +1,116 @@
+<hq-page-header
+  [kicker]="'nav.sections.organization' | translate"
+  [title]="'orgStructure.logins.title' | translate"
+  [subtitle]="'orgStructure.logins.subtitle' | translate">
+</hq-page-header>
+
+<hq-screen-help screen="orgLogins"></hq-screen-help>
+
+<!-- Rules: which role goes with which department / position -->
+<section class="table-surface" *hqHasPrivilege="privileges.ruleList">
+  <div class="table-surface__header">
+    <div class="table-heading"><span class="table-kicker">{{ 'orgStructure.logins.rulesTitle' | translate }}</span></div>
+  </div>
+  <div class="table-surface__body">
+    <p class="muted">{{ 'orgStructure.logins.rulesHelp' | translate }}</p>
+
+    <ng-container *hqHasPrivilege="privileges.ruleCreate">
+      <div class="rule-form">
+        <div class="field">
+          <span>{{ 'orgStructure.logins.ruleDepartment' | translate }}</span>
+          <app-org-picker kind="unit" [placeholder]="'orgStructure.picker.placeholder' | translate"
+                          [selectedLabel]="newRuleUnit?.label ?? ''" (picked)="newRuleUnit = $event"></app-org-picker>
+        </div>
+        <div class="field">
+          <span>{{ 'orgStructure.logins.rulePosition' | translate }}</span>
+          <app-org-picker kind="position" [placeholder]="'orgStructure.picker.placeholder' | translate"
+                          [ladderId]="positionLadderId" [selectedLabel]="newRulePosition?.label ?? ''"
+                          (picked)="newRulePosition = $event"></app-org-picker>
+        </div>
+        <label class="field">
+          <span>{{ 'orgStructure.logins.ruleRole' | translate }}</span>
+          <hq-searchable-select [(ngModel)]="newRuleRole" [allowOther]="false" [placeholder]="'orgStructure.logins.chooseRole' | translate"
+                                 [ariaLabel]="'orgStructure.logins.ruleRole' | translate">
+            <hq-ss-option *ngFor="let role of roles" [value]="role.code" [label]="(role.name || role.code) + ' (' + role.code + ')'"></hq-ss-option>
+          </hq-searchable-select>
+        </label>
+        <button hqButton="accent" type="button" [disabled]="!canAddRule || busy" (click)="addRule()">
+          <i class="bi bi-plus-lg"></i> {{ 'orgStructure.logins.addRule' | translate }}
+        </button>
+      </div>
+      <p class="muted" *ngIf="!positionLadderId && newRulePosition === null">{{ 'orgStructure.logins.positionHint' | translate }}</p>
+    </ng-container>
+
+    <hq-common-table
+      [columns]="ruleColumns"
+      [rows]="rules"
+      [emptyMessage]="'orgStructure.logins.noRules' | translate">
+      <ng-template #rowActions let-row>
+        <ng-container *hqHasPrivilege="privileges.ruleDelete">
+          <button type="button" class="row-action-btn danger" [title]="'orgStructure.logins.deleteRule' | translate" (click)="deleteRule(row)">
+            <i class="bi bi-trash3"></i>
+          </button>
+        </ng-container>
+      </ng-template>
+    </hq-common-table>
+  </div>
+</section>
+
+<!-- Logins: preview, then create -->
+<section class="table-surface">
+  <div class="table-surface__header">
+    <div class="table-heading"><span class="table-kicker">{{ 'orgStructure.logins.previewTitle' | translate }}</span></div>
+  </div>
+  <div class="table-surface__body">
+    <p class="muted">{{ 'orgStructure.logins.signInNote' | translate }}</p>
+
+    <div class="filter-row">
+      <div class="field">
+        <span>{{ 'orgStructure.logins.filterDepartment' | translate }}</span>
+        <app-org-picker kind="unit" [placeholder]="'orgStructure.logins.anyDepartment' | translate"
+                        [selectedLabel]="filterUnit?.label ?? ''" (picked)="filterUnit = $event"></app-org-picker>
+      </div>
+      <button hqButton="secondary" type="button" [disabled]="loadingCandidates || running" (click)="preview()">
+        <i class="bi bi-eye"></i> {{ 'orgStructure.logins.loadPreview' | translate }}
+      </button>
+    </div>
+
+    <hq-common-table
+      [columns]="candidateColumns"
+      [rows]="candidateRows"
+      [isLoading]="loadingCandidates && candidateRows.length === 0"
+      [showActionsColumn]="false"
+      [emptyMessage]="(previewed ? 'orgStructure.logins.noCandidates' : 'orgStructure.logins.previewHint') | translate">
+    </hq-common-table>
+
+    <div class="actions">
+      <button hqButton="secondary" type="button" *ngIf="hasMoreCandidates && !loadingCandidates" (click)="preview(true)">
+        {{ 'orgStructure.chart.loadMore' | translate }}
+      </button>
+      <ng-container *hqHasPrivilege="privileges.loginCreate">
+        <button hqButton="accent" type="button" [disabled]="readyCount === 0 || running" (click)="createListed()">
+          <i class="bi bi-person-plus"></i> {{ 'orgStructure.logins.createListed' | translate: { count: readyCount } }}
+        </button>
+        <button hqButton="accent" type="button" [disabled]="running" (click)="createAll()">
+          <i class="bi bi-people"></i> {{ 'orgStructure.logins.createAll' | translate }}
+        </button>
+        <button hqButton="secondary" type="button" class="danger" *ngIf="running" (click)="cancelRun()">
+          <i class="bi bi-stop-circle"></i> {{ 'orgStructure.logins.stop' | translate }}
+        </button>
+      </ng-container>
+    </div>
+
+    <div class="result" *ngIf="totals as t">
+      <p>
+        <strong *ngIf="running">{{ 'orgStructure.logins.running' | translate }} </strong>
+        {{ 'orgStructure.logins.progress' | translate: { created: t.created, skipped: t.skipped, failed: t.failed } }}
+      </p>
+      <hq-common-table
+        *ngIf="problems.length > 0"
+        [columns]="problemColumns"
+        [rows]="problems"
+        [showActionsColumn]="false">
+      </hq-common-table>
+    </div>
+  </div>
+</section>

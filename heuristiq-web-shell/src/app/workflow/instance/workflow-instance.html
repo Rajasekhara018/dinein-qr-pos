@@ -1,0 +1,43 @@
+<div class="table-surface">
+  <div class="table-surface__body">
+    <hq-filter-bar collapsible>
+      <hq-field
+             type="text"
+             [placeholder]="'workflow.instance.idOrReferencePlaceholder' | translate"
+             [(ngModel)]="lookupId"
+             (keyup.enter)="find()"></hq-field>
+      <div hqFilterActions>
+        <button hqButton="accent" type="button" (click)="find()" [disabled]="!lookupId.trim()">
+          <i class="bi bi-search"></i> {{ 'workflow.instance.find' | translate }}
+        </button>
+      </div>
+    </hq-filter-bar>
+
+    <hq-loading-state *ngIf="isLoading" [label]="'workflow.loading' | translate"></hq-loading-state>
+    <hq-error-state *ngIf="errorText" [title]="errorText" (retry)="reload()"></hq-error-state>
+    <hq-empty-state *ngIf="!instance && !isLoading && !errorText" [title]="'workflow.instance.hint' | translate"></hq-empty-state>
+
+    <ng-container *ngIf="instance">
+      <div class="wf-head">
+        <div>
+          <span class="wf-label">{{ 'workflow.instance.id' | translate }}</span>
+          <div class="wf-mono">{{ instance.instanceId }}</div>
+        </div>
+        <hq-status-badge [tone]="instance.active ? 'success' : 'neutral'">
+          {{ (instance.active ? 'workflow.instance.running' : 'workflow.instance.finished') | translate }}
+        </hq-status-badge>
+        <button hqButton="secondary" type="button" (click)="reload()" [disabled]="isLoading">
+          <i class="bi bi-arrow-clockwise"></i> {{ 'workflow.refresh' | translate }}
+        </button>
+      </div>
+
+      <app-workflow-timeline [instanceId]="instance.instanceId" [refresh]="refreshCount"></app-workflow-timeline>
+
+      <h3 class="wf-section">{{ 'workflow.instance.variables' | translate }}</h3>
+      <hq-empty-state *ngIf="rows.length === 0" [title]="'workflow.instance.noVariables' | translate"></hq-empty-state>
+      <div class="wf-table-wrap" *ngIf="rows.length > 0">
+        <hq-common-table [columns]="columns" [rows]="rows" [showActionsColumn]="false"></hq-common-table>
+      </div>
+    </ng-container>
+  </div>
+</div>

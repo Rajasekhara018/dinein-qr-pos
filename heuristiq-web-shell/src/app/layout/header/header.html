@@ -1,0 +1,276 @@
+<header class="app-header">
+  <div class="header-left">
+    <button *ngIf="!hideMenuButton" class="menu-btn" type="button" [attr.aria-label]="'header.openMenu' | translate" (click)="onMenuClick()">
+      <i class="bi bi-list"></i>
+    </button>
+
+    <!-- Brand logo (visible when sidebar is collapsed on desktop) -->
+    <a routerLink="/home" class="header-brand d-none d-md-flex" [attr.aria-label]="'header.brandHome' | translate: { appName: branding.appName }">
+      <img [src]="branding.logoImagePath" [alt]="branding.appName" class="header-brand-logo" />
+    </a>
+
+    <div class="header-title-group">
+      <nav class="header-path" *ngIf="breadcrumbs.length > 1" [attr.aria-label]="'header.breadcrumb' | translate">
+        <ng-container *ngFor="let crumb of breadcrumbs; let last = last; let first = first">
+          <ng-container *ngIf="!last">
+            <span class="header-path-sep" *ngIf="!first">·</span>
+            <span class="header-path-crumb">{{ crumb.label | translate }}</span>
+          </ng-container>
+        </ng-container>
+      </nav>
+      <h1 class="header-title">{{ title }}</h1>
+    </div>
+  </div>
+
+  <div class="header-right">
+    <!-- The organization this session works in; only an organization-wide user can switch it -->
+    <div class="org-switch d-none d-md-block" *ngIf="organizationContext.current$ | async as current">
+      <button type="button" class="org-switch__btn" [attr.aria-label]="'header.organization.label' | translate"
+              [title]="'header.organization.label' | translate" [attr.aria-expanded]="organizationMenuOpen"
+              (click)="organizationMenuOpen = !organizationMenuOpen; $event.stopPropagation()">
+        <i class="bi bi-building"></i>
+        <span class="org-switch__name">{{ organizationContext.viewingAll ? ('header.organization.all' | translate) : current.name }}</span>
+        <i class="bi bi-chevron-down" *ngIf="organizationContext.canSwitch && (organizationContext.organizations$ | async)!.length > 1"></i>
+      </button>
+      <div class="avatar-dropdown org-switch__menu" *ngIf="organizationMenuOpen && organizationContext.canSwitch && (organizationContext.organizations$ | async)!.length > 1" role="listbox">
+        <div class="lang-dropdown-title">{{ 'header.organization.switch' | translate }}</div>
+        <div class="avatar-dropdown-divider"></div>
+        <!-- Every organization's records in the lists (reads only); changes still go to the session's organization -->
+        <button type="button" class="avatar-menu-item lang-menu-item" role="option"
+                [class.active]="organizationContext.viewingAll" [attr.aria-selected]="organizationContext.viewingAll"
+                [title]="'header.organization.allHint' | translate" (click)="chooseAllOrganizations()">
+          <span>{{ 'header.organization.all' | translate }}</span>
+          <i class="bi bi-check2 lang-menu-check" *ngIf="organizationContext.viewingAll"></i>
+        </button>
+        <div class="avatar-dropdown-divider"></div>
+        <button type="button" class="avatar-menu-item lang-menu-item" role="option" *ngFor="let org of organizationContext.organizations$ | async; trackBy: trackOrganization"
+                [class.active]="!organizationContext.viewingAll && org.tenantId === current.tenantId"
+                [attr.aria-selected]="!organizationContext.viewingAll && org.tenantId === current.tenantId"
+                [disabled]="org.status !== 'ACTIVE'" (click)="chooseOrganization(org, current)">
+          <span>{{ org.name }}</span>
+          <i class="bi bi-check2 lang-menu-check" *ngIf="!organizationContext.viewingAll && org.tenantId === current.tenantId"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Search (desktop) -->
+    <div class="search-box d-none d-md-flex">
+      <hq-field
+        type="text"
+        class="search-field"
+        icon="bi bi-search"
+        #quickSearch
+        [showLabel]="false"
+        [placeholder]="'header.search.placeholder' | translate"
+        [ariaLabel]="'header.search.ariaLabel' | translate"
+        autocomplete="off"
+        [(ngModel)]="searchQuery"
+        (focus)="onSearchFocus()"
+        (blur)="onSearchBlur()"
+        (keydown)="onSearchKeydown($event)"
+      ></hq-field>
+      <div class="search-dropdown" *ngIf="searchOpen && searchSuggestions.length > 0">
+        <div
+          class="search-item"
+          *ngFor="let item of searchSuggestions; let i = index"
+          [class.focused]="i === searchFocusIndex"
+          (mousedown)="navigateTo(item)"
+        >
+          <i class="bi search-item-icon" [ngClass]="item.icon"></i>
+          <span class="search-item-label">{{ item.label }}</span>
+          <span class="search-item-section">{{ item.section }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Notification bell -->
+    <div class="notif-wrapper position-relative">
+      <button
+        class="icon-btn position-relative"
+        type="button"
+        [attr.aria-label]="'header.notifications.open' | translate"
+        [attr.aria-expanded]="dropdownOpen"
+        (click)="toggleDropdown()"
+      >
+        <i class="bi bi-bell"></i>
+        <span class="badge-count" *ngIf="unreadCount > 0">{{ badgeLabel }}</span>
+      </button>
+
+      <!-- Dropdown -->
+      <div class="notif-dropdown" *ngIf="dropdownOpen">
+        <!-- Header -->
+        <div class="notif-dropdown-header">
+          <span class="notif-dropdown-title">{{ 'header.notifications.title' | translate }}</span>
+          <button hqButton="primary" appearance="text" size="sm" type="button" *ngIf="unreadCount > 0" (click)="onMarkAllRead()">
+            {{ 'header.notifications.markAllRead' | translate }}
+          </button>
+        </div>
+
+        <!-- List -->
+        <div class="notif-list">
+          <ng-container *ngIf="notifications.length > 0; else emptyTpl">
+            <div
+              class="notif-item"
+              [class.unread]="!n.read"
+              *ngFor="let n of notifications"
+              (click)="onNotificationClick(n)"
+            >
+              <div class="notif-icon-wrap" [ngClass]="notificationIconColor(n.type)">
+                <i class="bi" [ngClass]="notificationIcon(n.type)"></i>
+              </div>
+              <div class="notif-body">
+                <div class="notif-item-title">{{ n.title }}</div>
+                <div class="notif-item-msg">{{ n.message }}</div>
+                <div class="notif-item-time">{{ timeAgo(n.createdAt) }}</div>
+              </div>
+              <div class="unread-dot" *ngIf="!n.read"></div>
+            </div>
+          </ng-container>
+          <ng-template #emptyTpl>
+            <hq-empty-state icon="bi-bell-slash" [title]="'header.notifications.empty' | translate"></hq-empty-state>
+          </ng-template>
+        </div>
+
+        <!-- Footer -->
+        <div class="notif-dropdown-footer">
+          <button hqButton="primary" appearance="text" size="sm" type="button" (click)="viewAll()">{{ 'header.notifications.viewAll' | translate }}</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- App launcher: switch between the applications (areas) of the platform -->
+    <div class="avatar-wrapper lang-wrapper launcher-wrapper" *ngIf="launcherAreas.length > 1">
+      <button class="avatar-btn lang-btn launcher-btn" type="button" (click)="toggleLauncher()" [attr.aria-expanded]="launcherOpen"
+              aria-haspopup="menu" [attr.aria-label]="'header.launcher.label' | translate" [title]="'header.launcher.label' | translate">
+        <i class="bi bi-grid-3x3-gap-fill lang-btn-icon"></i>
+      </button>
+      <div class="avatar-dropdown launcher-dropdown" *ngIf="launcherOpen" role="menu" [attr.aria-label]="'header.launcher.label' | translate">
+        <div class="lang-dropdown-title">{{ 'header.launcher.title' | translate }}</div>
+        <div class="launcher-row">
+          <button type="button" class="launcher-arrow" tabindex="-1" aria-hidden="true" (click)="scrollLauncher(-1)"><i class="bi bi-chevron-left"></i></button>
+          <div class="launcher-strip" #launcherStrip>
+            <button *ngFor="let area of launcherAreas; let i = index" type="button" role="menuitem" class="launcher-tile"
+              [style.animation-delay.ms]="i * 45" (click)="openArea(area)">
+              <span class="launcher-tile__icon">
+                <app-area-logo *ngIf="area.logo; else launcherGlyph" [src]="area.logo"></app-area-logo>
+                <ng-template #launcherGlyph><i class="bi" [ngClass]="area.icon"></i></ng-template>
+              </span>
+              <span class="launcher-tile__label">{{ area.label | translate }}</span>
+            </button>
+          </div>
+          <button type="button" class="launcher-arrow" tabindex="-1" aria-hidden="true" (click)="scrollLauncher(1)"><i class="bi bi-chevron-right"></i></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Theme picker -->
+    <div class="avatar-wrapper lang-wrapper theme-wrapper">
+      <button class="avatar-btn lang-btn" type="button" (click)="toggleThemeMenu()" [attr.aria-expanded]="themeMenuOpen" aria-haspopup="listbox"
+              [attr.aria-label]="'header.theme.change' | translate" [title]="'header.theme.change' | translate">
+        <i class="bi bi-palette lang-btn-icon"></i>
+        <i class="bi bi-chevron-down avatar-chevron" [class.rotated]="themeMenuOpen"></i>
+      </button>
+      <div class="avatar-dropdown lang-dropdown theme-dropdown" *ngIf="themeMenuOpen" role="listbox" [attr.aria-label]="'header.theme.label' | translate">
+        <div class="lang-dropdown-title">{{ 'header.theme.label' | translate }}</div>
+        <div class="avatar-dropdown-divider"></div>
+        <button *ngFor="let t of themes" class="avatar-menu-item lang-menu-item" type="button" role="option"
+                [attr.aria-selected]="t.id === theme.currentTheme" [class.active]="t.id === theme.currentTheme" (click)="selectTheme(t.id)">
+          <span class="theme-swatch" [style.background]="t.sidebar"><span class="theme-swatch__dot" [style.background]="t.accent"></span></span>
+          <span class="lang-menu-name">{{ t.name }}</span>
+          <i class="bi bi-check2 lang-menu-check" *ngIf="t.id === theme.currentTheme"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Language switcher (same trigger/dropdown styling as the avatar menu below) -->
+    <div class="avatar-wrapper lang-wrapper">
+      <button
+        class="avatar-btn lang-btn"
+        type="button"
+        (click)="toggleLanguageMenu()"
+        [attr.aria-expanded]="languageMenuOpen"
+        aria-haspopup="listbox"
+        [attr.aria-label]="'header.language.change' | translate"
+        [title]="'header.language.change' | translate"
+      >
+        <i class="bi bi-translate lang-btn-icon"></i>
+        <span class="lang-btn-label d-none d-sm-inline" [attr.lang]="language.current.code">{{ language.current.nativeName }}</span>
+        <i class="bi bi-chevron-down avatar-chevron" [class.rotated]="languageMenuOpen"></i>
+      </button>
+
+      <div class="avatar-dropdown lang-dropdown" *ngIf="languageMenuOpen" role="listbox" [attr.aria-label]="'header.language.label' | translate">
+        <div class="lang-dropdown-title">{{ 'header.language.label' | translate }}</div>
+        <div class="avatar-dropdown-divider"></div>
+        <button
+          *ngFor="let lang of language.languages"
+          class="avatar-menu-item lang-menu-item"
+          type="button"
+          role="option"
+          [attr.aria-selected]="lang.code === language.currentLanguage"
+          [attr.lang]="lang.code"
+          [attr.dir]="lang.dir"
+          [class.active]="lang.code === language.currentLanguage"
+          (click)="selectLanguage(lang.code)"
+        >
+          <span class="lang-menu-name">{{ lang.nativeName }}</span>
+          <i class="bi bi-check2 lang-menu-check" *ngIf="lang.code === language.currentLanguage"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- User avatar + dropdown -->
+    <div class="avatar-wrapper">
+      <button class="avatar-btn" type="button" (click)="toggleAvatarMenu()" [attr.aria-expanded]="avatarMenuOpen" [attr.aria-label]="'header.userMenu' | translate">
+        <div class="user-avatar">
+          <img *ngIf="photoUrl$ | async as photo; else headerInitial" class="user-avatar__img" [src]="photo" alt="" />
+          <ng-template #headerInitial>{{ userInitial }}</ng-template>
+        </div>
+        <div class="avatar-meta d-none d-sm-flex">
+          <span class="avatar-name">{{ userName || userRole }}</span>
+          <span class="avatar-role text-capitalize">{{ userRole }}</span>
+        </div>
+        <i class="bi bi-chevron-down avatar-chevron" [class.rotated]="avatarMenuOpen"></i>
+      </button>
+
+      <div class="avatar-dropdown" *ngIf="avatarMenuOpen">
+        <div class="avatar-dropdown-header">
+          <div class="user-avatar user-avatar--lg">
+            <img *ngIf="photoUrl$ | async as photo; else menuInitial" class="user-avatar__img" [src]="photo" alt="" />
+            <ng-template #menuInitial>{{ userInitial }}</ng-template>
+          </div>
+          <div class="avatar-dropdown-meta">
+            <div class="avatar-dropdown-name">{{ userName || ('header.account.defaultName' | translate: { appName: branding.appName }) }}</div>
+            <div class="avatar-dropdown-email">{{ userEmail }}</div>
+            <span class="avatar-dropdown-role text-capitalize">{{ userRole }}</span>
+          </div>
+        </div>
+        <div class="avatar-dropdown-divider"></div>
+        <a class="avatar-menu-item" routerLink="/profile" (click)="closeAvatarMenu()">
+          <i class="bi bi-person-fill"></i>
+          {{ 'header.account.profile' | translate }}
+        </a>
+        <button class="avatar-menu-item avatar-menu-item--toggle" type="button" (click)="theme.toggle()">
+          <span class="theme-icon-wrap">
+            <i class="bi" [class.bi-moon-stars-fill]="theme.isDark" [class.bi-sun-fill]="!theme.isDark"></i>
+          </span>
+          <span class="theme-label-group">
+            <span class="theme-label-main">{{ (theme.isDark ? 'header.account.darkMode' : 'header.account.lightMode') | translate }}</span>
+            <span class="theme-label-sub">{{ (theme.isDark ? 'header.account.switchToLight' : 'header.account.switchToDark') | translate }}</span>
+          </span>
+          <span class="theme-toggle-pill" [class.theme-toggle-pill--on]="theme.isDark">
+            <span class="theme-toggle-thumb"></span>
+          </span>
+        </button>
+        <a class="avatar-menu-item" routerLink="/change-password" (click)="closeAvatarMenu()">
+          <i class="bi bi-key-fill"></i>
+          {{ 'header.account.changePassword' | translate }}
+        </a>
+        <div class="avatar-dropdown-divider"></div>
+        <button class="avatar-menu-item avatar-menu-item--danger" type="button" (click)="logout()">
+          <i class="bi bi-box-arrow-right"></i>
+          {{ 'header.account.signOut' | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+</header>

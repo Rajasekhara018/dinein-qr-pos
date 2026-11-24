@@ -1,0 +1,120 @@
+// The place form on top of the shared franchise form layout: the fixed-fields note, a status box the height of an input,
+// and the parent place as its own section whose cascading choices sit two to a row instead of one long stack.
+.lf__note {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin: -0.35rem 0 0;
+  padding: 0.55rem 0.8rem;
+  border-radius: 10px;
+  font-size: 0.8rem;
+  background: color-mix(in srgb, var(--hq-primary, #0B6E4F) 6%, var(--workspace-panel, #fff));
+  color: var(--edu-muted, #5a6a7e);
+
+  i {
+    margin-top: 0.05rem;
+    color: var(--hq-link, var(--hq-primary, #0B6E4F));
+  }
+}
+
+// The same height and border as the inputs beside it, so the row lines up.
+.lf__status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  min-height: 2.6rem;
+  padding: 0 0.85rem;
+  border: 1px solid var(--workspace-border, rgba(0, 0, 0, 0.12));
+  border-radius: 10px;
+  font-weight: 600;
+  color: var(--edu-muted, #5a6a7e);
+  cursor: pointer;
+
+  &--on {
+    color: var(--edu-ink, #1b2a4a);
+    border-color: color-mix(in srgb, var(--hq-primary, #0B6E4F) 40%, transparent);
+  }
+}
+
+.lf__section {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  margin-top: 0.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--workspace-border, #e3e8ef);
+
+  h2 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--edu-ink, #1b2a4a);
+  }
+}
+
+.lf__allowed {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  font-size: 0.78rem;
+  color: var(--edu-muted, #5a6a7e);
+}
+
+.lf__chip {
+  padding: 0.15rem 0.6rem;
+  border-radius: 999px;
+  font-weight: 600;
+  background: color-mix(in srgb, var(--hq-primary, #0B6E4F) 10%, var(--workspace-panel, #fff));
+  color: var(--hq-link, var(--hq-primary, #0B6E4F));
+}
+
+.lf__current {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  font-weight: 600;
+}
+
+// The picker is another component, so its levels are laid out from here: two equal columns, one on a phone.
+.lf__picker ::ng-deep .location-picker {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem 1.5rem;
+  align-items: start;
+
+  @media (max-width: 767px) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  > p,
+  > small {
+    grid-column: 1 / -1;
+    margin: 0;
+  }
+
+  .location-picker__level {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    min-width: 0;
+    margin: 0;
+
+    hq-searchable-select,
+    .input {
+      width: 100%;
+    }
+
+hq-field {
+  width: 100%;
+}
+  }
+}
+
+.lf__actions {
+  justify-content: flex-end;
+  padding-top: 1rem;
+}

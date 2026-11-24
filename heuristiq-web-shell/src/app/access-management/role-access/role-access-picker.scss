@@ -1,0 +1,331 @@
+:host { display: block; }
+
+/*
+ * Every colour here comes from the active theme's tokens (hq-shared-lib theme), so the picker follows the theme and dark mode;
+ * the value after the comma is only the fallback when a token is missing.
+ */
+$brand: var(--theme-hero-start, #0B6E4F);       /* Manage */
+$view: var(--button-accent-start, #D4A017);     /* View */
+$ink: var(--edu-ink, inherit);
+$muted: var(--edu-muted, inherit);
+$panel: var(--workspace-panel, transparent);
+$border: var(--theme-soft-border, rgba(128, 128, 128, 0.25));
+$row-border: var(--theme-table-border, rgba(128, 128, 128, 0.2));
+$highlight: var(--theme-highlight-soft, rgba(128, 128, 128, 0.08));
+$mixed-bg: var(--theme-pending-pill-bg, rgba(217, 119, 6, 0.16));
+$mixed-text: var(--theme-pending-pill-text, #b45309);
+$danger-bg: var(--danger-soft, rgba(220, 38, 38, 0.12));
+$danger-text: var(--danger-text, inherit);
+$on-solid: var(--button-text, #fff);
+
+.ra { display: grid; gap: 0.7rem; width: 100%; }
+
+/* one bar: find, filter, quick start, totals, info and expand / collapse */
+.ra__bar-top { display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem 0.9rem; }
+
+.ra__search {
+  position: relative;
+  flex: 1 1 260px;
+  max-width: 380px;
+
+  > .bi-search { position: absolute; inset-inline-start: 0.75rem; top: 50%; transform: translateY(-50%); opacity: 0.5; pointer-events: none; }
+
+  input {
+    width: 100%;
+    padding: 0.45rem 2rem;
+    border: 1px solid var(--field-border, #{$border});
+    border-radius: 10px;
+    background: var(--field-bg, #{$panel});
+    color: var(--field-text, inherit);
+    font-size: 0.88rem;
+    &:focus { outline: 2px solid color-mix(in srgb, #{$brand} 45%, transparent); outline-offset: 1px; }
+  }
+}
+
+.ra__search-clear {
+  position: absolute;
+  inset-inline-end: 0.45rem;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 0;
+  background: transparent;
+  color: inherit;
+  opacity: 0.55;
+  cursor: pointer;
+}
+
+.ra__toggle { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.82rem; cursor: pointer; white-space: nowrap; }
+
+.ra__templates { display: inline-flex; flex-wrap: wrap; gap: 0.4rem; }
+.ra__template {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.28rem 0.75rem;
+  border: 1px solid color-mix(in srgb, #{$brand} 35%, transparent);
+  border-radius: 999px;
+  background: $panel;
+  color: inherit;
+  font-size: 0.8rem;
+  cursor: pointer;
+  &:hover { background: color-mix(in srgb, #{$brand} 14%, #{$panel}); }
+  /* the level everything is currently set to is filled, like the buttons on each row */
+  &--manage { background: $brand; border-color: $brand; color: $on-solid; font-weight: 700; &:hover { background: $brand; } }
+  &--view { background: $view; border-color: $view; color: $on-solid; font-weight: 700; &:hover { background: $view; } }
+  &--none { background: color-mix(in srgb, currentColor 14%, transparent); font-weight: 700; }
+}
+
+/* totals */
+.ra__stats { display: inline-flex; flex-wrap: wrap; gap: 0.4rem; margin-inline-start: auto; }
+.ra__stat {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.3rem;
+  padding: 0.2rem 0.7rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, currentColor 7%, transparent);
+  font-size: 0.76rem;
+  strong { font-size: 1rem; }
+  &--manage { background: color-mix(in srgb, #{$brand} 15%, transparent); strong { color: $brand; } }
+  &--view { background: color-mix(in srgb, #{$view} 18%, transparent); strong { color: $view; } }
+  &--custom { background: $mixed-bg; strong { color: $mixed-text; } }
+}
+
+/* info, expand, collapse */
+.ra__icons { display: inline-flex; align-items: center; gap: 0.3rem; }
+.ra__icon-btn {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border: 1px solid $border;
+  border-radius: 9px;
+  background: $panel;
+  color: inherit;
+  cursor: pointer;
+  &:hover, &:focus-visible { background: $highlight; }
+}
+
+.ra__info { position: relative; display: inline-block; }
+.ra__pop {
+  display: none;
+  position: absolute;
+  inset-inline-end: 0;
+  top: calc(100% + 8px);
+  z-index: 30;
+  width: min(380px, 86vw);
+  max-height: 60vh;
+  overflow: auto;
+  padding: 0.8rem 0.9rem;
+  border: 1px solid $border;
+  border-radius: 12px;
+  background: $panel;
+  box-shadow: var(--theme-soft-shadow, 0 8px 24px rgba(0, 0, 0, 0.18));
+  gap: 0.5rem;
+  text-align: start;
+}
+.ra__info:hover .ra__pop, .ra__info:focus-within .ra__pop { display: grid; }
+.ra__pop-title { font-size: 0.92rem; }
+.ra__pop-text { font-size: 0.8rem; line-height: 1.45; opacity: 0.8; &--strong { opacity: 1; font-weight: 600; } }
+.ra__pop-empty { font-size: 0.8rem; opacity: 0.7; }
+.ra__pop-line { display: flex; flex-wrap: wrap; align-items: center; gap: 0.35rem; padding-top: 0.35rem; border-top: 1px solid $row-border; }
+.ra__pop-area { flex: 1 1 100%; font-size: 0.82rem; font-weight: 700; }
+.ra__tag {
+  display: inline-block;
+  padding: 0 0.55rem;
+  border-radius: 6px;
+  color: $on-solid;
+  font-size: 0.7rem;
+  font-weight: 700;
+  &--manage { background: $brand; }
+  &--view { background: $view; }
+}
+
+.ra__split {
+  display: flex;
+  height: 6px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: color-mix(in srgb, currentColor 10%, transparent);
+  span { display: block; height: 100%; transition: width 0.25s ease; }
+}
+.ra__split-manage { background: $brand; }
+.ra__split-view { background: $view; }
+.ra__split-custom { background: $mixed-text; }
+
+.ra__showing { margin: 0; font-size: 0.8rem; opacity: 0.8; display: flex; gap: 0.75rem; align-items: center; }
+.ra__link { background: none; border: 0; padding: 0; color: $brand; font-size: 0.8rem; cursor: pointer; text-decoration: underline; }
+
+/* areas fill the width: as many columns as fit, an open area takes the whole row */
+.ra__apps { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.ra__app-chip {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  padding: 0.3rem 0.7rem; border-radius: 999px; border: 1px solid $border; background: $panel;
+  font-size: 0.82rem; cursor: pointer; white-space: nowrap;
+  &--on { border-color: $brand; background: $highlight; font-weight: 600; }
+}
+.ra__app-count { font-size: 0.72rem; opacity: 0.7; }
+.ra__application { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.4rem; }
+.ra__application-head { display: flex; align-items: center; justify-content: space-between; gap: 0.7rem; padding: 0.15rem 0.2rem; }
+.ra__application-title { display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.95rem; }
+
+.ra__areas { display: grid; grid-template-columns: repeat(auto-fill, minmax(420px, 1fr)); gap: 0.6rem; align-items: start; }
+
+.ra__area {
+  border: 1px solid $border;
+  border-radius: 14px;
+  background: $panel;
+  overflow: hidden;
+  &--open { grid-column: 1 / -1; box-shadow: var(--theme-soft-shadow, 0 2px 10px rgba(0, 0, 0, 0.06)); .ra__area-head { background: $highlight; } }
+}
+
+.ra__area-head { display: flex; align-items: center; gap: 0.7rem; padding: 0.7rem 0.9rem; }
+
+.ra__area-toggle {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  background: none;
+  border: 0;
+  padding: 0;
+  color: inherit;
+  cursor: pointer;
+  text-align: start;
+}
+
+.ra__area-icon {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  flex: none;
+  border-radius: 10px;
+  background: color-mix(in srgb, #{$brand} 14%, transparent);
+  color: $brand;
+}
+
+.ra__area-title { display: flex; flex-direction: column; min-width: 0; strong { font-size: 0.92rem; } }
+.ra__progress-text { font-size: 0.73rem; opacity: 0.65; }
+
+// The area's share of chosen access is hq-progress; only its size and place in the row are local.
+.ra__bar {
+  flex: 0 1 90px;
+  margin-inline-start: auto;
+}
+.ra__chevron { opacity: 0.5; flex: none; }
+
+/* features: even tiles with room around them, up to four across on a wide screen */
+.ra__features {
+  list-style: none;
+  margin: 0;
+  padding: 0.9rem;
+  border-top: 1px solid $row-border;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 0.75rem;
+}
+
+.ra__feature {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 0.7rem;
+  padding: 0.8rem 0.9rem;
+  border: 1px solid $border;
+  border-radius: 12px;
+  background: $panel;
+  transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+  &:hover { border-color: color-mix(in srgb, #{$brand} 45%, transparent); box-shadow: var(--theme-soft-shadow, 0 2px 8px rgba(0, 0, 0, 0.08)); }
+  &--on { border-color: color-mix(in srgb, #{$brand} 55%, transparent); background: color-mix(in srgb, #{$brand} 6%, #{$panel}); }
+}
+
+.ra__feature-text { display: flex; flex-direction: column; gap: 0.3rem; min-width: 0; }
+.ra__feature-name { font-size: 0.88rem; font-weight: 700; line-height: 1.3; word-break: break-word; }
+.ra__feature-desc {
+  font-size: 0.76rem;
+  line-height: 1.4;
+  color: $muted;
+  opacity: 0.85;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* None / View / Manage: one joined control that spans the tile */
+.ra__seg {
+  display: inline-flex;
+  border: 1px solid $border;
+  border-radius: 9px;
+  overflow: hidden;
+  flex: none;
+
+  button {
+    min-width: 60px;
+    padding: 0.3rem 0.7rem;
+    border: 0;
+    border-inline-start: 1px solid $border;
+    background: transparent;
+    color: inherit;
+    font-size: 0.76rem;
+    cursor: pointer;
+    &:first-child { border-inline-start: 0; }
+    &:hover:not(:disabled):not([class*='ra__seg-on']) { background: $highlight; }
+    &:disabled { opacity: 0.3; cursor: not-allowed; }
+  }
+}
+
+.ra__feature .ra__seg { width: 100%; button { flex: 1; } }
+
+.ra__seg--area button, .ra__seg--app button { min-width: 0; padding: 0.2rem 0.6rem; font-size: 0.7rem; }
+
+.ra__seg .ra__seg-on--none { background: color-mix(in srgb, currentColor 12%, transparent); font-weight: 700; }
+.ra__seg .ra__seg-on--view { background: $view; color: $on-solid; font-weight: 700; }
+.ra__seg .ra__seg-on--manage { background: $brand; color: $on-solid; font-weight: 700; }
+
+.ra__custom {
+  position: absolute;
+  inset-block-start: 0.55rem;
+  inset-inline-end: 0.7rem;
+  padding: 0.1rem 0.55rem;
+  border-radius: 999px;
+  background: $mixed-bg;
+  color: $mixed-text;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.ra__sensitive {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-inline-start: 0.4rem;
+  padding: 0.05rem 0.45rem;
+  white-space: nowrap;
+  border-radius: 999px;
+  background: $danger-bg;
+  color: $danger-text;
+  font-size: 0.66rem;
+  font-weight: 700;
+  vertical-align: middle;
+}
+
+@media (max-width: 760px) {
+  .ra__areas, .ra__features { grid-template-columns: 1fr; }
+  .ra__features { padding: 0.6rem; }
+  .ra__bar { display: none; }
+  .ra__stats { margin-inline-start: 0; }
+}
+
+.ra__catalogue-nav { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; padding-top: 8px; }
+.ra__catalogue-label { font-weight: 700; color: var(--edu-ink, #172b24); }
+.ra__categories { display: flex; flex-wrap: wrap; gap: 4px; padding: 4px; border-radius: 10px; background: var(--theme-soft-surface, #f1f5f9); }
+.ra__category { border: 1px solid transparent; background: transparent; padding: 8px 12px; border-radius: 8px; font: inherit; color: var(--edu-muted, #64748b); cursor: pointer; }
+.ra__category.is-active { background: var(--workspace-panel, #fff); border-color: var(--workspace-border, #dce2ea); color: var(--hq-link, #126b50); font-weight: 700; }
+.ra__services { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 12px; border: 1px solid var(--workspace-border, #dce2ea); border-radius: 10px; }
+.ra__service-label { font-size: .8rem; font-weight: 700; margin-inline-end: 6px; }
+.ra__scope-note { margin: 0; font-size: .75rem; color: var(--edu-muted, #64748b); }
+.ra__category:focus-visible { outline: 2px solid var(--hq-link, #126b50); outline-offset: 2px; }

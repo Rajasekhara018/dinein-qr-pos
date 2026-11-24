@@ -1,0 +1,609 @@
+[
+  {
+    "model": "FRANCHISE_FRANCHISE",
+    "slots": {
+      "text1": "code",
+      "text2": "name",
+      "text3": "status",
+      "text4": "ownerUserId",
+      "text14": "franchiseId",
+      "text15": "ownerUserId",
+      "date1": "effectiveFrom",
+      "date2": "effectiveTo",
+      "datetime1": "createdAt",
+      "datetime2": "updatedAt",
+      "text13": "searchText"
+    },
+    "filters": {},
+    "path": "/api/v1/franchise",
+    "global": false,
+    "owned": false
+  },
+  {
+    "model": "FRANCHISE_PLAN",
+    "slots": {
+      "text1": "applicationCode",
+      "text2": "scope",
+      "text3": "countryCode",
+      "text4": "locationType",
+      "text5": "locationLevel",
+      "text6": "stateCode",
+      "text7": "districtCode",
+      "text8": "city",
+      "text9": "scopeType",
+      "text10": "scopeLocationId",
+      "amount1": "fee.value",
+      "number1": "agentLimit",
+      "text14": "franchiseId",
+      "text15": "ownerUserId",
+      "date1": "effectiveFrom",
+      "date2": "effectiveTo",
+      "datetime1": "createdAt",
+      "datetime2": "updatedAt",
+      "text11": "stateId",
+      "text12": "districtId",
+      "text13": "searchText"
+    },
+    "filters": {
+      "applicationCode": "text1",
+      "scope": "text2",
+      "locationType": "text4",
+      "level": "text5",
+      "stateId": "text11",
+      "districtId": "text12"
+    },
+    "path": "/api/v1/franchise/plans",
+    "global": false,
+    "owned": false
+  },
+  {
+    "model": "FRANCHISE_AGENT",
+    "slots": {
+      "text1": "userId",
+      "text2": "applicationCode",
+      "text3": "fullName",
+      "text4": "email",
+      "text5": "status",
+      "text14": "franchiseId",
+      "text15": "ownerUserId",
+      "date1": "effectiveFrom",
+      "date2": "effectiveTo",
+      "datetime1": "createdAt",
+      "datetime2": "updatedAt",
+      "text13": "searchText"
+    },
+    "filters": {
+      "applicationCode": "text2"
+    },
+    "path": "/api/v1/franchise/{franchiseId}/agents",
+    "global": false,
+    "owned": true
+  },
+  {
+    "model": "FRANCHISE_ADMIN_MEMBER",
+    "slots": {
+      "text1": "userId",
+      "text2": "applicationCode",
+      "text3": "fullName",
+      "text4": "email",
+      "text5": "status",
+      "text14": "franchiseId",
+      "text15": "ownerUserId",
+      "date1": "effectiveFrom",
+      "date2": "effectiveTo",
+      "datetime1": "createdAt",
+      "datetime2": "updatedAt",
+      "text13": "searchText"
+    },
+    "filters": {
+      "applicationCode": "text2"
+    },
+    "path": "/api/v1/franchise/admin/{franchiseId}/members",
+    "global": false,
+    "owned": false
+  },
+  {
+    "model": "FRANCHISE_MEMBER",
+    "slots": {
+      "text1": "userId",
+      "text2": "applicationCode",
+      "text3": "fullName",
+      "text4": "email",
+      "text5": "status",
+      "text14": "franchiseId",
+      "text15": "ownerUserId",
+      "date1": "effectiveFrom",
+      "date2": "effectiveTo",
+      "datetime1": "createdAt",
+      "datetime2": "updatedAt",
+      "text13": "searchText"
+    },
+    "filters": {
+      "applicationCode": "text2"
+    },
+    "path": "/api/v1/franchise/{franchiseId}/members",
+    "global": false,
+    "owned": true
+  },
+  {
+    "model": "FRANCHISE_ADMIN_DRIVER",
+    "slots": {
+      "text1": "userId",
+      "text2": "name",
+      "text3": "phone",
+      "text4": "status",
+      "text5": "applicationCode",
+      "text14": "franchiseId",
+      "text15": "ownerUserId",
+      "date1": "effectiveFrom",
+      "date2": "effectiveTo",
+      "datetime1": "createdAt",
+      "datetime2": "updatedAt",
+      "text13": "searchText"
+    },
+    "filters": {},
+    "path": "/api/v1/franchise/admin/{franchiseId}/drivers",
+    "global": false,
+    "owned": false
+  },
+  {
+    "model": "FRANCHISE_DRIVER",
+    "slots": {
+      "text1": "userId",
+      "text2": "name",
+      "text3": "phone",
+      "text4": "status",
+      "text5": "applicationCode",
+      "text14": "franchiseId",
+      "text15": "ownerUserId",
+      "date1": "effectiveFrom",
+      "date2": "effectiveTo",
+      "datetime1": "createdAt",
+      "datetime2": "updatedAt",
+      "text13": "searchText"
+    },
+    "filters": {},
+    "path": "/api/v1/franchise/{franchiseId}/drivers",
+    "global": false,
+    "owned": true
+  },
+  {
+    "model": "FRANCHISE_FEE_SCHEDULE",
+    "slots": {
+      "text1": "scope.level",
+      "text2": "scope.franchiseId",
+      "text3": "scope.cityCode",
+      "text4": "scope.vertical",
+      "text5": "planCode",
+      "text6": "planName",
+      "text14": "franchiseId",
+      "text15": "ownerUserId",
+      "date1": "effectiveFrom",
+      "date2": "effectiveTo",
+      "datetime1": "createdAt",
+      "datetime2": "updatedAt",
+      "text13": "searchText"
+    },
+    "filters": {
+      "scopeLevel": "text1",
+      "franchiseId": "text2",
+      "cityCode": "text3",
+      "vertical": "text4"
+    },
+    "path": "/api/v1/franchise/fee-schedules",
+    "global": false,
+    "owned": false
+  },
+  {
+    "model": "FRANCHISE_COMMISSION_PLAN",
+    "slots": {
+      "text1": "scope.level",
+      "text2": "scope.franchiseId",
+      "text3": "scope.cityCode",
+      "text4": "scope.vertical",
+      "text5": "planCode",
+      "text6": "planName",
+      "text14": "franchiseId",
+      "text15": "ownerUserId",
+      "date1": "effectiveFrom",
+      "date2": "effectiveTo",
+      "datetime1": "createdAt",
+      "datetime2": "updatedAt",
+      "text13": "searchText"
+    },
+    "filters": {
+      "scopeLevel": "text1",
+      "franchiseId": "text2",
+      "cityCode": "text3",
+      "vertical": "text4"
+    },
+    "path": "/api/v1/franchise/commission-plans",
+    "global": false,
+    "owned": false
+  },
+  {
+    "model": "FRANCHISE_REFERRAL_PLAN",
+    "slots": {
+      "text1": "scope.level",
+      "text2": "scope.franchiseId",
+      "text3": "scope.cityCode",
+      "text4": "scope.vertical",
+      "text5": "planCode",
+      "text6": "planName",
+      "text14": "franchiseId",
+      "text15": "ownerUserId",
+      "date1": "effectiveFrom",
+      "date2": "effectiveTo",
+      "datetime1": "createdAt",
+      "datetime2": "updatedAt",
+      "text13": "searchText"
+    },
+    "filters": {
+      "scopeLevel": "text1",
+      "franchiseId": "text2",
+      "cityCode": "text3",
+      "vertical": "text4"
+    },
+    "path": "/api/v1/franchise/referral-plans",
+    "global": false,
+    "owned": false
+  },
+  {
+    "model": "FRANCHISE_PAYOUT_RULE",
+    "slots": {
+      "text1": "scope.level",
+      "text2": "scope.franchiseId",
+      "text3": "scope.cityCode",
+      "text4": "scope.vertical",
+      "text14": "franchiseId",
+      "text15": "ownerUserId",
+      "date1": "effectiveFrom",
+      "date2": "effectiveTo",
+      "datetime1": "createdAt",
+      "datetime2": "updatedAt",
+      "text13": "searchText"
+    },
+    "filters": {
+      "scopeLevel": "text1",
+      "franchiseId": "text2",
+      "cityCode": "text3",
+      "vertical": "text4"
+    },
+    "path": "/api/v1/franchise/payout-rules",
+    "global": false,
+    "owned": false
+  },
+  {
+    "model": "FRANCHISE_EVENT_TYPE",
+    "slots": {
+      "text1": "code",
+      "text2": "applicationCode",
+      "text3": "description",
+      "text4": "active",
+      "text14": "franchiseId",
+      "text15": "ownerUserId",
+      "date1": "effectiveFrom",
+      "date2": "effectiveTo",
+      "datetime1": "createdAt",
+      "datetime2": "updatedAt",
+      "text13": "searchText"
+    },
+    "filters": {
+      "applicationCode": "text2",
+      "activeOnly": "text4"
+    },
+    "path": "/api/v1/franchise/event-types",
+    "global": false,
+    "owned": false
+  },
+  {
+    "model": "FRANCHISE_LOCATION",
+    "slots": {
+      "text1": "name",
+      "text2": "code",
+      "text3": "type",
+      "text4": "level",
+      "text5": "countryCode",
+      "text6": "parentId",
+      "text7": "active",
+      "text14": "franchiseId",
+      "text15": "ownerUserId",
+      "date1": "effectiveFrom",
+      "date2": "effectiveTo",
+      "datetime1": "createdAt",
+      "datetime2": "updatedAt",
+      "text8": "usable",
+      "text9": "ancestorIds",
+      "number1": "sortOrder",
+      "text13": "searchText"
+    },
+    "filters": {
+      "type": "text3",
+      "level": "text4",
+      "countryCode": "text5",
+      "parentId": "text6",
+      "active": "text7",
+      "usable": "text8"
+    },
+    "path": "/api/v1/franchise/locations",
+    "global": true,
+    "owned": false
+  },
+  {
+    "model": "FRANCHISE_LOCATION_CHILD",
+    "slots": {
+      "text1": "name",
+      "text2": "code",
+      "text3": "type",
+      "text4": "level",
+      "text5": "countryCode",
+      "text6": "parentId",
+      "text7": "active",
+      "text14": "franchiseId",
+      "text15": "ownerUserId",
+      "date1": "effectiveFrom",
+      "date2": "effectiveTo",
+      "datetime1": "createdAt",
+      "datetime2": "updatedAt",
+      "text8": "usable",
+      "text9": "ancestorIds",
+      "number1": "sortOrder",
+      "text13": "searchText"
+    },
+    "filters": {
+      "type": "text3",
+      "level": "text4",
+      "countryCode": "text5",
+      "active": "text7",
+      "usable": "text8"
+    },
+    "path": "/api/v1/franchise/locations/{id}/children",
+    "global": true,
+    "owned": false
+  },
+  {
+    "model": "FRANCHISE_PLACE_OPTION",
+    "slots": {
+      "text1": "name",
+      "text2": "code",
+      "text3": "type",
+      "text4": "level",
+      "text5": "countryCode",
+      "text6": "parentId",
+      "text7": "active",
+      "text14": "franchiseId",
+      "text15": "ownerUserId",
+      "date1": "effectiveFrom",
+      "date2": "effectiveTo",
+      "datetime1": "createdAt",
+      "datetime2": "updatedAt",
+      "text8": "usable",
+      "text9": "ancestorIds",
+      "number1": "sortOrder",
+      "text13": "searchText"
+    },
+    "filters": {
+      "type": "text3",
+      "level": "text4",
+      "countryCode": "text5",
+      "parentId": "text6",
+      "active": "text7",
+      "usable": "text8"
+    },
+    "path": "/api/v1/franchise/place-options",
+    "global": true,
+    "owned": false
+  },
+  {
+    "model": "FRANCHISE_PLACE_OPTION_CHILD",
+    "slots": {
+      "text1": "name",
+      "text2": "code",
+      "text3": "type",
+      "text4": "level",
+      "text5": "countryCode",
+      "text6": "parentId",
+      "text7": "active",
+      "text14": "franchiseId",
+      "text15": "ownerUserId",
+      "date1": "effectiveFrom",
+      "date2": "effectiveTo",
+      "datetime1": "createdAt",
+      "datetime2": "updatedAt",
+      "text8": "usable",
+      "text9": "ancestorIds",
+      "number1": "sortOrder",
+      "text13": "searchText"
+    },
+    "filters": {
+      "type": "text3",
+      "level": "text4",
+      "countryCode": "text5",
+      "active": "text7",
+      "usable": "text8"
+    },
+    "path": "/api/v1/franchise/place-options/{id}/children",
+    "global": true,
+    "owned": false
+  },
+  {
+    "model": "FRANCHISE_PACKAGE_TEMPLATE",
+    "slots": {
+      "text1": "name",
+      "text2": "code",
+      "text3": "applicationCode",
+      "text4": "active",
+      "text14": "franchiseId",
+      "text15": "ownerUserId",
+      "date1": "effectiveFrom",
+      "date2": "effectiveTo",
+      "datetime1": "createdAt",
+      "datetime2": "updatedAt",
+      "text13": "searchText"
+    },
+    "filters": {
+      "applicationCode": "text3",
+      "active": "text4"
+    },
+    "path": "/api/v1/franchise/package-templates",
+    "global": false,
+    "owned": false
+  },
+  {
+    "model": "FRANCHISE_DRIVER_SUBSCRIPTION_PLAN",
+    "slots": {
+      "text1": "name",
+      "text2": "period",
+      "text3": "active",
+      "text4": "price.code",
+      "text14": "franchiseId",
+      "text15": "ownerUserId",
+      "date1": "effectiveFrom",
+      "date2": "effectiveTo",
+      "datetime1": "createdAt",
+      "datetime2": "updatedAt",
+      "text13": "searchText"
+    },
+    "filters": {},
+    "path": "/api/v1/franchise/driver-subscription-plans",
+    "global": false,
+    "owned": false
+  },
+  {
+    "model": "FRANCHISE_DRIVER_SUBSCRIPTION",
+    "slots": {
+      "text1": "driverUserId",
+      "text2": "franchiseId",
+      "text3": "planId",
+      "text4": "status",
+      "text14": "franchiseId",
+      "text15": "ownerUserId",
+      "date1": "effectiveFrom",
+      "date2": "effectiveTo",
+      "datetime1": "createdAt",
+      "datetime2": "updatedAt",
+      "text13": "searchText"
+    },
+    "filters": {
+      "driverUserId": "text1",
+      "franchiseId": "text2",
+      "planId": "text3",
+      "status": "text4"
+    },
+    "path": "/api/v1/franchise/driver-subscriptions",
+    "global": false,
+    "owned": false
+  },
+  {
+    "model": "FRANCHISE_DRIVER_SUBSCRIPTION_CHARGE",
+    "slots": {
+      "text1": "subscriptionId",
+      "text2": "status",
+      "text3": "periodStart",
+      "text4": "periodEnd",
+      "text14": "franchiseId",
+      "text15": "ownerUserId",
+      "date1": "periodStart",
+      "date2": "periodEnd",
+      "datetime1": "createdAt",
+      "datetime2": "updatedAt",
+      "text13": "searchText",
+      "text12": "subscriptionId"
+    },
+    "filters": {
+      "subscriptionId": "text12"
+    },
+    "path": "/api/v1/franchise/driver-subscriptions/{subscriptionId}/charges",
+    "global": false,
+    "owned": false
+  },
+  {
+    "model": "FRANCHISE_LEDGER_ENTRY",
+    "slots": {
+      "text1": "franchiseId",
+      "text2": "party",
+      "text3": "partyRef",
+      "text4": "eventType",
+      "text5": "eventId",
+      "text6": "applicationCode",
+      "text14": "franchiseId",
+      "text15": "ownerUserId",
+      "date1": "effectiveFrom",
+      "date2": "effectiveTo",
+      "datetime1": "postedAt",
+      "datetime2": "updatedAt",
+      "text13": "searchText"
+    },
+    "filters": {
+      "franchiseId": "text1",
+      "party": "text2",
+      "partyRef": "text3",
+      "eventType": "text4"
+    },
+    "path": "/api/v1/franchise/ledger/entries",
+    "global": false,
+    "owned": false
+  },
+  {
+    "model": "FRANCHISE_PAYOUT",
+    "slots": {
+      "text1": "franchiseId",
+      "text2": "partyUserId",
+      "text3": "status",
+      "text14": "franchiseId",
+      "text15": "ownerUserId",
+      "date1": "effectiveFrom",
+      "date2": "effectiveTo",
+      "datetime1": "createdAt",
+      "datetime2": "updatedAt",
+      "text13": "searchText"
+    },
+    "filters": {
+      "franchiseId": "text1",
+      "partyUserId": "text2",
+      "status": "text3"
+    },
+    "path": "/api/v1/franchise/payouts",
+    "global": false,
+    "owned": false
+  },
+  {
+    "model": "FRANCHISE_SALE_RECONCILIATION",
+    "slots": {
+      "text1": "franchiseId",
+      "text2": "applicationCode",
+      "text3": "status",
+      "text14": "franchiseId",
+      "text15": "ownerUserId",
+      "date1": "businessDay",
+      "date2": "effectiveTo",
+      "datetime1": "createdAt",
+      "datetime2": "updatedAt",
+      "text13": "searchText"
+    },
+    "filters": {},
+    "path": "/api/v1/franchise/ledger/sale-checks/nightly",
+    "global": false,
+    "owned": false
+  },
+  {
+    "model": "FRANCHISE_MINE",
+    "slots": {
+      "text1": "code",
+      "text2": "name",
+      "text3": "status",
+      "text4": "ownerUserId",
+      "text14": "franchiseId",
+      "text15": "ownerUserId",
+      "date1": "effectiveFrom",
+      "date2": "effectiveTo",
+      "datetime1": "createdAt",
+      "datetime2": "updatedAt",
+      "text13": "searchText"
+    },
+    "filters": {},
+    "path": "/api/v1/franchise/mine",
+    "global": false,
+    "owned": true
+  }
+]

@@ -1,0 +1,32 @@
+// The bubble: dark on light themes and light on dark ones (it takes the page's ink and panel colours the other way round).
+// Override per app with --hq-tooltip-bg / --hq-tooltip-fg.
+:host {
+  display: block;
+  max-inline-size: min(280px, calc(100vw - 16px));
+  padding: 0.4rem 0.65rem;
+  border-radius: 8px;
+  background: var(--hq-tooltip-bg, color-mix(in srgb, var(--edu-ink, #1f2937) 94%, transparent));
+  color: var(--hq-tooltip-fg, var(--workspace-panel, #fff));
+  box-shadow: 0 4px 14px color-mix(in srgb, #000 18%, transparent);
+  font-family: var(--hq-font);
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1.35;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+  pointer-events: none;
+  animation: hq-tooltip-in 0.12s ease-out;
+}
+
+@keyframes hq-tooltip-in {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :host { animation: none; }
+}
+
+@media (forced-colors: active) {
+  :host { border: 1px solid CanvasText; }
+}

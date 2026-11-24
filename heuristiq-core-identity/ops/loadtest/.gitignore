@@ -1,0 +1,9 @@
+# The repository root ignores *.js (build output); these are the source of the k6 scripts and must be tracked.
+!*.js
+
+# Generated per environment, never committed: credentials sample (usernames, phones) and k6 result files.
+data/*
+!data/.gitkeep
+results/*
+!results/.gitkeep
+*.csv

@@ -1,0 +1,159 @@
+<div class="field-dialog">
+
+  <!-- Header -->
+  <div class="dialog-header">
+    <div class="d-flex align-items-center gap-2">
+      <i class="bi bi-input-cursor-text dialog-icon"></i>
+      <h2 class="dialog-title mb-0">{{ (isEdit ? 'onboardingForms.fieldDialog.titleEdit' : 'onboardingForms.fieldDialog.titleAdd') | translate }}</h2>
+    </div>
+    <button class="close-btn" type="button" (click)="cancel()" [title]="'onboardingForms.fieldDialog.close' | translate" [attr.aria-label]="'onboardingForms.fieldDialog.close' | translate">
+      <i class="bi bi-x-lg"></i>
+    </button>
+  </div>
+
+  <!-- Form -->
+  <form [formGroup]="form" (ngSubmit)="submit()" class="dialog-body">
+
+    <!-- Error alert -->
+    <hq-alert *ngIf="errorMessage" tone="danger" dense class="mb-4">{{ errorMessage }}</hq-alert>
+
+    <hq-form-grid cols="1" gap="md" class="mb-3">
+    <!-- Key -->
+    <hq-field
+      type="text"
+      required
+      [label]="'onboardingForms.fieldDialog.key' | translate"
+      [invalid]="!!keyError"
+      [error]="keyError"
+      [hint]="'onboardingForms.fieldDialog.keyHelper' | translate"
+      [placeholder]="'onboardingForms.fieldDialog.keyPlaceholder' | translate"
+      formControlName="key"></hq-field>
+
+    <!-- Label -->
+    <hq-field
+      type="text"
+      required
+      [label]="'onboardingForms.fieldDialog.label' | translate"
+      [invalid]="hasError('label', 'required')"
+      [error]="hasError('label', 'required') ? ('onboardingForms.fieldDialog.labelRequired' | translate) : null"
+      [placeholder]="'onboardingForms.fieldDialog.labelPlaceholder' | translate"
+      formControlName="label"></hq-field>
+
+    <!-- Type -->
+    <hq-form-field required [label]="'onboardingForms.fieldDialog.type' | translate">
+      <hq-searchable-select formControlName="type" [allowOther]="false" [ariaLabel]="'onboardingForms.fieldDialog.type' | translate">
+        <hq-ss-option *ngFor="let type of fieldTypes" [value]="type" [label]="'onboardingForms.fieldTypes.' + type | translate"></hq-ss-option>
+      </hq-searchable-select>
+    </hq-form-field>
+    </hq-form-grid>
+
+    <!-- Required -->
+    <div class="mb-3">
+      <hq-checkbox inputId="fieldRequired" formControlName="required">{{ 'onboardingForms.fieldDialog.requiredField' | translate }}</hq-checkbox>
+    </div>
+
+    <!-- Options (SELECT only) -->
+    <hq-form-field class="mb-3 d-block" *ngIf="isSelectType" required [label]="'onboardingForms.fieldDialog.options' | translate">
+      <div formArrayName="options" class="options-list">
+        <div class="option-row" *ngFor="let opt of optionsArray.controls; let i = index">
+          <hq-field type="text" [formControlName]="i" [placeholder]="'onboardingForms.fieldDialog.optionPlaceholder' | translate"></hq-field>
+          <button type="button" class="icon-btn danger" (click)="removeOption(i)" [attr.aria-label]="'onboardingForms.fieldDialog.removeOption' | translate">
+            <i class="bi bi-trash"></i>
+          </button>
+        </div>
+      </div>
+      <button hqButton="secondary" type="button" class="mt-2 add-option-btn" (click)="addOption()">
+        <i class="bi bi-plus-lg"></i> {{ 'onboardingForms.fieldDialog.addOption' | translate }}
+      </button>
+    </hq-form-field>
+
+    <!-- Document type (DOCUMENT only): its file rules apply to the upload and its category becomes the field's -->
+    <hq-form-field class="mb-3 d-block" *ngIf="isDocumentType" for="fd-document-type"
+                    [label]="'onboardingForms.fieldDialog.documentType' | translate"
+                    [hint]="documentTypesFailed ? '' : ('onboardingForms.fieldDialog.documentTypeHelper' | translate)"
+                    [error]="documentTypesFailed ? ('onboardingForms.fieldDialog.documentTypesFailed' | translate) : null">
+      <hq-searchable-select inputId="fd-document-type" formControlName="documentType" data-testid="field-document-type" [allowOther]="false"
+                             [placeholder]="'onboardingForms.fieldDialog.documentTypeNone' | translate"
+                             [ariaLabel]="'onboardingForms.fieldDialog.documentType' | translate">
+        <hq-ss-option value="" [label]="'onboardingForms.fieldDialog.documentTypeNone' | translate"></hq-ss-option>
+        <hq-ss-option *ngFor="let t of documentTypes" [value]="t.code" [label]="t.label"></hq-ss-option>
+      </hq-searchable-select>
+    </hq-form-field>
+
+    <!-- Document category (DOCUMENT only); follows the document type when one is chosen -->
+    <hq-field
+      *ngIf="isDocumentType"
+      class="mb-3 d-block"
+      type="text"
+      [label]="'onboardingForms.fieldDialog.documentCategory' | translate"
+      [hint]="(categoryFromType ? 'onboardingForms.fieldDialog.documentCategoryFromType' : 'onboardingForms.fieldDialog.documentCategoryHelper') | translate"
+      [placeholder]="'onboardingForms.fieldDialog.documentCategoryPlaceholder' | translate"
+      formControlName="documentCategory"></hq-field>
+
+    <!-- Custom pattern (TEXT/PHONE/EMAIL only) -->
+    <ng-container *ngIf="isTextLikeType">
+      <hq-form-grid cols="1" gap="md" class="mb-3">
+        <hq-field
+          type="text"
+          [label]="'onboardingForms.fieldDialog.pattern' | translate"
+          [invalid]="!!patternError"
+          [error]="patternError"
+          [hint]="'onboardingForms.fieldDialog.patternHelper' | translate"
+          [placeholder]="'onboardingForms.fieldDialog.patternPlaceholder' | translate"
+          formControlName="pattern"></hq-field>
+        <hq-field
+          type="text"
+          [label]="'onboardingForms.fieldDialog.patternErrorMessage' | translate"
+          [placeholder]="'onboardingForms.fieldDialog.patternErrorMessagePlaceholder' | translate"
+          formControlName="patternErrorMessage"></hq-field>
+        <hq-form-field [error]="rangeError(['lengthRange', 'lengthNegative'])">
+          <hq-form-grid cols="2" gap="sm">
+            <hq-field type="number" min="0" [label]="'onboardingForms.fieldDialog.minLength' | translate" formControlName="minLength"></hq-field>
+            <hq-field type="number" min="0" [label]="'onboardingForms.fieldDialog.maxLength' | translate" formControlName="maxLength"></hq-field>
+          </hq-form-grid>
+        </hq-form-field>
+      </hq-form-grid>
+    </ng-container>
+
+    <!-- Range (NUMBER/CURRENCY only) -->
+    <hq-form-field class="mb-3 d-block" *ngIf="isNumericType" [error]="rangeError(['valueRange'])">
+      <hq-form-grid cols="2" gap="sm">
+        <hq-field type="number" [label]="'onboardingForms.fieldDialog.minValue' | translate" formControlName="minValue"></hq-field>
+        <hq-field type="number" [label]="'onboardingForms.fieldDialog.maxValue' | translate" formControlName="maxValue"></hq-field>
+      </hq-form-grid>
+    </hq-form-field>
+
+    <!-- Date rules (DATE only) -->
+    <ng-container *ngIf="isDateType">
+      <hq-form-grid cols="1" gap="sm" class="mb-3 d-block">
+        <hq-form-field [label]="'onboardingForms.fieldDialog.dateRange' | translate" [hint]="'onboardingForms.fieldDialog.dateRulesHint' | translate">
+          <hq-searchable-select inputId="field-date-range" formControlName="dateRange" [allowOther]="false" [showUnavailableNotice]="false">
+            <hq-ss-option value="" [label]="'onboardingForms.fieldDialog.dateAny' | translate"></hq-ss-option>
+            <hq-ss-option value="PAST" [label]="'onboardingForms.fieldDialog.datePast' | translate"></hq-ss-option>
+            <hq-ss-option value="FUTURE" [label]="'onboardingForms.fieldDialog.dateFuture' | translate"></hq-ss-option>
+          </hq-searchable-select>
+        </hq-form-field>
+        <hq-form-field [error]="rangeError(['ageRange', 'ageNegative', 'ageWithFuture'])">
+          <hq-form-grid cols="2" gap="sm">
+            <hq-field type="number" min="0" [label]="'onboardingForms.fieldDialog.minAgeYears' | translate" formControlName="minAgeYears"></hq-field>
+            <hq-field type="number" min="0" [label]="'onboardingForms.fieldDialog.maxAgeYears' | translate" formControlName="maxAgeYears"></hq-field>
+          </hq-form-grid>
+        </hq-form-field>
+      </hq-form-grid>
+    </ng-container>
+
+    <!-- Actions -->
+    <hq-form-actions align="end" class="pt-3 border-top">
+      <hq-status-badge tone="warning" *ngIf="hasChanges">
+        <i class="bi bi-dot"></i> {{ 'shared.adminCrud.unsavedChanges' | translate }}
+      </hq-status-badge>
+      <button hqButton="secondary" type="button" class="flex-fill" (click)="cancel()">
+        {{ 'shared.adminCrud.cancel' | translate }}
+      </button>
+      <button hqButton="accent" type="submit" class="flex-fill" [disabled]="!canSubmit">
+        {{ (isEdit ? 'onboardingForms.fieldDialog.saveField' : 'onboardingForms.fieldDialog.addField') | translate }}
+      </button>
+    </hq-form-actions>
+
+  </form>
+</div>

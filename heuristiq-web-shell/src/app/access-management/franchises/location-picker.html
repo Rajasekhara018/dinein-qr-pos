@@ -1,0 +1,27 @@
+<div class="location-picker">
+  <p class="franchise-hint" *ngIf="!countryCode">{{ 'accessManagement.franchiseLocations.picker.chooseCountry' | translate }}</p>
+  <hq-error-state *ngIf="failed" [title]="'accessManagement.franchiseLocations.picker.loadFailed' | translate"></hq-error-state>
+  <div class="location-picker__level" *ngFor="let level of levels; let i = index">
+    <hq-searchable-select
+      [ngModel]="level.selectedId"
+      (ngModelChange)="choose(i, $event)"
+      [name]="'pickerLevel' + i"
+      [disabled]="disabled"
+      [allowOther]="false"
+      [placeholder]="(i === 0 ? 'accessManagement.franchiseLocations.picker.chooseFirst' : 'accessManagement.franchiseLocations.picker.chooseNext') | translate">
+      <hq-ss-option *ngFor="let place of level.options" [value]="place.id" [label]="place.name + ' (' + typeLabel(place.type) + ')'"></hq-ss-option>
+    </hq-searchable-select>
+    <hq-field
+           type="search"
+           class="location-picker__search"
+           *ngIf="level.total > level.options.length || level.q"
+           [value]="level.q"
+           [disabled]="disabled"
+           [placeholder]="'accessManagement.franchiseLocations.picker.search' | translate"
+           (change)="onSearch(i, $event)"></hq-field>
+    <small class="franchise-hint" *ngIf="level.total > level.options.length">
+      {{ 'accessManagement.franchiseLocations.picker.more' | translate: { shown: level.options.length, total: level.total } }}
+    </small>
+  </div>
+  <small class="franchise-hint" *ngIf="loading">{{ 'accessManagement.franchises.loading' | translate }}</small>
+</div>

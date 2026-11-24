@@ -1,0 +1,37 @@
+<section class="jd-viewer" *ngIf="service">
+  <div class="jd-viewer__bar">
+    <button hqButton="secondary" appearance="outline" size="sm" type="button" (click)="back()">
+      <i class="bi bi-arrow-left me-1"></i>{{ 'apiDocs.javaDocs.backToList' | translate }}
+    </button>
+    <div class="jd-viewer__title">
+      <span class="jd-viewer__kicker">{{ 'apiDocs.javaDocs.title' | translate }}</span>
+      <strong>{{ service.name }}</strong>
+    </div>
+    <div class="jd-viewer__actions">
+      <button hqButton="secondary" appearance="outline" size="sm" type="button" (click)="reload()">
+        <i class="bi bi-arrow-clockwise me-1"></i>{{ 'apiDocs.javaDocs.reload' | translate }}
+      </button>
+      <a hqButton="primary" appearance="outline" size="sm" [href]="docUrl" target="_blank" rel="noopener noreferrer">
+        <i class="bi bi-box-arrow-up-right me-1"></i>{{ 'apiDocs.javaDocs.openInNewTab' | translate }}
+      </a>
+    </div>
+  </div>
+
+  <p class="jd-viewer__hint">{{ 'apiDocs.javaDocs.frameHint' | translate }}</p>
+
+  <div class="jd-viewer__frame">
+    <hq-loading-state *ngIf="loading" [label]="'apiDocs.javaDocs.loading' | translate"></hq-loading-state>
+    <div class="jd-viewer__unavailable" *ngIf="unavailable">
+      <i class="bi bi-exclamation-triangle"></i>
+      <p>{{ 'apiDocs.javaDocs.unavailable' | translate }}</p>
+      <div class="d-flex gap-2 justify-content-center">
+        <button hqButton="secondary" appearance="outline" size="sm" type="button" (click)="back()">{{ 'apiDocs.javaDocs.backToList' | translate }}</button>
+        <button hqButton="primary" size="sm" type="button" (click)="reload()">{{ 'apiDocs.javaDocs.reload' | translate }}</button>
+      </div>
+    </div>
+    <iframe *ngIf="frameUrl"
+            [src]="frameUrl"
+            [title]="service.name + ' ' + ('apiDocs.javaDocs.title' | translate)"
+            (load)="onFrameLoad($event)" [class.jd-viewer__frame-hidden]="unavailable"></iframe>
+  </div>
+</section>

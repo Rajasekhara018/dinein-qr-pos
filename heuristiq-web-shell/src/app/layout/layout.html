@@ -1,0 +1,37 @@
+<div class="route-progress-bar" [class.active]="routeLoading"></div>
+<div class="layout-wrapper">
+  <!-- Mobile overlay -->
+  <div
+    *ngIf="mobileOpen"
+    class="mobile-overlay"
+    role="button"
+    tabindex="0"
+    [attr.aria-label]="'sidebar.close' | translate"
+    (click)="closeMobile()"
+    (keyup.enter)="closeMobile()"
+    (keyup.space)="closeMobile()"
+  ></div>
+
+  <!-- Sidebar (hidden during a mandatory change-password visit -- see Layout.hideSidebar) -->
+  <app-sidebar
+    *ngIf="!hideSidebar"
+    [collapsed]="collapsed"
+    [mobileOpen]="mobileOpen"
+    (toggle)="toggleSidebar()"
+    (closeMobile)="closeMobile()"
+  ></app-sidebar>
+
+  <!-- Main content -->
+  <div class="main-content" [class.sidebar-collapsed]="collapsed" [class.sidebar-hidden]="hideSidebar">
+    <app-header
+      [title]="pageTitleKey ? (pageTitleKey | translate) : branding.appName"
+      [breadcrumbs]="breadcrumbs"
+      [hideMenuButton]="hideSidebar"
+      (menuClick)="openMobile()"
+    ></app-header>
+
+    <main class="page-content" [class.page-content--full-bleed]="isFullBleed">
+      <router-outlet *ngIf="showPage"></router-outlet>
+    </main>
+  </div>
+</div>

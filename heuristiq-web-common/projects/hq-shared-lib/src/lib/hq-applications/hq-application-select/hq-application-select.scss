@@ -1,0 +1,35 @@
+// Same look as the library's other form controls (hq-address-input, hq-phone-number-input).
+.application-select {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.application-select__label {
+  font-weight: 600;
+  color: var(--edu-ink);
+  margin-bottom: 0;
+  font-family: var(--hq-font);
+}
+
+.application-select__required {
+  color: #dc2626;
+  margin-left: 0.25rem;
+}
+
+
+
+
+.application-select__message {
+  color: var(--field-placeholder);
+  font-size: 0.8rem;
+}
+
+.application-select__message.is-error {
+  color: #b91c1c;
+  font-weight: 500;
+}
+
+.is-disabled {
+  opacity: 0.75;
+}

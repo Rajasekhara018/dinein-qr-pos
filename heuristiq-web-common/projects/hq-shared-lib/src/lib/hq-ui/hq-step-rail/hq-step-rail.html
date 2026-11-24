@@ -1,0 +1,53 @@
+<div class="rsr">
+  <div class="rsr__layout">
+    <nav class="rsr__rail" [attr.aria-label]="texts.ariaLabel">
+      <div class="rsr__head">
+        <span class="rsr__count">{{ texts.stepOf }}</span>
+        <div class="rsr__bar" role="progressbar" [attr.aria-valuenow]="boundedPercent" aria-valuemin="0" aria-valuemax="100"
+             [attr.aria-label]="texts.progress">
+          <span class="rsr__fill" [style.width.%]="boundedPercent"></span>
+        </div>
+        <span class="rsr__percent" aria-hidden="true">{{ texts.progress }}</span>
+      </div>
+
+      <!-- narrow screens: the current step and a "go to step" picker -->
+      <div class="rsr__compact">
+        <p class="rsr__compact-title" *ngIf="currentStep as cur">
+          <i class="bi" [ngClass]="cur.icon || 'bi-list-check'" aria-hidden="true"></i>
+          <span>{{ numberOf(cur) }}. {{ cur.label }}</span>
+        </p>
+        <hq-searchable-select class="rsr__jump" inputId="rsr-jump" [ngModel]="current" (ngModelChange)="jump($event)"
+                               [allowOther]="false" [showUnavailableNotice]="false" [placeholder]="texts.jumpTo" [ariaLabel]="texts.jumpTo">
+          <hq-ss-option *ngFor="let step of steps; trackBy: trackById" [value]="step.id" [label]="numberOf(step) + '. ' + step.label"
+                         [disabled]="stateOf(step) === 'locked'"></hq-ss-option>
+        </hq-searchable-select>
+      </div>
+
+      <!-- wide screens: the vertical list -->
+      <ol class="rsr__list">
+        <li class="rsr__item" *ngFor="let step of steps; let last = last; trackBy: trackById"
+            [class.is-last]="last" [class.is-done]="stateOf(step) === 'done'">
+          <button type="button" class="rsr__step" [class.is-current]="step.id === current" [class.is-done]="stateOf(step) === 'done'"
+                  [class.is-locked]="stateOf(step) === 'locked'" [disabled]="stateOf(step) === 'locked'"
+                  [attr.aria-current]="step.id === current ? 'step' : null" [attr.data-testid]="'rsr-step-' + step.id" (click)="open(step)">
+            <span class="rsr__num" aria-hidden="true">
+              <i class="bi bi-check-lg" *ngIf="stateOf(step) === 'done' && step.id !== current; else stepNumber"></i>
+              <ng-template #stepNumber>{{ numberOf(step) }}</ng-template>
+            </span>
+            <span class="rsr__text">
+              <span class="rsr__label">{{ step.label }}</span>
+              <span class="rsr__summary" *ngIf="step.summary">{{ step.summary }}</span>
+            </span>
+            <span class="rsr__sr">{{ stateLabel(step) }}</span>
+          </button>
+        </li>
+      </ol>
+
+      <p class="rsr__note" *ngIf="texts.note"><i class="bi bi-cloud-check" aria-hidden="true"></i><span>{{ texts.note }}</span></p>
+    </nav>
+
+    <div class="rsr__panel">
+      <ng-content></ng-content>
+    </div>
+  </div>
+</div>

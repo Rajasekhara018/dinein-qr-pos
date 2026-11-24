@@ -1,0 +1,513 @@
+// The search-and-pick popup, drawn like the common lookup popup (hq-common-model): title and a tonal Close button, the picked
+// chips, search-scope chips, a search box (the shared hq-field) with a SEARCH link, a bordered table that always fits the dialog
+// (fixed layout, ellipsis, a visible selection column), and a footer with the paging.
+// Colours come from the theme tokens, so every theme and dark mode follow. Spacing follows an 8px scale.
+
+$accent: var(--hq-link, #003580);
+$tint: color-mix(in srgb, var(--hq-link, #003580) 14%, transparent);
+$tint-soft: color-mix(in srgb, var(--hq-link, #003580) 8%, transparent);
+$ink: var(--edu-ink, #1b2a4a);
+$muted: var(--edu-muted, #5a6a7e);
+$line: var(--field-border, #cbd5e1);
+$hairline: color-mix(in srgb, var(--field-border, #cbd5e1) 60%, transparent);
+$soft: color-mix(in srgb, var(--edu-muted, #5a6a7e) 9%, var(--workspace-panel, #fff));
+$panel: var(--workspace-panel, #fff);
+
+.lookup {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-height: 90vh;
+  padding: 24px 32px 24px;
+  background: $panel;
+  border-radius: var(--hq-popup-radius, 22px);
+  overflow: hidden;
+  color: $ink;
+  font-family: var(--hq-font);
+}
+
+// ---- header ---------------------------------------------------------------------------------
+.lookup__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.lookup__heading {
+  flex: 1;
+  min-width: 0;
+
+  h2 { margin: 0; color: $ink; font-size: 1.6rem; font-weight: 600; line-height: 1.2; letter-spacing: -0.01em; }
+  p { margin: 8px 0 0; color: $muted; font-size: 0.95rem; }
+}
+
+// CLOSE: a tonal button in the accent colour.
+.lookup__x {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  padding: 8px 16px;
+  border: 0;
+  border-radius: 8px;
+  background: $tint;
+  color: $accent;
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.15s;
+
+  &:hover { background: color-mix(in srgb, var(--hq-link, #003580) 22%, transparent); }
+  &:focus-visible { outline: 2px solid $accent; outline-offset: 2px; }
+}
+
+.lookup__rule { height: 1px; background: $hairline; margin: -8px 0; }
+
+// ---- selection chips ------------------------------------------------------------------------
+.lookup__chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  max-height: 96px;
+  overflow: auto;
+}
+
+.lookup__count { color: $muted; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; }
+
+.lookup__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 8px 4px 4px;
+  border-radius: 999px;
+  background: $tint-soft;
+  border: 1px solid $tint;
+  color: $ink;
+  font-size: 0.85rem;
+
+  button { border: 0; background: transparent; color: $muted; cursor: pointer; padding: 0 4px; border-radius: 50%; &:hover { color: #b91c1c; } &:focus-visible { outline: 2px solid $accent; } }
+}
+
+.lookup__chip-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: $accent;
+  color: #fff;
+  font-size: 0.65rem;
+  font-weight: 700;
+}
+
+// Text buttons (SEARCH, CLEAR RESULT, Clear selection) in the accent colour.
+.lookup__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 0;
+  background: transparent;
+  color: $accent;
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  white-space: nowrap;
+
+  &:hover { text-decoration: underline; text-underline-offset: 3px; }
+  &:focus-visible { outline: 2px solid $accent; outline-offset: 2px; border-radius: 4px; }
+}
+
+// ---- search scope: "All fields" or one column -------------------------------------------------
+.lookup__scopes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: -4px;
+}
+
+.lookup__scope {
+  padding: 4px 16px;
+  min-height: 32px;
+  border: 1px solid $line;
+  border-radius: 999px;
+  background: transparent;
+  color: $ink;
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+
+  &:hover { background: $tint-soft; border-color: $accent; }
+  &:focus-visible { outline: 2px solid $accent; outline-offset: 2px; }
+
+  &.is-active {
+    background: $accent;
+    border-color: $accent;
+    color: #fff;
+  }
+}
+
+// ---- search ---------------------------------------------------------------------------------
+.lookup__search {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+}
+
+// The field is the shared hq-field: same height, border, radius and focus ring as every other control.
+.lookup__field {
+  flex: 0 1 360px;
+  min-width: 220px;
+}
+
+.lookup__clear {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  margin-inline-start: -8px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: $muted;
+  cursor: pointer;
+
+  &:hover { background: $tint; color: $ink; }
+  &:focus-visible { outline: 2px solid $accent; }
+}
+
+.lookup__total {
+  padding: 4px 16px;
+  border-radius: 999px;
+  background: $tint;
+  color: $accent;
+  font-size: 0.8rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.lookup__showing {
+  margin: -8px 0 0;
+  color: $muted;
+  font-size: 0.95rem;
+
+  b { color: $ink; }
+}
+
+// ---- table ----------------------------------------------------------------------------------
+// The results are the shared hq-common-table, so colours, header, hover and separators come from the app's table theme
+// (--theme-table-*). The dialog only fits it to the popup: no forced 900px width, fixed layout with ellipsis, the dialog body is
+// the one scroller (the common header sticks to it), and the selection / pick columns keep a fixed width so they never leave the view.
+.lookup__body {
+  flex: 1;
+  min-height: 120px;
+  overflow: auto;
+  border: 1px solid $line;
+  border-radius: 12px 12px 0 0;
+  background: $panel;
+}
+.lookup__body:empty { display: none; }
+
+.lookup__list {
+  transition: opacity 0.15s;
+
+  ::ng-deep .table-frame { border: 0; border-radius: 0; overflow: visible; background: transparent; }
+
+  ::ng-deep .common-table {
+    min-width: 0;
+    table-layout: fixed;
+
+    thead th {
+      height: 48px;
+      padding-block: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    tbody td {
+      height: 52px;
+      padding-block: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-variant-numeric: tabular-nums;
+      color: $muted;
+    }
+
+    tbody tr { cursor: pointer; }
+    tbody tr:focus-visible { outline: 2px solid $accent; outline-offset: -2px; }
+  }
+
+  // The header casts a soft shadow once the rows scroll under it.
+  ::ng-deep .common-table thead th { transition: box-shadow 0.15s; }
+}
+.lookup__body--scrolled .lookup__list ::ng-deep .common-table thead th { box-shadow: 0 6px 8px -6px color-mix(in srgb, var(--edu-ink, #1b2a4a) 35%, transparent); }
+
+.lookup__list--loading { opacity: 0.55; }
+
+// The first column takes the most room; the selection and pick columns have a fixed width.
+.lookup__list ::ng-deep .lookup__col-lead { width: 36%; color: $ink; }
+.lookup__list ::ng-deep .lookup__col-select { width: 56px; padding-inline: 16px 8px; }
+.lookup__list ::ng-deep .lookup__col-pick { width: 72px; text-align: right; }
+
+// A chosen record: a tint and an accent bar on its left edge.
+.lookup__list ::ng-deep tr.lookup__row--chosen > td { background: $tint-soft; }
+.lookup__list ::ng-deep tr.lookup__row--chosen > td:first-child { box-shadow: inset 3px 0 0 $accent; }
+.lookup__list ::ng-deep tr.lookup__row--chosen:hover > td { background: $tint !important; }
+
+// The first column is the record's headline: a round initials avatar, then the name.
+.lookup__avatar {
+  display: inline-grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  margin-inline-end: 12px;
+  border-radius: 50%;
+  background: $tint;
+  color: $accent;
+  font-size: 0.7rem;
+  font-weight: 700;
+  vertical-align: middle;
+
+  &::before { content: attr(data-initials); }
+}
+.lookup__name { font-weight: 600; color: $ink; vertical-align: middle; }
+
+// The round pick button at the end of a row (single choice); filled once the row is picked.
+.lookup__tick {
+  display: inline-grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: $accent;
+  color: #fff;
+  font-size: 1rem;
+  transition: background 0.12s, opacity 0.12s, transform 0.12s;
+}
+
+.lookup__list ::ng-deep tr:not(.lookup__row--chosen) .lookup__tick { opacity: 0.85; }
+.lookup__list ::ng-deep tr:hover .lookup__tick { transform: scale(1.06); }
+.lookup__tick--on { background: color-mix(in srgb, var(--hq-link, #003580) 70%, #000); }
+
+// The checkbox of a multi-select, in the header (this page) and on each row.
+.lookup__check {
+  display: inline-grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 1.5px solid $line;
+  border-radius: 6px;
+  background: $panel;
+  color: #fff;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: background 0.12s, border-color 0.12s;
+
+  &:hover { border-color: $accent; }
+  &:focus-visible { outline: 2px solid $accent; outline-offset: 2px; }
+}
+.lookup__check--on, .lookup__check--some { background: $accent; border-color: $accent; }
+
+// In a multi-select row the tick is the checkbox, not a filled round button.
+.lookup__list ::ng-deep td.lookup__col-select .lookup__tick {
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  opacity: 1;
+  transform: none;
+  background: $panel;
+  border: 1.5px solid $line;
+  color: #fff;
+
+  &.lookup__tick--on { background: $accent; border-color: $accent; }
+}
+
+// Loading placeholder rows (the common table has none): same row height as the table's.
+.lookup__skeleton { display: flex; flex-direction: column; }
+.lookup__row--skeleton {
+  display: flex;
+  align-items: center;
+  height: 52px;
+  padding: 0 16px;
+  border-bottom: 1px solid $hairline;
+  cursor: default;
+
+  .lookup__shimmer { flex: 1; }
+}
+
+// ---- loading / empty / error ----------------------------------------------------------------
+.lookup__shimmer {
+  display: block;
+  height: 14px;
+  border-radius: 6px;
+  background: linear-gradient(90deg, #eef0f3 25%, #f8f9fb 50%, #eef0f3 75%);
+  background-size: 200% 100%;
+  animation: lookup-shimmer 1.2s infinite linear;
+}
+
+@keyframes lookup-shimmer {
+  from { background-position: 200% 0; }
+  to { background-position: -200% 0; }
+}
+
+.lookup__state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 48px 24px;
+  text-align: center;
+  color: $muted;
+
+  i { font-size: 2.2rem; opacity: 0.55; }
+  p { margin: 0; font-size: 0.95rem; color: $ink; font-weight: 600; }
+  small { max-width: 420px; font-size: 0.8rem; word-break: break-word; }
+}
+
+.lookup__state--error i { color: #b91c1c; opacity: 0.85; }
+
+.lookup__retry {
+  margin-top: 8px;
+  padding: 8px 24px;
+  border: 1.5px solid $accent;
+  border-radius: 999px;
+  background: transparent;
+  color: $accent;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+
+  &:hover { background: $accent; color: #fff; }
+}
+
+// ---- footer ---------------------------------------------------------------------------------
+.lookup__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: -16px;
+  padding: 8px 16px;
+  border: 1px solid $line;
+  border-radius: 0 0 12px 12px;
+  background: $panel;
+}
+
+.lookup__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding-top: 8px;
+  border-top: 1px solid $hairline;
+}
+
+.btn {
+  min-width: 112px;
+  border-radius: 8px;
+  padding: 8px 24px;
+  font-weight: 700;
+  transition: transform 0.12s, box-shadow 0.15s, background 0.15s;
+
+  &:not(:disabled):hover { transform: translateY(-1px); }
+  &:disabled { opacity: 0.5; cursor: not-allowed; }
+}
+
+.btn-confirm {
+  border: 1px solid $accent;
+  background: $accent;
+  color: #fff;
+  box-shadow: 0 6px 14px -8px color-mix(in srgb, var(--hq-link, #003580) 70%, transparent);
+}
+.lookup__confirm-count { margin-inline-start: 4px; padding: 0 8px; border-radius: 999px; background: rgb(255 255 255 / 22%); font-variant-numeric: tabular-nums; }
+
+// ---- narrow screens: the dialog body scrolls sideways if it must, and the selection column stays in view -----
+@media (max-width: 640px) {
+  .lookup { padding: 16px; gap: 8px; }
+  .lookup__list ::ng-deep .common-table { min-width: 520px; }
+  .lookup__list ::ng-deep th.lookup__col-select, .lookup__list ::ng-deep td.lookup__col-select { position: sticky; left: 0; z-index: 2; background: $panel; }
+  .lookup__list ::ng-deep th.lookup__col-pick, .lookup__list ::ng-deep td.lookup__col-pick { position: sticky; right: 0; z-index: 2; background: $panel; }
+  .lookup__field { flex-basis: 100%; }
+}
+
+// ---- Advanced conditions (only with `advanced` on): the chips row gains a "+ Add conditions" link, and the rows below
+// replace the quick search. Same layout as the common lookup popup's condition rows.
+.lookup__modes {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+}
+
+.lookup__more {
+  margin-inline-start: auto;
+}
+
+.lookup__advanced {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.lookup__advanced-bar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+}
+
+.lookup__hint {
+  margin: 0;
+  font-size: 0.9rem;
+  color: $muted;
+}
+
+.lookup__condition {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 140px minmax(0, 1fr) 36px;
+  align-items: center;
+  gap: 12px;
+  margin-block-start: 12px;
+  padding: 12px;
+  border: 1px solid var(--workspace-border, #dce2ea);
+  border-radius: 10px;
+  background: var(--workspace-panel, #fff);
+}
+
+.lookup__join {
+  grid-column: 1 / -1;
+  width: 100px;
+  min-width: 0;
+}
+
+.lookup__op,
+.lookup__cond-field {
+  width: 100%;
+  min-width: 0;
+}
+
+.lookup__remove {
+  justify-self: end;
+}
+
+@media (max-width: 600px) {
+  .lookup__condition {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 10px;
+  }
+}

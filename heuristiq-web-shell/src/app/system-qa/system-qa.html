@@ -1,0 +1,298 @@
+<hq-page-header
+  [kicker]="'nav.sections.adminSystem' | translate"
+  [title]="'systemQa.title' | translate"
+  [subtitle]="'systemQa.subtitle' | translate"
+  [loading]="isLoadingRuns || isLoadingDetail || isLoadingDocuments || isLoadingDocument"
+  [loadingLabel]="'shared.pageHeader.loading' | translate">
+</hq-page-header>
+
+<hq-tabs class="qa-tabs" [value]="tab" (valueChange)="selectTab($any($event))" [ariaLabel]="'systemQa.tabs.label' | translate">
+  <hq-tab *hqHasPrivilege="privileges.runList" class="qa-tab--runs" value="runs" [label]="'systemQa.tabs.runs' | translate"></hq-tab>
+  <ng-container *hqHasPrivilege="privileges.runRead">
+    <hq-tab *ngIf="selected || detailError" class="qa-tab--detail" value="detail" [label]="'systemQa.tabs.detail' | translate"></hq-tab>
+  </ng-container>
+  <hq-tab *hqHasPrivilege="privileges.documentList" class="qa-tab--documents" value="documents" [label]="'systemQa.tabs.documents' | translate"></hq-tab>
+</hq-tabs>
+
+<!-- Runs -->
+<ng-container *ngIf="tab === 'runs'">
+  <ng-container *hqHasPrivilege="privileges.runList">
+    <div class="table-surface qa-toolbar">
+      <div class="table-surface__header">
+        <div class="table-heading">
+          <span class="table-kicker">{{ 'shared.listPage.total' | translate: { count: totalElements } }}</span>
+        </div>
+        <div class="qa-actions">
+          <hq-searchable-select
+            class="qa-env"
+            [(ngModel)]="environment"
+            (ngModelChange)="onEnvironmentChange()"
+            [ariaLabel]="'systemQa.filters.environment' | translate"
+            [allowOther]="false"
+            [placeholder]="'systemQa.filters.anyEnvironment' | translate">
+            <hq-ss-option *ngFor="let e of environments" [value]="e" [label]="environmentLabel(e)"></hq-ss-option>
+          </hq-searchable-select>
+          <button hqButton="secondary" type="button" class="qa-refresh" (click)="reload()" [disabled]="isLoadingRuns">
+            <i class="bi bi-arrow-clockwise"></i> {{ 'systemQa.refresh' | translate }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <hq-error-state *ngIf="runsError" [title]="'systemQa.runs.loadFailed' | translate" (retry)="reload()"></hq-error-state>
+    <hq-loading-state *ngIf="isLoadingRuns && runs.length === 0 && !runsError" [label]="'systemQa.loading' | translate"></hq-loading-state>
+    <hq-empty-state *ngIf="!isLoadingRuns && !runsError && runs.length === 0" [title]="'systemQa.runs.empty' | translate"></hq-empty-state>
+
+    <div class="table-surface" *ngIf="runs.length > 0">
+      <div class="table-surface__body">
+        <div class="qa-table-wrap">
+          <hq-common-table [columns]="runColumns" [rows]="runs" [actionsLabel]="'systemQa.columns.actions' | translate"
+                            [rowClass]="runRowClass">
+            <ng-template hqCell="environment" let-run>{{ environmentLabel(run.environment) }}</ng-template>
+            <ng-template hqCell="status" let-run><hq-status-badge [tone]="statusTone(run.status)">{{ statusLabel(run.status) }}</hq-status-badge></ng-template>
+            <ng-template hqCell="tags" let-run><span class="qa-mono">{{ run.tags || '—' }}</span></ng-template>
+            <ng-template hqCell="passed" let-run>{{ run.passed }}</ng-template>
+            <ng-template hqCell="failed" let-run>{{ run.failed }}</ng-template>
+            <ng-template hqCell="skipped" let-run>{{ run.skipped }}</ng-template>
+            <ng-template hqCell="duration" let-run>{{ durationText(run.durationMs) }}</ng-template>
+            <ng-template hqCell="started" let-run>{{ run.startedAt | hqDate:'medium' }}</ng-template>
+            <ng-template #rowActions let-run>
+              <span class="qa-actions">
+                <ng-container *hqHasPrivilege="privileges.runRead">
+                  <button hqButton="secondary" type="button" class="qa-open" (click)="openRun(run.id)" [disabled]="isLoadingDetail">
+                    {{ 'systemQa.runs.open' | translate }}
+                  </button>
+                </ng-container>
+                <a hqButton="secondary" *ngIf="reportLink(run) as link" class="qa-report" [href]="link" target="_blank" [attr.rel]="linkRel">
+                  <i class="bi bi-box-arrow-up-right"></i> {{ 'qaDashboard.openReport' | translate }}
+                </a>
+                <a *ngIf="jenkinsLink(run) as link" class="qa-jenkins" [href]="link" target="_blank" [attr.rel]="linkRel">
+                  {{ 'systemQa.runs.jenkins' | translate: { build: run.jenkinsBuildNumber } }}
+                </a>
+                <ng-container *ngIf="run.documentId">
+                  <ng-container *hqHasPrivilege="privileges.dmsMetadataRead">
+                    <ng-container *hqHasPrivilege="privileges.dmsDownloadUrl">
+                      <button hqButton="secondary" type="button" class="qa-pdf" (click)="openPdf(run)" [disabled]="openingPdfFor !== null">
+                        <i class="bi bi-file-earmark-pdf"></i> {{ 'systemQa.runs.document' | translate }}
+                      </button>
+                    </ng-container>
+                  </ng-container>
+                </ng-container>
+              </span>
+            </ng-template>
+          </hq-common-table>
+        </div>
+        <div class="qa-pager" *ngIf="totalPages > 1">
+          <button hqButton="secondary" type="button" class="qa-prev" (click)="previousPage()" [disabled]="page === 0 || isLoadingRuns">
+            <i class="bi bi-chevron-left"></i> {{ 'systemQa.previous' | translate }}
+          </button>
+          <span>{{ 'shared.listPage.pageOf' | translate: { page: page + 1, total: totalPages } }}</span>
+          <button hqButton="secondary" type="button" class="qa-next" (click)="nextPage()" [disabled]="page + 1 >= totalPages || isLoadingRuns">
+            {{ 'systemQa.next' | translate }} <i class="bi bi-chevron-right"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <hq-chart-card class="qa-trend-box" [title]="'systemQa.trend.title' | translate"
+                    [subtitle]="trendShown.length ? ('systemQa.trend.caption' | translate: { count: trendShown.length, value: latestTrendValue }) : ''"
+                    [range]="trendRange" (rangeChange)="onTrendRange($event)"
+                    [empty]="trendShown.length === 0"
+                    [emptyText]="(environment ? 'systemQa.trend.empty' : 'systemQa.trend.pickEnvironment') | translate"
+                    [tableColumns]="trendColumns" [tableRows]="trendRows">
+      <hq-chart *ngIf="trendSpec && trendShown.length > 0" [spec]="trendSpec"
+                 [ariaLabel]="'systemQa.trend.caption' | translate: { count: trendShown.length, value: latestTrendValue }"></hq-chart>
+    </hq-chart-card>
+  </ng-container>
+</ng-container>
+
+<!-- Run detail -->
+<ng-container *ngIf="tab === 'detail'">
+  <ng-container *hqHasPrivilege="privileges.runRead">
+    <hq-error-state *ngIf="detailError" [title]="'systemQa.detail.loadFailed' | translate"></hq-error-state>
+    <hq-loading-state *ngIf="isLoadingDetail" [label]="'systemQa.loading' | translate"></hq-loading-state>
+
+    <section *ngIf="selected as run" [attr.aria-label]="'systemQa.detail.summary' | translate">
+      <div class="qa-cards">
+        <div class="qa-card" [ngClass]="'qa-card--' + statusTone(run.status)">
+          <span class="qa-card__label">{{ 'systemQa.columns.status' | translate }}</span>
+          <strong class="qa-card__value">{{ statusLabel(run.status) }}</strong>
+        </div>
+        <div class="qa-card">
+          <span class="qa-card__label">{{ 'systemQa.columns.environment' | translate }}</span>
+          <strong class="qa-card__value">{{ environmentLabel(run.environment) }}</strong>
+        </div>
+        <div class="qa-card">
+          <span class="qa-card__label">{{ 'systemQa.detail.total' | translate }}</span>
+          <strong class="qa-card__value">{{ run.total }}</strong>
+        </div>
+        <div class="qa-card qa-card--success">
+          <span class="qa-card__label">{{ 'systemQa.columns.passed' | translate }}</span>
+          <strong class="qa-card__value">{{ run.passed }}</strong>
+        </div>
+        <div class="qa-card qa-card--danger">
+          <span class="qa-card__label">{{ 'systemQa.columns.failed' | translate }}</span>
+          <strong class="qa-card__value">{{ run.failed }}</strong>
+        </div>
+        <div class="qa-card">
+          <span class="qa-card__label">{{ 'systemQa.columns.skipped' | translate }}</span>
+          <strong class="qa-card__value">{{ run.skipped }}</strong>
+        </div>
+        <div class="qa-card qa-card--rate">
+          <span class="qa-card__label">{{ 'systemQa.detail.passRate' | translate }}</span>
+          <strong class="qa-card__value">{{ rateOf(run) === null ? '—' : (rateOf(run) | number:'1.0-1') + '%' }}</strong>
+        </div>
+        <div class="qa-card">
+          <span class="qa-card__label">{{ 'systemQa.columns.duration' | translate }}</span>
+          <strong class="qa-card__value">{{ durationText(run.durationMs) }}</strong>
+        </div>
+        <div class="qa-card">
+          <span class="qa-card__label">{{ 'systemQa.columns.started' | translate }}</span>
+          <strong class="qa-card__value">{{ run.startedAt | hqDate:'medium' }}</strong>
+        </div>
+        <div class="qa-card">
+          <span class="qa-card__label">{{ 'systemQa.detail.build' | translate }}</span>
+          <strong class="qa-card__value qa-mono">{{ run.jenkinsJob }} #{{ run.jenkinsBuildNumber }}</strong>
+        </div>
+      </div>
+
+      <div class="qa-actions qa-detail-actions">
+        <a hqButton="secondary" *ngIf="reportLink(run) as link" class="qa-report" [href]="link" target="_blank" [attr.rel]="linkRel">
+          <i class="bi bi-box-arrow-up-right"></i> {{ 'qaDashboard.openReport' | translate }}
+        </a>
+        <a hqButton="secondary" *ngIf="jenkinsLink(run) as link" class="qa-jenkins" [href]="link" target="_blank" [attr.rel]="linkRel">
+          {{ 'systemQa.runs.jenkins' | translate: { build: run.jenkinsBuildNumber } }}
+        </a>
+        <ng-container *ngIf="run.documentId">
+          <ng-container *hqHasPrivilege="privileges.dmsMetadataRead">
+            <ng-container *hqHasPrivilege="privileges.dmsDownloadUrl">
+              <button hqButton="secondary" type="button" class="qa-pdf" (click)="openPdf(run)" [disabled]="openingPdfFor !== null">
+                <i class="bi bi-file-earmark-pdf"></i> {{ 'systemQa.runs.document' | translate }}
+              </button>
+            </ng-container>
+          </ng-container>
+        </ng-container>
+      </div>
+
+      <div class="table-surface">
+        <div class="table-surface__header">
+          <div class="table-heading">
+            <span class="table-kicker">{{ 'systemQa.detail.scenarios' | translate: { count: visibleScenarios.length } }}</span>
+          </div>
+        </div>
+        <div class="table-surface__body">
+          <hq-filter-bar collapsible>
+            <hq-field
+                   type="text"
+                   class="qa-search"
+                   [placeholder]="'systemQa.filters.searchPlaceholder' | translate"
+                   [ariaLabel]="'systemQa.filters.searchPlaceholder' | translate"
+                   [(ngModel)]="filters.query"
+                   (ngModelChange)="applyFilters()"></hq-field>
+            <hq-searchable-select
+              class="qa-status"
+              [(ngModel)]="filters.status"
+              (ngModelChange)="applyFilters()"
+              [ariaLabel]="'systemQa.columns.status' | translate"
+              [allowOther]="false"
+              [placeholder]="'shared.listPage.anyStatus' | translate">
+              <hq-ss-option *ngFor="let s of scenarioStatuses" [value]="s" [label]="statusLabel(s)"></hq-ss-option>
+            </hq-searchable-select>
+            <hq-searchable-select
+              class="qa-tag-filter"
+              [(ngModel)]="filters.tag"
+              (ngModelChange)="applyFilters()"
+              [ariaLabel]="'systemQa.filters.tag' | translate"
+              [allowOther]="false"
+              [placeholder]="'systemQa.filters.anyTag' | translate">
+              <hq-ss-option *ngFor="let t of tags" [value]="t" [label]="t"></hq-ss-option>
+            </hq-searchable-select>
+            <hq-searchable-select
+              class="qa-pilot-filter"
+              [(ngModel)]="filters.pilotId"
+              (ngModelChange)="applyFilters()"
+              [ariaLabel]="'systemQa.filters.pilotId' | translate"
+              [allowOther]="false"
+              [placeholder]="'systemQa.filters.anyPilotId' | translate">
+              <hq-ss-option *ngFor="let p of pilotIds" [value]="p" [label]="p"></hq-ss-option>
+            </hq-searchable-select>
+            <div hqFilterActions>
+              <button hqButton="secondary" type="button" class="qa-clear" (click)="clearFilters()">{{ 'shared.listPage.clear' | translate }}</button>
+            </div>
+          </hq-filter-bar>
+
+          <hq-empty-state *ngIf="visibleScenarios.length === 0" [title]="(hasActiveFilters ? 'systemQa.detail.noneMatching' : 'systemQa.detail.noScenarios') | translate"></hq-empty-state>
+
+          <div class="qa-table-wrap" *ngIf="visibleScenarios.length > 0">
+            <hq-common-table [columns]="scenarioColumns" [rows]="visibleScenarios" [showActionsColumn]="false"
+                              [rowClass]="scenarioRowClass">
+              <ng-template hqCell="status" let-s><hq-status-badge [tone]="statusTone(s.status)">{{ statusLabel(s.status) }}</hq-status-badge></ng-template>
+              <ng-template hqCell="pilotId" let-s><span class="qa-mono">{{ s.pilotId || '—' }}</span></ng-template>
+              <ng-template hqCell="feature" let-s>{{ s.feature }}</ng-template>
+              <ng-template hqCell="scenario" let-s>
+                <span class="qa-scenario-name">{{ s.name }}</span>
+                <div><span class="qa-tag qa-mono" *ngFor="let t of s.tags">{{ t }}</span></div>
+                <details class="qa-failure" *ngIf="s.failureMessage">
+                  <summary>{{ 'systemQa.detail.failureMessage' | translate }}</summary>
+                  <pre class="qa-failure__text">{{ s.failureMessage }}</pre>
+                </details>
+                <ng-container *hqHasPrivilege="privileges.dmsMetadataRead">
+                  <ng-container *hqHasPrivilege="privileges.dmsDownloadUrl">
+                    <ng-container *ngIf="evidenceOf(s) as items">
+                      <div class="qa-evidence" *ngIf="items.length > 0">
+                        <ng-container *ngFor="let e of items">
+                          <app-qa-evidence-thumbnail *ngIf="isPreview(e); else evidenceLink" [documentId]="e.documentId" [kind]="e.kind"
+                                                     [disabled]="openingEvidence !== null" (opened)="openEvidence(e)"></app-qa-evidence-thumbnail>
+                          <ng-template #evidenceLink>
+                            <button hqButton="secondary" type="button" class="qa-evidence-link" (click)="openEvidence(e)"
+                                    [disabled]="openingEvidence !== null" [attr.data-kind]="e.kind">
+                              <i class="bi bi-image"></i> {{ evidenceLabel(e) | translate }}
+                            </button>
+                          </ng-template>
+                        </ng-container>
+                      </div>
+                    </ng-container>
+                  </ng-container>
+                </ng-container>
+              </ng-template>
+              <ng-template hqCell="duration" let-s>{{ durationText(s.durationMs) }}</ng-template>
+            </hq-common-table>
+          </div>
+        </div>
+      </div>
+    </section>
+  </ng-container>
+</ng-container>
+
+<!-- Documents -->
+<ng-container *ngIf="tab === 'documents'">
+  <ng-container *hqHasPrivilege="privileges.documentList">
+    <hq-error-state *ngIf="documentsError" [title]="'systemQa.documents.loadFailed' | translate"></hq-error-state>
+    <hq-loading-state *ngIf="isLoadingDocuments && documents.length === 0" [label]="'systemQa.loading' | translate"></hq-loading-state>
+    <hq-empty-state *ngIf="!isLoadingDocuments && !documentsError && documents.length === 0" [title]="'systemQa.documents.empty' | translate"></hq-empty-state>
+
+    <div class="qa-docs" *ngIf="documents.length > 0">
+      <ul class="qa-docs__list">
+        <li *ngFor="let d of documents; trackBy: trackByDocument">
+          <ng-container *hqHasPrivilege="privileges.documentRead">
+            <button type="button" class="qa-doc-item" [class.qa-doc-item--active]="currentDocument?.name === d.name"
+                    [attr.aria-current]="currentDocument?.name === d.name ? 'true' : null"
+                    [disabled]="isLoadingDocument" (click)="openDocument(d.name)">
+              <strong>{{ d.title || d.name }}</strong>
+              <span class="qa-doc-item__meta">{{ d.updatedAt | hqDate:'medium' }} · {{ sizeText(d.sizeBytes) }}</span>
+            </button>
+          </ng-container>
+        </li>
+      </ul>
+
+      <div class="table-surface qa-doc-view">
+        <div class="table-surface__body">
+          <hq-error-state *ngIf="documentError" [title]="'systemQa.documents.openFailed' | translate"></hq-error-state>
+          <hq-loading-state *ngIf="isLoadingDocument" [label]="'systemQa.loading' | translate"></hq-loading-state>
+          <hq-empty-state *ngIf="!currentDocument && !isLoadingDocument && !documentError" [title]="'systemQa.documents.pick' | translate"></hq-empty-state>
+          <article class="qa-markdown" *ngIf="currentDocument" [innerHTML]="documentHtml"></article>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</ng-container>

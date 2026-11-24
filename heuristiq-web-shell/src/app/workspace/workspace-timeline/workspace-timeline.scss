@@ -1,0 +1,86 @@
+// Layout of a task's or ticket's comments and history; controls are hq-shared-lib components.
+.tl {
+  display: grid;
+  gap: 10px;
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid var(--workspace-border, #e3e7ec);
+}
+
+.tl__title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  font-size: .9rem;
+}
+
+.tl__muted {
+  margin: 0;
+  color: var(--text-muted, #6b7280);
+  font-size: .85rem;
+}
+
+.tl__list {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tl__entry {
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  gap: 8px;
+  align-items: start;
+}
+
+.tl__dot {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--workspace-border, #e3e7ec);
+  font-size: .8rem;
+}
+
+.tl__entry--comment .tl__dot {
+  background: rgba(10, 125, 90, .14);
+  color: var(--sidebar-bg-start, #0a7d5a);
+}
+
+.tl__body {
+  min-width: 0;
+}
+
+.tl__meta {
+  margin: 0;
+  font-size: .78rem;
+  color: var(--text-muted, #6b7280);
+}
+
+.tl__text {
+  margin: 4px 0 0;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: var(--workspace-panel, #fff);
+  border: 1px solid var(--workspace-border, #e3e7ec);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.tl__entry.is-mine .tl__text {
+  background: rgba(10, 125, 90, .06);
+}
+
+.tl__activity {
+  margin: 2px 0 0;
+  font-size: .85rem;
+}
+
+.tl__form {
+  display: grid;
+  gap: 6px;
+}

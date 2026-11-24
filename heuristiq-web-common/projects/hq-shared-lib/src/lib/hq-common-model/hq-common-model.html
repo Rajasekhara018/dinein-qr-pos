@@ -1,0 +1,166 @@
+<div class="hq-lookup">
+  <div class="hq-lookup__header">
+    <h2 class="hq-lookup__title">{{ table.title }}</h2>
+    <button type="button" hqButton="accent" class="hq-lookup__close" (click)="close()">
+      <i class="bi" [class.bi-check-lg]="data.multiSelect" [class.bi-x-circle]="!data.multiSelect" aria-hidden="true"></i>{{ data.multiSelect ? t.done() : t.close() }}
+    </button>
+  </div>
+
+  <!-- Current selection -->
+  @if (data.multiSelect) {
+    @if (data.selected?.length) {
+      <div class="hq-lookup__selection">
+        <mat-chip-set>
+          @for (sel of data.selected; track sel.key) {
+            <mat-chip (removed)="unpick(sel.key)">
+              {{ sel.value }}
+              <button matChipRemove [attr.aria-label]="t.remove(sel.value)"><mat-icon>cancel</mat-icon></button>
+            </mat-chip>
+          }
+        </mat-chip-set>
+        <button type="button" hqButton appearance="text" class="hq-lookup__link" (click)="clearSelection()">
+          <i class="bi bi-dash-circle" aria-hidden="true"></i>{{ t.removeAll() }}
+        </button>
+      </div>
+    }
+  } @else if (data.displayValue) {
+    <div class="hq-lookup__selection">
+      <mat-chip-set>
+        <mat-chip (removed)="clearSelection()">
+          {{ data.displayValue }}
+          <button matChipRemove [attr.aria-label]="t.clearSelection()"><mat-icon>cancel</mat-icon></button>
+        </mat-chip>
+      </mat-chip-set>
+    </div>
+  }
+
+  <mat-divider></mat-divider>
+
+  <!-- Search mode toggle -->
+  <div class="hq-lookup__modes">
+    @if (isAdvanced) {
+      <button type="button" hqButton appearance="text" class="hq-lookup__link" (click)="normalSearch()">&lt; {{ t.normalSearch() }}</button>
+      <button type="button" hqButton appearance="text" class="hq-lookup__link" (click)="addCondition()">{{ t.addCondition() }}</button>
+      <button type="button" hqButton="primary" class="hq-lookup__primary" (click)="runAdvanced()">
+        <i class="bi bi-funnel" aria-hidden="true"></i>{{ t.advancedSearch() }}
+      </button>
+    } @else {
+      <div class="hq-lookup__hint">
+        <p class="hq-lookup__lead">{{ t.columnLead() }}</p>
+        <p class="hq-lookup__sub">{{ t.columnSub() }}</p>
+      </div>
+      @if (!hasPreFilters) {
+        <button type="button" hqButton appearance="text" class="hq-lookup__link" (click)="openAdvanced()">{{ t.addConditions() }}</button>
+      }
+    }
+  </div>
+
+  @if (!isAdvanced) {
+    <mat-chip-listbox class="hq-lookup__fields" [attr.aria-label]="t.searchField()">
+      @for (col of searchColumns; track col.key) {
+        <mat-chip-option class="hq-lookup__field" [class.is-active]="searchField === col.key" [selected]="searchField === col.key"
+                         (selectionChange)="$event.selected && selectSearchField(col.key)">
+          {{ col.label }}
+        </mat-chip-option>
+      }
+    </mat-chip-listbox>
+    <div class="hq-lookup__search">
+      <hq-field class="hq-lookup__search-field" type="search" icon="bi bi-search" [placeholder]="t.searchLabel()"
+                 [ariaLabel]="t.searchLabel()" [maxLength]="64" [showCounter]="false" [(ngModel)]="search"
+                 (keyup.enter)="runSearch()"></hq-field>
+      @if (search) {
+        <button type="button" hqButton="secondary" appearance="text" iconOnly [attr.aria-label]="t.clearSearch()" (click)="clearResult()">
+          <i class="bi bi-x-lg" aria-hidden="true"></i>
+        </button>
+      }
+      <button type="button" hqButton appearance="text" class="hq-lookup__link hq-lookup__go" (click)="runSearch()">
+        <i class="bi bi-search" aria-hidden="true"></i>{{ t.search() }}
+      </button>
+      @if (loading) {
+        <hq-spinner size="sm"></hq-spinner>
+      }
+    </div>
+  } @else {
+    <p class="hq-lookup__muted">{{ t.advancedHint() }}</p>
+    @for (filter of advancedFilters; track $index; let i = $index) {
+      <div class="hq-lookup__condition">
+        @if (i > 0) {
+          <hq-searchable-select class="hq-lookup__op" [allowOther]="false" [placeholder]="t.join()" [ariaLabel]="t.join()"
+                                 [(ngModel)]="filter.condition">
+            <hq-ss-option value="AND" label="AND"></hq-ss-option>
+            <hq-ss-option value="OR" label="OR"></hq-ss-option>
+          </hq-searchable-select>
+        } @else {
+          <span class="hq-lookup__op"></span>
+        }
+        <hq-searchable-select class="hq-lookup__cond-field" [allowOther]="false" [placeholder]="t.field()" [ariaLabel]="t.field()"
+                               [(ngModel)]="filter.fieldName">
+          @for (col of table.columns; track col.key) {
+            <hq-ss-option [value]="col.key" [label]="col.label"></hq-ss-option>
+          }
+        </hq-searchable-select>
+        <hq-searchable-select class="hq-lookup__op" [allowOther]="false" [placeholder]="t.condition()" [ariaLabel]="t.condition()"
+                               [(ngModel)]="filter.operator">
+          @for (op of operators; track op.value) {
+            <hq-ss-option [value]="op.value" [label]="op.label"></hq-ss-option>
+          }
+        </hq-searchable-select>
+        <hq-field class="hq-lookup__cond-field" type="text" [placeholder]="t.value()" [ariaLabel]="t.value()" [maxLength]="50"
+                   [showCounter]="false" [(ngModel)]="filter.value" (keyup.enter)="runAdvanced()"></hq-field>
+        <button type="button" hqButton="warn" appearance="text" iconOnly [attr.aria-label]="t.removeCondition()" (click)="removeCondition(i)">
+          <i class="bi bi-trash" aria-hidden="true"></i>
+        </button>
+      </div>
+    }
+    @if (loading) {
+      <hq-spinner size="sm"></hq-spinner>
+    }
+  }
+
+  <!-- Results -->
+  @if (errorMessage) {
+    <p class="hq-lookup__error">{{ errorMessage }}</p>
+  } @else if (!loading && !rows.length) {
+    <div class="hq-lookup__empty">
+      <p>{{ t.noRecordFound() }}@if (lastSearch && !isAdvanced) { {{ t.forValue() }} <b>{{ lastSearch }}</b>}</p>
+      <button type="button" hqButton appearance="text" class="hq-lookup__link" (click)="clearResult()">&lt; {{ t.clear() }}</button>
+    </div>
+  } @else if (rows.length) {
+    @if (lastSearch && !isAdvanced) {
+      <p class="hq-lookup__muted hq-lookup__showing">{{ t.showingResultsFor() }} <b>{{ lastSearch }}</b></p>
+    }
+    <div class="hq-lookup__table">
+      <table mat-table [dataSource]="rows">
+        @for (col of table.columns; track col.key) {
+          <ng-container [matColumnDef]="col.key">
+            <th mat-header-cell *matHeaderCellDef>{{ col.label }}</th>
+            <td mat-cell *matCellDef="let row">
+              @if (col.type === 'date') {
+                {{ cell(row, col.key) | date: 'mediumDate' }}
+              } @else {
+                {{ cell(row, col.key) }}
+              }
+            </td>
+          </ng-container>
+        }
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef></th>
+          <td mat-cell *matCellDef="let row" class="hq-lookup__action">
+            <button type="button" hqButton="primary" iconOnly size="sm" class="hq-lookup__pick" [attr.aria-label]="t.select()" [disabled]="isSelected(row)" (click)="pick(row)">
+              <i class="bi" [class.bi-check-lg]="isSelected(row)" [class.bi-cursor-fill]="!isSelected(row)" aria-hidden="true"></i>
+            </button>
+          </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns" [class.is-selected]="isSelected(row)"></tr>
+      </table>
+    </div>
+    <div class="hq-lookup__footer">
+      <button type="button" hqButton appearance="text" class="hq-lookup__link" (click)="clearResult()">&lt; {{ t.clearResult() }}</button>
+      <hq-table-footer [page]="pageIndex" [size]="pageSize" [itemCount]="rows.length" [totalItems]="total"
+                        [hasMore]="(pageIndex + 1) * pageSize < total" [loading]="loading" [sizeOptions]="pageSizeOptions"
+                        (pageChange)="onPage({ pageIndex: $event, pageSize: pageSize })"
+                        (sizeChange)="onPage({ pageIndex: 0, pageSize: $event })"></hq-table-footer>
+    </div>
+  }
+</div>

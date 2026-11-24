@@ -1,0 +1,4 @@
+rootProject.name = 'realboom-dms'
+
+// Shared timeout/bulkhead/circuit-breaker/retry wrapper (composite build)
+includeBuild('../heuristiq-core-resilient-client')

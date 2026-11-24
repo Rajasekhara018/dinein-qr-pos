@@ -1,0 +1,38 @@
+<section class="franchise-form location-import">
+  <h4>{{ 'accessManagement.franchiseLocations.import.title' | translate }}</h4>
+  <p class="franchise-hint">{{ 'accessManagement.franchiseLocations.import.hint' | translate: { max: maxRows } }}</p>
+  <div class="franchise-actions">
+    <button hqButton="secondary" type="button" (click)="downloadTemplate()">
+      <i class="bi bi-download"></i> {{ 'accessManagement.franchiseLocations.import.template' | translate }}
+    </button>
+    <span class="franchise-hint" *ngIf="fileName">{{ fileName }}</span>
+  </div>
+  <hq-file-drop
+    [compact]="true"
+    inputId="location-import-file"
+    hints="CSV"
+    [accept]="accept"
+    [label]="'accessManagement.franchiseLocations.import.fileLabel' | translate"
+    [disabled]="busy"
+    (picked)="onFilesPicked($event)">
+  </hq-file-drop>
+  <hq-field type="textarea" [rows]="8" [(ngModel)]="csv" (ngModelChange)="onTextChange()" name="importCsv" [spellcheck]="false" [label]="'accessManagement.franchiseLocations.import.paste' | translate"></hq-field>
+  <p class="franchise-hint">{{ 'accessManagement.franchiseLocations.import.rowCount' | translate: { count: rows } }}</p>
+  <div class="franchise-actions">
+    <button hqButton="accent" type="button" [disabled]="busy || !csv" (click)="dryRun()">{{ 'accessManagement.franchiseLocations.import.dryRun' | translate }}</button>
+    <button hqButton="accent" type="button" [disabled]="!canApply" (click)="apply()">{{ 'accessManagement.franchiseLocations.import.apply' | translate }}</button>
+  </div>
+
+  <div class="location-import__result" *ngIf="result as outcome">
+    <p class="franchise-state">
+      {{ (outcome.dryRun ? 'accessManagement.franchiseLocations.import.checked' : 'accessManagement.franchiseLocations.import.done') | translate }}
+      {{ 'accessManagement.franchiseLocations.import.counts' | translate: { total: outcome.totalRows, created: outcome.created, updated: outcome.updated, skipped: outcome.skipped } }}
+    </p>
+    <p class="franchise-state franchise-state--error" *ngIf="outcome.errorCount > 0">
+      {{ 'accessManagement.franchiseLocations.import.errorCount' | translate: { count: outcome.errorCount } }}
+      <span *ngIf="outcome.errorsTruncated">{{ 'accessManagement.franchiseLocations.import.truncated' | translate: { shown: outcome.errors.length } }}</span>
+    </p>
+    <p class="franchise-state" *ngIf="outcome.dryRun && outcome.errorCount === 0">{{ 'accessManagement.franchiseLocations.import.ready' | translate }}</p>
+    <hq-common-table *ngIf="outcome.errors.length > 0" [columns]="errorColumns" [rows]="outcome.errors"></hq-common-table>
+  </div>
+</section>

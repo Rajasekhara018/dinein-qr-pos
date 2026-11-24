@@ -1,0 +1,60 @@
+<section class="table-surface om" *hqHasPrivilege="privileges.read">
+  <div class="table-surface__header">
+    <div class="table-heading">
+      <span class="table-kicker">{{ 'accessManagement.organizations.operatingModel.title' | translate }}</span>
+    </div>
+  </div>
+
+  <div class="table-surface__body">
+    <p class="om__hint">{{ 'accessManagement.organizations.operatingModel.hint' | translate }}</p>
+
+    <p class="om__muted" *ngIf="isLoading && !view">{{ 'shared.adminCrud.loading' | translate }}</p>
+
+    <ng-container *ngIf="view">
+      <p class="om__current">
+        {{ 'accessManagement.organizations.operatingModel.current' | translate }}
+        <span class="om__model om__model--{{ view.currentModel }}">{{ label(view.currentModel) | translate }}</span>
+      </p>
+      <p class="om__muted" *ngIf="description(view.currentModel) as currentDescription">{{ currentDescription | translate }}</p>
+
+      <form class="om__add" *hqHasPrivilege="privileges.update" (ngSubmit)="scheduleSwitch()">
+        <label class="om__field">
+          <span>{{ 'accessManagement.organizations.operatingModel.newModel' | translate }}</span>
+          <hq-searchable-select class="om__select" [allowOther]="false" name="model" [ngModel]="target" (ngModelChange)="selectedModel = $event"
+                                 [ariaLabel]="'accessManagement.organizations.operatingModel.newModel' | translate">
+            <hq-ss-option *ngFor="let model of options" [value]="model" [label]="label(model) | translate"></hq-ss-option>
+          </hq-searchable-select>
+        </label>
+        <label class="om__field">
+          <span>{{ 'accessManagement.organizations.operatingModel.effectiveFrom' | translate }}</span>
+          <hq-field type="date" name="effectiveFrom" [min]="minDate" [(ngModel)]="effectiveFrom"></hq-field>
+        </label>
+        <button hqButton="accent" type="submit" [disabled]="busy || !effectiveFrom || !target">
+          <i class="bi bi-calendar-check"></i> {{ 'accessManagement.organizations.operatingModel.schedule' | translate }}
+        </button>
+        <p class="om__muted om__explain" *ngIf="description(target) as targetDescription">{{ targetDescription | translate }}</p>
+      </form>
+
+      <p class="om__muted" *ngIf="view.schedule.length === 0">{{ 'accessManagement.organizations.operatingModel.empty' | translate }}</p>
+
+      <hq-common-table class="om__table" *ngIf="view.schedule.length" [columns]="columns" [rows]="view.schedule" [actionsLabel]="' '">
+        <ng-template hqCell="model" let-change><strong>{{ label(change.model) | translate }}</strong></ng-template>
+        <ng-template hqCell="effectiveFrom" let-change>{{ change.effectiveFrom }}</ng-template>
+        <ng-template hqCell="state" let-change>
+          <span class="om__state" [class.om__state--in-force]="change.inForce">
+            {{ (change.inForce ? 'accessManagement.organizations.operatingModel.inForce' : 'accessManagement.organizations.operatingModel.scheduled') | translate }}
+          </span>
+        </ng-template>
+        <ng-template #rowActions let-change>
+          <span class="om__actions">
+            <ng-container *hqHasPrivilege="privileges.update">
+              <button hqButton="secondary" type="button" class="danger" *ngIf="!change.inForce" [disabled]="busy" (click)="cancel(change)">
+                {{ 'accessManagement.organizations.operatingModel.cancel' | translate }}
+              </button>
+            </ng-container>
+          </span>
+        </ng-template>
+      </hq-common-table>
+    </ng-container>
+  </div>
+</section>

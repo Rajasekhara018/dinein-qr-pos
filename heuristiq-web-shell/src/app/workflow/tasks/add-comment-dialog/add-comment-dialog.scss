@@ -1,0 +1,10 @@
+.ac-dialog { padding: 1.25rem; display: flex; flex-direction: column; gap: 0.5rem; min-width: min(480px, 90vw); }
+.ac-title { margin: 0; font-size: 1.1rem; }
+.ac-sub { margin: 0 0 0.5rem; color: var(--edu-muted, #64748b); font-size: 0.85rem; }
+.ac-label { font-size: 0.8rem; font-weight: 600; }
+.ac-textarea { width: 100%; resize: vertical; }
+
+hq-field.rf-ac-textarea {
+  width: 100%;
+}
+.ac-actions { display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 0.5rem; }

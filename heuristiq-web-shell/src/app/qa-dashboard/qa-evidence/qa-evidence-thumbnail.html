@@ -1,0 +1,18 @@
+@switch (state()) {
+  @case ('ready') {
+    <button type="button" class="qa-thumb qa-thumb__button" [disabled]="disabled" [attr.data-kind]="kind"
+            [attr.aria-label]="kindKey | translate" (click)="open()">
+      <img class="qa-thumb__image" loading="lazy" decoding="async" [src]="src()" [alt]="keys.alt | translate: { kind: (kindKey | translate) }"
+           [style.max-width.px]="size.width" [style.max-height.px]="size.height" />
+    </button>
+  }
+  @case ('fallback') {
+    <button hqButton="secondary" type="button" class="qa-evidence-link" [disabled]="disabled" [attr.data-kind]="kind" (click)="open()">
+      <i class="bi bi-image"></i> {{ kindKey | translate }}
+    </button>
+  }
+  @default {
+    <hq-skeleton class="qa-thumb qa-thumb__skeleton" variant="rect" [width]="size.width + 'px'" [height]="size.height + 'px'"
+                  [label]="keys.loading | translate"></hq-skeleton>
+  }
+}

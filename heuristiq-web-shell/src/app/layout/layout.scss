@@ -1,0 +1,119 @@
+/* Top route progress bar */
+.route-progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  z-index: 9999;
+  background: transparent;
+  pointer-events: none;
+
+  &::after {
+    content: '';
+    display: block;
+    height: 100%;
+    width: 0;
+    background: linear-gradient(90deg, #FF6600, #ffaa00);
+    border-radius: 0 2px 2px 0;
+    transition: none;
+    box-shadow: 0 0 8px rgba(255, 102, 0, 0.6);
+  }
+
+  &.active::after {
+    animation: route-progress 1.8s ease-in-out infinite;
+  }
+}
+
+@keyframes route-progress {
+  0%   { width: 0;    opacity: 1; }
+  60%  { width: 85%;  opacity: 1; }
+  100% { width: 100%; opacity: 0; }
+}
+
+.layout-wrapper {
+  display: flex;
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+}
+
+.mobile-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, .5);
+  z-index: 40;
+  display: none;
+
+  @media (max-width: 768px) {
+    display: block;
+  }
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  margin-left: 256px;
+  transition: margin-left .3s ease, margin-right .3s ease;
+
+  &.sidebar-collapsed {
+    margin-left: 64px;
+  }
+
+  // No sidebar rendered at all (mandatory change-password) -- don't reserve its margin.
+  &.sidebar-hidden {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  @media (max-width: 768px) {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+}
+
+// RTL (Arabic): the sidebar pins to the right edge (see sidebar.scss), so content must offset
+// from the right instead of the left. :host-context looks up to <html dir="rtl">, set by
+// LanguageService.setLanguage() on language switch.
+:host-context([dir='rtl']) .main-content {
+  margin-left: 0;
+  margin-right: 256px;
+
+  &.sidebar-collapsed {
+    margin-right: 64px;
+  }
+}
+
+.page-content {
+  flex: 1;
+  padding: 1.5rem;
+  overflow: auto;
+
+  > * {
+    display: block;
+    width: 100%;
+    min-width: 0;
+  }
+
+  @media (max-width: 576px) {
+    padding: 1rem;
+  }
+
+  // Full-bleed routes (e.g. /change-password) render their own hero layout edge-to-edge,
+  // same as the pre-auth login/register/forgot-password pages do outside this shell.
+  &--full-bleed {
+    padding: 0;
+
+    @media (max-width: 576px) {
+      padding: 0;
+    }
+  }
+}
+
+// Ensure gradient background shows through content area
+.page-content {
+  background: transparent;
+}
+

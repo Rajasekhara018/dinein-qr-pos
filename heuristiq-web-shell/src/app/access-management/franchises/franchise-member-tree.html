@@ -1,0 +1,93 @@
+<div class="mt">
+  <div class="mt__filters">
+    <hq-field
+           type="search"
+           class="mt__search"
+           [value]="query"
+           (input)="setQuery($any($event.target).value)"
+           [placeholder]="'accessManagement.franchiseMembers.tree.search' | translate"
+           [ariaLabel]="'accessManagement.franchiseMembers.tree.search' | translate"></hq-field>
+    <hq-searchable-select class="mt__app" [ngModel]="applicationCode" (ngModelChange)="setApplication($event)" name="treeApplication"
+                           [allowOther]="false" [placeholder]="'accessManagement.franchiseMembers.allApplications' | translate">
+      <hq-ss-option value="" [label]="'accessManagement.franchiseMembers.allApplications' | translate"></hq-ss-option>
+      <hq-ss-option *ngFor="let code of applicationCodes" [value]="code" [label]="appName(code)"></hq-ss-option>
+    </hq-searchable-select>
+    <ng-container *ngIf="!orgWide">
+      <a hqButton="secondary" *hqHasPrivilege="privileges.addAgent" routerLink="/access-management/my-franchises">
+        <i class="bi bi-person-plus" aria-hidden="true"></i> {{ 'accessManagement.franchiseMembers.addAgent' | translate }}
+      </a>
+    </ng-container>
+  </div>
+
+  <hq-loading-state *ngIf="isLoading" [label]="'accessManagement.franchiseMembers.loading' | translate"></hq-loading-state>
+  <hq-error-state *ngIf="errorMessage" [title]="errorMessage" (retry)="load()"></hq-error-state>
+  <hq-empty-state *ngIf="!isLoading && !errorMessage && allowed && franchises.length === 0" data-testid="tree-empty" [title]="(orgWide ? 'accessManagement.franchiseMembers.tree.noFranchisesOrg' : 'accessManagement.franchiseMembers.noFranchises') | translate"></hq-empty-state>
+  <hq-empty-state *ngIf="!isLoading && franchises.length > 0 && tree.length === 0" [title]="'accessManagement.franchiseMembers.tree.noMatch' | translate"></hq-empty-state>
+
+  <section class="mt__app-group" *ngFor="let group of tree; trackBy: trackApplication" data-testid="tree-application">
+    <button type="button" class="mt__app-head" [attr.aria-expanded]="!isFolded(group.applicationCode)" (click)="toggleApplication(group.applicationCode)">
+      <i class="bi" [class.bi-chevron-down]="!isFolded(group.applicationCode)" [class.bi-chevron-right]="isFolded(group.applicationCode)" aria-hidden="true"></i>
+      <span class="mt__app-name">{{ appName(group.applicationCode) }}</span>
+      <span class="mt__count">{{ 'accessManagement.franchiseMembers.tree.franchiseCount' | translate: { count: group.franchises.length } }}</span>
+      <span class="franchise-usage mt__usage">
+        {{ (isDriverApplication(group.applicationCode) ? 'accessManagement.franchiseMembers.driverUsage' : 'accessManagement.franchiseMembers.usage') | translate: { used: group.used, limit: group.limit } }}
+        <hq-progress class="usage-meter" size="sm" [value]="usagePercent(group.used, group.limit)" [max]="100" [showValue]="false" [tone]="usagePercent(group.used, group.limit) >= 100 ? 'danger' : 'primary'" [label]="(isDriverApplication(group.applicationCode) ? 'accessManagement.franchiseMembers.driverUsage' : 'accessManagement.franchiseMembers.usage') | translate: { used: group.used, limit: group.limit }"></hq-progress>
+      </span>
+    </button>
+
+    <div class="mt__franchises" *ngIf="!isFolded(group.applicationCode)">
+      <div class="mt__franchise" *ngFor="let row of group.franchises; trackBy: trackFranchise" data-testid="tree-franchise">
+        <div class="mt__franchise-head">
+          <button type="button" class="mt__toggle" data-testid="tree-toggle" [attr.aria-expanded]="!!branch(group.applicationCode, row.franchise.unitId)"
+                  (click)="toggleFranchise(group.applicationCode, row)">
+            <i class="bi" [class.bi-chevron-down]="branch(group.applicationCode, row.franchise.unitId)" [class.bi-chevron-right]="!branch(group.applicationCode, row.franchise.unitId)" aria-hidden="true"></i>
+            <strong>{{ row.franchise.code }}</strong>
+          </button>
+          <span class="mt__owner"><i class="bi bi-person" aria-hidden="true"></i> {{ ownerOf(row.franchise) }}</span>
+          <hq-status-badge [tone]="row.franchise.status === 'ACTIVE' ? 'success' : 'danger'">{{ franchiseStatus(row.franchise.status) }}</hq-status-badge>
+          <span class="mt__place" *ngIf="row.application.locationName"><i class="bi bi-geo-alt" aria-hidden="true"></i> {{ row.application.locationName }}</span>
+          <span class="franchise-usage mt__usage">
+            {{ (isDriverApplication(group.applicationCode) ? 'accessManagement.franchiseMembers.driverUsage' : 'accessManagement.franchiseMembers.usage') | translate: { used: placesUsed(row.application), limit: row.application.agentLimit } }}
+            <hq-progress class="usage-meter" size="sm" [value]="usagePercent(placesUsed(row.application), row.application.agentLimit)" [max]="100" [showValue]="false" [tone]="usagePercent(placesUsed(row.application), row.application.agentLimit) >= 100 ? 'danger' : 'primary'" [label]="(isDriverApplication(group.applicationCode) ? 'accessManagement.franchiseMembers.driverUsage' : 'accessManagement.franchiseMembers.usage') | translate: { used: placesUsed(row.application), limit: row.application.agentLimit }"></hq-progress>
+          </span>
+          <ng-container *ngIf="isDriverApplication(group.applicationCode)">
+            <a hqButton="secondary" *hqHasPrivilege="orgWide ? 'DRIVER_ONBOARDING_SUBMISSION_CREATE' : 'FRANCHISE_DRIVER_ONBOARDING_CREATE'"
+               [routerLink]="orgWide ? '/admin/drivers/onboard' : '/admin/franchise-drivers/onboard'"
+               [queryParams]="{ franchiseId: row.franchise.unitId, franchiseCode: row.franchise.code }" data-testid="tree-onboard-driver">
+              {{ 'accessManagement.franchiseDrivers.onboard' | translate }}
+            </a>
+          </ng-container>
+          <ng-container *ngIf="orgWide && !isDriverApplication(group.applicationCode)">
+            <button *hqHasPrivilege="privileges.adminAddAgent" type="button" class="row-action-btn" data-testid="tree-add-agent"
+                    [title]="'accessManagement.franchiseMembers.addAgent' | translate" (click)="addAgent(row)">
+              <i class="bi bi-person-plus"></i>
+            </button>
+          </ng-container>
+        </div>
+
+        <div class="mt__agents" *ngIf="branch(group.applicationCode, row.franchise.unitId) as b">
+          <hq-loading-state *ngIf="b.loading && !b.members.length" [label]="'accessManagement.franchiseMembers.loading' | translate"></hq-loading-state>
+          <hq-error-state *ngIf="b.failed" [title]="'accessManagement.franchiseMembers.errors.generic' | translate"></hq-error-state>
+          <hq-empty-state *ngIf="!b.loading && !b.failed && !b.members.length" [title]="(isDriverApplication(group.applicationCode) ? 'accessManagement.franchiseDrivers.noDrivers' : 'accessManagement.franchiseMembers.noMembers') | translate"></hq-empty-state>
+          <hq-common-table class="mt__table" *ngIf="b.members.length" [columns]="memberColumns" [rows]="b.members" [actionsLabel]="' '">
+            <ng-template hqCell="fullName" let-member><span data-testid="tree-member">{{ member.fullName }}</span></ng-template>
+            <ng-template hqCell="memberType" let-member>{{ typeLabel(member.memberType) }}</ng-template>
+            <ng-template hqCell="status" let-member>{{ statusLabel(member.status) }}</ng-template>
+            <ng-template hqCell="onboardedAt" let-member>{{ day(member.onboardedAt) }}</ng-template>
+            <ng-template #rowActions let-member>
+              <ng-container *hqHasPrivilege="removePrivilege">
+                <button *ngIf="canRemove(member)" type="button" class="row-action-btn danger" data-testid="tree-remove-agent"
+                        [title]="'accessManagement.franchises.removeAgent.button' | translate" (click)="removeAgent(group.applicationCode, row, member)">
+                  <i class="bi bi-person-dash"></i>
+                </button>
+              </ng-container>
+            </ng-template>
+          </hq-common-table>
+          <button hqButton="secondary" type="button" class="mt__more" *ngIf="hasMore(b)" [disabled]="b.loading" (click)="showMore(group.applicationCode, row.franchise.unitId)">
+            {{ 'accessManagement.franchiseMembers.tree.showMore' | translate: { shown: b.members.length, total: b.total } }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

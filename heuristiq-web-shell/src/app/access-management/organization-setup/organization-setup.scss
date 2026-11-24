@@ -1,0 +1,522 @@
+// The organization setup wizard, laid out like the Reports "System configuration" wizard: a step rail on the left (a card with
+// "Step X of N", a progress bar and the steps joined by a line), the step's card on the right (heading, form, and an action bar
+// that stays in view). Colours come from the theme tokens, so every theme and dark mode follow; logical properties keep it RTL safe.
+// The layout follows the width of the screen's own area (container query), not the window, so an expanded or collapsed sidebar
+// is already accounted for: wide = rail + card, narrow = a compact bar above the card.
+
+$setup-wide: 860px;
+
+:host {
+  display: block;
+  min-width: 0;
+  --setup-accent: var(--hq-primary, var(--hq-link, #003580));
+  --setup-accent-soft: color-mix(in srgb, var(--setup-accent) 12%, transparent);
+  --setup-done: var(--bs-success, #15803d);
+  --setup-warn: var(--theme-pending-pill-text, #d97706);
+  --setup-ink: var(--edu-ink, #1b2a4a);
+  --setup-muted: var(--edu-muted, #5a6a7e);
+  --setup-line: var(--field-border, #cbd5e1);
+  --setup-border: var(--workspace-border, var(--theme-soft-border, rgba(0, 0, 0, 0.1)));
+  --setup-panel: var(--workspace-panel, #fff);
+  --setup-track: var(--theme-soft-surface, #eef2f6);
+  --setup-marker: 30px;
+  --setup-pad: 1.5rem;
+  --space-sm: 0.5rem;
+  --space-md: 0.75rem;
+  --space-lg: 1rem;
+  --space-xl: 1.5rem;
+}
+
+.setup {
+  container-type: inline-size;
+  container-name: setup;
+  display: grid;
+  gap: var(--space-lg);
+  width: 100%;
+  color: var(--setup-ink);
+}
+
+// ---- heading ------------------------------------------------------------------------------------
+.setup__header {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-md);
+}
+
+.setup__back {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 1px solid var(--setup-border);
+  border-radius: 12px;
+  background: var(--setup-panel);
+  color: var(--setup-accent);
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+
+  &:hover { background: var(--setup-accent-soft); }
+  &:focus-visible { outline: 2px solid var(--setup-accent); outline-offset: 2px; }
+}
+
+.setup__heading {
+  flex: 1;
+  min-width: 0;
+}
+
+.setup__title-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-sm) var(--space-md);
+
+  h1 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 800;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+  }
+}
+
+.setup__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  max-width: 100%;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+
+  &--org { background: var(--setup-accent-soft); color: var(--setup-accent); }
+  &--status { background: var(--setup-track); color: var(--setup-ink); letter-spacing: 0.04em; text-transform: uppercase; }
+  &--dirty { background: var(--theme-pending-pill-bg, #fbf0dc); color: var(--theme-pending-pill-text, #8f5b00); }
+}
+
+.setup__crumbs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+  margin-block-start: 0.25rem;
+  font-size: 0.8rem;
+  color: var(--setup-muted);
+
+  a { cursor: pointer; color: var(--setup-accent); }
+  i { font-size: 0.65rem; }
+}
+
+.setup__crumbs-current { font-weight: 600; color: var(--setup-ink); }
+
+// ---- layout: rail + card ------------------------------------------------------------------------
+.setup__layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-lg);
+  align-items: start;
+}
+
+@container setup (min-width: #{$setup-wide}) {
+  .setup__layout {
+    grid-template-columns: 17rem minmax(0, 1fr);
+    gap: var(--space-xl);
+  }
+
+  .setup__rail {
+    position: sticky;
+    top: var(--space-lg);
+  }
+}
+
+@supports not (container-type: inline-size) {
+  @media (min-width: 1200px) {
+    .setup__layout { grid-template-columns: 17rem minmax(0, 1fr); gap: var(--space-xl); }
+    .setup__rail { position: sticky; top: var(--space-lg); }
+  }
+}
+
+// ---- the step rail ------------------------------------------------------------------------------
+.setup__rail {
+  min-width: 0;
+  padding: var(--space-lg) var(--space-md);
+  border: 1px solid var(--setup-border);
+  border-radius: 16px;
+  background-color: var(--bs-body-bg, #fff);
+  background-image: linear-gradient(var(--setup-panel), var(--setup-panel));
+  box-shadow: var(--theme-soft-shadow, 0 2px 12px rgba(0, 53, 128, 0.07));
+}
+
+.setup__rail-head { padding-inline: 0.25rem; }
+
+.setup__count {
+  display: block;
+  margin-block-end: 0.4rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--setup-muted);
+}
+
+// The step progress is hq-progress; it only needs to fill the rail's width.
+.setup__progress {
+  display: block;
+}
+
+// The compact bar (narrow): the current step's title and a "go to step" list.
+.setup__compact {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-sm) var(--space-md);
+  margin-block-start: var(--space-md);
+}
+
+.setup__compact-title {
+  display: flex;
+  flex: 1 1 12rem;
+  align-items: center;
+  gap: var(--space-sm);
+  min-width: 0;
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 800;
+
+  i { flex: none; color: var(--setup-accent); }
+  span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+}
+
+// The step picker is the shared hq-searchable-select (it draws its own box and focus ring).
+.setup__jump {
+  display: block;
+  flex: 1 1 12rem;
+  min-width: 0;
+}
+
+// The vertical list (wide).
+.setup__list {
+  display: none;
+  margin: var(--space-md) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.setup__item {
+  position: relative;
+
+  // The connector to the next step; it fills once this step is done.
+  &:not(.is-last)::before {
+    content: '';
+    position: absolute;
+    inset-block-start: calc(0.5rem + var(--setup-marker) + 3px);
+    inset-block-end: -5px;
+    inset-inline-start: calc(0.625rem + var(--setup-marker) / 2 - 1px);
+    width: 2px;
+    border-radius: 2px;
+    background: var(--setup-line);
+  }
+
+  &.is-done:not(.is-last)::before { background: var(--setup-done); }
+}
+
+.setup__step {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-md);
+  width: 100%;
+  min-height: 2.75rem;
+  margin: 0;
+  padding: 0.5rem 0.625rem;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+
+  &:hover { background: var(--setup-track); }
+  &:focus-visible { outline: 2px solid var(--setup-accent); outline-offset: 1px; }
+
+  &.is-current {
+    background: var(--setup-accent-soft);
+    cursor: default;
+  }
+}
+
+.setup__num {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: var(--setup-marker);
+  height: var(--setup-marker);
+  border: 1.5px solid var(--setup-muted);
+  border-radius: 50%;
+  background: var(--setup-panel);
+  color: var(--setup-muted);
+  font-size: 0.82rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.setup__text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+  padding-block-start: 0.2rem;
+}
+
+.setup__label {
+  font-size: 0.9rem;
+  font-weight: 700;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
+.setup__summary {
+  display: -webkit-box;
+  margin-block-start: 0.15rem;
+  overflow: hidden;
+  font-size: 0.78rem;
+  line-height: 1.35;
+  color: var(--setup-muted);
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+}
+
+.is-current .setup__num {
+  border-color: var(--setup-accent);
+  background: var(--setup-accent);
+  color: #fff;
+  box-shadow: 0 0 0 3px var(--setup-accent-soft);
+}
+
+.is-current .setup__label { font-weight: 800; }
+
+.is-done .setup__num {
+  border-color: var(--setup-done);
+  background: var(--setup-done);
+  color: #fff;
+}
+
+.setup__dot {
+  flex: none;
+  width: 9px;
+  height: 9px;
+  margin-block-start: 0.55rem;
+  border-radius: 50%;
+  background: var(--setup-warn);
+}
+
+.setup__note {
+  display: none;
+  align-items: center;
+  gap: 0.4rem;
+  margin: var(--space-md) 0.25rem 0;
+  padding-block-start: var(--space-md);
+  border-block-start: 1px solid var(--setup-border);
+  font-size: 0.78rem;
+  color: var(--setup-muted);
+
+  i { color: var(--setup-done); }
+}
+
+// Read by screen readers only: the step's status in words (done, not started, unsaved changes).
+.setup__sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@container setup (min-width: #{$setup-wide}) {
+  .setup__list { display: block; }
+  .setup__note { display: flex; }
+  .setup__compact { display: none; }
+}
+
+@supports not (container-type: inline-size) {
+  @media (min-width: 1200px) {
+    .setup__list { display: block; }
+    .setup__note { display: flex; }
+    .setup__compact { display: none; }
+  }
+}
+
+// ---- the step's card ----------------------------------------------------------------------------
+.setup__card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  border: 1px solid var(--setup-border);
+  border-radius: 16px;
+  background: var(--setup-panel);
+  box-shadow: var(--theme-soft-shadow, 0 2px 12px rgba(0, 53, 128, 0.07));
+}
+
+.setup__panel-head { padding: var(--space-xl) var(--setup-pad) 0; }
+
+.setup__step-title {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 800;
+  line-height: 1.3;
+}
+
+.setup__step-desc {
+  margin: 0.25rem 0 0;
+  font-size: 0.85rem;
+  color: var(--setup-muted);
+}
+
+.setup__body {
+  min-width: 0;
+  padding: var(--space-xl) var(--setup-pad) 2rem;
+}
+
+.setup__panel { display: grid; gap: var(--space-lg); min-width: 0; }
+.setup__panel[hidden] { display: none; }
+
+// The step pages bring their own card (they are also pages of their own); inside the wizard they sit flat in the step's card,
+// with the form's actions (the step's own Save) at the end, on the right.
+.setup__panel ::ng-deep {
+  .table-surface {
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    backdrop-filter: none;
+    overflow: visible;
+  }
+
+  .table-surface__header { padding: 0 0 var(--space-md); border-bottom: 0; }
+  .table-kicker { display: none; }
+  .table-surface__body { padding: 0; }
+
+  hq-form-actions {
+    justify-content: flex-end;
+    margin-block-start: var(--space-sm);
+    padding-block-start: var(--space-lg);
+  }
+}
+
+// ---- navigation belongs to the bottom edge of the step card -----------------------------------
+.setup__footer {
+  margin-block-start: auto;
+  container-type: inline-size;
+  container-name: setup-footer;
+  border-block-start: 1px solid var(--setup-border);
+}
+
+.setup__footer-inner {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-sm) var(--space-md);
+  padding: var(--space-lg) var(--setup-pad);
+}
+
+.setup__cancel {
+  grid-column: 1;
+  grid-row: 1;
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 2.5rem;
+  padding: 0 0.5rem;
+  border: 0;
+  background: transparent;
+  color: var(--setup-muted);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:hover { color: var(--setup-ink); text-decoration: underline; }
+  &:focus-visible { outline: 2px solid var(--setup-accent); outline-offset: 2px; border-radius: 6px; }
+}
+
+.setup__nav {
+  grid-column: 3;
+  grid-row: 1;
+  justify-self: end;
+  display: flex;
+  gap: var(--space-md);
+  margin-inline-start: auto;
+
+  button { display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem; min-height: 2.5rem; }
+}
+
+// Hints use a second row so navigation always stays pinned to the end.
+.setup__reason {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  display: flex;
+  flex: 1 1 100%;
+  align-items: flex-start;
+  gap: 0.4rem;
+  margin: 0.25rem 0 0;
+  font-size: 0.82rem;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+
+  i { flex: none; margin-block-start: 1px; color: var(--setup-accent); }
+
+  // Empty: stays in the accessibility tree as a live region but takes no room.
+  &.is-empty {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
+
+@container setup-footer (max-width: 479.98px) {
+  .setup__footer-inner {
+    grid-template-columns: minmax(0, 1fr);
+    padding: var(--space-md) var(--space-lg);
+  }
+
+  .setup__cancel { grid-column: 1; grid-row: 1; }
+  .setup__nav {
+    grid-column: 1;
+    grid-row: 2;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    max-width: 100%;
+
+    button { min-width: 0; min-height: 2.75rem; }
+  }
+  .setup__reason { grid-row: 3; }
+}
+
+@container setup (max-width: 575.98px) {
+  .setup__card { --setup-pad: 1rem; }
+  .setup__title-row h1 { font-size: 1.25rem; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .setup__step, .setup__num { transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease; }
+  .setup__item::before { transition: background-color 0.3s ease; }
+}
+
+/* A step that cannot be opened yet (the franchise setup while a franchise is being opened). */
+.setup__step.is-locked {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+/* The guide of the step on screen, above its form. */
+.setup__guide { margin-bottom: var(--space-lg); }

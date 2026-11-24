@@ -1,0 +1,259 @@
+CAPACITY MODEL FOR RIDER_UAM  (parameter-driven; NOT a measurement)
+========================================================================
+registered users: 10,000,000   daily active: 30-40%
+
+UAM settings used (CODE = defaults in committed properties; a deployment can override):
+  uam_config.access_ttl_minutes: 60 (confirmed against application.properties:railcab.uam.auth.expiry-minutes)
+  uam_config.refresh_ttl_days: 30 (confirmed against application.properties:railcab.uam.auth.refresh-expiry-days)
+  uam_config.bcrypt_strength: 11 (confirmed against application.properties:railcab.uam.auth.password.bcrypt-strength)
+  uam_config.hash_pool_queue_capacity: 64 (confirmed against application.properties:railcab.uam.auth.password.hash-pool-queue-capacity)
+  uam_config.hash_timeout_ms: 2000 (confirmed against application.properties:railcab.uam.auth.password.hash-timeout-ms)
+  uam_config.db_pool_size_per_instance: 5 (confirmed against application-postgres.properties:spring.datasource.hikari.maximum-pool-size)
+  sustainable_rps_per_instance = None  (PLACEHOLDER: null until measured)
+
+------------------------------------------------------------------------
+SCENARIO LOW: 10% active = 1.00M users, window peak_hour (60 min)
+------------------------------------------------------------------------
+  endpoint            requests in window     avg rps    peak rps
+  login                          250,000        69.4       104.2
+  refresh                      1,000,000       277.8       416.7
+  logout                         100,000        27.8        41.7
+  me_privileges                  600,000       166.7       250.0
+  me_organizations               600,000       166.7       250.0
+  user_lookup                    200,000        55.6        83.3
+  user_list                       60,000        16.7        25.0
+  user_search                     30,000         8.3        12.5
+  TOTAL                        2,840,000       788.9      1183.3
+  CPU cores needed at peak (login_cpu_ms/other_cpu_ms PLACEHOLDERS): 29.3  -> instances by CPU: 11
+  max logins/s one instance can take (cores x util / login_cpu): 11.2   (bcrypt queue 64, timeout 2000 ms)
+  DB connections in use at peak (Little's law, hold-time PLACEHOLDERS): 58.6  -> instances to cover with pool size 5: 12
+  Postgres connections available to UAM: 119  -> at most 23 instances before max_connections is the limit
+  Gateway user-status reads of uam_users (PK lookups, NOT UAM requests): 16167/s (333,333 distinct users per gateway instance vs cache 10,000)
+
+  Instances required as a function of the UNKNOWN sustainable rps per instance:
+   rps/instance   by rps  required  DB conns  fits Postgres
+             50       34        34       170  NO
+            100       17        17        85  yes
+            200        9        12        60  yes
+            400        5        12        60  yes
+            800        3        12        60  yes
+  required = max(by rps, by CPU, by DB pool)
+
+------------------------------------------------------------------------
+SCENARIO LOW: 10% active = 1.00M users, window burst_15m (15 min)
+------------------------------------------------------------------------
+  endpoint            requests in window     avg rps    peak rps
+  login                          150,000       166.7       250.0
+  refresh                        250,000       277.8       416.7
+  logout                          25,000        27.8        41.7
+  me_privileges                  150,000       166.7       250.0
+  me_organizations               150,000       166.7       250.0
+  user_lookup                     50,000        55.6        83.3
+  user_list                       15,000        16.7        25.0
+  user_search                      7,500         8.3        12.5
+  TOTAL                          797,500       886.1      1329.2
+  CPU cores needed at peak (login_cpu_ms/other_cpu_ms PLACEHOLDERS): 65.7  -> instances by CPU: 24
+  max logins/s one instance can take (cores x util / login_cpu): 11.2   (bcrypt queue 64, timeout 2000 ms)
+  DB connections in use at peak (Little's law, hold-time PLACEHOLDERS): 63.0  -> instances to cover with pool size 5: 13
+  Postgres connections available to UAM: 119  -> at most 23 instances before max_connections is the limit
+  Gateway user-status reads of uam_users (PK lookups, NOT UAM requests): 16167/s (333,333 distinct users per gateway instance vs cache 10,000)
+
+  Instances required as a function of the UNKNOWN sustainable rps per instance:
+   rps/instance   by rps  required  DB conns  fits Postgres
+             50       38        38       190  NO
+            100       19        24       120  NO
+            200       10        24       120  NO
+            400        5        24       120  NO
+            800        3        24       120  NO
+  required = max(by rps, by CPU, by DB pool)
+
+------------------------------------------------------------------------
+SCENARIO EXPECTED: 15% active = 1.50M users, window peak_hour (60 min)
+------------------------------------------------------------------------
+  endpoint            requests in window     avg rps    peak rps
+  login                          375,000       104.2       156.2
+  refresh                      1,500,000       416.7       625.0
+  logout                         150,000        41.7        62.5
+  me_privileges                  900,000       250.0       375.0
+  me_organizations               900,000       250.0       375.0
+  user_lookup                    300,000        83.3       125.0
+  user_list                       60,000        16.7        25.0
+  user_search                     30,000         8.3        12.5
+  TOTAL                        4,215,000      1170.8      1756.2
+  CPU cores needed at peak (login_cpu_ms/other_cpu_ms PLACEHOLDERS): 43.9  -> instances by CPU: 16
+  max logins/s one instance can take (cores x util / login_cpu): 11.2   (bcrypt queue 64, timeout 2000 ms)
+  DB connections in use at peak (Little's law, hold-time PLACEHOLDERS): 64.1  -> instances to cover with pool size 5: 13
+  Postgres connections available to UAM: 119  -> at most 23 instances before max_connections is the limit
+  Gateway user-status reads of uam_users (PK lookups, NOT UAM requests): 24500/s (500,000 distinct users per gateway instance vs cache 10,000)
+
+  Instances required as a function of the UNKNOWN sustainable rps per instance:
+   rps/instance   by rps  required  DB conns  fits Postgres
+             50       51        51       255  NO
+            100       26        26       130  NO
+            200       13        16        80  yes
+            400        7        16        80  yes
+            800        4        16        80  yes
+  required = max(by rps, by CPU, by DB pool)
+
+------------------------------------------------------------------------
+SCENARIO EXPECTED: 15% active = 1.50M users, window burst_15m (15 min)
+------------------------------------------------------------------------
+  endpoint            requests in window     avg rps    peak rps
+  login                          225,000       250.0       375.0
+  refresh                        375,000       416.7       625.0
+  logout                          37,500        41.7        62.5
+  me_privileges                  225,000       250.0       375.0
+  me_organizations               225,000       250.0       375.0
+  user_lookup                     75,000        83.3       125.0
+  user_list                       15,000        16.7        25.0
+  user_search                      7,500         8.3        12.5
+  TOTAL                        1,185,000      1316.7      1975.0
+  CPU cores needed at peak (login_cpu_ms/other_cpu_ms PLACEHOLDERS): 98.5  -> instances by CPU: 36
+  max logins/s one instance can take (cores x util / login_cpu): 11.2   (bcrypt queue 64, timeout 2000 ms)
+  DB connections in use at peak (Little's law, hold-time PLACEHOLDERS): 70.7  -> instances to cover with pool size 5: 15
+  Postgres connections available to UAM: 119  -> at most 23 instances before max_connections is the limit
+  Gateway user-status reads of uam_users (PK lookups, NOT UAM requests): 24500/s (500,000 distinct users per gateway instance vs cache 10,000)
+
+  Instances required as a function of the UNKNOWN sustainable rps per instance:
+   rps/instance   by rps  required  DB conns  fits Postgres
+             50       57        57       285  NO
+            100       29        36       180  NO
+            200       15        36       180  NO
+            400        8        36       180  NO
+            800        4        36       180  NO
+  required = max(by rps, by CPU, by DB pool)
+
+------------------------------------------------------------------------
+SCENARIO HIGH: 20% active = 2.00M users, window peak_hour (60 min)
+------------------------------------------------------------------------
+  endpoint            requests in window     avg rps    peak rps
+  login                          500,000       138.9       208.3
+  refresh                      2,000,000       555.6       833.3
+  logout                         200,000        55.6        83.3
+  me_privileges                1,200,000       333.3       500.0
+  me_organizations             1,200,000       333.3       500.0
+  user_lookup                    400,000       111.1       166.7
+  user_list                       60,000        16.7        25.0
+  user_search                     30,000         8.3        12.5
+  TOTAL                        5,590,000      1552.8      2329.2
+  CPU cores needed at peak (login_cpu_ms/other_cpu_ms PLACEHOLDERS): 58.4  -> instances by CPU: 21
+  max logins/s one instance can take (cores x util / login_cpu): 11.2   (bcrypt queue 64, timeout 2000 ms)
+  DB connections in use at peak (Little's law, hold-time PLACEHOLDERS): 69.7  -> instances to cover with pool size 5: 14
+  Postgres connections available to UAM: 119  -> at most 23 instances before max_connections is the limit
+  Gateway user-status reads of uam_users (PK lookups, NOT UAM requests): 32833/s (666,667 distinct users per gateway instance vs cache 10,000)
+
+  Instances required as a function of the UNKNOWN sustainable rps per instance:
+   rps/instance   by rps  required  DB conns  fits Postgres
+             50       67        67       335  NO
+            100       34        34       170  NO
+            200       17        21       105  yes
+            400        9        21       105  yes
+            800        5        21       105  yes
+  required = max(by rps, by CPU, by DB pool)
+
+------------------------------------------------------------------------
+SCENARIO HIGH: 20% active = 2.00M users, window burst_15m (15 min)
+------------------------------------------------------------------------
+  endpoint            requests in window     avg rps    peak rps
+  login                          300,000       333.3       500.0
+  refresh                        500,000       555.6       833.3
+  logout                          50,000        55.6        83.3
+  me_privileges                  300,000       333.3       500.0
+  me_organizations               300,000       333.3       500.0
+  user_lookup                    100,000       111.1       166.7
+  user_list                       15,000        16.7        25.0
+  user_search                      7,500         8.3        12.5
+  TOTAL                        1,572,500      1747.2      2620.8
+  CPU cores needed at peak (login_cpu_ms/other_cpu_ms PLACEHOLDERS): 131.4  -> instances by CPU: 47
+  max logins/s one instance can take (cores x util / login_cpu): 11.2   (bcrypt queue 64, timeout 2000 ms)
+  DB connections in use at peak (Little's law, hold-time PLACEHOLDERS): 78.4  -> instances to cover with pool size 5: 16
+  Postgres connections available to UAM: 119  -> at most 23 instances before max_connections is the limit
+  Gateway user-status reads of uam_users (PK lookups, NOT UAM requests): 32833/s (666,667 distinct users per gateway instance vs cache 10,000)
+
+  Instances required as a function of the UNKNOWN sustainable rps per instance:
+   rps/instance   by rps  required  DB conns  fits Postgres
+             50       75        75       375  NO
+            100       38        47       235  NO
+            200       19        47       235  NO
+            400       10        47       235  NO
+            800        5        47       235  NO
+  required = max(by rps, by CPU, by DB pool)
+
+========================================================================
+SUMMARY - instances required vs the UNKNOWN sustainable rps per instance (parameter-driven, NOT measured)
+========================================================================
+scenario / window               users  peak rps  logins/s  by CPU     50    100    200    400    800
+                                                                   <- instances required at that sustainable rps per instance
+low 10% / peak_hour             1.00M      1183       104      11     34     17     12     12     12
+low 10% / burst_15m             1.00M      1329       250      24     38     24     24     24     24
+expected 15% / peak_hour        1.50M      1756       156      16     51     26     16     16     16
+expected 15% / burst_15m        1.50M      1975       375      36     57     36     36     36     36
+high 20% / peak_hour            2.00M      2329       208      21     67     34     21     21     21
+high 20% / burst_15m            2.00M      2621       500      47     75     47     47     47     47
+  required = max(ceil(peak rps / (rps x (1 - headroom))), instances by CPU, instances by DB pool)
+  headroom 0.3, cpu target 0.7, cores/instance 4, login_cpu_ms 250 (PLACEHOLDER), pool/instance 5
+
+========================================================================
+STORAGE (bytes per row are ASSUMPTIONS: measure with pg_total_relation_size on the seeded database)
+========================================================================
+dau_low: DAU = 3.00M
+  table                     B/row  rows (now or after 1y)  GB then   GB/yr  GB 5y unbounded  GB w/ retention
+  uam_users                   900              10,000,000      9.0     1.4             18.1             18.1
+  uam_user_roles              120              10,000,000      1.2     0.2              2.4              2.4
+  user_credentials            480              10,000,000      4.8     0.7              9.7              9.7
+  tenant_memberships          370              10,000,000      3.7     0.6              7.4              7.4
+  password_history            320              10,000,000      3.2     0.5              6.4              6.4
+  user_login_security         450               8,000,000      3.6     0.5              7.2              7.2
+  user_devices                550              12,000,000      6.6     1.0             13.3             13.3
+  user_sessions               580             547,500,000    317.6   317.6           1587.8             78.3
+  refresh_tokens              600           2,190,000,000   1314.0  1314.0           6570.0            126.0
+  audit_logs                  560             602,250,000    337.3   337.3           1686.3            166.3
+  uam_auth_audit_events       320             602,250,000    192.7   192.7            963.6             95.0
+  uam_login_attempts          170              54,750,000      9.3     9.3             46.5              0.0
+  TOTAL                                                     2202.9  2175.7          10918.8            530.3
+
+dau_high: DAU = 4.00M
+  table                     B/row  rows (now or after 1y)  GB then   GB/yr  GB 5y unbounded  GB w/ retention
+  uam_users                   900              10,000,000      9.0     1.4             18.1             18.1
+  uam_user_roles              120              10,000,000      1.2     0.2              2.4              2.4
+  user_credentials            480              10,000,000      4.8     0.7              9.7              9.7
+  tenant_memberships          370              10,000,000      3.7     0.6              7.4              7.4
+  password_history            320              10,000,000      3.2     0.5              6.4              6.4
+  user_login_security         450               8,000,000      3.6     0.5              7.2              7.2
+  user_devices                550              12,000,000      6.6     1.0             13.3             13.3
+  user_sessions               580             730,000,000    423.4   423.4           2117.0            104.4
+  refresh_tokens              600           2,920,000,000   1752.0  1752.0           8760.0            168.0
+  audit_logs                  560             803,000,000    449.7   449.7           2248.4            221.8
+  uam_auth_audit_events       320             803,000,000    257.0   257.0           1284.8            126.7
+  uam_login_attempts          170              73,000,000     12.4    12.4             62.0              0.0
+  TOTAL                                                     2926.5  2899.3          14536.8            685.5
+
+WORKING SET of the login path (indexes of all users + heap of the active users), GB:
+  low       indexes 9.1 + heap 1.4..14.1  => 10.5 .. 23.2 GB  (database RAM placeholder 64 GB)
+  expected  indexes 9.1 + heap 2.1..14.1  => 11.2 .. 23.2 GB  (database RAM placeholder 64 GB)
+  high      indexes 9.1 + heap 2.8..14.1  => 11.9 .. 23.2 GB  (database RAM placeholder 64 GB)
+
+Request mix implied by 'expected' / peak_hour (share of requests, %), vs loadtest.mix in scenario.json:
+  login                 8.9   configured 9
+  refresh              35.6   configured 36
+  logout                3.6   configured 4
+  me_privileges        21.4   configured 21
+  me_organizations     21.4   configured 21
+  user_lookup           7.1   configured 7
+  user_list             1.4   configured 1
+  user_search           0.7   configured 1
+
+PLACEHOLDERS that must be replaced by measurements before the numbers above are used for sizing:
+  cost_per_request.login_cpu_ms = 250
+  cost_per_request.other_cpu_ms = 3
+  cost_per_request.db_hold_ms.login = 30
+  cost_per_request.db_hold_ms.refresh = 12
+  cost_per_request.db_hold_ms.logout = 5
+  cost_per_request.db_hold_ms.me_privileges = 6
+  cost_per_request.db_hold_ms.me_organizations = 4
+  cost_per_request.db_hold_ms.user_lookup = 3
+  cost_per_request.db_hold_ms.user_list = 400
+  cost_per_request.db_hold_ms.user_search = 3000
+  instance.sustainable_rps_per_instance = None
+  postgres.max_connections = 200
+  postgres.ram_gb = 64

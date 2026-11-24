@@ -1,0 +1,53 @@
+<div class="table-surface">
+  <div class="table-surface__header">
+    <div class="table-heading">
+      <span class="table-kicker">{{ 'shared.listPage.total' | translate: { count: definitions.length } }}</span>
+    </div>
+    <button type="button" class="table-create-btn" (click)="load()" [disabled]="isLoading">
+      <i class="bi bi-arrow-clockwise"></i> {{ 'workflow.refresh' | translate }}
+    </button>
+  </div>
+
+  <div class="table-surface__body">
+    <section class="wf-new" *ngIf="canCreate">
+      <h3 class="wf-new__title"><i class="bi bi-plus-circle"></i> {{ 'workflow.definitions.templates.title' | translate }}</h3>
+      <div class="wf-new__grid">
+        <label class="wf-new__field"><span>{{ 'workflow.definitions.templates.template' | translate }}</span>
+          <hq-searchable-select [(ngModel)]="templateId" [allowOther]="false">
+            <hq-ss-option *ngFor="let t of templates" [value]="t.id" [label]="t.titleKey | translate"></hq-ss-option>
+          </hq-searchable-select></label>
+        <label class="wf-new__field"><span>{{ 'workflow.definitions.templates.key' | translate }}</span>
+          <hq-field type="text" [(ngModel)]="newKey" [maxLength]="64" placeholder="vendor-onboarding-review" [showCounter]="false"></hq-field></label>
+        <label class="wf-new__field"><span>{{ 'workflow.definitions.templates.name' | translate }}</span>
+          <hq-field type="text" [(ngModel)]="newName" [maxLength]="100" [showCounter]="false"></hq-field></label>
+        <button hqButton="accent" type="button" (click)="createFromTemplate()" [disabled]="!newKey.trim()">
+          <i class="bi bi-diagram-3"></i> {{ 'workflow.definitions.templates.create' | translate }}
+        </button>
+      </div>
+      <p class="wf-new__hint">{{ selectedTemplate.descriptionKey | translate }}</p>
+    </section>
+
+    <hq-loading-state *ngIf="isLoading && definitions.length === 0" [label]="'workflow.loading' | translate"></hq-loading-state>
+    <hq-error-state *ngIf="hasError" [title]="'workflow.definitions.loadFailed' | translate" (retry)="load()"></hq-error-state>
+    <hq-empty-state *ngIf="!isLoading && !hasError && definitions.length === 0" [title]="'workflow.definitions.empty' | translate"></hq-empty-state>
+
+    <div class="wf-table-wrap" *ngIf="definitions.length > 0">
+      <hq-common-table [columns]="columns" [rows]="definitions" [clickableRows]="true" (rowClick)="open($event)" [actionsLabel]="' '">
+        <ng-template hqCell="key" let-d><span class="wf-mono">{{ d.key }}</span></ng-template>
+        <ng-template hqCell="name" let-d>{{ d.name || '—' }}</ng-template>
+        <ng-template hqCell="version" let-d>v{{ d.version }}</ng-template>
+        <ng-template hqCell="deployedAt" let-d>{{ d.deployedAt ? (d.deployedAt | hqDate:'medium') : '—' }}</ng-template>
+        <ng-template hqCell="status" let-d>
+          <hq-status-badge [tone]="d.suspended ? 'neutral' : 'success'">
+            {{ (d.suspended ? 'workflow.definitions.suspended' : 'workflow.definitions.active') | translate }}
+          </hq-status-badge>
+        </ng-template>
+        <ng-template #rowActions let-d>
+          <button type="button" class="row-action-btn" [title]="'workflow.definitions.open' | translate" (click)="open(d); $event.stopPropagation()">
+            <i class="bi bi-eye"></i>
+          </button>
+        </ng-template>
+      </hq-common-table>
+    </div>
+  </div>
+</div>

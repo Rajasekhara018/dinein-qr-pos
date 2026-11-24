@@ -1,0 +1,149 @@
+[
+  {
+    "model": "WEB_NMS_TEMPLATE",
+    "service": "nms",
+    "project": "Rider_NMS",
+    "path": "/api/v1/nms/templates",
+    "apps": [
+      "Rider_Web",
+      "Rider_AdminWeb"
+    ],
+    "scope": "TENANT",
+    "id": "id",
+    "createdAt": "createdAt",
+    "sourcePaged": true,
+    "requestPaged": true,
+    "sourceRows": "content",
+    "format": "springPage",
+    "responseEnvelope": "common",
+    "sourceTimeZone": "SYSTEM",
+    "slots": {},
+    "filters": {},
+    "defaults": {},
+    "reader": "templates",
+    "sourceOrdered": true,
+    "sort": {
+      "field1": "number5",
+      "directionField1": "ASC",
+      "field2": "modelKey",
+      "directionField2": "ASC"
+    },
+    "normalizers": {}
+  },
+  {
+    "model": "WEB_NMS_EVENT_TEMPLATE",
+    "service": "nms",
+    "project": "Rider_NMS",
+    "path": "/api/v1/nms/templates/event/{event}",
+    "apps": [
+      "Rider_Web",
+      "Rider_AdminWeb"
+    ],
+    "scope": "TENANT",
+    "id": "id",
+    "createdAt": "createdAt",
+    "sourcePaged": true,
+    "requestPaged": false,
+    "sourceRows": "content",
+    "format": "array",
+    "responseEnvelope": "common",
+    "sourceTimeZone": "SYSTEM",
+    "slots": {
+      "text12": "event"
+    },
+    "filters": {
+      "event": [
+        "text12",
+        "EQ",
+        "upper"
+      ]
+    },
+    "defaults": {},
+    "reader": "templates",
+    "sourceOrdered": true,
+    "sort": {
+      "field1": "number5",
+      "directionField1": "ASC",
+      "field2": "modelKey",
+      "directionField2": "ASC"
+    },
+    "requiredFilters": [
+      "event"
+    ],
+    "normalizers": {
+      "text12": "upper"
+    }
+  },
+  {
+    "model": "WEB_NMS_EVENT",
+    "service": "nms",
+    "project": "Rider_NMS",
+    "path": "/api/v1/nms/events",
+    "apps": [
+      "Rider_Web",
+      "Rider_AdminWeb"
+    ],
+    "scope": "TENANT",
+    "id": "id|value",
+    "createdAt": "createdAt",
+    "sourcePaged": false,
+    "requestPaged": false,
+    "sourceRows": "",
+    "format": "array",
+    "responseEnvelope": "common",
+    "sourceTimeZone": "SYSTEM",
+    "slots": {},
+    "filters": {},
+    "defaults": {},
+    "reader": "events",
+    "sourceOrdered": true,
+    "sort": {
+      "field1": "number5",
+      "directionField1": "ASC",
+      "field2": "modelKey",
+      "directionField2": "ASC"
+    },
+    "normalizers": {}
+  },
+  {
+    "model": "WEB_NMS_BROADCAST",
+    "service": "nms",
+    "project": "Rider_NMS",
+    "path": "/api/v1/nms/broadcasts",
+    "apps": [
+      "Rider_Web",
+      "Rider_AdminWeb"
+    ],
+    "scope": "TENANT",
+    "id": "id",
+    "createdAt": "createdAt",
+    "sourcePaged": true,
+    "requestPaged": true,
+    "sourceRows": "content",
+    "format": "springPage",
+    "responseEnvelope": "common",
+    "sourceTimeZone": "SYSTEM",
+    "slots": {
+      "text1": "status"
+    },
+    "filters": {
+      "status": [
+        "text1",
+        "EQ",
+        "lower"
+      ]
+    },
+    "defaults": {},
+    "reader": "broadcasts",
+    "sourceOrdered": true,
+    "sort": {
+      "field1": "number5",
+      "directionField1": "ASC",
+      "field2": "modelKey",
+      "directionField2": "ASC"
+    },
+    "normalizers": {
+      "text1": "lower"
+    }
+  }
+]

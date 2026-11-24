@@ -1,0 +1,83 @@
+<hq-page-header
+  [kicker]="'nav.sections.accessManagement' | translate"
+  [title]="'nav.items.apiClients' | translate"
+  [subtitle]="'accessManagement.clients.subtitle' | translate">
+</hq-page-header>
+
+<hq-screen-help screen="apiClients"></hq-screen-help>
+
+<hq-stat-cards [stats]="stats"></hq-stat-cards>
+
+<div class="table-surface">
+  <div class="table-surface__header">
+    <div class="table-heading">
+      <span class="table-kicker">{{ 'shared.listPage.total' | translate: { count: totalElements } }}</span>
+    </div>
+    <ng-container *hqHasPrivilege="'CLIENT_CREATE'">
+      <button type="button" class="table-create-btn" (click)="openCreate()">
+        <i class="bi bi-plus-lg"></i> {{ 'accessManagement.clients.newButton' | translate }}
+      </button>
+    </ng-container>
+  </div>
+
+  <div class="table-surface__body">
+    <hq-filter-bar collapsible>
+      <hq-field type="text" [placeholder]="'accessManagement.fields.clientId' | translate" [(ngModel)]="filters.clientId"></hq-field>
+      <hq-searchable-select [(ngModel)]="filters.clientType" [allowOther]="false" [placeholder]="'shared.listPage.anyType' | translate">
+        <hq-ss-option value="INTERNAL" [label]="'INTERNAL'"></hq-ss-option>
+        <hq-ss-option value="EXTERNAL" [label]="'EXTERNAL'"></hq-ss-option>
+        <hq-ss-option value="MOBILE" [label]="'MOBILE'"></hq-ss-option>
+        <hq-ss-option value="WEB" [label]="'WEB'"></hq-ss-option>
+        <hq-ss-option value="MICROSERVICE" [label]="'MICROSERVICE'"></hq-ss-option>
+        <hq-ss-option value="BATCH" [label]="'BATCH'"></hq-ss-option>
+        <hq-ss-option value="INTEGRATION" [label]="'INTEGRATION'"></hq-ss-option>
+      </hq-searchable-select>
+      <hq-searchable-select [(ngModel)]="filters.active" [allowOther]="false" [placeholder]="'shared.listPage.anyStatus' | translate">
+        <hq-ss-option value="true" [label]="'accessManagement.clients.activeOption' | translate"></hq-ss-option>
+        <hq-ss-option value="false" [label]="'accessManagement.clients.inactiveOption' | translate"></hq-ss-option>
+      </hq-searchable-select>
+      <div hqFilterActions>
+        <button hqButton="accent" type="button" (click)="applyFilters()"><i class="bi bi-funnel"></i> {{ 'shared.listPage.filter' | translate }}</button>
+        <button hqButton="secondary" type="button" (click)="clearFilters()">{{ 'shared.listPage.clear' | translate }}</button>
+      </div>
+    </hq-filter-bar>
+
+    <hq-common-table
+      [columns]="columns"
+      [rows]="rows"
+      [isLoading]="isLoading"
+      [hasError]="hasError"
+      [emptyMessage]="'accessManagement.clients.emptyMessage' | translate"
+      [errorMessage]="'accessManagement.clients.errorMessage' | translate">
+      <ng-template #rowActions let-row>
+        <ng-container *hqHasPrivilege="'CLIENT_UPDATE'">
+          <button type="button" class="row-action-btn" [title]="'shared.listPage.rowActions.edit' | translate" (click)="openEdit(row)">
+            <i class="bi bi-pencil"></i>
+          </button>
+        </ng-container>
+        <ng-container *hqHasPrivilege="'CLIENT_ROTATE_SECRET'">
+          <button type="button" class="row-action-btn" [title]="'accessManagement.clients.rotateSecret' | translate" (click)="rotateSecret(row)">
+            <i class="bi bi-arrow-repeat"></i>
+          </button>
+        </ng-container>
+        <ng-container *hqHasPrivilege="'CLIENT_DELETE'">
+          <button type="button" class="row-action-btn danger" [title]="'shared.listPage.rowActions.delete' | translate" (click)="confirmDelete(row)">
+            <i class="bi bi-trash3"></i>
+          </button>
+        </ng-container>
+      </ng-template>
+    </hq-common-table>
+
+    <hq-table-footer
+      [page]="page"
+      [size]="pageSize"
+      [itemCount]="rows.length"
+      [hasMore]="page + 1 < totalPages"
+      [totalItems]="totalElements"
+      [loading]="isLoading"
+      [sizeOptions]="pageSizeOptions"
+      (pageChange)="goToPage($event)"
+      (sizeChange)="onPageSizeChange($event)">
+    </hq-table-footer>
+  </div>
+</div>

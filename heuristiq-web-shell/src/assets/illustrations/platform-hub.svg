@@ -1,0 +1,132 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 250" role="img" aria-label="One platform connecting matrimony, rides and food delivery">
+  <!-- Original animated illustration for the staff sign-in page: a glowing hub on an orbit with five service discs
+       (matrimony, rides, food, wallet, location). Glowing beads glide around the orbit and along soft links to the hub.
+       Made for a dark panel (any theme colour). CSS and SMIL animations run when shown as an <img>; CSS ones stop for
+       reduced motion and the beads are hidden then. -->
+  <defs>
+    <radialGradient id="hubGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffe7a8" stop-opacity="0.85"/>
+      <stop offset="45%" stop-color="#ffd27a" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#ffd27a" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fff0c2"/>
+      <stop offset="45%" stop-color="#f6bd3a"/>
+      <stop offset="100%" stop-color="#d68b0c"/>
+    </linearGradient>
+    <linearGradient id="disc" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#fff3df"/>
+    </linearGradient>
+    <filter id="soft" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#000000" flood-opacity="0.28"/>
+    </filter>
+    <filter id="bloom" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur stdDeviation="3"/>
+    </filter>
+    <path id="orbitPath" d="M 40 125 A 240 92 0 1 1 520 125 A 240 92 0 1 1 40 125 Z"/>
+  </defs>
+
+  <style>
+    .float { animation: float 4.5s ease-in-out infinite; }
+    .float.f2 { animation-delay: -0.9s; } .float.f3 { animation-delay: -1.8s; } .float.f4 { animation-delay: -2.7s; } .float.f5 { animation-delay: -3.6s; }
+    .hub { transform-box: fill-box; transform-origin: center; animation: breathe 4s ease-in-out infinite; }
+    .petals { transform-box: fill-box; transform-origin: center; animation: turn 24s linear infinite; }
+    .ripple { transform-box: fill-box; transform-origin: center; animation: ripple 4s ease-out infinite; }
+    .ripple.r2 { animation-delay: -2s; }
+    @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+    @keyframes breathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+    @keyframes turn { to { transform: rotate(360deg); } }
+    @keyframes ripple { from { transform: scale(0.85); opacity: 0.6; } to { transform: scale(1.75); opacity: 0; } }
+    @media (prefers-reduced-motion: reduce) {
+      .float, .hub, .petals, .ripple { animation: none; }
+      .ripple, .bead { display: none; }
+    }
+  </style>
+
+  <!-- Orbit: a soft wide band with a fine line on it -->
+  <use href="#orbitPath" fill="none" stroke="#ffffff" stroke-opacity="0.07" stroke-width="16"/>
+  <use href="#orbitPath" fill="none" stroke="#ffffff" stroke-opacity="0.45" stroke-width="1.6" stroke-dasharray="1 7" stroke-linecap="round"/>
+
+  <!-- Soft links from the hub to each disc -->
+  <g stroke="#ffffff" stroke-opacity="0.22" stroke-width="2" fill="none">
+    <path d="M280 125 L 150 52"/><path d="M280 125 L 410 52"/>
+    <path d="M280 125 L 64 125"/><path d="M280 125 L 496 125"/><path d="M280 125 L 280 214"/>
+  </g>
+
+  <!-- Beads gliding around the orbit -->
+  <g class="bead">
+    <g><circle r="7" fill="#ffd27a" filter="url(#bloom)"/><circle r="3.5" fill="#fff6d6"/>
+      <animateMotion dur="14s" repeatCount="indefinite"><mpath href="#orbitPath"/></animateMotion></g>
+    <g><circle r="7" fill="#ffd27a" filter="url(#bloom)"/><circle r="3.5" fill="#fff6d6"/>
+      <animateMotion dur="14s" begin="-7s" repeatCount="indefinite"><mpath href="#orbitPath"/></animateMotion></g>
+  </g>
+
+  <!-- Hub -->
+  <circle cx="280" cy="125" r="82" fill="url(#hubGlow)"/>
+  <circle class="ripple" cx="280" cy="125" r="44" fill="none" stroke="#ffe29a" stroke-width="2"/>
+  <circle class="ripple r2" cx="280" cy="125" r="44" fill="none" stroke="#ffe29a" stroke-width="2"/>
+  <g class="hub" filter="url(#soft)">
+    <circle cx="280" cy="125" r="44" fill="url(#gold)"/>
+    <circle cx="280" cy="125" r="36" fill="none" stroke="#ffffff" stroke-opacity="0.75" stroke-width="1.5"/>
+    <g class="petals" transform="translate(280 125)" fill="#ffffff">
+      <ellipse rx="6" ry="15" cy="-12"/>
+      <ellipse rx="6" ry="15" cy="-12" transform="rotate(45)"/>
+      <ellipse rx="6" ry="15" cy="-12" transform="rotate(90)"/>
+      <ellipse rx="6" ry="15" cy="-12" transform="rotate(135)"/>
+      <ellipse rx="6" ry="15" cy="-12" transform="rotate(180)"/>
+      <ellipse rx="6" ry="15" cy="-12" transform="rotate(225)"/>
+      <ellipse rx="6" ry="15" cy="-12" transform="rotate(270)"/>
+      <ellipse rx="6" ry="15" cy="-12" transform="rotate(315)"/>
+    </g>
+    <circle cx="280" cy="125" r="8" fill="#e8621a"/>
+    <circle cx="280" cy="125" r="3.5" fill="#fff0c2"/>
+  </g>
+
+  <!-- Disc: matrimony (two linked rings with a stone) -->
+  <g class="float" filter="url(#soft)">
+    <circle cx="150" cy="52" r="30" fill="url(#disc)"/>
+    <circle cx="150" cy="52" r="30" fill="none" stroke="url(#gold)" stroke-width="2.5"/>
+    <g fill="none" stroke="#d68b0c" stroke-width="4">
+      <circle cx="143" cy="56" r="10"/><circle cx="157" cy="56" r="10"/>
+    </g>
+    <path d="M143 44 l -4 -5 h 8 z" fill="#5cc8f0"/>
+  </g>
+
+  <!-- Disc: rides (a car) -->
+  <g class="float f2" filter="url(#soft)">
+    <circle cx="410" cy="52" r="30" fill="url(#disc)"/>
+    <circle cx="410" cy="52" r="30" fill="none" stroke="url(#gold)" stroke-width="2.5"/>
+    <path d="M392 60 v -7 q 0 -3 3 -4 l 5 -9 q 1 -2 3 -2 h 14 q 2 0 3 2 l 5 9 q 3 1 3 4 v 7 z" fill="#c0392b"/>
+    <path d="M402 49 l 3 -7 h 10 l 3 7 z" fill="#dff1fb"/>
+    <circle cx="399" cy="61" r="4.5" fill="#2b2b2b"/><circle cx="421" cy="61" r="4.5" fill="#2b2b2b"/>
+    <circle cx="399" cy="61" r="1.8" fill="#ffffff"/><circle cx="421" cy="61" r="1.8" fill="#ffffff"/>
+  </g>
+
+  <!-- Disc: food (a bowl with steam) -->
+  <g class="float f3" filter="url(#soft)">
+    <circle cx="64" cy="125" r="30" fill="url(#disc)"/>
+    <circle cx="64" cy="125" r="30" fill="none" stroke="url(#gold)" stroke-width="2.5"/>
+    <path d="M47 125 h 34 a 17 14 0 0 1 -34 0 z" fill="#e8621a"/>
+    <path d="M45 125 h 38" stroke="#d68b0c" stroke-width="3" stroke-linecap="round"/>
+    <g fill="none" stroke="#c9a46a" stroke-width="2" stroke-linecap="round">
+      <path d="M57 119 q -3 -4 0 -7 q 3 -3 0 -7"/><path d="M64 119 q -3 -4 0 -7 q 3 -3 0 -7"/><path d="M71 119 q -3 -4 0 -7 q 3 -3 0 -7"/>
+    </g>
+  </g>
+
+  <!-- Disc: wallet (a rupee coin) -->
+  <g class="float f4" filter="url(#soft)">
+    <circle cx="496" cy="125" r="30" fill="url(#disc)"/>
+    <circle cx="496" cy="125" r="30" fill="none" stroke="url(#gold)" stroke-width="2.5"/>
+    <circle cx="496" cy="125" r="16" fill="url(#gold)"/>
+    <path d="M489 117 h 14 M489 122 h 14 M491 117 q 8 0 8 5 q 0 5 -8 5 l 9 8" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+
+  <!-- Disc: location (a map pin) -->
+  <g class="float f5" filter="url(#soft)">
+    <circle cx="280" cy="214" r="26" fill="url(#disc)"/>
+    <circle cx="280" cy="214" r="26" fill="none" stroke="url(#gold)" stroke-width="2.5"/>
+    <path d="M280 228 c -8 -9 -11 -14 -11 -19 a 11 11 0 0 1 22 0 c 0 5 -3 10 -11 19 z" fill="#c0392b"/>
+    <circle cx="280" cy="209" r="4" fill="#ffffff"/>
+  </g>
+</svg>

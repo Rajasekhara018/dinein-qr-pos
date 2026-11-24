@@ -1,0 +1,58 @@
+// "How this screen works" panel. Colours follow the shared theme variables, with neutral fallbacks.
+.rsh {
+  margin: 0 0 16px;
+  border: 1px solid color-mix(in srgb, var(--hq-primary, #1f7a5a) 28%, transparent);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--hq-primary, #1f7a5a) 5%, transparent);
+}
+
+.rsh__toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 10px 14px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font-weight: 600;
+  font-size: 13.5px;
+  text-align: start;
+  cursor: pointer;
+
+  span {
+    flex: 1;
+  }
+
+  i:first-child {
+    color: var(--hq-primary, #1f7a5a);
+  }
+}
+
+.rsh__body {
+  padding: 0 16px 12px;
+  font-size: 13.5px;
+}
+
+.rsh__what {
+  margin: 0 0 6px;
+}
+
+.rsh__steps {
+  margin: 0 0 8px;
+  padding-inline-start: 20px;
+
+  li {
+    margin-bottom: 2px;
+  }
+}
+
+.rsh__tip {
+  margin: 0;
+  font-size: 12.5px;
+  opacity: 0.8;
+
+  i {
+    margin-inline-end: 4px;
+  }
+}

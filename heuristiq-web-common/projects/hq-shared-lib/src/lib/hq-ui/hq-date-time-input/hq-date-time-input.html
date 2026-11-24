@@ -1,0 +1,145 @@
+<div class="hq-dt" [class.is-disabled]="disabled" [class.has-error]="hasError || isIncomplete" [class.is-open]="open">
+  <div class="hq-dt__box" cdkOverlayOrigin #origin="cdkOverlayOrigin">
+    <input
+      type="text"
+      class="hq-dt__control"
+      inputmode="numeric"
+      autocomplete="off"
+      spellcheck="false"
+      [id]="controlId"
+      [attr.name]="name || null"
+      [attr.placeholder]="shownPlaceholder"
+      [attr.maxlength]="maxLength"
+      [attr.aria-label]="ariaLabel || null"
+      [attr.aria-invalid]="isIncomplete ? 'true' : null"
+      aria-haspopup="dialog"
+      [attr.aria-expanded]="open"
+      [attr.aria-controls]="open ? panelId : null"
+      [disabled]="disabled"
+      [readOnly]="readonly"
+      [value]="text"
+      (input)="onType($any($event.target).value)"
+      (blur)="onBlur()"
+      (keydown)="onInputKey($event)"
+    />
+    <button
+      type="button"
+      class="hq-dt__toggle"
+      [disabled]="disabled || readonly"
+      [attr.aria-label]="t.open(mode)"
+      aria-haspopup="dialog"
+      [attr.aria-expanded]="open"
+      (click)="toggle()"
+    >
+      @if (mode === 'time') {
+        <svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true">
+          <circle cx="10" cy="10" r="7.2" fill="none" stroke="currentColor" stroke-width="1.6" />
+          <path d="M10 5.8V10l2.8 1.8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      } @else {
+        <svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true">
+          <rect x="3" y="4.5" width="14" height="12.5" rx="2.2" fill="none" stroke="currentColor" stroke-width="1.6" />
+          <path d="M3 8.5h14M7 2.8v3.2M13 2.8v3.2" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+        </svg>
+      }
+    </button>
+  </div>
+
+  <ng-template
+    cdkConnectedOverlay
+    [cdkConnectedOverlayOrigin]="origin"
+    [cdkConnectedOverlayOpen]="open"
+    [cdkConnectedOverlayPositions]="positions"
+    [cdkConnectedOverlayFlexibleDimensions]="false"
+    [cdkConnectedOverlayPush]="true"
+    (overlayOutsideClick)="onOutsideClick($event)"
+  >
+    <div class="hq-dt-panel" role="dialog" [id]="panelId" [attr.aria-label]="t.panel(mode)">
+      <div class="hq-dt-panel__body">
+        @if (hasDate) {
+          <div class="hq-dt-cal">
+            <div class="hq-dt-cal__head">
+              <button type="button" class="hq-dt-cal__nav" [attr.aria-label]="t.previousMonth()" (click)="previousMonth()">
+                <svg viewBox="0 0 20 20" width="16" height="16" aria-hidden="true"><path d="M12.5 4.5L7 10l5.5 5.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" /></svg>
+              </button>
+              <span class="hq-dt-cal__title" aria-live="polite">{{ monthTitle }}</span>
+              <button type="button" class="hq-dt-cal__nav" [attr.aria-label]="t.nextMonth()" (click)="nextMonth()">
+                <svg viewBox="0 0 20 20" width="16" height="16" aria-hidden="true"><path d="M7.5 4.5L13 10l-5.5 5.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" /></svg>
+              </button>
+            </div>
+
+            <div class="hq-dt-cal__weekdays" aria-hidden="true">
+              @for (label of weekdays; track $index) {
+                <span>{{ label }}</span>
+              }
+            </div>
+
+            <div class="hq-dt-cal__grid" role="grid" [attr.aria-label]="monthTitle" (keydown)="onGridKey($event)">
+              @for (week of weeks; track $index) {
+                <div class="hq-dt-cal__week" role="row">
+                  @for (day of week; track day.iso) {
+                    <button
+                      type="button"
+                      role="gridcell"
+                      class="hq-dt-cal__day"
+                      [class.is-outside]="!day.inMonth"
+                      [class.is-today]="day.iso === todayIso"
+                      [class.is-selected]="day.iso === selectedIso"
+                      [attr.data-iso]="day.iso"
+                      [attr.aria-label]="dayLabel(day)"
+                      [attr.aria-selected]="day.iso === selectedIso"
+                      [attr.tabindex]="day.iso === focusIso ? 0 : -1"
+                      [disabled]="dayDisabled(day)"
+                      (click)="selectDay(day)"
+                    >{{ day.day }}</button>
+                  }
+                </div>
+              }
+            </div>
+          </div>
+        }
+
+        @if (hasTime) {
+          <div class="hq-dt-clock">
+            <div class="hq-dt-clock__column" role="listbox" [attr.aria-label]="t.hours()">
+              @for (hour of hours; track hour) {
+                <button
+                  type="button"
+                  role="option"
+                  class="hq-dt-clock__cell"
+                  [class.is-selected]="hour === selectedHour"
+                  [attr.aria-selected]="hour === selectedHour"
+                  (click)="selectHour(hour)"
+                >{{ hourLabel(hour) }}</button>
+              }
+            </div>
+            <div class="hq-dt-clock__column" role="listbox" [attr.aria-label]="t.minutes()">
+              @for (minute of minutes; track minute) {
+                <button
+                  type="button"
+                  role="option"
+                  class="hq-dt-clock__cell"
+                  [class.is-selected]="minute === selectedMinute"
+                  [attr.aria-selected]="minute === selectedMinute"
+                  (click)="selectMinute(minute)"
+                >{{ hourLabel(minute) }}</button>
+              }
+            </div>
+          </div>
+        }
+      </div>
+
+      <div class="hq-dt-panel__foot">
+        @if (clearable) {
+          <button type="button" class="hq-dt-panel__link" (click)="clear()">{{ t.clear() }}</button>
+        } @else {
+          <span></span>
+        }
+        <button type="button" class="hq-dt-panel__link" (click)="selectToday()">{{ mode === 'time' ? t.now() : t.today() }}</button>
+        @if (hasTime) {
+          <button type="button" class="hq-dt-panel__done" (click)="done()">{{ t.done() }}</button>
+        }
+      </div>
+    </div>
+  </ng-template>
+</div>

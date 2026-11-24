@@ -1,0 +1,50 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: railcab-dms-mongo-backup
+spec:
+  schedule: "0 1 * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: mongo-backup
+              image: mongo:7
+              env:
+                - name: DMS_MONGO_URI
+                  valueFrom:
+                    secretKeyRef:
+                      name: railcab-dms-secrets
+                      key: mongo-uri
+                - name: BACKUP_BUCKET
+                  valueFrom:
+                    secretKeyRef:
+                      name: railcab-dms-secrets
+                      key: backup-bucket
+                - name: AWS_ACCESS_KEY_ID
+                  valueFrom:
+                    secretKeyRef:
+                      name: railcab-dms-secrets
+                      key: backup-access-key
+                - name: AWS_SECRET_ACCESS_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: railcab-dms-secrets
+                      key: backup-secret-key
+              command:
+                - /bin/sh
+                - -c
+                - |
+                  set -eu
+                  apt-get update >/dev/null
+                  apt-get install -y awscli >/dev/null
+                  ts=$(date -u +%Y%m%dT%H%M%SZ)
+                  archive="/tmp/railcab-dms-${ts}.archive.gz"
+                  mongodump --uri="${DMS_MONGO_URI}" --archive="${archive}" --gzip
+                  aws s3 cp "${archive}" "s3://${BACKUP_BUCKET}/mongo/${ts}.archive.gz"

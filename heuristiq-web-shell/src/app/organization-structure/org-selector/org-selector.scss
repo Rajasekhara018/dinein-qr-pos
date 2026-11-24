@@ -1,0 +1,14 @@
+:host { display: block; }
+
+.org-selector {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+  margin-bottom: 1rem;
+
+  &__label { margin: 0; font-size: 0.8rem; font-weight: 700; white-space: nowrap; }
+  &__add { font-size: 0.82rem; font-weight: 600; white-space: nowrap; text-decoration: none; }
+  &__select { display: block; min-width: 240px; max-width: 100%; }
+  &__hint { flex-basis: 100%; opacity: 0.7; font-size: 0.78rem; }
+}

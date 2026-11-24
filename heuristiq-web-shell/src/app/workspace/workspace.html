@@ -1,0 +1,277 @@
+<hq-page-header
+  [kicker]="'nav.sections.main' | translate"
+  [title]="'workspace.title' | translate"
+  [subtitle]="'workspace.subtitle' | translate"
+  [loading]="loading"
+  [loadingLabel]="'shared.pageHeader.loading' | translate">
+</hq-page-header>
+
+<hq-tabs class="ws-tabs" [value]="active" (valueChange)="selectTab($any($event))" [ariaLabel]="'workspace.tabsLabel' | translate">
+  <hq-tab *ngFor="let tab of tabs" [value]="tab" [icon]="tab.icon" [label]="tab.labelKey | translate"></hq-tab>
+</hq-tabs>
+
+<!-- What the open tab is for, how to use it, and an example. -->
+<app-workspace-help [tab]="active.key"></app-workspace-help>
+
+<!-- The service desk: queues, board and ticket drawer of its own. -->
+<app-service-desk *ngIf="active.key === 'desk'"></app-service-desk>
+
+<ng-container *ngIf="active.key !== 'desk'">
+<ng-container *hqHasPrivilege="privileges.list">
+  <!-- Add / edit form -->
+  <form class="ws-form" *hqHasPrivilege="editingId ? privileges.update : privileges.create" (ngSubmit)="submit()" #wsForm="ngForm">
+    <div class="ws-form__row">
+      <hq-field
+        type="text"
+        class="ws-input ws-input--grow"
+        *ngIf="active.titled"
+        name="title"
+        [(ngModel)]="form.title"
+        [maxLength]="maxTitle"
+        [placeholder]="'workspace.form.titlePlaceholder' | translate"
+        [ariaLabel]="'workspace.form.title' | translate"
+        [showCounter]="false"></hq-field>
+      <hq-searchable-select
+        class="ws-input"
+        *ngIf="active.priority"
+        name="priority"
+        [(ngModel)]="form.priority"
+        [ariaLabel]="'workspace.form.priority' | translate"
+        [allowOther]="false">
+        <hq-ss-option *ngFor="let p of priorities" [value]="p" [label]="priorityKeys[p] | translate"></hq-ss-option>
+      </hq-searchable-select>
+      <hq-field
+        type="datetime-local"
+        class="ws-input"
+        *ngIf="active.due"
+        name="due"
+        [(ngModel)]="form.due"
+        [ariaLabel]="'workspace.form.due' | translate"
+        [title]="'workspace.form.due' | translate"></hq-field>
+      <hq-field
+        type="datetime-local"
+        class="ws-input"
+        *ngIf="active.reminder"
+        name="remind"
+        [(ngModel)]="form.remind"
+        [ariaLabel]="'workspace.form.remind' | translate"
+        [title]="'workspace.form.remind' | translate"></hq-field>
+    </div>
+
+    <!-- Quick due times and the assignee of a task. -->
+    <div class="ws-form__row ws-form__row--meta" *ngIf="active.due || active.assignee">
+      <div class="ws-chips" *ngIf="active.due" role="group" [attr.aria-label]="'workspace.form.due' | translate">
+        <span class="ws-chips__label">{{ 'workspace.form.due' | translate }}:</span>
+        <button type="button" class="ws-chip" *ngFor="let q of quickDues" (click)="setQuickDue(q)">{{ 'workspace.quickDue.' + q | translate }}</button>
+        <button type="button" class="ws-chip ws-chip--ghost" *ngIf="form.due" (click)="form.due = ''">{{ 'workspace.quickDue.none' | translate }}</button>
+      </div>
+      <div class="ws-assignee" *ngIf="active.assignee">
+        <span class="ws-chips__label">{{ 'workspace.form.assignee' | translate }}:</span>
+        <span class="ws-person" *ngIf="form.assignee as person">
+          <i class="bi bi-person-circle" aria-hidden="true"></i> {{ person.name }}
+          <button type="button" class="ws-person__clear" (click)="clearAssignee()" [attr.aria-label]="'workspace.people.clear' | translate">
+            <i class="bi bi-x" aria-hidden="true"></i>
+          </button>
+        </span>
+        <button type="button" class="ws-chip" (click)="pickAssignee()"><i class="bi bi-search" aria-hidden="true"></i> {{ 'workspace.people.choose' | translate }}</button>
+        <button type="button" class="ws-chip" *ngIf="form.assignee?.id !== userId" (click)="assignFormToMe()">{{ 'workspace.people.assignToMe' | translate }}</button>
+      </div>
+    </div>
+
+    <!-- A note: labels and pin. A handover note: its shift, labels and the open tickets it hands over. -->
+    <div class="ws-form__row ws-form__row--meta" *ngIf="active.kind === 'NOTE' || active.kind === 'HANDOVER'">
+      <hq-searchable-select class="ws-input" *ngIf="active.kind === 'HANDOVER'" name="shift" [(ngModel)]="form.shift" [allowOther]="false"
+                             [ariaLabel]="'workspace.handover.shift' | translate">
+        <hq-ss-option *ngFor="let sh of shifts" [value]="sh" [label]="'workspace.handover.shifts.' + sh | translate"></hq-ss-option>
+      </hq-searchable-select>
+      <hq-field type="text" class="ws-input ws-input--grow" name="labels" [(ngModel)]="form.labels" [maxLength]="300" [showCounter]="false"
+                 [placeholder]="'workspace.form.labelsPlaceholder' | translate" [ariaLabel]="'workspace.form.labels' | translate"></hq-field>
+      <hq-checkbox *ngIf="active.kind === 'NOTE'" name="pinned" [(ngModel)]="form.pinned">{{ 'workspace.form.pin' | translate }}</hq-checkbox>
+    </div>
+    <div class="ws-handover-tickets" *ngIf="active.kind === 'HANDOVER'">
+      <p class="ws-chips__label">{{ 'workspace.handover.attachTickets' | translate }}</p>
+      <p class="ws-muted" *ngIf="!openTickets.length">{{ 'workspace.handover.noOpenTickets' | translate }}</p>
+      <div class="ws-chips" *ngIf="openTickets.length">
+        <button type="button" class="ws-chip" *ngFor="let t of openTickets" [class.is-on]="isTicketPicked(t)" [attr.aria-pressed]="isTicketPicked(t)"
+                (click)="toggleTicket(t)" [title]="t.title">
+          <i class="bi" [ngClass]="isTicketPicked(t) ? 'bi-check2-square' : 'bi-square'" aria-hidden="true"></i>
+          {{ ticketKey(t) }}<span class="ws-chip__urgent" *ngIf="t.priority === 'URGENT'">!</span>
+          <span class="ws-chip__title">{{ t.title }}</span>
+        </button>
+      </div>
+    </div>
+
+    <hq-field
+      type="textarea"
+      class="ws-input rf-ws-textarea"
+      name="body"
+      [rows]="2"
+      [(ngModel)]="form.body"
+      [maxLength]="maxBody"
+      [placeholder]="(active.titled ? 'workspace.form.bodyPlaceholder' : 'workspace.form.handoverPlaceholder') | translate"
+      [ariaLabel]="'workspace.form.body' | translate"
+      [showCounter]="false"></hq-field>
+    <hq-form-actions align="end">
+      <button hqButton="secondary" type="button" *ngIf="editingId" (click)="cancelEdit()">{{ 'workspace.form.cancel' | translate }}</button>
+      <button type="submit" class="table-create-btn" [disabled]="!canSubmit">
+        <i class="bi" [ngClass]="editingId ? 'bi-check2' : 'bi-plus-lg'"></i>
+        {{ (editingId ? 'workspace.form.save' : 'workspace.form.add') | translate }}
+      </button>
+    </hq-form-actions>
+  </form>
+
+  <!-- Search and filters of to-dos and tasks. -->
+  <div class="ws-toolbar" *ngIf="active.status || active.kind === 'NOTE'">
+    <hq-field type="search" class="ws-toolbar__search" icon="bi-search" [ngModel]="search" (ngModelChange)="onSearch($event)"
+               [ngModelOptions]="{ standalone: true }" [placeholder]="'workspace.filters.search' | translate"
+               [ariaLabel]="'workspace.filters.search' | translate" [showCounter]="false"></hq-field>
+    <hq-searchable-select class="ws-toolbar__select" *ngIf="active.status" [(ngModel)]="priorityFilter" (ngModelChange)="reload()" [ngModelOptions]="{ standalone: true }"
+                           [allowOther]="false" [ariaLabel]="'workspace.form.priority' | translate">
+      <hq-ss-option value="" [label]="'workspace.filters.anyPriority' | translate"></hq-ss-option>
+      <hq-ss-option *ngFor="let p of priorities" [value]="p" [label]="priorityKeys[p] | translate"></hq-ss-option>
+    </hq-searchable-select>
+    <hq-tabs *ngIf="active.assignee" appearance="pills" size="sm" [value]="who" (valueChange)="setWho($any($event))"
+              [ariaLabel]="'workspace.filters.whoLabel' | translate">
+      <hq-tab *ngFor="let w of taskWho" [value]="w" [label]="'workspace.filters.who.' + w | translate"></hq-tab>
+    </hq-tabs>
+    <button type="button" class="ws-chip" *ngIf="active.status" [class.is-on]="showDone" [attr.aria-pressed]="showDone" (click)="toggleShowDone()">
+      <i class="bi" [ngClass]="showDone ? 'bi-eye' : 'bi-eye-slash'" aria-hidden="true"></i> {{ 'workspace.filters.showDone' | translate }}
+    </button>
+    <button hqButton="secondary" appearance="text" size="sm" type="button" *ngIf="filtered" (click)="clearFilters()">
+      <i class="bi bi-x-lg" aria-hidden="true"></i> {{ 'workspace.filters.clear' | translate }}
+    </button>
+  </div>
+
+  <!-- Bulk actions on the ticked items. -->
+  <div class="ws-bulk" *ngIf="selected.size > 0" role="region" [attr.aria-label]="'workspace.bulk.label' | translate">
+    <span>{{ 'workspace.bulk.selected' | translate: { count: selected.size } }}</span>
+    <ng-container *hqHasPrivilege="privileges.status">
+      <button hqButton="accent" size="sm" type="button" [disabled]="!selectedOpen.length" (click)="completeSelected()">
+        <i class="bi bi-check2-all" aria-hidden="true"></i> {{ 'workspace.bulk.markDone' | translate }}
+      </button>
+    </ng-container>
+    <button hqButton="secondary" appearance="text" size="sm" type="button" (click)="clearSelection()">{{ 'workspace.bulk.clear' | translate }}</button>
+  </div>
+
+  <!-- List -->
+  <hq-error-state *ngIf="loadError" [title]="'workspace.messages.loadFailed' | translate" (retry)="reload()"></hq-error-state>
+  <hq-loading-state *ngIf="loading && items.length === 0 && !loadError" [label]="'workspace.loading' | translate"></hq-loading-state>
+  <hq-empty-state *ngIf="!loading && !loadError && items.length === 0"
+                   [title]="(filtered ? 'workspace.emptyFiltered' : 'workspace.empty') | translate"></hq-empty-state>
+
+  <!-- To-dos and tasks, grouped by when they are due. -->
+  <ng-container *ngIf="grouped && items.length > 0">
+    <section class="ws-group" *ngFor="let group of groups" [class.ws-group--overdue]="group.key === 'overdue'">
+      <button type="button" class="ws-group__head" (click)="toggleFold(group.key)" [attr.aria-expanded]="!folded.has(group.key)">
+        <i class="bi" [ngClass]="folded.has(group.key) ? 'bi-chevron-right' : 'bi-chevron-down'" aria-hidden="true"></i>
+        <span class="ws-group__title">{{ 'workspace.groups.' + group.key | translate }}</span>
+        <span class="ws-group__count">{{ group.items.length }}</span>
+      </button>
+      <ul class="ws-list" *ngIf="!folded.has(group.key)">
+        <ng-container *ngFor="let item of group.items; trackBy: trackItem">
+          <ng-container *ngTemplateOutlet="itemRow; context: { $implicit: item }"></ng-container>
+        </ng-container>
+      </ul>
+    </section>
+  </ng-container>
+
+  <!-- Notes and handover notes, newest first. -->
+  <ul class="ws-list" *ngIf="!grouped && items.length > 0">
+    <ng-container *ngFor="let item of items; trackBy: trackItem">
+      <ng-container *ngTemplateOutlet="itemRow; context: { $implicit: item }"></ng-container>
+    </ng-container>
+  </ul>
+
+  <div class="ws-more" *ngIf="hasMore">
+    <button hqButton="secondary" type="button" (click)="loadMore()" [disabled]="loading">{{ 'workspace.loadMore' | translate }}</button>
+  </div>
+</ng-container>
+</ng-container>
+
+<!-- One item of any list. -->
+<ng-template #itemRow let-item>
+  <li class="ws-item" [class.is-done]="item.status === 'DONE' && active.status" [class.is-selected]="selected.has(item.id)"
+      [class.is-pinned]="item.pinned"
+      [class.is-urgent]="item.priority === 'URGENT' && item.status !== 'DONE'">
+    <input type="checkbox" class="ws-select" *ngIf="active.status && canTick(item) && item.status !== 'DONE'"
+           [checked]="selected.has(item.id)" (change)="toggleSelected(item)" [attr.aria-label]="'workspace.bulk.select' | translate: { title: item.title }" />
+    <ng-container *ngIf="active.status && canTick(item)">
+      <button *hqHasPrivilege="privileges.status" type="button" class="ws-check" [class.checked]="item.status === 'DONE'"
+        [attr.aria-pressed]="item.status === 'DONE'"
+        [attr.aria-label]="(item.status === 'DONE' ? 'workspace.actions.reopen' : 'workspace.actions.markDone') | translate"
+        (click)="toggleDone(item)">
+        <i class="bi" [ngClass]="item.status === 'DONE' ? 'bi-check-circle-fill' : 'bi-circle'"></i>
+      </button>
+    </ng-container>
+
+    <div class="ws-item__main">
+      <p class="ws-item__title" *ngIf="item.title">
+        <i class="bi bi-pin-angle-fill ws-pin" *ngIf="item.pinned" aria-hidden="true"></i> {{ item.title }}
+      </p>
+      <p class="ws-item__shift" *ngIf="item.shift">
+        <hq-status-badge tone="info"><i class="bi bi-clock-history" aria-hidden="true"></i> {{ 'workspace.handover.shifts.' + item.shift | translate }}</hq-status-badge>
+      </p>
+      <p class="ws-item__body" *ngIf="item.body">{{ item.body }}</p>
+      <p class="ws-item__tags" *ngIf="ticketsOf(item).length || labelsOf(item).length">
+        <span class="ws-ticket-ref" *ngFor="let n of ticketsOf(item)"><i class="bi bi-ticket-perforated" aria-hidden="true"></i> OPS-{{ n }}</span>
+        <span class="ws-label" *ngFor="let label of labelsOf(item)">#{{ label }}</span>
+      </p>
+      <app-workspace-timeline *ngIf="active.assignee && expanded.has(item.id)" [itemId]="item.id"></app-workspace-timeline>
+      <p class="ws-item__read" *ngIf="active.kind === 'HANDOVER'">
+        <ng-container *ngIf="item.acknowledgements?.length; else unread">
+          <i class="bi bi-check2-all" aria-hidden="true"></i> {{ 'workspace.handover.readBy' | translate: { names: readBy(item) } }}
+        </ng-container>
+        <ng-template #unread><span class="ws-muted">{{ 'workspace.handover.unread' | translate }}</span></ng-template>
+      </p>
+      <p class="ws-item__meta">
+        <hq-status-badge [tone]="priorityTone(item.priority)" *ngIf="active.priority && item.priority !== 'NORMAL'">{{ priorityKey(item.priority) | translate }}</hq-status-badge>
+        <hq-status-badge [tone]="item.assigneeId === userId ? 'info' : 'neutral'" *ngIf="item.assigneeId">
+          <i class="bi bi-person" aria-hidden="true"></i> {{ assigneeText(item) }}
+        </hq-status-badge>
+        <hq-status-badge tone="warning" *ngIf="active.assignee && !item.assigneeId && item.status !== 'DONE'">{{ 'workspace.badge.unassigned' | translate }}</hq-status-badge>
+        <hq-status-badge tone="neutral" *ngIf="active.scope === 'VISIBLE' && !isMine(item)">{{ 'workspace.badge.colleague' | translate }}</hq-status-badge>
+        <hq-status-badge [tone]="due(item) === 'overdue' ? 'danger' : due(item) === 'today' ? 'warning' : 'neutral'" *ngIf="item.dueAt">
+          <i class="bi bi-calendar-event"></i>
+          {{ (due(item) === 'overdue' ? 'workspace.due.overdue' : due(item) === 'today' ? 'workspace.due.today' : 'workspace.due.on') | translate: { date: (item.dueAt | hqDate:'medium') } }}
+        </hq-status-badge>
+        <hq-status-badge tone="info" *ngIf="item.remindAt && item.status !== 'DONE'">
+          <i class="bi bi-bell"></i> {{ 'workspace.remindAt' | translate: { date: (item.remindAt | hqDate:'medium') } }}
+        </hq-status-badge>
+        <span class="ws-item__time">{{ item.createdAt | hqDate:'medium' }}</span>
+      </p>
+    </div>
+
+    <div class="ws-item__actions">
+      <button type="button" class="ws-icon-btn" *ngIf="active.assignee" (click)="toggleThread(item)" [class.is-on]="expanded.has(item.id)"
+        [attr.aria-expanded]="expanded.has(item.id)" [attr.aria-label]="'workspace.timeline.toggle' | translate" [title]="'workspace.timeline.toggle' | translate">
+        <i class="bi" [ngClass]="expanded.has(item.id) ? 'bi-chat-left-text-fill' : 'bi-chat-left-text'"></i></button>
+      <ng-container *ngIf="active.kind === 'HANDOVER' && !isMine(item) && !hasRead(item)">
+        <button hqButton="secondary" size="sm" type="button" *hqHasPrivilege="privileges.status" (click)="acknowledge(item)">
+          <i class="bi bi-check2" aria-hidden="true"></i> {{ 'workspace.handover.markRead' | translate }}
+        </button>
+      </ng-container>
+      <ng-container *ngIf="active.kind === 'NOTE' && isMine(item)">
+        <button type="button" class="ws-icon-btn" *hqHasPrivilege="privileges.update" (click)="togglePin(item)"
+          [attr.aria-label]="(item.pinned ? 'workspace.actions.unpin' : 'workspace.actions.pin') | translate"
+          [title]="(item.pinned ? 'workspace.actions.unpin' : 'workspace.actions.pin') | translate">
+          <i class="bi" [ngClass]="item.pinned ? 'bi-pin-angle-fill' : 'bi-pin-angle'"></i></button>
+        <ng-container *hqHasPrivilege="privileges.create">
+          <button type="button" class="ws-icon-btn" (click)="noteTo(item, 'TODO')"
+            [attr.aria-label]="'workspace.convert.toTodo' | translate" [title]="'workspace.convert.toTodo' | translate"><i class="bi bi-check2-square"></i></button>
+          <button type="button" class="ws-icon-btn" (click)="noteTo(item, 'TICKET')"
+            [attr.aria-label]="'workspace.convert.toTicket' | translate" [title]="'workspace.convert.toTicket' | translate"><i class="bi bi-ticket-perforated"></i></button>
+        </ng-container>
+      </ng-container>
+      <ng-container *ngIf="active.assignee && item.status !== 'DONE' && isMine(item)">
+        <button type="button" class="ws-icon-btn" *hqHasPrivilege="privileges.create" (click)="convertToTicket(item)"
+          [attr.aria-label]="'workspace.convert.action' | translate" [title]="'workspace.convert.action' | translate"><i class="bi bi-ticket-perforated"></i></button>
+      </ng-container>
+      <ng-container *ngIf="isMine(item)">
+        <button type="button" class="ws-icon-btn" *hqHasPrivilege="privileges.update" (click)="edit(item)"
+          [attr.aria-label]="'workspace.actions.edit' | translate" [title]="'workspace.actions.edit' | translate"><i class="bi bi-pencil"></i></button>
+        <button type="button" class="ws-icon-btn ws-icon-btn--danger" *hqHasPrivilege="privileges.remove" (click)="remove(item)"
+          [attr.aria-label]="'workspace.actions.delete' | translate" [title]="'workspace.actions.delete' | translate"><i class="bi bi-trash"></i></button>
+      </ng-container>
+    </div>
+  </li>
+</ng-template>

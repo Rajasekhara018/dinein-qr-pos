@@ -1,0 +1,66 @@
+<hq-page-header
+  [kicker]="'nav.sections.accessManagement' | translate"
+  [title]="'nav.items.securityPolicies' | translate"
+  [subtitle]="'accessManagement.securityPolicies.subtitle' | translate">
+</hq-page-header>
+
+<hq-screen-help screen="securityPolicies"></hq-screen-help>
+
+<hq-stat-cards [stats]="stats"></hq-stat-cards>
+
+<div class="table-surface">
+  <div class="table-surface__header">
+    <div class="table-heading">
+      <span class="table-kicker">{{ 'shared.listPage.total' | translate: { count: totalElements } }}</span>
+    </div>
+    <ng-container *hqHasPrivilege="'SECURITY_POLICY_CREATE'">
+      <button type="button" class="table-create-btn" (click)="openCreate()">
+        <i class="bi bi-plus-lg"></i> {{ 'accessManagement.securityPolicies.newButton' | translate }}
+      </button>
+    </ng-container>
+  </div>
+
+  <div class="table-surface__body">
+    <hq-filter-bar collapsible>
+      <hq-field type="text" [placeholder]="'accessManagement.fields.name' | translate" [(ngModel)]="filters.name"></hq-field>
+      <hq-field type="text" [placeholder]="'accessManagement.fields.tenantId' | translate" [(ngModel)]="filters.tenantId"></hq-field>
+      <div hqFilterActions>
+        <button hqButton="accent" type="button" (click)="applyFilters()"><i class="bi bi-funnel"></i> {{ 'shared.listPage.filter' | translate }}</button>
+        <button hqButton="secondary" type="button" (click)="clearFilters()">{{ 'shared.listPage.clear' | translate }}</button>
+      </div>
+    </hq-filter-bar>
+
+    <hq-common-table
+      [columns]="columns"
+      [rows]="rows"
+      [isLoading]="isLoading"
+      [hasError]="hasError"
+      [emptyMessage]="'accessManagement.securityPolicies.emptyMessage' | translate"
+      [errorMessage]="'accessManagement.securityPolicies.errorMessage' | translate">
+      <ng-template #rowActions let-row>
+        <ng-container *hqHasPrivilege="'SECURITY_POLICY_UPDATE'">
+          <button type="button" class="row-action-btn" [title]="'shared.listPage.rowActions.edit' | translate" (click)="openEdit(row)">
+            <i class="bi bi-pencil"></i>
+          </button>
+        </ng-container>
+        <ng-container *hqHasPrivilege="'SECURITY_POLICY_DELETE'">
+          <button type="button" class="row-action-btn danger" [title]="'shared.listPage.rowActions.delete' | translate" (click)="confirmDelete(row)">
+            <i class="bi bi-trash3"></i>
+          </button>
+        </ng-container>
+      </ng-template>
+    </hq-common-table>
+
+    <hq-table-footer
+      [page]="page"
+      [size]="pageSize"
+      [itemCount]="rows.length"
+      [hasMore]="page + 1 < totalPages"
+      [totalItems]="totalElements"
+      [loading]="isLoading"
+      [sizeOptions]="pageSizeOptions"
+      (pageChange)="goToPage($event)"
+      (sizeChange)="onPageSizeChange($event)">
+    </hq-table-footer>
+  </div>
+</div>

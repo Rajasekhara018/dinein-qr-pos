@@ -1,0 +1,41 @@
+<hq-loading-state *ngIf="isLoading && !timeline" [label]="'workflow.loading' | translate"></hq-loading-state>
+<hq-error-state *ngIf="failed" [title]="'workflow.history.loadFailed' | translate" (retry)="load()"></hq-error-state>
+<hq-error-state *ngIf="errorText" [title]="errorText" (retry)="load()"></hq-error-state>
+
+<ng-container *ngIf="timeline">
+  <ng-container *ngIf="!compact">
+    <h3 class="wf-section">{{ 'workflow.timeline.title' | translate }}<span class="tl-ref" *ngIf="timeline.reference"> · {{ timeline.reference }}</span></h3>
+    <div class="tl-outcome" *ngIf="timeline.outcome" [class.tl-outcome--bad]="timeline.outcome === 'REJECTED'">
+      {{ 'workflow.timeline.outcome' | translate }}:
+      <strong>{{ (decisionKeyPrefix + timeline.outcome) | translate }}</strong>
+    </div>
+  </ng-container>
+  <ol class="tl">
+    <li class="tl__item" *ngFor="let e of timeline.entries; trackBy: trackByEntry" [attr.data-type]="e.type"
+        [class.tl__item--bad]="e.decision === 'REJECTED' || e.slaBreached">
+      <i class="bi tl__icon" [ngClass]="iconOf(e)"></i>
+      <div class="tl__body">
+        <div class="tl__title">
+          {{ ('workflow.timeline.types.' + e.type) | translate: { step: e.taskName || '', name: targetName(e) } }}
+          <span class="tl__decision" *ngIf="e.decision">· {{ (decisionKeyPrefix + e.decision) | translate }}</span>
+        </div>
+        <div class="tl__meta">
+          {{ e.at | hqDate:'medium' }}
+          <ng-container *ngIf="e.type !== 'TASK_CREATED'">· {{ 'workflow.timeline.by' | translate: { name: actorName(e) } }}</ng-container>
+          <ng-container *ngIf="e.type === 'TASK_CREATED' && e.actor">· {{ 'workflow.timeline.assignedTo' | translate: { name: actorName(e) } }}</ng-container>
+          <ng-container *ngIf="e.dueDate">· {{ 'workflow.timeline.due' | translate: { date: (e.dueDate | hqDate:'medium') } }}</ng-container>
+          <ng-container *ngIf="e.durationMillis !== null && e.durationMillis !== undefined">· {{ 'workflow.timeline.took' | translate: { time: duration(e.durationMillis) } }}</ng-container>
+          <span class="tl__sla tl__sla--bad" *ngIf="e.slaBreached">{{ 'workflow.timeline.slaMissed' | translate }}</span>
+          <span class="tl__sla" *ngIf="e.slaBreached === false && e.type === 'COMPLETED' && e.dueDate">{{ 'workflow.timeline.slaMet' | translate }}</span>
+        </div>
+        <p class="tl__text" *ngIf="e.text && e.type !== 'REASSIGNED' && e.type !== 'ATTACHMENT'">{{ e.text }}</p>
+        <p class="tl__text tl__file" *ngIf="e.type === 'ATTACHMENT'">
+          <i class="bi bi-file-earmark"></i> {{ e.text }}
+          <button type="button" class="tl__download" (click)="download(e)" *ngIf="e.attachmentId">
+            <i class="bi bi-download"></i> {{ 'workflow.timeline.download' | translate }}
+          </button>
+        </p>
+      </div>
+    </li>
+  </ol>
+</ng-container>

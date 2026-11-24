@@ -1,0 +1,96 @@
+<hq-page-header
+  [kicker]="'nav.sections.accessManagement' | translate"
+  [title]="(adminMode ? 'accessManagement.franchiseMembers.adminTitle' : 'nav.items.franchiseMembers') | translate: { code: adminFranchiseCode }"
+  [subtitle]="(adminMode ? 'accessManagement.franchiseMembers.adminSubtitle' : 'accessManagement.franchiseMembers.tree.subtitle') | translate">
+</hq-page-header>
+
+<div class="table-surface" *ngIf="!adminMode">
+  <div class="table-surface__body">
+    <app-franchise-member-tree></app-franchise-member-tree>
+  </div>
+</div>
+
+<div class="table-surface" *ngIf="adminMode">
+  <div class="table-surface__body">
+    <div class="franchise-grid">
+      <hq-form-field *ngIf="result && result.applications.length > 0" [label]="'accessManagement.franchiseMembers.application' | translate"><hq-searchable-select
+          [ngModel]="applicationCode"
+          (ngModelChange)="chooseApplication($event)"
+          name="membersApplication"
+          [allowOther]="false"
+          [placeholder]="'accessManagement.franchiseMembers.allApplications' | translate">
+          <hq-ss-option *ngFor="let application of result.applications" [value]="application.applicationCode" [label]="appName(application.applicationCode)"></hq-ss-option>
+        </hq-searchable-select></hq-form-field>
+      <div class="franchise-actions">
+        <ng-container *hqHasPrivilege="privileges.adminAddAgent">
+          <button hqButton="accent" type="button" data-testid="admin-add-agent" *ngIf="result && hasAgentApplications" (click)="openAddAgent()">
+            <i class="bi bi-person-plus" aria-hidden="true"></i> {{ 'accessManagement.franchiseMembers.addAgent' | translate }}
+          </button>
+        </ng-container>
+        <a hqButton="secondary" routerLink="/access-management/franchises">{{ 'accessManagement.franchiseMembers.backToFranchises' | translate }}</a>
+      </div>
+    </div>
+
+    <hq-loading-state *ngIf="isLoading" [label]="'accessManagement.franchiseMembers.loading' | translate"></hq-loading-state>
+    <hq-error-state *ngIf="errorMessage" [title]="errorMessage"></hq-error-state>
+
+    <ng-container *ngIf="result">
+      <section class="franchise-form">
+        <h4>{{ 'accessManagement.franchiseMembers.placesTitle' | translate }}</h4>
+        <p class="franchise-usage" data-testid="total-places">
+          {{ 'accessManagement.franchiseMembers.usage' | translate: { used: result.totalAgentCount, limit: result.totalAgentLimit } }}
+          <hq-progress class="usage-meter" size="sm" [value]="usagePercent(result.totalAgentCount, result.totalAgentLimit)" [max]="100" [showValue]="false" [tone]="usagePercent(result.totalAgentCount, result.totalAgentLimit) >= 100 ? 'danger' : 'primary'" [label]="'accessManagement.franchiseMembers.usage' | translate: { used: result.totalAgentCount, limit: result.totalAgentLimit }"></hq-progress>
+        </p>
+        <hq-common-table [columns]="placeColumns" [rows]="result.applications">
+          <ng-template hqCell="applicationCode" let-application>{{ appName(application.applicationCode) }}</ng-template>
+          <ng-template hqCell="places" let-application>{{ ((application.applicationCode === 'BESTRIDE_RIDER_APP' || application.applicationCode === 'RIDER') ? 'accessManagement.franchiseMembers.driverUsage' : 'accessManagement.franchiseMembers.usage') | translate: { used: placesUsed(application), limit: application.agentLimit } }}</ng-template>
+          <ng-template hqCell="fee" let-application>{{ application.fee | hqMoney }}</ng-template>
+        </hq-common-table>
+      </section>
+
+      <section class="franchise-form">
+        <h4>{{ 'accessManagement.franchiseMembers.membersTitle' | translate }}</h4>
+        <hq-common-table
+          [columns]="memberColumns"
+          [rows]="members"
+          [isLoading]="isLoading"
+          [emptyMessage]="'accessManagement.franchiseMembers.noMembers' | translate">
+          <ng-template hqCell="applicationCode" let-member>{{ appName(member.applicationCode) }}</ng-template>
+          <ng-template hqCell="memberType" let-member>{{ typeLabel(member.memberType) }}</ng-template>
+          <ng-template hqCell="status" let-member>{{ statusLabel(member.status) }}</ng-template>
+          <ng-template hqCell="onboardedAt" let-member>{{ day(member.onboardedAt) }}</ng-template>
+          <ng-template #rowActions let-member>
+            <button *ngIf="isDriver(member) && canSubscribeDrivers" type="button" class="row-action-btn" data-testid="driver-subscription"
+                    [attr.title]="'accessManagement.driverSubscription.open' | translate"
+                    [attr.aria-label]="'accessManagement.driverSubscription.open' | translate" (click)="openSubscription(member)">
+              <i class="bi bi-card-checklist"></i>
+            </button>
+            <ng-container *ngIf="!isDriver(member)">
+              <button *hqHasPrivilege="'FRANCHISE_AGENT_KYC_READ'" type="button" class="row-action-btn" data-testid="open-agent-kyc"
+                      [title]="'agentKyc.open' | translate" (click)="openKyc(member)">
+                <i class="bi bi-person-vcard"></i>
+              </button>
+            </ng-container>
+            <ng-container *hqHasPrivilege="removePrivilege">
+              <button *ngIf="canRemove(member)" type="button" class="row-action-btn danger" data-testid="remove-agent"
+                      [title]="'accessManagement.franchises.removeAgent.button' | translate" (click)="removeAgent(member)">
+                <i class="bi bi-person-dash"></i>
+              </button>
+            </ng-container>
+          </ng-template>
+        </hq-common-table>
+        <hq-table-footer
+          [page]="page"
+          [size]="pageSize"
+          [itemCount]="members.length"
+          [hasMore]="!isLast"
+          [totalItems]="total"
+          [loading]="isLoading"
+          [sizeOptions]="pageSizeOptions"
+          (pageChange)="goToPage($event)"
+          (sizeChange)="onPageSizeChange($event)">
+        </hq-table-footer>
+      </section>
+    </ng-container>
+  </div>
+</div>

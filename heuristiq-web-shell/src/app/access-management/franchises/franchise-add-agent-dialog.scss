@@ -1,0 +1,55 @@
+// The administrator's "add an agent" dialog: title and hint, the fields two to a row (one on a phone), buttons at the end.
+.add-agent {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  padding: 1.25rem 1.5rem;
+
+  &__title {
+    margin: 0;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--edu-ink, #1b2a4a);
+  }
+
+  &__hint {
+    margin: -0.4rem 0 0;
+    font-size: 0.82rem;
+    color: var(--edu-muted, #5a6a7e);
+  }
+
+  &__full {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    margin: 0;
+    padding: 0.65rem 0.85rem;
+    border-radius: 10px;
+    font-size: 0.85rem;
+    background: var(--theme-pending-pill-bg, #FBF0DC);
+    color: var(--theme-pending-pill-text, #8F5B00);
+  }
+
+  &__field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    min-width: 0;
+
+    hq-searchable-select,
+    .input {
+      width: 100%;
+    }
+
+hq-field {
+  width: 100%;
+}
+
+  }
+
+  &__req {
+    margin-left: 0.2rem;
+    font-style: normal;
+    color: var(--danger-text, #B3261E);
+  }
+}

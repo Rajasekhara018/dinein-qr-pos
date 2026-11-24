@@ -1,0 +1,18 @@
+<div class="ra-dialog">
+  <h2 class="ra-title">{{ 'workflow.reassign.title' | translate }}</h2>
+  <p class="ra-sub">{{ data.task.taskName || data.task.processKey }}</p>
+
+  <hq-field type="text" [(ngModel)]="filter" [placeholder]="'workflow.reassign.search' | translate"></hq-field>
+  <p class="ra-error" *ngIf="loadFailed">{{ 'workflow.reassign.loadFailed' | translate }}</p>
+
+  <hq-searchable-select class="ra-list" [(ngModel)]="selected" [allowOther]="false" [ariaLabel]="'workflow.reassign.label' | translate">
+    <hq-ss-option *ngFor="let u of visible" [value]="u.id" [label]="u.label"></hq-ss-option>
+  </hq-searchable-select>
+
+  <div class="ra-actions">
+    <button hqButton="secondary" type="button" (click)="cancel()">{{ 'shared.adminCrud.discard.cancel' | translate }}</button>
+    <button hqButton="accent" type="button" (click)="submit()" [disabled]="!selected">
+      <i class="bi bi-person-up"></i> {{ 'workflow.reassign.submit' | translate }}
+    </button>
+  </div>
+</div>

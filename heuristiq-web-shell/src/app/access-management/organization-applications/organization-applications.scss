@@ -1,0 +1,37 @@
+:host { display: block; }
+
+.oa__hint, .oa__muted { margin: 0; font-size: 0.85rem; opacity: 0.7; }
+
+.oa__add {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+
+  select { flex: 2 1 260px; min-width: 0; }
+  input { flex: 1 1 140px; min-width: 0; }
+
+hq-field {
+  flex: 1 1 140px;
+  min-width: 0;
+}
+}
+
+/* The grid and its rows are drawn inside hq-common-table, so they are reached through ::ng-deep. */
+.oa__table ::ng-deep .common-table { min-width: 640px; }
+.oa__table ::ng-deep .oa__row--cancelled { opacity: 0.55; }
+.oa__code { display: block; font-size: 0.72rem; opacity: 0.6; }
+
+.oa__status {
+  padding: 0.1rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  background: color-mix(in srgb, var(--hq-primary) 14%, transparent);
+  color: var(--hq-link);
+
+  &--SUSPENDED { background: color-mix(in srgb, #d97706 16%, transparent); color: #b45309; }
+  &--CANCELLED { background: color-mix(in srgb, #d92d20 14%, transparent); color: #b42318; }
+}
+
+.oa__actions { display: flex; flex-wrap: wrap; gap: 0.4rem; justify-content: flex-end; }

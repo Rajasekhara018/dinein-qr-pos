@@ -1,0 +1,142 @@
+<section class="table-surface loaded" *ngIf="visible" [attr.aria-labelledby]="headingId" [attr.data-testid]="'loaded-' + mode">
+  <div class="table-surface__header">
+    <h3 class="table-heading loaded__heading" [id]="headingId">
+      <button type="button" class="loaded__toggle" data-testid="loaded-toggle" [attr.aria-expanded]="expanded" [attr.aria-controls]="bodyId" (click)="toggleSection()">
+        <i class="bi" [ngClass]="expanded ? 'bi-chevron-down' : 'bi-chevron-right'" aria-hidden="true"></i>
+        {{ 'orgStructure.import.loaded.title' | translate }}
+      </button>
+    </h3>
+    <ng-container *ngIf="!isLadders">
+      <a hqButton="secondary" *hqHasPrivilege="unitPrivilege" data-testid="loaded-open-chart" [routerLink]="chartRoute">
+        <i class="bi bi-diagram-3" aria-hidden="true"></i> {{ 'orgStructure.import.loaded.openChart' | translate }}
+      </a>
+    </ng-container>
+  </div>
+
+  <div class="table-surface__body" [id]="bodyId" *ngIf="expanded">
+    <hq-loading-state data-testid="loaded-loading" *ngIf="state === 'loading'" [label]="'orgStructure.import.loaded.loading' | translate"></hq-loading-state>
+
+    <hq-error-state data-testid="loaded-error" *ngIf="state === 'error'" [title]="'orgStructure.import.loaded.error' | translate" (retry)="retry()"></hq-error-state>
+
+    <!-- a figure, or "at least" a figure when more exist than were read -->
+    <ng-template #figure let-count let-atLeast="atLeast">
+      <ng-container *ngIf="atLeast; else exact"><span [attr.title]="'orgStructure.import.loaded.atLeast' | translate">{{ 'orgStructure.import.loaded.atLeastValue' | translate: { count: count } }}</span></ng-container>
+      <ng-template #exact>{{ count }}</ng-template>
+    </ng-template>
+
+    <ng-container *ngIf="state === 'ready'">
+      <!-- step 1: ladders and their job titles -->
+      <ng-container *ngIf="isLadders">
+        <p class="loaded__muted" data-testid="loaded-empty" *ngIf="ladders.length === 0">{{ 'orgStructure.import.loaded.empty.ladders' | translate }}</p>
+        <ng-container *ngIf="ladders.length > 0">
+          <dl class="loaded__tiles" data-testid="loaded-summary">
+            <div><dt>{{ 'orgStructure.import.loaded.tiles.ladders' | translate }}</dt><dd>{{ ladders.length }}</dd></div>
+            <div *ngIf="positionsReadable"><dt>{{ 'orgStructure.import.loaded.tiles.positions' | translate }}</dt><dd>{{ positionTotal }}</dd></div>
+          </dl>
+          <article class="loaded__card" *ngFor="let item of ladders" [attr.data-testid]="'loaded-ladder-' + item.ladder.id">
+            <h4 class="loaded__card-title">
+              {{ item.ladder.name }}
+              <span class="loaded__muted" *ngIf="item.positions">{{ 'orgStructure.import.steps.facts.positions' | translate: { count: item.positions.length } }}</span>
+            </h4>
+            <div class="loaded__grid" *ngIf="item.positions && item.positions.length > 0">
+              <hq-common-table [columns]="positionColumns" [rows]="item.positions" [showActionsColumn]="false">
+                <ng-template hqCell="managerial" let-position>{{ (position.managerial ? 'orgStructure.import.loaded.yes' : 'orgStructure.import.loaded.no') | translate }}</ng-template>
+              </hq-common-table>
+            </div>
+          </article>
+        </ng-container>
+      </ng-container>
+
+      <!-- step 2: the department tree -->
+      <ng-container *ngIf="isDepartments">
+        <p class="loaded__muted" data-testid="loaded-empty" *ngIf="root.nodes.length === 0">{{ 'orgStructure.import.loaded.empty.departments' | translate }}</p>
+        <ng-container *ngIf="root.nodes.length > 0">
+          <dl class="loaded__tiles" data-testid="loaded-summary">
+            <div>
+              <dt>{{ 'orgStructure.import.loaded.tiles.departments' | translate }}</dt>
+              <dd><ng-container *ngTemplateOutlet="figure; context: { $implicit: departmentSummary.departments, atLeast: departmentSummary.atLeast }"></ng-container></dd>
+            </div>
+            <div [class.loaded__tile--warn]="departmentSummary.withoutLadder > 0">
+              <dt>{{ 'orgStructure.import.loaded.tiles.withoutLadder' | translate }}</dt>
+              <dd><ng-container *ngTemplateOutlet="figure; context: { $implicit: departmentSummary.withoutLadder, atLeast: departmentSummary.atLeast }"></ng-container></dd>
+            </div>
+          </dl>
+          <!-- department rows are cells; loading / failed / show-more rows are full-width strips (their cell row is hidden) -->
+          <div class="loaded__grid" data-testid="loaded-tree">
+            <hq-common-table [columns]="treeColumns" [rows]="rows" [showActionsColumn]="false"
+                              [rowClass]="treeRowClass" [isRowExpanded]="isStripRow">
+              <ng-template hqCell="code" let-row>
+                <span class="loaded__tree-cell" *ngIf="nodeOf(row) as node" [attr.data-testid]="'loaded-unit-' + node.unit.code"
+                      [style.padding-inline-start.rem]="node.depth * 1.25">
+                  <button type="button" class="loaded__expander" *ngIf="node.unit.childCount > 0" data-testid="loaded-expander"
+                          [attr.aria-expanded]="node.open"
+                          [attr.aria-label]="(node.open ? 'orgStructure.import.loaded.collapse' : 'orgStructure.import.loaded.expand') | translate: { name: node.unit.name }"
+                          (click)="toggleNode(node)">
+                    <i class="bi" [ngClass]="node.open ? 'bi-chevron-down' : 'bi-chevron-right'" aria-hidden="true"></i>
+                  </button>
+                  <span class="loaded__spacer" *ngIf="node.unit.childCount === 0"></span>
+                  {{ node.unit.code }}
+                </span>
+              </ng-template>
+              <ng-template hqCell="name" let-row><ng-container *ngIf="nodeOf(row) as node">{{ node.unit.name }}</ng-container></ng-template>
+              <ng-template hqCell="type" let-row><ng-container *ngIf="nodeOf(row) as node">{{ node.unit.unitType }}</ng-container></ng-template>
+              <ng-template hqCell="ladder" let-row>
+                <ng-container *ngIf="nodeOf(row) as node">
+                  <ng-container *ngIf="ladderName(node.unit) as name; else noName">{{ name }}</ng-container>
+                  <ng-template #noName>
+                    <span class="loaded__warn" *ngIf="node.unit.ladderId === null || node.unit.ladderId === undefined" data-testid="loaded-no-ladder">
+                      <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i> {{ 'orgStructure.import.loaded.noLadder' | translate }}
+                    </span>
+                  </ng-template>
+                </ng-container>
+              </ng-template>
+              <ng-template hqCell="head" let-row><ng-container *ngIf="nodeOf(row) as node">{{ node.unit.headName }}</ng-container></ng-template>
+              <ng-template hqCell="headcount" let-row><ng-container *ngIf="nodeOf(row) as node">{{ node.unit.headcount }}</ng-container></ng-template>
+
+              <ng-template #rowDetail let-row>
+                <div [style.padding-inline-start.rem]="row.depth * 1.25">
+                  <span *ngIf="row.kind === 'loading'" role="status" aria-live="polite">{{ 'orgStructure.import.loaded.loading' | translate }}</span>
+                  <div *ngIf="row.kind === 'failed'" class="loaded__strip" role="alert" data-testid="loaded-children-error">
+                    {{ 'orgStructure.import.loaded.childrenError' | translate: { name: row.node.unit.name } }}
+                    <button hqButton="secondary" type="button" (click)="toggleNode(row.node); toggleNode(row.node)">{{ 'orgStructure.import.loaded.retry' | translate }}</button>
+                  </div>
+                  <button hqButton="secondary" *ngIf="row.kind === 'more'" type="button" data-testid="loaded-show-more" (click)="showMore(row.level)">
+                    {{ 'orgStructure.import.loaded.showMore' | translate: { count: row.hidden } }}
+                  </button>
+                </div>
+              </ng-template>
+            </hq-common-table>
+          </div>
+        </ng-container>
+      </ng-container>
+
+      <!-- step 3: the people, department by department -->
+      <ng-container *ngIf="isEmployees">
+        <p class="loaded__muted" data-testid="loaded-empty" *ngIf="employeeSummary.employees === 0">{{ 'orgStructure.import.loaded.empty.employees' | translate }}</p>
+        <ng-container *ngIf="employeeSummary.employees > 0">
+          <dl class="loaded__tiles" data-testid="loaded-summary">
+            <div><dt>{{ 'orgStructure.import.loaded.tiles.employees' | translate }}</dt><dd>{{ employeeSummary.employees }}</dd></div>
+            <div>
+              <dt>{{ 'orgStructure.import.loaded.tiles.departmentsWithPeople' | translate }}</dt>
+              <dd><ng-container *ngTemplateOutlet="figure; context: { $implicit: employeeSummary.departments, atLeast: employeeSummary.atLeast }"></ng-container></dd>
+            </div>
+            <div>
+              <dt>{{ 'orgStructure.import.loaded.tiles.heads' | translate }}</dt>
+              <dd><ng-container *ngTemplateOutlet="figure; context: { $implicit: employeeSummary.heads, atLeast: employeeSummary.atLeast }"></ng-container></dd>
+            </div>
+          </dl>
+          <div class="loaded__grid" data-testid="loaded-people">
+            <hq-common-table [columns]="employeeColumns" [rows]="employeeRows" [showActionsColumn]="false">
+              <ng-template hqCell="headName" let-unit>{{ unit.headName }}</ng-template>
+            </hq-common-table>
+          </div>
+          <div class="loaded__more" *ngIf="employeeUnits.length > employeeShown">
+            <button hqButton="secondary" type="button" data-testid="loaded-show-more" (click)="showMoreEmployees()">
+              {{ 'orgStructure.import.loaded.showMore' | translate: { count: employeeUnits.length - employeeShown } }}
+            </button>
+          </div>
+        </ng-container>
+      </ng-container>
+    </ng-container>
+  </div>
+</section>

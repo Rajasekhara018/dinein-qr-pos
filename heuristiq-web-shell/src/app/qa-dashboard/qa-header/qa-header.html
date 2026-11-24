@@ -1,0 +1,26 @@
+<hq-page-header
+  [kicker]="'nav.sections.qaAutomation' | translate"
+  [title]="title"
+  [subtitle]="subtitle"
+  [loading]="loading"
+  [loadingLabel]="'shared.pageHeader.loading' | translate">
+</hq-page-header>
+
+<div class="qa-header-bar qa-no-print">
+  <hq-tabs class="qa-switch" *ngIf="showWorkspace" appearance="segmented" size="sm" [value]="workspace" (valueChange)="choose($any($event))"
+            [ariaLabel]="'qaDashboard.workspace.label' | translate">
+    <hq-tab *ngFor="let w of workspaces" [value]="w" [attr.data-workspace]="w" [label]="workspaceKeys[w] | translate"></hq-tab>
+  </hq-tabs>
+  <span class="qa-actions">
+    <button hqButton="secondary" type="button" class="qa-refresh" (click)="refresh.emit()" [disabled]="loading">
+      <i class="bi bi-arrow-clockwise"></i> {{ 'qaDashboard.actions.refresh' | translate }}
+    </button>
+    <ng-container *ngIf="exportPrivilege">
+      <ng-container *hqHasPrivilege="exportPrivilege">
+        <button hqButton="secondary" type="button" class="qa-export" (click)="exported.emit()" [disabled]="loading">
+          <i class="bi bi-download"></i> {{ 'qaDashboard.actions.export' | translate }}
+        </button>
+      </ng-container>
+    </ng-container>
+  </span>
+</div>

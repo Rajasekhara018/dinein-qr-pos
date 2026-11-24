@@ -1,0 +1,15 @@
+// The QA charts are drawn by hq-chart-card / hq-chart / hq-bar-list (theme, legend, tooltip and table view built in);
+// only the headline figure above the status split is local.
+.qa-split__headline {
+  margin: 0 0 0.75rem;
+  font-size: 0.85rem;
+  color: var(--qa-muted);
+
+  strong {
+    margin-inline-end: 0.35rem;
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--qa-ink);
+    font-variant-numeric: tabular-nums;
+  }
+}

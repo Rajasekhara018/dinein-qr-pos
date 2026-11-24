@@ -1,0 +1,74 @@
+<section class="table-surface oa" *hqHasPrivilege="privileges.list">
+  <div class="table-surface__header">
+    <div class="table-heading">
+      <span class="table-kicker">{{ 'accessManagement.organizations.applications.title' | translate }}</span>
+    </div>
+  </div>
+
+  <div class="table-surface__body">
+    <p class="oa__hint">{{ 'accessManagement.organizations.applications.hint' | translate }}</p>
+
+    <form class="oa__add" *hqHasPrivilege="privileges.subscribe" (ngSubmit)="subscribe()">
+      <hq-searchable-select
+        name="application"
+        [(ngModel)]="selectedCode"
+        [ariaLabel]="'accessManagement.organizations.applications.application' | translate"
+        [allowOther]="false"
+        [placeholder]="'accessManagement.organizations.applications.chooseApplication' | translate">
+        <hq-ss-option *ngFor="let application of choices" [value]="application.code" [label]="(application.name || application.code) + ' (' + application.code + ')'"></hq-ss-option>
+      </hq-searchable-select>
+      <hq-field
+             type="number"
+             min="0"
+             name="maxUsers"
+             [(ngModel)]="maxUsers"
+             [placeholder]="'accessManagement.organizations.applications.maxUsers' | translate"></hq-field>
+      <hq-field
+             type="date"
+             name="validUntil"
+             noPastDates
+             [(ngModel)]="validUntil"
+             [ariaLabel]="'accessManagement.organizations.applications.validUntil' | translate"></hq-field>
+      <button hqButton="accent" type="submit" [disabled]="busy || !selectedCode">
+        <i class="bi bi-plus-lg"></i> {{ 'accessManagement.organizations.applications.subscribe' | translate }}
+      </button>
+    </form>
+
+    <p class="oa__muted" *ngIf="isLoading">{{ 'shared.adminCrud.loading' | translate }}</p>
+    <p class="oa__muted" *ngIf="!isLoading && rows.length === 0">{{ 'accessManagement.organizations.applications.empty' | translate }}</p>
+
+    <hq-common-table class="oa__table" *ngIf="rows.length" [columns]="columns" [rows]="rows" [rowClass]="rowClass" [actionsLabel]="' '">
+      <ng-template hqCell="application" let-row>
+        <strong>{{ row.applicationName || row.subscription.applicationCode }}</strong>
+        <small class="oa__code">{{ row.subscription.applicationCode }}</small>
+      </ng-template>
+      <ng-template hqCell="status" let-row>
+        <span class="oa__status oa__status--{{ row.subscription.status }}">
+          {{ 'accessManagement.organizations.applications.statuses.' + row.subscription.status | translate }}
+        </span>
+      </ng-template>
+      <ng-template hqCell="maxUsers" let-row>{{ row.subscription.maxUsers ?? ('accessManagement.organizations.applications.noLimit' | translate) }}</ng-template>
+      <ng-template hqCell="validUntil" let-row>{{ row.subscription.validUntil ?? ('accessManagement.organizations.applications.noEnd' | translate) }}</ng-template>
+      <ng-template #rowActions let-row>
+        <span class="oa__actions">
+          <ng-container *hqHasPrivilege="privileges.update">
+            <button hqButton="secondary" type="button" *ngIf="row.subscription.status === active" [disabled]="busy" (click)="setStatus(row, suspended)">
+              {{ 'accessManagement.organizations.applications.suspend' | translate }}
+            </button>
+            <button hqButton="secondary" type="button" *ngIf="row.subscription.status === suspended" [disabled]="busy" (click)="setStatus(row, active)">
+              {{ 'accessManagement.organizations.applications.resume' | translate }}
+            </button>
+            <button hqButton="secondary" type="button" *ngIf="row.subscription.status === cancelled" [disabled]="busy" (click)="setStatus(row, active)">
+              {{ 'accessManagement.organizations.applications.reactivate' | translate }}
+            </button>
+          </ng-container>
+          <ng-container *hqHasPrivilege="privileges.cancel">
+            <button hqButton="secondary" type="button" class="danger" *ngIf="row.subscription.status !== cancelled" [disabled]="busy" (click)="cancel(row)">
+              {{ 'accessManagement.organizations.applications.cancel' | translate }}
+            </button>
+          </ng-container>
+        </span>
+      </ng-template>
+    </hq-common-table>
+  </div>
+</section>

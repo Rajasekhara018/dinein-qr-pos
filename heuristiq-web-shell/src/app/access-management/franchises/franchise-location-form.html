@@ -1,0 +1,106 @@
+<div class="ffp">
+  <div class="ffp__header">
+    <button type="button" class="ffp__back" [title]="'shared.adminCrud.backToList' | translate" (click)="cancel()">
+      <i class="bi bi-arrow-left-short"></i>
+    </button>
+    <div class="ffp__heading">
+      <h1>{{ titleKey | translate }}</h1>
+      <nav class="ffp__crumbs">
+        <span>{{ 'nav.sections.accessManagement' | translate }}</span>
+        <i class="bi bi-chevron-right"></i>
+        <a (click)="cancel()">{{ 'nav.items.franchiseLocations' | translate }}</a>
+        <i class="bi bi-chevron-right"></i>
+        <span class="ffp__crumbs-current">{{ titleKey | translate }}</span>
+      </nav>
+    </div>
+    <span class="ffp__dirty" *ngIf="hasPendingChanges()">{{ 'shared.adminCrud.unsavedChanges' | translate }}</span>
+  </div>
+
+  <section class="table-surface">
+    <div class="table-surface__header">
+      <div class="table-heading">
+        <span class="table-kicker">{{ 'shared.adminCrud.details' | translate: { entity: ('accessManagement.franchiseLocations.entity' | translate) } }}</span>
+      </div>
+    </div>
+
+    <div class="table-surface__body">
+      <p class="ffp__muted" *ngIf="isLoading">{{ 'accessManagement.franchises.loading' | translate }}</p>
+      <hq-error-state *ngIf="loadFailed" [title]="'accessManagement.franchiseLocations.errorMessage' | translate"></hq-error-state>
+
+      <!-- The display order is not shown: a new place gets 0 and a changed place keeps the order it has. -->
+      <form class="lf" *ngIf="!isLoading && !loadFailed" (ngSubmit)="save()" autocomplete="off">
+        <hq-form-grid cols="2" gap="lg">
+        <hq-form-field for="loc-country" [label]="'accessManagement.franchiseLocations.country' | translate" required>
+          <hq-searchable-select
+            [(ngModel)]="form.countryCode"
+            (ngModelChange)="onCountryChange()"
+            [disabled]="!!editing"
+            name="locCountry"
+            inputId="loc-country"
+            [allowOther]="false">
+            <hq-ss-option *ngFor="let country of countries" [value]="country.code" [label]="country.name + ' (' + country.code + ')'"></hq-ss-option>
+          </hq-searchable-select>
+        </hq-form-field>
+
+        <hq-form-field for="loc-type" [label]="'accessManagement.franchiseLocations.type' | translate" required>
+          <hq-searchable-select
+            [(ngModel)]="form.type"
+            (ngModelChange)="onTypeChange()"
+            [disabled]="!!editing"
+            name="locType"
+            inputId="loc-type"
+            [allowOther]="false"
+            [placeholder]="'accessManagement.franchiseLocations.chooseType' | translate">
+            <hq-ss-option *ngFor="let type of types" [value]="type" [label]="typeLabel(type)"></hq-ss-option>
+          </hq-searchable-select>
+        </hq-form-field>
+
+        <p class="lf__note hq-span-full" *ngIf="!editing">
+          <i class="bi bi-info-circle" aria-hidden="true"></i>
+          <span>{{ 'accessManagement.franchiseLocations.fixedHint' | translate }}</span>
+        </p>
+
+        <hq-field type="text" inputId="loc-code" [maxLength]="40" [(ngModel)]="form.code" name="locCode" [showCounter]="false" [label]="'accessManagement.franchiseLocations.code' | translate" required></hq-field>
+
+        <hq-field type="text" inputId="loc-name" [maxLength]="200" [(ngModel)]="form.name" name="locName" [showCounter]="false" [label]="'accessManagement.franchiseLocations.name' | translate" required></hq-field>
+
+        <div class="ffp__field">
+          <label for="loc-active">{{ 'accessManagement.franchiseLocations.status' | translate }}</label>
+          <hq-checkbox class="lf__status" [class.lf__status--on]="form.active" inputId="loc-active" [(ngModel)]="form.active" name="locActive">{{ 'accessManagement.franchiseLocations.active' | translate }}</hq-checkbox>
+        </div>
+
+        <ng-container *ngIf="form.type !== 'STATE'">
+          <div class="lf__section hq-span-full">
+            <h2>{{ 'accessManagement.franchiseLocations.parent' | translate }}</h2>
+            <div class="lf__allowed" *ngIf="form.type">
+              <span>{{ 'accessManagement.franchiseLocations.parentHint' | translate }}</span>
+              <span class="lf__chip" *ngFor="let allowed of allowedParentTypes(form.type)">{{ typeLabel(allowed) }}</span>
+            </div>
+          </div>
+
+          <p class="ffp__hint hq-span-full" *ngIf="!form.type">{{ 'accessManagement.franchiseLocations.chooseTypeFirst' | translate }}</p>
+
+          <div class="lf__current hq-span-full" *ngIf="editing && !changingParent">
+            <span>{{ editing.parent ? editing.parent.name + ' (' + typeLabel(editing.parent.type) + ')' : ('accessManagement.franchiseLocations.noParent' | translate) }}</span>
+            <ng-container *hqHasPrivilege="[privileges.children, privileges.list]">
+              <button hqButton="secondary" type="button" (click)="changingParent = true">{{ 'accessManagement.franchiseLocations.changeParent' | translate }}</button>
+            </ng-container>
+          </div>
+
+          <div class="lf__picker hq-span-full" *ngIf="(!editing || changingParent) && form.type">
+            <ng-container *hqHasPrivilege="privileges.children">
+              <app-location-picker [countryCode]="form.countryCode" [selectableTypes]="allowedParentTypes(form.type)"
+                                   (selected)="onParentPicked($event)"></app-location-picker>
+            </ng-container>
+          </div>
+        </ng-container>
+
+        <hq-form-actions align="start" class="hq-span-full lf__actions">
+          <button hqButton="secondary" type="button" [disabled]="saving" (click)="cancel()">{{ 'accessManagement.franchises.cancel' | translate }}</button>
+          <button hqButton="accent" type="submit" [disabled]="saving">{{ 'accessManagement.franchises.save' | translate }}</button>
+        </hq-form-actions>
+        </hq-form-grid>
+      </form>
+    </div>
+  </section>
+</div>

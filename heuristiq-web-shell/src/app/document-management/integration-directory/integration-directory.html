@@ -1,0 +1,157 @@
+<hq-page-header
+  [kicker]="'nav.sections.documentManagement' | translate"
+  [title]="'integrationDirectory.title' | translate"
+  [subtitle]="'integrationDirectory.description' | translate"
+  [loading]="busy"
+  [loadingLabel]="'integrationDirectory.loading' | translate"
+>
+</hq-page-header>
+<nav class="document-tabs" aria-label="{{ 'nav.sections.documentManagement' | translate }}">
+  <a routerLink="../document-types"
+    ><i class="bi bi-files" aria-hidden="true"></i
+    >{{ 'integrationDirectory.documentTypes' | translate }}</a
+  >
+  <a class="is-current" routerLink="../integration-directory" aria-current="page"
+    ><i class="bi bi-plug" aria-hidden="true"></i>{{ 'integrationDirectory.title' | translate }}</a
+  >
+</nav>
+<div class="setup-note">
+  <i class="bi bi-info-circle" aria-hidden="true"></i>
+  <div>
+    <strong>{{ 'integrationDirectory.setupTitle' | translate }}</strong>
+    <p>{{ 'integrationDirectory.setupHint' | translate }}</p>
+  </div>
+</div>
+<p *ngIf="error" role="alert" class="connection-error">{{ error | translate }}</p>
+<p *ngIf="saved" role="status" class="connection-success">
+  <i class="bi bi-check-circle" aria-hidden="true"></i>
+  {{ 'integrationDirectory.saved' | translate }}
+</p>
+<p *ngIf="busy && !connections.length" role="status">
+  {{ 'integrationDirectory.loading' | translate }}
+</p>
+<p *ngIf="!busy && !error && !connections.length">{{ 'integrationDirectory.empty' | translate }}</p>
+<div class="connection-layout" [attr.aria-busy]="busy">
+  <nav class="connection-list" [attr.aria-label]="'integrationDirectory.providers' | translate">
+    <h3>{{ 'integrationDirectory.providers' | translate }}</h3>
+    <button
+      type="button"
+      *ngFor="let connection of connections"
+      [disabled]="busy"
+      [attr.aria-pressed]="selected?.provider === connection.provider"
+      (click)="select(connection)"
+    >
+      <span class="provider-icon"><i class="bi bi-plug" aria-hidden="true"></i></span>
+      <span class="provider-info"
+        ><strong>{{ connection.provider }}</strong
+        ><small
+          ><span class="status-dot" [class.enabled]="connection.enabled"></span
+          >{{
+            (connection.enabled ? 'integrationDirectory.enabled' : 'integrationDirectory.disabled')
+              | translate
+          }}</small
+        ></span
+      >
+      <i class="bi bi-chevron-right" aria-hidden="true"></i>
+    </button>
+  </nav>
+  <form class="connection-form" *ngIf="selected" (ngSubmit)="save()">
+    <header class="provider-heading">
+      <div>
+        <span class="eyebrow">{{ 'integrationDirectory.connectionSettings' | translate }}</span>
+        <h2>{{ selected.provider }}</h2>
+      </div>
+      <span class="provider-state" [class.enabled]="selected.enabled">{{
+        (selected.enabled ? 'integrationDirectory.enabled' : 'integrationDirectory.disabled')
+          | translate
+      }}</span>
+    </header>
+    <section class="connection-section">
+      <div class="connection-grid">
+        <div>
+          <label for="provider-url">{{ 'integrationDirectory.baseUrl' | translate }}</label>
+          <input
+            id="provider-url"
+            name="baseUrl"
+            type="url"
+            [(ngModel)]="selected.baseUrl"
+            required
+            [disabled]="busy"
+            placeholder="https://api.example.com"
+            autocomplete="off"
+          />
+        </div>
+        <div>
+          <label for="provider-timeout">{{ 'integrationDirectory.timeout' | translate }}</label>
+          <input
+            id="provider-timeout"
+            name="timeout"
+            type="number"
+            min="1"
+            max="60"
+            [(ngModel)]="selected.timeoutSeconds"
+            required
+            [disabled]="busy"
+          />
+        </div>
+      </div>
+    </section>
+    <details class="contract-section" open>
+      <summary>
+        <i class="bi bi-key" aria-hidden="true"></i
+        >{{ 'integrationDirectory.credentialsTitle' | translate }}
+      </summary>
+      <div class="contract-content">
+        <label for="provider-headers">{{ 'integrationDirectory.credentials' | translate }}</label>
+        <p class="connection-hint">{{ 'integrationDirectory.credentialsHint' | translate }}</p>
+        <textarea
+          id="provider-headers"
+          name="headers"
+          rows="4"
+          [(ngModel)]="headersJson"
+          [disabled]="busy"
+          spellcheck="false"
+          autocapitalize="off"
+          autocomplete="off"
+        ></textarea>
+      </div>
+    </details>
+    <details class="contract-section">
+      <summary>
+        <i class="bi bi-braces" aria-hidden="true"></i
+        >{{ 'integrationDirectory.methodsTitle' | translate }}
+      </summary>
+      <div class="contract-content">
+        <label for="provider-methods">{{ 'integrationDirectory.methods' | translate }}</label>
+        <p class="connection-hint">{{ 'integrationDirectory.methodsHint' | translate }}</p>
+        <textarea
+          id="provider-methods"
+          name="methods"
+          rows="14"
+          [(ngModel)]="methodsJson"
+          [disabled]="busy"
+          spellcheck="false"
+          autocapitalize="off"
+          autocomplete="off"
+        ></textarea>
+      </div>
+    </details>
+    <footer class="connection-footer">
+      <div class="connection-actions">
+        <label class="enable-control"
+          ><input
+            name="enabled"
+            type="checkbox"
+            [(ngModel)]="selected.enabled"
+            [disabled]="busy"
+          /><span>{{ 'integrationDirectory.enable' | translate }}</span></label
+        >
+        <button hqButton="accent" type="submit" [disabled]="busy">
+          <i class="bi bi-check2" aria-hidden="true"></i
+          >{{ 'integrationDirectory.save' | translate }}
+        </button>
+      </div>
+      <p class="connection-hint">{{ 'integrationDirectory.activationHint' | translate }}</p>
+    </footer>
+  </form>
+</div>

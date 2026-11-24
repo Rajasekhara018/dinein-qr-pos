@@ -1,0 +1,24 @@
+<div class="wh">
+  <header class="wh__head">
+    <div>
+      <h2 mat-dialog-title class="wh__title">{{ data.title || ('workflow.timeline.title' | translate) }}</h2>
+      <p class="wh__subtitle" *ngIf="data.subtitle">{{ data.subtitle }}</p>
+    </div>
+    <span class="wh__pill" *ngIf="active !== null" [class.wh__pill--active]="active">
+      {{ (active ? 'workflow.instance.running' : 'workflow.instance.finished') | translate }}
+    </span>
+    <button type="button" class="wh__close" [attr.aria-label]="'workflow.history.close' | translate" (click)="close()"><i class="bi bi-x-lg"></i></button>
+  </header>
+
+  <mat-dialog-content class="wh__body">
+    <hq-key-value-list *ngIf="summary.length" [items]="summary" dense></hq-key-value-list>
+    <app-workflow-timeline [instanceId]="data.instanceId" [compact]="true"></app-workflow-timeline>
+  </mat-dialog-content>
+
+  <footer class="wh__actions">
+    <button hqButton="secondary" type="button" data-testid="open-full-history" (click)="openFull()">
+      <i class="bi bi-box-arrow-up-right"></i> {{ 'workflow.history.openFull' | translate }}
+    </button>
+    <button hqButton="accent" type="button" (click)="close()">{{ 'workflow.history.close' | translate }}</button>
+  </footer>
+</div>

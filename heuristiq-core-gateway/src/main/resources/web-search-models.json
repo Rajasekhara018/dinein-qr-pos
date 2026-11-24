@@ -1,0 +1,3937 @@
+[
+  {
+    "model": "WEB_ADMIN_DRIVER",
+    "service": "admin",
+    "project": "Rider_AdminAPI",
+    "path": "/api/v1/admin/drivers",
+    "apps": [
+      "Rider_AdminWeb"
+    ],
+    "scope": "TENANT",
+    "id": "id|driver_id",
+    "createdAt": "createdAt",
+    "sourcePaged": true,
+    "sourceRows": "content",
+    "format": "adminPage",
+    "slots": {
+      "text1": "status",
+      "datetime1": "createdAt",
+      "text2": "vendorId|vendor_id"
+    },
+    "filters": {
+      "search": [
+        "text13",
+        "LIKE"
+      ],
+      "status": [
+        "text1",
+        "EQ",
+        "lower"
+      ],
+      "vendorId": [
+        "text2",
+        "EQ"
+      ]
+    },
+    "defaults": {},
+    "normalizers": {
+      "text1": "lower"
+    }
+  },
+  {
+    "model": "WEB_ADMIN_PENDING_DRIVER",
+    "service": "admin",
+    "project": "Rider_AdminAPI",
+    "path": "/api/v1/admin/drivers/pending",
+    "apps": [
+      "Rider_AdminWeb"
+    ],
+    "scope": "TENANT",
+    "id": "id|driver_id",
+    "createdAt": "createdAt",
+    "sourcePaged": true,
+    "sourceRows": "content",
+    "format": "adminPage",
+    "slots": {
+      "text1": "status",
+      "datetime1": "createdAt",
+      "text2": "vendorId|vendor_id"
+    },
+    "filters": {
+      "vendorId": [
+        "text2",
+        "EQ"
+      ]
+    },
+    "defaults": {},
+    "normalizers": {}
+  },
+  {
+    "model": "WEB_ADMIN_VENDOR",
+    "service": "admin",
+    "project": "Rider_AdminAPI",
+    "path": "/api/v1/admin/vendors",
+    "apps": [
+      "Rider_AdminWeb"
+    ],
+    "scope": "TENANT",
+    "id": "id",
+    "createdAt": "createdAt",
+    "sourcePaged": true,
+    "sourceRows": "content",
+    "format": "adminPage",
+    "slots": {
+      "text1": "status",
+      "datetime1": "createdAt"
+    },
+    "filters": {
+      "status": [
+        "text1",
+        "EQ"
+      ]
+    },
+    "defaults": {},
+    "normalizers": {
+      "text1": "lower"
+    }
+  },
+  {
+    "model": "WEB_ADMIN_PENDING_VENDOR",
+    "service": "admin",
+    "project": "Rider_AdminAPI",
+    "path": "/api/v1/admin/vendors/pending-approval",
+    "apps": [
+      "Rider_AdminWeb"
+    ],
+    "scope": "TENANT",
+    "id": "id",
+    "createdAt": "createdAt",
+    "sourcePaged": true,
+    "sourceRows": "content",
+    "format": "adminPage",
+    "slots": {
+      "text1": "status",
+      "datetime1": "createdAt"
+    },
+    "filters": {},
+    "defaults": {},
+    "normalizers": {}
+  },
+  {
+    "model": "WEB_ADMIN_VEHICLE",
+    "service": "admin",
+    "project": "Rider_AdminAPI",
+    "path": "/api/v1/admin/vehicles",
+    "apps": [
+      "Rider_AdminWeb"
+    ],
+    "scope": "TENANT",
+    "id": "id",
+    "createdAt": "createdAt",
+    "sourcePaged": true,
+    "sourceRows": "content",
+    "format": "adminPage",
+    "slots": {
+      "text1": "status",
+      "datetime1": "createdAt",
+      "text2": "vendorId|vendor_id"
+    },
+    "filters": {
+      "search": [
+        "text13",
+        "LIKE"
+      ],
+      "status": [
+        "text1",
+        "EQ",
+        "lower"
+      ],
+      "vendorId": [
+        "text2",
+        "EQ"
+      ]
+    },
+    "defaults": {},
+    "normalizers": {
+      "text1": "lower"
+    }
+  },
+  {
+    "model": "WEB_ADMIN_RIDE",
+    "service": "admin",
+    "project": "Rider_AdminAPI",
+    "path": "/api/v1/admin/rides",
+    "apps": [
+      "Rider_AdminWeb"
+    ],
+    "scope": "TENANT",
+    "id": "id",
+    "createdAt": "createdAt",
+    "sourcePaged": true,
+    "sourceRows": "content",
+    "format": "adminPage",
+    "slots": {
+      "text1": "status",
+      "datetime1": "createdAt",
+      "text2": "driverId|driver_id",
+      "text3": "userId|user_id",
+      "text4": "vehicleType|vehicle_type"
+    },
+    "filters": {
+      "driverId": [
+        "text2",
+        "EQ"
+      ],
+      "driver_id": [
+        "text2",
+        "EQ"
+      ],
+      "userId": [
+        "text3",
+        "EQ"
+      ],
+      "user_id": [
+        "text3",
+        "EQ"
+      ],
+      "status": [
+        "text1",
+        "EQ"
+      ],
+      "vehicleType": [
+        "text4",
+        "EQ"
+      ],
+      "vehicle_type": [
+        "text4",
+        "EQ"
+      ],
+      "from": [
+        "datetime1",
+        "GE"
+      ],
+      "to": [
+        "datetime1",
+        "LE"
+      ]
+    },
+    "defaults": {},
+    "normalizers": {
+      "text1": "lower"
+    }
+  },
+  {
+    "model": "WEB_ADMIN_TICKET",
+    "service": "admin",
+    "project": "Rider_AdminAPI",
+    "path": "/api/v1/admin/support/tickets",
+    "apps": [
+      "Rider_AdminWeb"
+    ],
+    "scope": "TENANT",
+    "id": "id",
+    "createdAt": "createdAt",
+    "sourcePaged": true,
+    "sourceRows": "content",
+    "format": "adminPage",
+    "slots": {
+      "text1": "status",
+      "datetime1": "createdAt",
+      "text2": "assignedTo"
+    },
+    "filters": {
+      "status": [
+        "text1",
+        "EQ"
+      ],
+      "assignedTo": [
+        "text2",
+        "EQ"
+      ]
+    },
+    "defaults": {},
+    "normalizers": {
+      "text1": "lower"
+    }
+  },
+  {
+    "model": "WEB_ADMIN_PAYOUT",
+    "service": "admin",
+    "project": "Rider_AdminAPI",
+    "path": "/api/v1/admin/payouts",
+    "apps": [
+      "Rider_AdminWeb"
+    ],
+    "scope": "TENANT",
+    "id": "id",
+    "createdAt": "createdAt",
+    "sourcePaged": true,
+    "sourceRows": "content",
+    "format": "adminPage",
+    "slots": {
+      "text1": "status",
+      "datetime1": "createdAt"
+    },
+    "filters": {},
+    "defaults": {},
+    "normalizers": {}
+  },
+  {
+    "model": "WEB_ADMIN_INVOICE",
+    "service": "admin",
+    "project": "Rider_AdminAPI",
+    "path": "/api/v1/admin/invoices",
+    "apps": [
+      "Rider_AdminWeb"
+    ],
+    "scope": "TENANT",
+    "id": "id",
+    "createdAt": "createdAt",
+    "sourcePaged": true,
+    "sourceRows": "content",
+    "format": "adminPage",
+    "slots": {
+      "text1": "status",
+      "datetime1": "createdAt"
+    },
+    "filters": {},
+    "defaults": {},
+    "normalizers": {}
+  },
+  {
+    "model": "WEB_ADMIN_DISPUTE",
+    "service": "admin",
+    "project": "Rider_AdminAPI",
+    "path": "/api/v1/admin/disputes",
+    "apps": [
+      "Rider_AdminWeb"
+    ],
+    "scope": "TENANT",
+    "id": "id",
+    "createdAt": "createdAt",
+    "sourcePaged": true,
+    "sourceRows": "content",
+    "format": "adminPage",
+    "slots": {
+      "text1": "status",
+      "datetime1": "createdAt"
+    },
+    "filters": {
+      "status": [
+        "text1",
+        "EQ"
+      ]
+    },
+    "defaults": {},
+    "normalizers": {
+      "text1": "lower"
+    }
+  },
+  {
+    "model": "WEB_ADMIN_SURGE_HISTORY",
+    "service": "admin",
+    "project": "Rider_AdminAPI",
+    "path": "/api/v1/admin/surge/history",
+    "apps": [
+      "Rider_AdminWeb"
+    ],
+    "scope": "TENANT",
+    "id": "id",
+    "createdAt": "createdAt",
+    "sourcePaged": false,
+    "sourceRows": "",
+    "format": "array",
+    "slots": {
+      "text1": "status",
+      "datetime1": "createdAt",
+      "text2": "zoneId"
+    },
+    "filters": {
+      "zoneId": [
+        "text2",
+        "EQ"
+      ]
+    },
+    "defaults": {},
+    "normalizers": {}
+  },
+  {
+    "model": "WEB_WALLET_ACCOUNT",
+    "service": "rider-wallet",
+    "project": "Rider_WalletService",
+    "path": "/api/v1/wallet/admin/accounts",
+    "apps": [
+      "realboom-wallet-web"
+    ],
+    "scope": "TENANT",
+    "id": "accountId",
+    "createdAt": "createdAt",
+    "sourcePaged": true,
+    "sourceRows": "content",
+    "format": "springPage",
+    "slots": {
+      "text1": "status",
+      "datetime1": "createdAt",
+      "text2": "ownerType",
+      "text3": "ownerId",
+      "text4": "accountType",
+      "text5": "appCode"
+    },
+    "filters": {
+      "ownerType": [
+        "text2",
+        "EQ"
+      ],
+      "ownerId": [
+        "text3",
+        "EQ"
+      ],
+      "type": [
+        "text4",
+        "EQ"
+      ],
+      "status": [
+        "text1",
+        "EQ"
+      ],
+      "appCode": [
+        "text5",
+        "EQ"
+      ]
+    },
+    "defaults": {},
+    "allowAllOrganizations": true,
+    "normalizers": {
+      "text2": "lower",
+      "text4": "lower",
+      "text1": "lower"
+    }
+  },
+  {
+    "model": "WEB_WALLET_ACCOUNT_ENTRY",
+    "service": "rider-wallet",
+    "project": "Rider_WalletService",
+    "path": "/api/v1/wallet/admin/accounts/{accountId}/entries",
+    "apps": [
+      "realboom-wallet-web"
+    ],
+    "scope": "TENANT",
+    "id": "entryId",
+    "createdAt": "postedAt",
+    "sourcePaged": true,
+    "sourceRows": "content",
+    "format": "springPage",
+    "slots": {
+      "text1": "status",
+      "datetime1": "postedAt",
+      "text2": "appCode",
+      "text3": "direction"
+    },
+    "filters": {
+      "app": [
+        "text2",
+        "EQ"
+      ],
+      "direction": [
+        "text3",
+        "EQ"
+      ],
+      "from": [
+        "datetime1",
+        "GE"
+      ],
+      "to": [
+        "datetime1",
+        "LT"
+      ],
+      "accountId": [
+        "text12",
+        "EQ"
+      ]
+    },
+    "defaults": {},
+    "allowAllOrganizations": true,
+    "requiredFilters": [
+      "accountId"
+    ],
+    "normalizers": {
+      "text3": "lower"
+    }
+  },
+  {
+    "model": "WEB_WALLET_JOURNAL",
+    "service": "rider-wallet",
+    "project": "Rider_WalletService",
+    "path": "/api/v1/wallet/admin/journals",
+    "apps": [
+      "realboom-wallet-web"
+    ],
+    "scope": "TENANT",
+    "id": "journalId",
+    "createdAt": "postedAt",
+    "sourcePaged": true,
+    "sourceRows": "content",
+    "format": "springPage",
+    "slots": {
+      "text1": "status",
+      "datetime1": "postedAt",
+      "text2": "journalType",
+      "text3": "appCode",
+      "text4": "subjectUserId",
+      "text5": "initiatedByUserId"
+    },
+    "filters": {
+      "type": [
+        "text2",
+        "EQ"
+      ],
+      "app": [
+        "text3",
+        "EQ"
+      ],
+      "user": [
+        "text4",
+        "EQ"
+      ],
+      "agent": [
+        "text5",
+        "EQ"
+      ],
+      "status": [
+        "text1",
+        "EQ"
+      ],
+      "from": [
+        "datetime1",
+        "GE"
+      ],
+      "to": [
+        "datetime1",
+        "LT"
+      ]
+    },
+    "defaults": {},
+    "allowAllOrganizations": true,
+    "normalizers": {
+      "text2": "lower",
+      "text1": "lower"
+    }
+  },
+  {
+    "model": "WEB_WALLET_LINK",
+    "service": "rider-wallet",
+    "project": "Rider_WalletService",
+    "path": "/api/v1/wallet/admin/agent-links",
+    "apps": [
+      "realboom-wallet-web"
+    ],
+    "scope": "TENANT",
+    "id": "linkId",
+    "createdAt": "linkedAt",
+    "sourcePaged": true,
+    "sourceRows": "content",
+    "format": "springPage",
+    "slots": {
+      "text1": "status",
+      "datetime1": "linkedAt",
+      "text2": "customerUserId",
+      "text3": "agentUserId"
+    },
+    "filters": {
+      "customer": [
+        "text2",
+        "EQ"
+      ],
+      "agent": [
+        "text3",
+        "EQ"
+      ],
+      "status": [
+        "text1",
+        "EQ"
+      ]
+    },
+    "defaults": {},
+    "normalizers": {
+      "text1": "lower"
+    }
+  },
+  {
+    "model": "WEB_WALLET_RECONCILIATION",
+    "service": "rider-wallet",
+    "project": "Rider_WalletService",
+    "path": "/api/v1/wallet/admin/reconciliation/runs",
+    "apps": [
+      "realboom-wallet-web"
+    ],
+    "scope": "PLATFORM",
+    "id": "runId",
+    "createdAt": "startedAt",
+    "sourcePaged": true,
+    "sourceRows": "content",
+    "format": "springPage",
+    "slots": {
+      "text1": "status",
+      "datetime1": "startedAt"
+    },
+    "filters": {},
+    "defaults": {},
+    "normalizers": {}
+  },
+  {
+    "model": "WEB_WALLET_DISPUTE",
+    "service": "rider-wallet",
+    "project": "Rider_WalletService",
+    "path": "/api/v1/wallet/admin/disputes",
+    "apps": [
+      "realboom-wallet-web"
+    ],
+    "scope": "TENANT",
+    "id": "id",
+    "createdAt": "raisedAt",
+    "sourcePaged": false,
+    "sourceRows": "",
+    "format": "array",
+    "slots": {
+      "text1": "status",
+      "datetime1": "raisedAt"
+    },
+    "filters": {
+      "status": [
+        "text1",
+        "EQ"
+      ]
+    },
+    "defaults": {},
+    "normalizers": {
+      "text1": "lower"
+    }
+  },
+  {
+    "model": "WEB_WALLET_PERIOD_CLOSE",
+    "service": "rider-wallet",
+    "project": "Rider_WalletService",
+    "path": "/api/v1/wallet/admin/period-closes",
+    "apps": [
+      "realboom-wallet-web"
+    ],
+    "scope": "TENANT",
+    "id": "id",
+    "createdAt": "closedAt",
+    "sourcePaged": false,
+    "sourceRows": "",
+    "format": "array",
+    "slots": {
+      "text1": "status",
+      "datetime1": "closedAt"
+    },
+    "filters": {},
+    "defaults": {},
+    "normalizers": {}
+  },
+  {
+    "model": "WEB_WALLET_CASH_HANDOVER",
+    "service": "rider-wallet",
+    "project": "Rider_WalletService",
+    "path": "/api/v1/wallet/admin/cash-handovers",
+    "apps": [
+      "realboom-wallet-web"
+    ],
+    "scope": "TENANT",
+    "id": "id",
+    "createdAt": "requestedAt",
+    "sourcePaged": false,
+    "sourceRows": "",
+    "format": "array",
+    "slots": {
+      "text1": "status",
+      "datetime1": "requestedAt"
+    },
+    "filters": {
+      "status": [
+        "text1",
+        "EQ"
+      ]
+    },
+    "defaults": {
+      "status": "PENDING"
+    },
+    "normalizers": {
+      "text1": "lower"
+    }
+  },
+  {
+    "model": "WEB_WALLET_PAYOUT",
+    "service": "rider-wallet",
+    "project": "Rider_WalletService",
+    "path": "/api/v1/wallet/admin/payouts",
+    "apps": [
+      "realboom-wallet-web"
+    ],
+    "scope": "TENANT",
+    "id": "payoutId",
+    "createdAt": "createdAt",
+    "sourcePaged": true,
+    "sourceRows": "content",
+    "format": "springPage",
+    "slots": {
+      "text1": "status",
+      "datetime1": "createdAt",
+      "text2": "ownerType",
+      "text3": "ownerId"
+    },
+    "filters": {
+      "ownerType": [
+        "text2",
+        "EQ"
+      ],
+      "ownerId": [
+        "text3",
+        "EQ"
+      ],
+      "status": [
+        "text1",
+        "EQ"
+      ]
+    },
+    "defaults": {},
+    "normalizers": {
+      "text2": "lower",
+      "text1": "lower"
+    }
+  },
+  {
+    "model": "WEB_WALLET_SELF_ENTRY",
+    "service": "rider-wallet",
+    "project": "Rider_WalletService",
+    "path": "/api/v1/wallet/me/transactions",
+    "apps": [
+      "realboom-wallet-web",
+      "matrimonial-web-customer"
+    ],
+    "scope": "SELF",
+    "id": "entryId",
+    "createdAt": "postedAt",
+    "sourcePaged": true,
+    "sourceRows": "content",
+    "format": "springPage",
+    "slots": {
+      "text1": "status",
+      "datetime1": "postedAt",
+      "text2": "appCode",
+      "text3": "direction",
+      "text4": "journalType"
+    },
+    "filters": {
+      "app": [
+        "text2",
+        "EQ"
+      ],
+      "direction": [
+        "text3",
+        "EQ"
+      ],
+      "type": [
+        "text4",
+        "EQ"
+      ],
+      "from": [
+        "datetime1",
+        "GE"
+      ],
+      "to": [
+        "datetime1",
+        "LT"
+      ]
+    },
+    "defaults": {},
+    "normalizers": {
+      "text3": "lower",
+      "text4": "lower"
+    }
+  },
+  {
+    "model": "WEB_WALLET_AGENT_ENTRY",
+    "service": "rider-wallet",
+    "project": "Rider_WalletService",
+    "path": "/api/v1/wallet/agent/me/transactions",
+    "apps": [
+      "realboom-wallet-web"
+    ],
+    "scope": "SELF",
+    "id": "entryId",
+    "createdAt": "postedAt",
+    "sourcePaged": true,
+    "sourceRows": "content",
+    "format": "springPage",
+    "slots": {
+      "text1": "status",
+      "datetime1": "postedAt",
+      "text2": "appCode",
+      "text3": "direction"
+    },
+    "filters": {
+      "account": [
+        "text12",
+        "EQ"
+      ],
+      "app": [
+        "text2",
+        "EQ"
+      ],
+      "direction": [
+        "text3",
+        "EQ"
+      ],
+      "from": [
+        "datetime1",
+        "GE"
+      ],
+      "to": [
+        "datetime1",
+        "LT"
+      ]
+    },
+    "defaults": {
+      "account": "FLOAT"
+    },
+    "normalizers": {
+      "text12": "lower",
+      "text3": "lower"
+    }
+  },
+  {
+    "model": "WEB_WALLET_AGENT_EARNING",
+    "service": "rider-wallet",
+    "project": "Rider_WalletService",
+    "path": "/api/v1/wallet/agent/me/earnings",
+    "apps": [
+      "realboom-wallet-web"
+    ],
+    "scope": "SELF",
+    "id": "entryId",
+    "createdAt": "postedAt",
+    "sourcePaged": true,
+    "sourceRows": "content",
+    "format": "springPage",
+    "slots": {
+      "text1": "status",
+      "datetime1": "postedAt",
+      "text2": "appCode"
+    },
+    "filters": {
+      "app": [
+        "text2",
+        "EQ"
+      ],
+      "from": [
+        "datetime1",
+        "GE"
+      ],
+      "to": [
+        "datetime1",
+        "LT"
+      ]
+    },
+    "defaults": {},
+    "normalizers": {}
+  },
+  {
+    "model": "WEB_WALLET_SELF_PAYOUT",
+    "service": "rider-wallet",
+    "project": "Rider_WalletService",
+    "path": "/api/v1/wallet/me/payouts",
+    "apps": [
+      "realboom-wallet-web"
+    ],
+    "scope": "SELF",
+    "id": "payoutId",
+    "createdAt": "createdAt",
+    "sourcePaged": true,
+    "sourceRows": "content",
+    "format": "springPage",
+    "slots": {
+      "text1": "status",
+      "datetime1": "createdAt"
+    },
+    "filters": {},
+    "defaults": {},
+    "normalizers": {}
+  },
+  {
+    "model": "WEB_IMS_ITEM",
+    "service": "ims",
+    "project": "Rider_IMS",
+    "path": "/api/ims/v1/items",
+    "apps": [
+      "Rider_IMSWeb"
+    ],
+    "scope": "GLOBAL",
+    "id": "id",
+    "createdAt": "audit.createdAt",
+    "sourcePaged": true,
+    "sourceRows": "content",
+    "format": "springPage",
+    "slots": {},
+    "filters": {
+      "query": [
+        "text13",
+        "LIKE"
+      ]
+    },
+    "defaults": {},
+    "normalizers": {}
+  },
+  {
+    "model": "WEB_IMS_SITE",
+    "service": "ims",
+    "project": "Rider_IMS",
+    "path": "/api/ims/v1/sites",
+    "apps": [
+      "Rider_IMSWeb"
+    ],
+    "scope": "GLOBAL",
+    "id": "id",
+    "createdAt": "audit.createdAt",
+    "sourcePaged": false,
+    "sourceRows": "",
+    "format": "array",
+    "slots": {},
+    "filters": {},
+    "defaults": {},
+    "normalizers": {}
+  },
+  {
+    "model": "WEB_IMS_LOCATION",
+    "service": "ims",
+    "project": "Rider_IMS",
+    "path": "/api/ims/v1/locations",
+    "apps": [
+      "Rider_IMSWeb"
+    ],
+    "scope": "GLOBAL",
+    "id": "id",
+    "createdAt": "audit.createdAt",
+    "sourcePaged": false,
+    "sourceRows": "",
+    "format": "array",
+    "slots": {},
+    "filters": {
+      "siteId": [
+        "text12",
+        "EQ"
+      ]
+    },
+    "defaults": {},
+    "requiredFilters": [
+      "siteId"
+    ],
+    "normalizers": {}
+  },
+  {
+    "model": "WEB_IMS_LEGAL_ENTITY",
+    "service": "ims",
+    "project": "Rider_IMS",
+    "path": "/api/ims/v1/legal-entities",
+    "apps": [
+      "Rider_IMSWeb"
+    ],
+    "scope": "GLOBAL",
+    "id": "id",
+    "createdAt": "audit.createdAt",
+    "sourcePaged": false,
+    "sourceRows": "",
+    "format": "array",
+    "slots": {},
+    "filters": {},
+    "defaults": {},
+    "normalizers": {}
+  },
+  {
+    "model": "WEB_FOOD_RESTAURANT",
+    "service": "food",
+    "project": "food-delivery-platform/backend",
+    "path": "/api/v1/food/admin/restaurants",
+    "apps": [
+      "food-delivery-platform/admin-web"
+    ],
+    "scope": "GLOBAL",
+    "id": "restaurantId",
+    "createdAt": "createdAt",
+    "sourcePaged": true,
+    "sourceRows": "content",
+    "format": "springPage",
+    "slots": {
+      "text1": "status",
+      "datetime1": "createdAt",
+      "amount1": "totalAmount",
+      "text2": "restaurantId",
+      "text3": "customerId",
+      "text4": "categoryId",
+      "text5": "foodType",
+      "text6": "paymentMethod",
+      "text7": "paymentStatus",
+      "text8": "orderStatus",
+      "text9": "city",
+      "text10": "available",
+      "text11": "active"
+    },
+    "filters": {
+      "search": [
+        "text13",
+        "LIKE"
+      ],
+      "status": [
+        "text1",
+        "EQ",
+        "lower"
+      ],
+      "startDate": [
+        "datetime1",
+        "GE"
+      ],
+      "endDate": [
+        "datetime1",
+        "LE"
+      ],
+      "minimumAmount": [
+        "amount1",
+        "GE"
+      ],
+      "maximumAmount": [
+        "amount1",
+        "LE"
+      ],
+      "restaurantId": [
+        "text2",
+        "EQ"
+      ],
+      "customerId": [
+        "text3",
+        "EQ"
+      ],
+      "categoryId": [
+        "text4",
+        "EQ"
+      ],
+      "foodType": [
+        "text5",
+        "EQ"
+      ],
+      "paymentMethod": [
+        "text6",
+        "EQ"
+      ],
+      "paymentStatus": [
+        "text7",
+        "EQ"
+      ],
+      "orderStatus": [
+        "text8",
+        "EQ"
+      ],
+      "city": [
+        "text9",
+        "EQ"
+      ],
+      "available": [
+        "text10",
+        "EQ"
+      ],
+      "active": [
+        "text11",
+        "EQ"
+      ]
+    },
+    "defaults": {},
+    "resource": "restaurants",
+    "normalizers": {
+      "text1": "lower"
+    }
+  },
+  {
+    "model": "WEB_FOOD_CATEGORY",
+    "service": "food",
+    "project": "food-delivery-platform/backend",
+    "path": "/api/v1/food/admin/categories",
+    "apps": [
+      "food-delivery-platform/admin-web"
+    ],
+    "scope": "GLOBAL",
+    "id": "categoryId",
+    "createdAt": "createdAt",
+    "sourcePaged": true,
+    "sourceRows": "content",
+    "format": "springPage",
+    "slots": {
+      "text1": "active",
+      "datetime1": "createdAt",
+      "amount1": "totalAmount",
+      "text2": "restaurantId",
+      "text3": "customerId",
+      "text4": "categoryId",
+      "text5": "foodType",
+      "text6": "paymentMethod",
+      "text7": "paymentStatus",
+      "text8": "orderStatus",
+      "text9": "city",
+      "text10": "available",
+      "text11": "active"
+    },
+    "filters": {
+      "search": [
+        "text13",
+        "LIKE"
+      ],
+      "status": [
+        "text1",
+        "EQ",
+        "activeBoolean"
+      ],
+      "startDate": [
+        "datetime1",
+        "GE"
+      ],
+      "endDate": [
+        "datetime1",
+        "LE"
+      ],
+      "minimumAmount": [
+        "amount1",
+        "GE"
+      ],
+      "maximumAmount": [
+        "amount1",
+        "LE"
+      ],
+      "restaurantId": [
+        "text2",
+        "EQ"
+      ],
+      "customerId": [
+        "text3",
+        "EQ"
+      ],
+      "categoryId": [
+        "text4",
+        "EQ"
+      ],
+      "foodType": [
+        "text5",
+        "EQ"
+      ],
+      "paymentMethod": [
+        "text6",
+        "EQ"
+      ],
+      "paymentStatus": [
+        "text7",
+        "EQ"
+      ],
+      "orderStatus": [
+        "text8",
+        "EQ"
+      ],
+      "city": [
+        "text9",
+        "EQ"
+      ],
+      "available": [
+        "text10",
+        "EQ"
+      ],
+      "active": [
+        "text11",
+        "EQ"
+      ]
+    },
+    "defaults": {},
+    "resource": "categories",
+    "normalizers": {
+      "text1": "activeBoolean"
+    }
+  },
+  {
+    "model": "WEB_FOOD_FOOD",
+    "service": "food",
+    "project": "food-delivery-platform/backend",
+    "path": "/api/v1/food/admin/foods",
+    "apps": [
+      "food-delivery-platform/admin-web"
+    ],
+    "scope": "GLOBAL",
+    "id": "foodItemId",
+    "createdAt": "createdAt",
+    "sourcePaged": true,
+    "sourceRows": "content",
+    "format": "springPage",
+    "slots": {
+      "text1": "available",
+      "datetime1": "createdAt",
+      "amount1": "totalAmount",
+      "text2": "restaurantId",
+      "text3": "customerId",
+      "text4": "categoryId",
+      "text5": "foodType",
+      "text6": "paymentMethod",
+      "text7": "paymentStatus",
+      "text8": "orderStatus",
+      "text9": "city",
+      "text10": "available",
+      "text11": "active"
+    },
+    "filters": {
+      "search": [
+        "text13",
+        "LIKE"
+      ],
+      "status": [
+        "text1",
+        "EQ",
+        "availableBoolean"
+      ],
+      "startDate": [
+        "datetime1",
+        "GE"
+      ],
+      "endDate": [
+        "datetime1",
+        "LE"
+      ],
+      "minimumAmount": [
+        "amount1",
+        "GE"
+      ],
+      "maximumAmount": [
+        "amount1",
+        "LE"
+      ],
+      "restaurantId": [
+        "text2",
+        "EQ"
+      ],
+      "customerId": [
+        "text3",
+        "EQ"
+      ],
+      "categoryId": [
+        "text4",
+        "EQ"
+      ],
+      "foodType": [
+        "text5",
+        "EQ"
+      ],
+      "paymentMethod": [
+        "text6",
+        "EQ"
+      ],
+      "paymentStatus": [
+        "text7",
+        "EQ"
+      ],
+      "orderStatus": [
+        "text8",
+        "EQ"
+      ],
+      "city": [
+        "text9",
+        "EQ"
+      ],
+      "available": [
+        "text10",
+        "EQ"
+      ],
+      "active": [
+        "text11",
+        "EQ"
+      ]
+    },
+    "defaults": {},
+    "resource": "foods",
+    "normalizers": {
+      "text1": "availableBoolean"
+    }
+  },
+  {
+    "model": "WEB_FOOD_CUSTOMER",
+    "service": "food",
+    "project": "food-delivery-platform/backend",
+    "path": "/api/v1/food/admin/customers",
+    "apps": [
+      "food-delivery-platform/admin-web"
+    ],
+    "scope": "GLOBAL",
+    "id": "customerId",
+    "createdAt": "createdAt",
+    "sourcePaged": true,
+    "sourceRows": "content",
+    "format": "springPage",
+    "slots": {
+      "text1": "accountStatus",
+      "datetime1": "createdAt",
+      "amount1": "totalAmount",
+      "text2": "restaurantId",
+      "text3": "customerId",
+      "text4": "categoryId",
+      "text5": "foodType",
+      "text6": "paymentMethod",
+      "text7": "paymentStatus",
+      "text8": "orderStatus",
+      "text9": "city",
+      "text10": "available",
+      "text11": "active"
+    },
+    "filters": {
+      "search": [
+        "text13",
+        "LIKE"
+      ],
+      "status": [
+        "text1",
+        "EQ",
+        "lower"
+      ],
+      "startDate": [
+        "datetime1",
+        "GE"
+      ],
+      "endDate": [
+        "datetime1",
+        "LE"
+      ],
+      "minimumAmount": [
+        "amount1",
+        "GE"
+      ],
+      "maximumAmount": [
+        "amount1",
+        "LE"
+      ],
+      "restaurantId": [
+        "text2",
+        "EQ"
+      ],
+      "customerId": [
+        "text3",
+        "EQ"
+      ],
+      "categoryId": [
+        "text4",
+        "EQ"
+      ],
+      "foodType": [
+        "text5",
+        "EQ"
+      ],
+      "paymentMethod": [
+        "text6",
+        "EQ"
+      ],
+      "paymentStatus": [
+        "text7",
+        "EQ"
+      ],
+      "orderStatus": [
+        "text8",
+        "EQ"
+      ],
+      "city": [
+        "text9",
+        "EQ"
+      ],
+      "available": [
+        "text10",
+        "EQ"
+      ],
+      "active": [
+        "text11",
+        "EQ"
+      ]
+    },
+    "defaults": {},
+    "resource": "customers",
+    "normalizers": {
+      "text1": "lower"
+    }
+  },
+  {
+    "model": "WEB_FOOD_ADMIN_USER",
+    "service": "food",
+    "project": "food-delivery-platform/backend",
+    "path": "/api/v1/food/admin/admin-users",
+    "apps": [
+      "food-delivery-platform/admin-web"
+    ],
+    "scope": "GLOBAL",
+    "id": "adminId",
+    "createdAt": "createdAt",
+    "sourcePaged": true,
+    "sourceRows": "content",
+    "format": "springPage",
+    "slots": {
+      "text1": "status",
+      "datetime1": "createdAt",
+      "amount1": "totalAmount",
+      "text2": "restaurantId",
+      "text3": "customerId",
+      "text4": "categoryId",
+      "text5": "foodType",
+      "text6": "paymentMethod",
+      "text7": "paymentStatus",
+      "text8": "orderStatus",
+      "text9": "city",
+      "text10": "available",
+      "text11": "active"
+    },
+    "filters": {
+      "search": [
+        "text13",
+        "LIKE"
+      ],
+      "status": [
+        "text1",
+        "EQ",
+        "lower"
+      ],
+      "startDate": [
+        "datetime1",
+        "GE"
+      ],
+      "endDate": [
+        "datetime1",
+        "LE"
+      ],
+      "minimumAmount": [
+        "amount1",
+        "GE"
+      ],
+      "maximumAmount": [
+        "amount1",
+        "LE"
+      ],
+      "restaurantId": [
+        "text2",
+        "EQ"
+      ],
+      "customerId": [
+        "text3",
+        "EQ"
+      ],
+      "categoryId": [
+        "text4",
+        "EQ"
+      ],
+      "foodType": [
+        "text5",
+        "EQ"
+      ],
+      "paymentMethod": [
+        "text6",
+        "EQ"
+      ],
+      "paymentStatus": [
+        "text7",
+        "EQ"
+      ],
+      "orderStatus": [
+        "text8",
+        "EQ"
+      ],
+      "city": [
+        "text9",
+        "EQ"
+      ],
+      "available": [
+        "text10",
+        "EQ"
+      ],
+      "active": [
+        "text11",
+        "EQ"
+      ]
+    },
+    "defaults": {},
+    "resource": "admin-users",
+    "normalizers": {
+      "text1": "lower"
+    }
+  },
+  {
+    "model": "WEB_FOOD_ORDER",
+    "service": "food",
+    "project": "food-delivery-platform/backend",
+    "path": "/api/v1/food/admin/orders",
+    "apps": [
+      "food-delivery-platform/admin-web"
+    ],
+    "scope": "GLOBAL",
+    "id": "orderId",
+    "createdAt": "createdAt",
+    "sourcePaged": true,
+    "sourceRows": "content",
+    "format": "springPage",
+    "slots": {
+      "text1": "orderStatus",
+      "datetime1": "createdAt",
+      "amount1": "totalAmount",
+      "text2": "restaurantId",
+      "text3": "customerId",
+      "text4": "categoryId",
+      "text5": "foodType",
+      "text6": "paymentMethod",
+      "text7": "paymentStatus",
+      "text8": "orderStatus",
+      "text9": "city",
+      "text10": "available",
+      "text11": "active"
+    },
+    "filters": {
+      "search": [
+        "text13",
+        "LIKE"
+      ],
+      "status": [
+        "text1",
+        "EQ",
+        "lower"
+      ],
+      "startDate": [
+        "datetime1",
+        "GE"
+      ],
+      "endDate": [
+        "datetime1",
+        "LE"
+      ],
+      "minimumAmount": [
+        "amount1",
+        "GE"
+      ],
+      "maximumAmount": [
+        "amount1",
+        "LE"
+      ],
+      "restaurantId": [
+        "text2",
+        "EQ"
+      ],
+      "customerId": [
+        "text3",
+        "EQ"
+      ],
+      "categoryId": [
+        "text4",
+        "EQ"
+      ],
+      "foodType": [
+        "text5",
+        "EQ"
+      ],
+      "paymentMethod": [
+        "text6",
+        "EQ"
+      ],
+      "paymentStatus": [
+        "text7",
+        "EQ"
+      ],
+      "orderStatus": [
+        "text8",
+        "EQ"
+      ],
+      "city": [
+        "text9",
+        "EQ"
+      ],
+      "available": [
+        "text10",
+        "EQ"
+      ],
+      "active": [
+        "text11",
+        "EQ"
+      ]
+    },
+    "defaults": {},
+    "resource": "orders",
+    "normalizers": {
+      "text1": "lower"
+    }
+  },
+  {
+    "model": "WEB_FOOD_PAYMENT",
+    "service": "food",
+    "project": "food-delivery-platform/backend",
+    "path": "/api/v1/food/admin/payments",
+    "apps": [
+      "food-delivery-platform/admin-web"
+    ],
+    "scope": "GLOBAL",
+    "id": "paymentId",
+    "createdAt": "createdAt",
+    "sourcePaged": true,
+    "sourceRows": "content",
+    "format": "springPage",
+    "slots": {
+      "text1": "paymentStatus",
+      "datetime1": "createdAt",
+      "amount1": "amount",
+      "text2": "restaurantId",
+      "text3": "customerId",
+      "text4": "categoryId",
+      "text5": "foodType",
+      "text6": "paymentMethod",
+      "text7": "paymentStatus",
+      "text8": "orderStatus",
+      "text9": "city",
+      "text10": "available",
+      "text11": "active"
+    },
+    "filters": {
+      "search": [
+        "text13",
+        "LIKE"
+      ],
+      "status": [
+        "text1",
+        "EQ",
+        "lower"
+      ],
+      "startDate": [
+        "datetime1",
+        "GE"
+      ],
+      "endDate": [
+        "datetime1",
+        "LE"
+      ],
+      "minimumAmount": [
+        "amount1",
+        "GE"
+      ],
+      "maximumAmount": [
+        "amount1",
+        "LE"
+      ],
+      "restaurantId": [
+        "text2",
+        "EQ"
+      ],
+      "customerId": [
+        "text3",
+        "EQ"
+      ],
+      "categoryId": [
+        "text4",
+        "EQ"
+      ],
+      "foodType": [
+        "text5",
+        "EQ"
+      ],
+      "paymentMethod": [
+        "text6",
+        "EQ"
+      ],
+      "paymentStatus": [
+        "text7",
+        "EQ"
+      ],
+      "orderStatus": [
+        "text8",
+        "EQ"
+      ],
+      "city": [
+        "text9",
+        "EQ"
+      ],
+      "available": [
+        "text10",
+        "EQ"
+      ],
+      "active": [
+        "text11",
+        "EQ"
+      ]
+    },
+    "defaults": {},
+    "resource": "payments",
+    "normalizers": {
+      "text1": "lower"
+    }
+  },
+  {
+    "model": "WEB_FOOD_COUPON",
+    "service": "food",
+    "project": "food-delivery-platform/backend",
+    "path": "/api/v1/food/admin/coupons",
+    "apps": [
+      "food-delivery-platform/admin-web"
+    ],
+    "scope": "GLOBAL",
+    "id": "couponId",
+    "createdAt": "createdAt",
+    "sourcePaged": true,
+    "sourceRows": "content",
+    "format": "springPage",
+    "slots": {
+      "text1": "active",
+      "datetime1": "createdAt",
+      "amount1": "totalAmount",
+      "text2": "restaurantId",
+      "text3": "customerId",
+      "text4": "categoryId",
+      "text5": "foodType",
+      "text6": "paymentMethod",
+      "text7": "paymentStatus",
+      "text8": "orderStatus",
+      "text9": "city",
+      "text10": "available",
+      "text11": "active"
+    },
+    "filters": {
+      "search": [
+        "text13",
+        "LIKE"
+      ],
+      "status": [
+        "text1",
+        "EQ",
+        "activeBoolean"
+      ],
+      "startDate": [
+        "datetime1",
+        "GE"
+      ],
+      "endDate": [
+        "datetime1",
+        "LE"
+      ],
+      "minimumAmount": [
+        "amount1",
+        "GE"
+      ],
+      "maximumAmount": [
+        "amount1",
+        "LE"
+      ],
+      "restaurantId": [
+        "text2",
+        "EQ"
+      ],
+      "customerId": [
+        "text3",
+        "EQ"
+      ],
+      "categoryId": [
+        "text4",
+        "EQ"
+      ],
+      "foodType": [
+        "text5",
+        "EQ"
+      ],
+      "paymentMethod": [
+        "text6",
+        "EQ"
+      ],
+      "paymentStatus": [
+        "text7",
+        "EQ"
+      ],
+      "orderStatus": [
+        "text8",
+        "EQ"
+      ],
+      "city": [
+        "text9",
+        "EQ"
+      ],
+      "available": [
+        "text10",
+        "EQ"
+      ],
+      "active": [
+        "text11",
+        "EQ"
+      ]
+    },
+    "defaults": {},
+    "resource": "coupons",
+    "normalizers": {
+      "text1": "activeBoolean"
+    }
+  },
+  {
+    "model": "WEB_FOOD_OFFER",
+    "service": "food",
+    "project": "food-delivery-platform/backend",
+    "path": "/api/v1/food/admin/offers",
+    "apps": [
+      "food-delivery-platform/admin-web"
+    ],
+    "scope": "GLOBAL",
+    "id": "offerId",
+    "createdAt": "createdAt",
+    "sourcePaged": true,
+    "sourceRows": "content",
+    "format": "springPage",
+    "slots": {
+      "text1": "active",
+      "datetime1": "createdAt",
+      "amount1": "totalAmount",
+      "text2": "restaurantId",
+      "text3": "customerId",
+      "text4": "categoryId",
+      "text5": "foodType",
+      "text6": "paymentMethod",
+      "text7": "paymentStatus",
+      "text8": "orderStatus",
+      "text9": "city",
+      "text10": "available",
+      "text11": "active"
+    },
+    "filters": {
+      "search": [
+        "text13",
+        "LIKE"
+      ],
+      "status": [
+        "text1",
+        "EQ",
+        "activeBoolean"
+      ],
+      "startDate": [
+        "datetime1",
+        "GE"
+      ],
+      "endDate": [
+        "datetime1",
+        "LE"
+      ],
+      "minimumAmount": [
+        "amount1",
+        "GE"
+      ],
+      "maximumAmount": [
+        "amount1",
+        "LE"
+      ],
+      "restaurantId": [
+        "text2",
+        "EQ"
+      ],
+      "customerId": [
+        "text3",
+        "EQ"
+      ],
+      "categoryId": [
+        "text4",
+        "EQ"
+      ],
+      "foodType": [
+        "text5",
+        "EQ"
+      ],
+      "paymentMethod": [
+        "text6",
+        "EQ"
+      ],
+      "paymentStatus": [
+        "text7",
+        "EQ"
+      ],
+      "orderStatus": [
+        "text8",
+        "EQ"
+      ],
+      "city": [
+        "text9",
+        "EQ"
+      ],
+      "available": [
+        "text10",
+        "EQ"
+      ],
+      "active": [
+        "text11",
+        "EQ"
+      ]
+    },
+    "defaults": {},
+    "resource": "offers",
+    "normalizers": {
+      "text1": "activeBoolean"
+    }
+  },
+  {
+    "model": "WEB_FOOD_REFUND",
+    "service": "food",
+    "project": "food-delivery-platform/backend",
+    "path": "/api/v1/food/admin/refunds",
+    "apps": [
+      "food-delivery-platform/admin-web"
+    ],
+    "scope": "GLOBAL",
+    "id": "refundId",
+    "createdAt": "createdAt",
+    "sourcePaged": true,
+    "sourceRows": "content",
+    "format": "springPage",
+    "slots": {
+      "text1": "active",
+      "datetime1": "createdAt",
+      "amount1": "totalAmount",
+      "text2": "restaurantId",
+      "text3": "customerId",
+      "text4": "categoryId",
+      "text5": "foodType",
+      "text6": "paymentMethod",
+      "text7": "paymentStatus",
+      "text8": "orderStatus",
+      "text9": "city",
+      "text10": "available",
+      "text11": "active"
+    },
+    "filters": {
+      "search": [
+        "text13",
+        "LIKE"
+      ],
+      "status": [
+        "text1",
+        "EQ",
+        "lower"
+      ],
+      "startDate": [
+        "datetime1",
+        "GE"
+      ],
+      "endDate": [
+        "datetime1",
+        "LE"
+      ],
+      "minimumAmount": [
+        "amount1",
+        "GE"
+      ],
+      "maximumAmount": [
+        "amount1",
+        "LE"
+      ],
+      "restaurantId": [
+        "text2",
+        "EQ"
+      ],
+      "customerId": [
+        "text3",
+        "EQ"
+      ],
+      "categoryId": [
+        "text4",
+        "EQ"
+      ],
+      "foodType": [
+        "text5",
+        "EQ"
+      ],
+      "paymentMethod": [
+        "text6",
+        "EQ"
+      ],
+      "paymentStatus": [
+        "text7",
+        "EQ"
+      ],
+      "orderStatus": [
+        "text8",
+        "EQ"
+      ],
+      "city": [
+        "text9",
+        "EQ"
+      ],
+      "available": [
+        "text10",
+        "EQ"
+      ],
+      "active": [
+        "text11",
+        "EQ"
+      ]
+    },
+    "defaults": {},
+    "resource": "refunds",
+    "normalizers": {
+      "text1": "lower"
+    }
+  },
+  {
+    "model": "WEB_FOOD_REVIEW",
+    "service": "food",
+    "project": "food-delivery-platform/backend",
+    "path": "/api/v1/food/admin/reviews",
+    "apps": [
+      "food-delivery-platform/admin-web"
+    ],
+    "scope": "GLOBAL",
+    "id": "reviewId",
+    "createdAt": "createdAt",
+    "sourcePaged": true,
+    "sourceRows": "content",
+    "format": "springPage",
+    "slots": {
+      "text1": "status",
+      "datetime1": "createdAt",
+      "amount1": "totalAmount",
+      "text2": "restaurantId",
+      "text3": "customerId",
+      "text4": "categoryId",
+      "text5": "foodType",
+      "text6": "paymentMethod",
+      "text7": "paymentStatus",
+      "text8": "orderStatus",
+      "text9": "city",
+      "text10": "available",
+      "text11": "active"
+    },
+    "filters": {
+      "search": [
+        "text13",
+        "LIKE"
+      ],
+      "status": [
+        "text1",
+        "EQ",
+        "lower"
+      ],
+      "startDate": [
+        "datetime1",
+        "GE"
+      ],
+      "endDate": [
+        "datetime1",
+        "LE"
+      ],
+      "minimumAmount": [
+        "amount1",
+        "GE"
+      ],
+      "maximumAmount": [
+        "amount1",
+        "LE"
+      ],
+      "restaurantId": [
+        "text2",
+        "EQ"
+      ],
+      "customerId": [
+        "text3",
+        "EQ"
+      ],
+      "categoryId": [
+        "text4",
+        "EQ"
+      ],
+      "foodType": [
+        "text5",
+        "EQ"
+      ],
+      "paymentMethod": [
+        "text6",
+        "EQ"
+      ],
+      "paymentStatus": [
+        "text7",
+        "EQ"
+      ],
+      "orderStatus": [
+        "text8",
+        "EQ"
+      ],
+      "city": [
+        "text9",
+        "EQ"
+      ],
+      "available": [
+        "text10",
+        "EQ"
+      ],
+      "active": [
+        "text11",
+        "EQ"
+      ]
+    },
+    "defaults": {},
+    "resource": "reviews",
+    "normalizers": {
+      "text1": "lower"
+    }
+  },
+  {
+    "model": "WEB_FOOD_DELIVERY_PARTNER",
+    "service": "food",
+    "project": "food-delivery-platform/backend",
+    "path": "/api/v1/food/admin/delivery-partners",
+    "apps": [
+      "food-delivery-platform/admin-web"
+    ],
+    "scope": "GLOBAL",
+    "id": "deliveryPartnerId",
+    "createdAt": "createdAt",
+    "sourcePaged": true,
+    "sourceRows": "content",
+    "format": "springPage",
+    "slots": {
+      "text1": "status",
+      "datetime1": "createdAt",
+      "amount1": "totalAmount",
+      "text2": "restaurantId",
+      "text3": "customerId",
+      "text4": "categoryId",
+      "text5": "foodType",
+      "text6": "paymentMethod",
+      "text7": "paymentStatus",
+      "text8": "orderStatus",
+      "text9": "city",
+      "text10": "available",
+      "text11": "active"
+    },
+    "filters": {
+      "search": [
+        "text13",
+        "LIKE"
+      ],
+      "status": [
+        "text1",
+        "EQ",
+        "lower"
+      ],
+      "startDate": [
+        "datetime1",
+        "GE"
+      ],
+      "endDate": [
+        "datetime1",
+        "LE"
+      ],
+      "minimumAmount": [
+        "amount1",
+        "GE"
+      ],
+      "maximumAmount": [
+        "amount1",
+        "LE"
+      ],
+      "restaurantId": [
+        "text2",
+        "EQ"
+      ],
+      "customerId": [
+        "text3",
+        "EQ"
+      ],
+      "categoryId": [
+        "text4",
+        "EQ"
+      ],
+      "foodType": [
+        "text5",
+        "EQ"
+      ],
+      "paymentMethod": [
+        "text6",
+        "EQ"
+      ],
+      "paymentStatus": [
+        "text7",
+        "EQ"
+      ],
+      "orderStatus": [
+        "text8",
+        "EQ"
+      ],
+      "city": [
+        "text9",
+        "EQ"
+      ],
+      "available": [
+        "text10",
+        "EQ"
+      ],
+      "active": [
+        "text11",
+        "EQ"
+      ]
+    },
+    "defaults": {},
+    "resource": "delivery-partners",
+    "normalizers": {
+      "text1": "lower"
+    }
+  },
+  {
+    "model": "WEB_FOOD_SUPPORT_TICKET",
+    "service": "food",
+    "project": "food-delivery-platform/backend",
+    "path": "/api/v1/food/admin/support-tickets",
+    "apps": [
+      "food-delivery-platform/admin-web"
+    ],
+    "scope": "GLOBAL",
+    "id": "ticketId",
+    "createdAt": "createdAt",
+    "sourcePaged": true,
+    "sourceRows": "content",
+    "format": "springPage",
+    "slots": {
+      "text1": "active",
+      "datetime1": "createdAt",
+      "amount1": "totalAmount",
+      "text2": "restaurantId",
+      "text3": "customerId",
+      "text4": "categoryId",
+      "text5": "foodType",
+      "text6": "paymentMethod",
+      "text7": "paymentStatus",
+      "text8": "orderStatus",
+      "text9": "city",
+      "text10": "available",
+      "text11": "active"
+    },
+    "filters": {
+      "search": [
+        "text13",
+        "LIKE"
+      ],
+      "status": [
+        "text1",
+        "EQ",
+        "lower"
+      ],
+      "startDate": [
+        "datetime1",
+        "GE"
+      ],
+      "endDate": [
+        "datetime1",
+        "LE"
+      ],
+      "minimumAmount": [
+        "amount1",
+        "GE"
+      ],
+      "maximumAmount": [
+        "amount1",
+        "LE"
+      ],
+      "restaurantId": [
+        "text2",
+        "EQ"
+      ],
+      "customerId": [
+        "text3",
+        "EQ"
+      ],
+      "categoryId": [
+        "text4",
+        "EQ"
+      ],
+      "foodType": [
+        "text5",
+        "EQ"
+      ],
+      "paymentMethod": [
+        "text6",
+        "EQ"
+      ],
+      "paymentStatus": [
+        "text7",
+        "EQ"
+      ],
+      "orderStatus": [
+        "text8",
+        "EQ"
+      ],
+      "city": [
+        "text9",
+        "EQ"
+      ],
+      "available": [
+        "text10",
+        "EQ"
+      ],
+      "active": [
+        "text11",
+        "EQ"
+      ]
+    },
+    "defaults": {},
+    "resource": "support-tickets",
+    "normalizers": {
+      "text1": "lower"
+    }
+  },
+  {
+    "model": "WEB_FOOD_NOTIFICATION",
+    "service": "food",
+    "project": "food-delivery-platform/backend",
+    "path": "/api/v1/food/admin/notifications",
+    "apps": [
+      "food-delivery-platform/admin-web"
+    ],
+    "scope": "GLOBAL",
+    "id": "notificationId",
+    "createdAt": "createdAt",
+    "sourcePaged": true,
+    "sourceRows": "content",
+    "format": "springPage",
+    "slots": {
+      "text1": "active",
+      "datetime1": "createdAt",
+      "amount1": "totalAmount",
+      "text2": "restaurantId",
+      "text3": "customerId",
+      "text4": "categoryId",
+      "text5": "foodType",
+      "text6": "paymentMethod",
+      "text7": "paymentStatus",
+      "text8": "orderStatus",
+      "text9": "city",
+      "text10": "available",
+      "text11": "active"
+    },
+    "filters": {
+      "search": [
+        "text13",
+        "LIKE"
+      ],
+      "status": [
+        "text1",
+        "EQ",
+        "lower"
+      ],
+      "startDate": [
+        "datetime1",
+        "GE"
+      ],
+      "endDate": [
+        "datetime1",
+        "LE"
+      ],
+      "minimumAmount": [
+        "amount1",
+        "GE"
+      ],
+      "maximumAmount": [
+        "amount1",
+        "LE"
+      ],
+      "restaurantId": [
+        "text2",
+        "EQ"
+      ],
+      "customerId": [
+        "text3",
+        "EQ"
+      ],
+      "categoryId": [
+        "text4",
+        "EQ"
+      ],
+      "foodType": [
+        "text5",
+        "EQ"
+      ],
+      "paymentMethod": [
+        "text6",
+        "EQ"
+      ],
+      "paymentStatus": [
+        "text7",
+        "EQ"
+      ],
+      "orderStatus": [
+        "text8",
+        "EQ"
+      ],
+      "city": [
+        "text9",
+        "EQ"
+      ],
+      "available": [
+        "text10",
+        "EQ"
+      ],
+      "active": [
+        "text11",
+        "EQ"
+      ]
+    },
+    "defaults": {},
+    "resource": "notifications",
+    "normalizers": {
+      "text1": "lower"
+    }
+  },
+  {
+    "model": "WEB_FOOD_SETTING",
+    "service": "food",
+    "project": "food-delivery-platform/backend",
+    "path": "/api/v1/food/admin/settings",
+    "apps": [
+      "food-delivery-platform/admin-web"
+    ],
+    "scope": "GLOBAL",
+    "id": "applicationSettingId",
+    "createdAt": "createdAt",
+    "sourcePaged": true,
+    "sourceRows": "content",
+    "format": "springPage",
+    "slots": {
+      "text1": "active",
+      "datetime1": "createdAt",
+      "amount1": "totalAmount",
+      "text2": "restaurantId",
+      "text3": "customerId",
+      "text4": "categoryId",
+      "text5": "foodType",
+      "text6": "paymentMethod",
+      "text7": "paymentStatus",
+      "text8": "orderStatus",
+      "text9": "city",
+      "text10": "available",
+      "text11": "active"
+    },
+    "filters": {
+      "search": [
+        "text13",
+        "LIKE"
+      ],
+      "status": [
+        "text1",
+        "EQ",
+        "lower"
+      ],
+      "startDate": [
+        "datetime1",
+        "GE"
+      ],
+      "endDate": [
+        "datetime1",
+        "LE"
+      ],
+      "minimumAmount": [
+        "amount1",
+        "GE"
+      ],
+      "maximumAmount": [
+        "amount1",
+        "LE"
+      ],
+      "restaurantId": [
+        "text2",
+        "EQ"
+      ],
+      "customerId": [
+        "text3",
+        "EQ"
+      ],
+      "categoryId": [
+        "text4",
+        "EQ"
+      ],
+      "foodType": [
+        "text5",
+        "EQ"
+      ],
+      "paymentMethod": [
+        "text6",
+        "EQ"
+      ],
+      "paymentStatus": [
+        "text7",
+        "EQ"
+      ],
+      "orderStatus": [
+        "text8",
+        "EQ"
+      ],
+      "city": [
+        "text9",
+        "EQ"
+      ],
+      "available": [
+        "text10",
+        "EQ"
+      ],
+      "active": [
+        "text11",
+        "EQ"
+      ]
+    },
+    "defaults": {},
+    "resource": "settings",
+    "normalizers": {
+      "text1": "lower"
+    }
+  },
+  {
+    "model": "WEB_MATRIMONY_OPS_PLAN",
+    "service": "matrimony",
+    "project": "matrimonial-api",
+    "path": "/api/v1/matrimony/ops/subscription-plans",
+    "apps": [
+      "matrimonial-web-ops"
+    ],
+    "scope": "TENANT",
+    "id": "id",
+    "createdAt": "createdAt",
+    "sourcePaged": true,
+    "sourceRows": "content",
+    "format": "springPage",
+    "slots": {},
+    "filters": {},
+    "defaults": {},
+    "sourceOrdered": true,
+    "sort": {
+      "field1": "number5",
+      "directionField1": "ASC",
+      "field2": "modelKey",
+      "directionField2": "ASC"
+    },
+    "reader": "plans",
+    "applicationCodes": [
+      "PASUPU_KUMKUMA_MATRIMONY_APP"
+    ],
+    "normalizers": {}
+  },
+  {
+    "model": "WEB_MATRIMONY_ACTIVE_PLAN",
+    "service": "matrimony",
+    "project": "matrimonial-api",
+    "path": "/api/v1/matrimony/subscription-plans",
+    "apps": [
+      "matrimonial-web-customer"
+    ],
+    "scope": "TENANT",
+    "id": "id",
+    "createdAt": "createdAt",
+    "sourcePaged": true,
+    "sourceRows": "content",
+    "format": "springPage",
+    "slots": {},
+    "filters": {},
+    "defaults": {},
+    "sourceOrdered": true,
+    "sort": {
+      "field1": "number5",
+      "directionField1": "ASC",
+      "field2": "modelKey",
+      "directionField2": "ASC"
+    },
+    "authenticatedRead": true,
+    "reader": "activePlans",
+    "applicationCodes": [
+      "PASUPU_KUMKUMA_MATRIMONY_APP"
+    ],
+    "normalizers": {}
+  },
+  {
+    "model": "WEB_MATRIMONY_OPS_OPTION",
+    "service": "matrimony",
+    "project": "matrimonial-api",
+    "path": "/api/v1/matrimony/ops/config/options",
+    "apps": [
+      "matrimonial-web-ops"
+    ],
+    "scope": "GLOBAL",
+    "id": "id",
+    "createdAt": "createdAt",
+    "sourcePaged": true,
+    "sourceRows": "content",
+    "format": "springPage",
+    "slots": {
+      "text12": "category"
+    },
+    "filters": {
+      "category": [
+        "text12",
+        "EQ"
+      ]
+    },
+    "defaults": {},
+    "requiredFilters": [
+      "category"
+    ],
+    "sourceOrdered": true,
+    "sort": {
+      "field1": "number5",
+      "directionField1": "ASC",
+      "field2": "modelKey",
+      "directionField2": "ASC"
+    },
+    "reader": "options",
+    "applicationCodes": [
+      "PASUPU_KUMKUMA_MATRIMONY_APP"
+    ],
+    "normalizers": {}
+  },
+  {
+    "model": "WEB_MATRIMONY_PUBLIC_STORY",
+    "service": "matrimony",
+    "project": "matrimonial-api",
+    "path": "/api/v1/matrimony/success-stories",
+    "apps": [
+      "matrimonial-web-customer"
+    ],
+    "scope": "GLOBAL",
+    "id": "id",
+    "createdAt": "createdAt",
+    "sourcePaged": true,
+    "sourceRows": "content",
+    "format": "springPage",
+    "slots": {},
+    "filters": {},
+    "defaults": {},
+    "authenticatedRead": true,
+    "reader": "publicStories",
+    "applicationCodes": [
+      "PASUPU_KUMKUMA_MATRIMONY_APP"
+    ],
+    "normalizers": {}
+  },
+  {
+    "model": "WEB_MATRIMONY_SELF_STORY",
+    "service": "matrimony",
+    "project": "matrimonial-api",
+    "path": "/api/v1/matrimony/success-stories/mine",
+    "apps": [
+      "matrimonial-web-customer"
+    ],
+    "scope": "SELF",
+    "id": "id",
+    "createdAt": "createdAt",
+    "sourcePaged": true,
+    "sourceRows": "content",
+    "format": "springPage",
+    "slots": {},
+    "filters": {},
+    "defaults": {},
+    "authenticatedRead": true,
+    "reader": "myStories",
+    "applicationCodes": [
+      "PASUPU_KUMKUMA_MATRIMONY_APP"
+    ],
+    "normalizers": {}
+  },
+  {
+    "model": "WEB_MATRIMONY_SELF_PAYMENT",
+    "service": "matrimony",
+    "project": "matrimonial-api",
+    "path": "/api/v1/matrimony/payments/me",
+    "apps": [
+      "matrimonial-web-customer"
+    ],
+    "scope": "SELF",
+    "id": "id",
+    "createdAt": "createdAt",
+    "sourcePaged": true,
+    "sourceRows": "content",
+    "format": "springPage",
+    "slots": {},
+    "filters": {},
+    "defaults": {},
+    "authenticatedRead": true,
+    "reader": "myPayments",
+    "applicationCodes": [
+      "PASUPU_KUMKUMA_MATRIMONY_APP"
+    ],
+    "normalizers": {}
+  },
+  {
+    "model": "WEB_MATRIMONY_SELF_SUBSCRIPTION",
+    "service": "matrimony",
+    "project": "matrimonial-api",
+    "path": "/api/v1/matrimony/subscriptions/history",
+    "apps": [
+      "matrimonial-web-customer"
+    ],
+    "scope": "SELF",
+    "id": "id",
+    "createdAt": "startedAt",
+    "sourcePaged": false,
+    "sourceRows": "",
+    "format": "array",
+    "slots": {},
+    "filters": {},
+    "defaults": {},
+    "authenticatedRead": true,
+    "reader": "history",
+    "applicationCodes": [
+      "PASUPU_KUMKUMA_MATRIMONY_APP"
+    ],
+    "normalizers": {}
+  },
+  {
+    "model": "WEB_MATRIMONY_SELF_COMPLAINT",
+    "service": "matrimony",
+    "project": "matrimonial-api",
+    "path": "/api/v1/matrimony/complaints/mine",
+    "apps": [
+      "matrimonial-web-customer"
+    ],
+    "scope": "SELF",
+    "id": "id",
+    "createdAt": "createdAt",
+    "sourcePaged": false,
+    "sourceRows": "",
+    "format": "array",
+    "slots": {},
+    "filters": {},
+    "defaults": {},
+    "authenticatedRead": true,
+    "reader": "complaints",
+    "applicationCodes": [
+      "PASUPU_KUMKUMA_MATRIMONY_APP"
+    ],
+    "normalizers": {}
+  },
+  {
+    "model": "WEB_CONFIG_SETTING",
+    "service": "rider-config",
+    "project": "Rider_ConfigService",
+    "path": "/api/v1/config/settings",
+    "apps": [
+      "Rider_AdminWeb",
+      "Rider_Web"
+    ],
+    "scope": "TENANT",
+    "id": "definition.key",
+    "createdAt": "createdAt",
+    "sourcePaged": true,
+    "sourceRows": "content",
+    "format": "springPage",
+    "responseEnvelope": "common",
+    "requestPageBase": 1,
+    "slots": {
+      "text1": "definition.category",
+      "text2": "definition.risk"
+    },
+    "filters": {
+      "category": [
+        "text1",
+        "EQ",
+        "lower"
+      ],
+      "q": [
+        "text13",
+        "LIKE"
+      ],
+      "risk": [
+        "text2",
+        "EQ",
+        "lower"
+      ]
+    },
+    "defaults": {},
+    "reader": "settings",
+    "sourceOrdered": true,
+    "sort": {
+      "field1": "number5",
+      "directionField1": "ASC",
+      "field2": "modelKey",
+      "directionField2": "ASC"
+    },
+    "normalizers": {
+      "text1": "lower",
+      "text2": "lower"
+    }
+  },
+  {
+    "model": "WEB_CONFIG_SETTING_HISTORY",
+    "service": "rider-config",
+    "project": "Rider_ConfigService",
+    "path": "/api/v1/config/settings/{key}/history",
+    "apps": [
+      "Rider_AdminWeb",
+      "Rider_Web"
+    ],
+    "scope": "TENANT",
+    "id": "id",
+    "createdAt": "createdAt",
+    "sourcePaged": true,
+    "sourceRows": "content",
+    "format": "springPage",
+    "responseEnvelope": "common",
+    "requestPageBase": 1,
+    "slots": {
+      "text1": "scopeType",
+      "text2": "cityCode"
+    },
+    "filters": {
+      "key": [
+        "text12",
+        "EQ"
+      ],
+      "scope": [
+        "text1",
+        "EQ"
+      ],
+      "cityCode": [
+        "text2",
+        "EQ",
+        "upper"
+      ]
+    },
+    "defaults": {},
+    "reader": "history",
+    "sourceOrdered": true,
+    "sort": {
+      "field1": "number5",
+      "directionField1": "ASC",
+      "field2": "modelKey",
+      "directionField2": "ASC"
+    },
+    "requiredFilters": [
+      "key"
+    ],
+    "normalizers": {
+      "text2": "upper"
+    }
+  },
+  {
+    "model": "WEB_CONFIG_BANNER",
+    "service": "rider-config",
+    "project": "Rider_ConfigService",
+    "path": "/api/v1/config/banners",
+    "apps": [
+      "Rider_AdminWeb",
+      "Rider_Web"
+    ],
+    "scope": "TENANT",
+    "id": "id",
+    "createdAt": "createdAt",
+    "sourcePaged": true,
+    "sourceRows": "content",
+    "format": "springPage",
+    "responseEnvelope": "common",
+    "requestPageBase": 1,
+    "slots": {
+      "text1": "audience",
+      "text2": "cityCode",
+      "text3": "language",
+      "text4": "active"
+    },
+    "filters": {
+      "q": [
+        "text13",
+        "LIKE"
+      ],
+      "audience": [
+        "text1",
+        "EQ",
+        "lower"
+      ],
+      "cityCode": [
+        "text2",
+        "EQ",
+        "upper"
+      ],
+      "language": [
+        "text3",
+        "EQ",
+        "lower"
+      ],
+      "active": [
+        "text4",
+        "EQ"
+      ]
+    },
+    "defaults": {},
+    "reader": "banners",
+    "sourceOrdered": true,
+    "sort": {
+      "field1": "number5",
+      "directionField1": "ASC",
+      "field2": "modelKey",
+      "directionField2": "ASC"
+    },
+    "normalizers": {
+      "text1": "lower",
+      "text2": "upper",
+      "text3": "lower"
+    }
+  },
+  {
+    "model": "WEB_CONFIG_FAQ",
+    "service": "rider-config",
+    "project": "Rider_ConfigService",
+    "path": "/api/v1/config/faqs",
+    "apps": [
+      "Rider_AdminWeb",
+      "Rider_Web"
+    ],
+    "scope": "TENANT",
+    "id": "id",
+    "createdAt": "createdAt",
+    "sourcePaged": true,
+    "sourceRows": "content",
+    "format": "springPage",
+    "responseEnvelope": "common",
+    "requestPageBase": 1,
+    "slots": {
+      "text1": "audience",
+      "text2": "cityCode",
+      "text3": "language",
+      "text4": "active"
+    },
+    "filters": {
+      "q": [
+        "text13",
+        "LIKE"
+      ],
+      "audience": [
+        "text1",
+        "EQ",
+        "lower"
+      ],
+      "cityCode": [
+        "text2",
+        "EQ",
+        "upper"
+      ],
+      "language": [
+        "text3",
+        "EQ",
+        "lower"
+      ],
+      "active": [
+        "text4",
+        "EQ"
+      ]
+    },
+    "defaults": {},
+    "reader": "faqs",
+    "sourceOrdered": true,
+    "sort": {
+      "field1": "number5",
+      "directionField1": "ASC",
+      "field2": "modelKey",
+      "directionField2": "ASC"
+    },
+    "normalizers": {
+      "text1": "lower",
+      "text2": "upper",
+      "text3": "lower"
+    }
+  },
+  {
+    "model": "WEB_CONFIG_APP_VERSION",
+    "service": "rider-config",
+    "project": "Rider_ConfigService",
+    "path": "/api/v1/config/app-versions",
+    "apps": [
+      "Rider_AdminWeb",
+      "Rider_Web"
+    ],
+    "scope": "TENANT",
+    "id": "id",
+    "createdAt": "createdAt",
+    "sourcePaged": true,
+    "sourceRows": "content",
+    "format": "springPage",
+    "responseEnvelope": "common",
+    "requestPageBase": 1,
+    "slots": {
+      "text1": "app",
+      "text2": "platform",
+      "text3": "cityCode",
+      "text4": "active"
+    },
+    "filters": {
+      "app": [
+        "text1",
+        "EQ",
+        "lower"
+      ],
+      "platform": [
+        "text2",
+        "EQ",
+        "lower"
+      ],
+      "cityCode": [
+        "text3",
+        "EQ",
+        "upper"
+      ],
+      "active": [
+        "text4",
+        "EQ"
+      ]
+    },
+    "defaults": {},
+    "reader": "versions",
+    "sourceOrdered": true,
+    "sort": {
+      "field1": "number5",
+      "directionField1": "ASC",
+      "field2": "modelKey",
+      "directionField2": "ASC"
+    },
+    "normalizers": {
+      "text1": "lower",
+      "text2": "lower",
+      "text3": "upper"
+    }
+  },
+  {
+    "model": "WEB_CONFIG_CITY",
+    "service": "rider-config",
+    "project": "Rider_ConfigService",
+    "path": "/api/v1/config/cities",
+    "apps": [
+      "Rider_AdminWeb",
+      "Rider_Web"
+    ],
+    "scope": "TENANT",
+    "id": "code",
+    "createdAt": "createdAt",
+    "sourcePaged": false,
+    "sourceRows": "",
+    "format": "array",
+    "responseEnvelope": "common",
+    "requestPageBase": 0,
+    "slots": {
+      "text1": "active"
+    },
+    "filters": {
+      "activeOnly": [
+        "text1",
+        "EQ",
+        "trueOnly"
+      ]
+    },
+    "defaults": {},
+    "reader": "cities",
+    "sourceOrdered": true,
+    "sort": {
+      "field1": "number5",
+      "directionField1": "ASC",
+      "field2": "modelKey",
+      "directionField2": "ASC"
+    },
+    "normalizers": {
+      "text1": "trueOnly"
+    }
+  },
+  {
+    "model": "WEB_CONFIG_VEHICLE_TYPE",
+    "service": "rider-config",
+    "project": "Rider_ConfigService",
+    "path": "/api/v1/config/vehicle-types",
+    "apps": [
+      "Rider_AdminWeb",
+      "Rider_Web"
+    ],
+    "scope": "TENANT",
+    "id": "code",
+    "createdAt": "createdAt",
+    "sourcePaged": false,
+    "sourceRows": "",
+    "format": "array",
+    "responseEnvelope": "common",
+    "requestPageBase": 0,
+    "slots": {
+      "text1": "availableInCity|active"
+    },
+    "filters": {
+      "cityCode": [
+        "text12",
+        "EQ",
+        "upper"
+      ],
+      "availableOnly": [
+        "text1",
+        "EQ",
+        "trueOnly"
+      ]
+    },
+    "defaults": {
+      "cityCode": "__ALL__"
+    },
+    "reader": "vehicles",
+    "sourceOrdered": true,
+    "sort": {
+      "field1": "number5",
+      "directionField1": "ASC",
+      "field2": "modelKey",
+      "directionField2": "ASC"
+    },
+    "normalizers": {
+      "text12": "upper",
+      "text1": "trueOnly"
+    }
+  },
+  {
+    "model": "WEB_CONFIG_VEHICLE_CITY",
+    "service": "rider-config",
+    "project": "Rider_ConfigService",
+    "path": "/api/v1/config/vehicle-types/{vehicleCode}/cities",
+    "apps": [
+      "Rider_AdminWeb",
+      "Rider_Web"
+    ],
+    "scope": "TENANT",
+    "id": "cityCode",
+    "createdAt": "createdAt",
+    "sourcePaged": false,
+    "sourceRows": "",
+    "format": "array",
+    "responseEnvelope": "common",
+    "requestPageBase": 0,
+    "slots": {},
+    "filters": {
+      "vehicleCode": [
+        "text12",
+        "EQ"
+      ]
+    },
+    "defaults": {},
+    "reader": "vehicleCities",
+    "sourceOrdered": true,
+    "sort": {
+      "field1": "number5",
+      "directionField1": "ASC",
+      "field2": "modelKey",
+      "directionField2": "ASC"
+    },
+    "requiredFilters": [
+      "vehicleCode"
+    ],
+    "normalizers": {}
+  },
+  {
+    "model": "WEB_TRAIN_BOOKING",
+    "service": "rider-train",
+    "project": "Rider_TrainService",
+    "path": "/api/v1/train/admin/bookings",
+    "apps": [
+      "Rider_AdminWeb",
+      "Rider_Web"
+    ],
+    "scope": "TENANT",
+    "id": "id",
+    "createdAt": "bookingDate",
+    "sourcePaged": true,
+    "sourceRows": "items",
+    "format": "trainItemsPage",
+    "responseEnvelope": "common",
+    "requestPageBase": 1,
+    "slots": {
+      "text1": "bookingStatus",
+      "text2": "travelClass",
+      "text3": "paymentStatus",
+      "date1": "journeyDate"
+    },
+    "filters": {
+      "status": [
+        "text1",
+        "EQ",
+        "lower"
+      ],
+      "query": [
+        "text13",
+        "LIKE"
+      ],
+      "fromDate": [
+        "date1",
+        "GE"
+      ],
+      "toDate": [
+        "date1",
+        "LE"
+      ],
+      "travelClass": [
+        "text2",
+        "EQ",
+        "upper"
+      ],
+      "paymentStatus": [
+        "text3",
+        "EQ",
+        "lower"
+      ]
+    },
+    "defaults": {},
+    "reader": "bookings",
+    "sourceOrdered": true,
+    "sort": {
+      "field1": "number5",
+      "directionField1": "ASC",
+      "field2": "modelKey",
+      "directionField2": "ASC"
+    },
+    "ignoredFilterValues": {
+      "status": [
+        "All"
+      ],
+      "paymentStatus": [
+        "All"
+      ],
+      "gender": [
+        "All"
+      ],
+      "travelClass": [
+        "All"
+      ]
+    },
+    "facets": {
+      "All": null,
+      "Confirmed": {
+        "field": "text1",
+        "operator": "EQ",
+        "value": "confirmed"
+      },
+      "Pending": {
+        "field": "text1",
+        "operator": "EQ",
+        "value": "pending"
+      },
+      "Failed": {
+        "field": "text1",
+        "operator": "EQ",
+        "value": "failed"
+      },
+      "Cancelled": {
+        "field": "text1",
+        "operator": "EQ",
+        "value": "cancelled"
+      }
+    },
+    "normalizers": {
+      "text1": "lower",
+      "text2": "upper",
+      "text3": "lower"
+    }
+  },
+  {
+    "model": "WEB_TRAIN_ACCOUNT",
+    "service": "rider-train",
+    "project": "Rider_TrainService",
+    "path": "/api/v1/train/admin/irctc-accounts",
+    "apps": [
+      "Rider_AdminWeb",
+      "Rider_Web"
+    ],
+    "scope": "TENANT",
+    "id": "id",
+    "createdAt": "createdAt",
+    "sourcePaged": true,
+    "sourceRows": "items",
+    "format": "trainItemsPage",
+    "responseEnvelope": "common",
+    "requestPageBase": 1,
+    "slots": {
+      "text1": "status"
+    },
+    "filters": {
+      "status": [
+        "text1",
+        "EQ",
+        "lower"
+      ],
+      "query": [
+        "text13",
+        "LIKE"
+      ]
+    },
+    "defaults": {},
+    "reader": "accounts",
+    "sourceOrdered": true,
+    "sort": {
+      "field1": "number5",
+      "directionField1": "ASC",
+      "field2": "modelKey",
+      "directionField2": "ASC"
+    },
+    "ignoredFilterValues": {
+      "status": [
+        "All"
+      ],
+      "paymentStatus": [
+        "All"
+      ],
+      "gender": [
+        "All"
+      ],
+      "travelClass": [
+        "All"
+      ]
+    },
+    "facets": {
+      "All": null,
+      "Active": {
+        "field": "text1",
+        "operator": "EQ",
+        "value": "active"
+      },
+      "Deleted": {
+        "field": "text1",
+        "operator": "EQ",
+        "value": "deleted"
+      }
+    },
+    "normalizers": {
+      "text1": "lower"
+    }
+  },
+  {
+    "model": "WEB_TRAIN_TRAVEL_USER",
+    "service": "rider-train",
+    "project": "Rider_TrainService",
+    "path": "/api/v1/train/admin/travel-users",
+    "apps": [
+      "Rider_AdminWeb",
+      "Rider_Web"
+    ],
+    "scope": "TENANT",
+    "id": "id",
+    "createdAt": "createdAt",
+    "sourcePaged": true,
+    "sourceRows": "items",
+    "format": "trainItemsPage",
+    "responseEnvelope": "common",
+    "requestPageBase": 1,
+    "slots": {
+      "text1": "gender"
+    },
+    "filters": {
+      "gender": [
+        "text1",
+        "EQ",
+        "lower"
+      ],
+      "query": [
+        "text13",
+        "LIKE"
+      ]
+    },
+    "defaults": {},
+    "reader": "travelUsers",
+    "sourceOrdered": true,
+    "sort": {
+      "field1": "number5",
+      "directionField1": "ASC",
+      "field2": "modelKey",
+      "directionField2": "ASC"
+    },
+    "ignoredFilterValues": {
+      "status": [
+        "All"
+      ],
+      "paymentStatus": [
+        "All"
+      ],
+      "gender": [
+        "All"
+      ],
+      "travelClass": [
+        "All"
+      ]
+    },
+    "normalizers": {
+      "text1": "lower"
+    }
+  },
+  {
+    "model": "WEB_TRAIN_TDR_FILING",
+    "service": "rider-train",
+    "project": "Rider_TrainService",
+    "path": "/api/v1/train/admin/tdr/filings",
+    "apps": [
+      "Rider_AdminWeb",
+      "Rider_Web"
+    ],
+    "scope": "TENANT",
+    "id": "id",
+    "createdAt": "createdAt",
+    "sourcePaged": true,
+    "sourceRows": "content",
+    "format": "springPage",
+    "responseEnvelope": "common",
+    "requestPageBase": 1,
+    "slots": {
+      "text1": "status"
+    },
+    "filters": {
+      "status": [
+        "text1",
+        "EQ",
+        "lower"
+      ]
+    },
+    "defaults": {},
+    "reader": "filings",
+    "sourceOrdered": true,
+    "sort": {
+      "field1": "number5",
+      "directionField1": "ASC",
+      "field2": "modelKey",
+      "directionField2": "ASC"
+    },
+    "ignoredFilterValues": {
+      "status": [
+        "All"
+      ],
+      "paymentStatus": [
+        "All"
+      ],
+      "gender": [
+        "All"
+      ],
+      "travelClass": [
+        "All"
+      ]
+    },
+    "normalizers": {
+      "text1": "lower"
+    }
+  },
+  {
+    "model": "WEB_TRAIN_VIKALP",
+    "service": "rider-train",
+    "project": "Rider_TrainService",
+    "path": "/api/v1/train/admin/vikalp",
+    "apps": [
+      "Rider_AdminWeb",
+      "Rider_Web"
+    ],
+    "scope": "TENANT",
+    "id": "bookingId",
+    "createdAt": "optedAt",
+    "sourcePaged": true,
+    "sourceRows": "content",
+    "format": "springPage",
+    "responseEnvelope": "common",
+    "requestPageBase": 1,
+    "slots": {},
+    "filters": {},
+    "defaults": {},
+    "reader": "vikalp",
+    "sourceOrdered": true,
+    "sort": {
+      "field1": "number5",
+      "directionField1": "ASC",
+      "field2": "modelKey",
+      "directionField2": "ASC"
+    },
+    "ignoredFilterValues": {
+      "status": [
+        "All"
+      ],
+      "paymentStatus": [
+        "All"
+      ],
+      "gender": [
+        "All"
+      ],
+      "travelClass": [
+        "All"
+      ]
+    },
+    "normalizers": {}
+  },
+  {
+    "model": "WEB_TRAIN_COMMISSION",
+    "service": "rider-train",
+    "project": "Rider_TrainService",
+    "path": "/api/v1/train/admin/class-commissions",
+    "apps": [
+      "Rider_AdminWeb",
+      "Rider_Web"
+    ],
+    "scope": "TENANT",
+    "id": "id",
+    "createdAt": "updated_at",
+    "sourcePaged": false,
+    "sourceRows": "",
+    "format": "array",
+    "responseEnvelope": "common",
+    "requestPageBase": 0,
+    "slots": {},
+    "filters": {},
+    "defaults": {},
+    "reader": "commissions",
+    "sourceOrdered": true,
+    "sort": {
+      "field1": "number5",
+      "directionField1": "ASC",
+      "field2": "modelKey",
+      "directionField2": "ASC"
+    },
+    "ignoredFilterValues": {
+      "status": [
+        "All"
+      ],
+      "paymentStatus": [
+        "All"
+      ],
+      "gender": [
+        "All"
+      ],
+      "travelClass": [
+        "All"
+      ]
+    },
+    "normalizers": {}
+  },
+  {
+    "model": "WEB_QA_RUN",
+    "service": "rider-config",
+    "project": "Rider_ConfigService",
+    "path": "/api/v1/config/qa/runs",
+    "apps": [
+      "Rider_Web"
+    ],
+    "scope": "GLOBAL",
+    "id": "id",
+    "createdAt": "createdAt",
+    "sourcePaged": true,
+    "sourceRows": "content",
+    "format": "springPage",
+    "responseEnvelope": "common",
+    "slots": {
+      "text1": "environment",
+      "text2": "workspace",
+      "text3": "suite",
+      "text4": "release"
+    },
+    "filters": {
+      "environment": [
+        "text1",
+        "EQ"
+      ],
+      "workspace": [
+        "text2",
+        "EQ"
+      ],
+      "suite": [
+        "text3",
+        "EQ"
+      ],
+      "release": [
+        "text4",
+        "EQ"
+      ]
+    },
+    "defaults": {},
+    "reader": "qaRuns",
+    "sourceOrdered": true,
+    "sort": {
+      "field1": "number5",
+      "directionField1": "ASC",
+      "field2": "modelKey",
+      "directionField2": "ASC"
+    },
+    "normalizers": {}
+  },
+  {
+    "model": "WEB_QA_DOCUMENT",
+    "service": "rider-config",
+    "project": "Rider_ConfigService",
+    "path": "/api/v1/config/qa/documents",
+    "apps": [
+      "Rider_Web"
+    ],
+    "scope": "GLOBAL",
+    "id": "name",
+    "createdAt": "updatedAt",
+    "sourcePaged": false,
+    "sourceRows": "",
+    "format": "array",
+    "responseEnvelope": "common",
+    "slots": {
+      "text1": "category"
+    },
+    "filters": {
+      "category": [
+        "text1",
+        "EQ",
+        "upper"
+      ]
+    },
+    "defaults": {},
+    "reader": "qaDocuments",
+    "sourceOrdered": true,
+    "sort": {
+      "field1": "number5",
+      "directionField1": "ASC",
+      "field2": "modelKey",
+      "directionField2": "ASC"
+    },
+    "normalizers": {
+      "text1": "upper"
+    }
+  },
+  {
+    "model": "WEB_QA_STUDIO_CASE",
+    "service": "rider-config",
+    "project": "Rider_ConfigService",
+    "path": "/api/v1/config/qa/studio/cases",
+    "apps": [
+      "Rider_Web"
+    ],
+    "scope": "GLOBAL",
+    "id": "id",
+    "createdAt": "createdAt",
+    "sourcePaged": true,
+    "sourceRows": "items",
+    "format": "itemsSpringPage",
+    "responseEnvelope": "common",
+    "slots": {
+      "text1": "module",
+      "text2": "subModule",
+      "text3": "suite",
+      "text4": "enabled"
+    },
+    "filters": {
+      "module": [
+        "text1",
+        "EQ"
+      ],
+      "subModule": [
+        "text2",
+        "EQ"
+      ],
+      "suite": [
+        "text3",
+        "EQ",
+        "upper"
+      ],
+      "enabled": [
+        "text4",
+        "EQ",
+        "lower"
+      ],
+      "q": [
+        "text13",
+        "LIKE"
+      ]
+    },
+    "defaults": {},
+    "reader": "qaStudio",
+    "sourceOrdered": true,
+    "sort": {
+      "field1": "number5",
+      "directionField1": "ASC",
+      "field2": "modelKey",
+      "directionField2": "ASC"
+    },
+    "normalizers": {
+      "text3": "upper",
+      "text4": "lower"
+    }
+  },
+  {
+    "model": "WEB_QA_TEST_SET",
+    "service": "rider-config",
+    "project": "Rider_ConfigService",
+    "path": "/api/v1/config/qa/test-sets",
+    "apps": [
+      "Rider_Web"
+    ],
+    "scope": "GLOBAL",
+    "id": "id",
+    "createdAt": "createdAt",
+    "sourcePaged": false,
+    "sourceRows": "",
+    "format": "array",
+    "responseEnvelope": "common",
+    "slots": {},
+    "filters": {},
+    "defaults": {},
+    "reader": "qaTestSets",
+    "sourceOrdered": true,
+    "sort": {
+      "field1": "number5",
+      "directionField1": "ASC",
+      "field2": "modelKey",
+      "directionField2": "ASC"
+    },
+    "normalizers": {}
+  },
+  {
+    "model": "WEB_NMS_TEMPLATE",
+    "service": "nms",
+    "project": "Rider_NMS",
+    "path": "/api/v1/nms/templates",
+    "apps": [
+      "Rider_Web",
+      "Rider_AdminWeb"
+    ],
+    "scope": "TENANT",
+    "id": "id",
+    "createdAt": "createdAt",
+    "sourcePaged": true,
+    "requestPaged": true,
+    "sourceRows": "content",
+    "format": "springPage",
+    "responseEnvelope": "common",
+    "sourceTimeZone": "SYSTEM",
+    "slots": {},
+    "filters": {},
+    "defaults": {},
+    "reader": "templates",
+    "sourceOrdered": true,
+    "sort": {
+      "field1": "number5",
+      "directionField1": "ASC",
+      "field2": "modelKey",
+      "directionField2": "ASC"
+    },
+    "normalizers": {}
+  },
+  {
+    "model": "WEB_NMS_EVENT_TEMPLATE",
+    "service": "nms",
+    "project": "Rider_NMS",
+    "path": "/api/v1/nms/templates/event/{event}",
+    "apps": [
+      "Rider_Web",
+      "Rider_AdminWeb"
+    ],
+    "scope": "TENANT",
+    "id": "id",
+    "createdAt": "createdAt",
+    "sourcePaged": true,
+    "requestPaged": false,
+    "sourceRows": "content",
+    "format": "array",
+    "responseEnvelope": "common",
+    "sourceTimeZone": "SYSTEM",
+    "slots": {
+      "text12": "event"
+    },
+    "filters": {
+      "event": [
+        "text12",
+        "EQ",
+        "upper"
+      ]
+    },
+    "defaults": {},
+    "reader": "templates",
+    "sourceOrdered": true,
+    "sort": {
+      "field1": "number5",
+      "directionField1": "ASC",
+      "field2": "modelKey",
+      "directionField2": "ASC"
+    },
+    "requiredFilters": [
+      "event"
+    ],
+    "normalizers": {
+      "text12": "upper"
+    }
+  },
+  {
+    "model": "WEB_NMS_EVENT",
+    "service": "nms",
+    "project": "Rider_NMS",
+    "path": "/api/v1/nms/events",
+    "apps": [
+      "Rider_Web",
+      "Rider_AdminWeb"
+    ],
+    "scope": "TENANT",
+    "id": "id|value",
+    "createdAt": "createdAt",
+    "sourcePaged": false,
+    "requestPaged": false,
+    "sourceRows": "",
+    "format": "array",
+    "responseEnvelope": "common",
+    "sourceTimeZone": "SYSTEM",
+    "slots": {},
+    "filters": {},
+    "defaults": {},
+    "reader": "events",
+    "sourceOrdered": true,
+    "sort": {
+      "field1": "number5",
+      "directionField1": "ASC",
+      "field2": "modelKey",
+      "directionField2": "ASC"
+    },
+    "normalizers": {}
+  },
+  {
+    "model": "WEB_NMS_BROADCAST",
+    "service": "nms",
+    "project": "Rider_NMS",
+    "path": "/api/v1/nms/broadcasts",
+    "apps": [
+      "Rider_Web",
+      "Rider_AdminWeb"
+    ],
+    "scope": "TENANT",
+    "id": "id",
+    "createdAt": "createdAt",
+    "sourcePaged": true,
+    "requestPaged": true,
+    "sourceRows": "content",
+    "format": "springPage",
+    "responseEnvelope": "common",
+    "sourceTimeZone": "SYSTEM",
+    "slots": {
+      "text1": "status"
+    },
+    "filters": {
+      "status": [
+        "text1",
+        "EQ",
+        "lower"
+      ]
+    },
+    "defaults": {},
+    "reader": "broadcasts",
+    "sourceOrdered": true,
+    "sort": {
+      "field1": "number5",
+      "directionField1": "ASC",
+      "field2": "modelKey",
+      "directionField2": "ASC"
+    },
+    "normalizers": {
+      "text1": "lower"
+    }
+  },
+  {
+    "model": "WEB_DMS_DOCUMENT_TYPE",
+    "service": "dms",
+    "project": "Rider_DMS",
+    "path": "/api/v1/dms/document-types",
+    "apps": [
+      "Rider_Web"
+    ],
+    "scope": "TENANT",
+    "id": "id",
+    "createdAt": "createdAt",
+    "sourcePaged": true,
+    "sourceRows": "content",
+    "format": "springPage",
+    "responseEnvelope": "common",
+    "slots": {
+      "text1": "category",
+      "text2": "flow",
+      "text3": "active"
+    },
+    "filters": {
+      "category": [
+        "text1",
+        "EQ",
+        "lower"
+      ],
+      "flow": [
+        "text2",
+        "EQ",
+        "upper"
+      ],
+      "active": [
+        "text3",
+        "EQ"
+      ]
+    },
+    "defaults": {},
+    "reader": "types",
+    "sourceOrdered": true,
+    "sort": {
+      "field1": "number5",
+      "directionField1": "ASC",
+      "field2": "modelKey",
+      "directionField2": "ASC"
+    },
+    "normalizers": {
+      "text1": "lower",
+      "text2": "upper"
+    }
+  },
+  {
+    "model": "WEB_DMS_LIFECYCLE_DOCUMENT",
+    "service": "dms",
+    "project": "Rider_DMS",
+    "path": "/api/v1/dms/lifecycle/documents",
+    "apps": [
+      "Rider_Web"
+    ],
+    "scope": "TENANT",
+    "id": "id",
+    "createdAt": "createdAt",
+    "sourcePaged": true,
+    "sourceRows": "content",
+    "format": "springPage",
+    "responseEnvelope": "common",
+    "slots": {
+      "text1": "ownerId",
+      "text2": "category",
+      "text3": "documentType",
+      "text4": "status",
+      "text5": "scanStatus",
+      "text6": "deleted",
+      "datetime1": "createdAt"
+    },
+    "filters": {
+      "query": [
+        "text13",
+        "LIKE"
+      ],
+      "ownerId": [
+        "text1",
+        "EQ"
+      ],
+      "category": [
+        "text2",
+        "EQ"
+      ],
+      "documentType": [
+        "text3",
+        "EQ"
+      ],
+      "status": [
+        "text4",
+        "EQ"
+      ],
+      "scanStatus": [
+        "text5",
+        "EQ"
+      ],
+      "deleted": [
+        "text6",
+        "EQ"
+      ],
+      "from": [
+        "datetime1",
+        "GE"
+      ],
+      "to": [
+        "datetime1",
+        "LE"
+      ]
+    },
+    "defaults": {},
+    "reader": "documents",
+    "sourceOrdered": true,
+    "sort": {
+      "field1": "number5",
+      "directionField1": "ASC",
+      "field2": "modelKey",
+      "directionField2": "ASC"
+    },
+    "normalizers": {
+      "text4": "lower"
+    }
+  }
+]

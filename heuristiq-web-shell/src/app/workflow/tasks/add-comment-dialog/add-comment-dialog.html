@@ -1,0 +1,20 @@
+<div class="ac-dialog">
+  <h2 class="ac-title">{{ 'workflow.comment.title' | translate }}</h2>
+  <p class="ac-sub">{{ data.task.taskName || data.task.processKey }}</p>
+
+  <hq-field
+            type="textarea"
+            class="rf-ac-textarea"
+            [rows]="4"
+            [maxLength]="2000"
+            [(ngModel)]="text"
+            [placeholder]="'workflow.complete.commentPlaceholder' | translate"
+            [showCounter]="false" [label]="'workflow.comment.label' | translate"></hq-field>
+
+  <div class="ac-actions">
+    <button hqButton="secondary" type="button" (click)="cancel()">{{ 'shared.adminCrud.discard.cancel' | translate }}</button>
+    <button hqButton="accent" type="button" (click)="submit()" [disabled]="!text.trim()">
+      <i class="bi bi-chat-left-text"></i> {{ 'workflow.comment.submit' | translate }}
+    </button>
+  </div>
+</div>

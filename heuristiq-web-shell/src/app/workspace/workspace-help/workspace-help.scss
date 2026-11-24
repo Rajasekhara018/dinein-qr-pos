@@ -1,0 +1,75 @@
+.ws-help {
+  margin: 0 0 1rem;
+  border: 1px solid var(--workspace-border, var(--theme-soft-border, #dfe3ea));
+  border-radius: 10px;
+  background: var(--workspace-panel, #fff);
+  overflow: hidden;
+}
+
+.ws-help__head {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.6rem 0.9rem;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+
+  &:hover { background: var(--workspace-hover, rgba(0, 0, 0, 0.03)); }
+  .bi-lightbulb { color: #e0a800; }
+}
+
+.ws-help__title { font-weight: 600; white-space: nowrap; }
+
+.ws-help__summary {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  color: var(--text-muted, #6b7280);
+  font-size: 0.85rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ws-help__toggle {
+  margin-inline-start: auto;
+  color: var(--text-muted, #6b7280);
+  font-size: 0.8rem;
+  white-space: nowrap;
+}
+
+.ws-help__body { padding: 0 0.9rem 0.9rem; }
+
+.ws-help__lead { margin: 0 0 0.75rem; }
+
+.ws-help__cols {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1rem;
+}
+
+.ws-help__sub {
+  margin: 0 0 0.4rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.ws-help__list,
+.ws-help__steps {
+  margin: 0;
+  padding-inline-start: 1.2rem;
+  font-size: 0.85rem;
+  line-height: 1.5;
+
+  li + li { margin-top: 0.25rem; }
+}
+
+.ws-help__example {
+  padding: 0.6rem 0.75rem;
+  border-radius: 8px;
+  background: var(--workspace-hover, rgba(0, 0, 0, 0.03));
+}

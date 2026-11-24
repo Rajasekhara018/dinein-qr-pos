@@ -1,0 +1,13 @@
+<label class="hq-radio" [class.is-disabled]="isDisabled" [class.is-plain]="hideControl">
+  <input
+    type="radio"
+    class="hq-radio__input"
+    [attr.name]="group.groupName"
+    [checked]="isChosen"
+    [disabled]="isDisabled"
+    (change)="onPick()"
+    (blur)="group.markTouched()"
+  />
+  @if (!hideControl) {<span class="hq-radio__dot" [class.is-checked]="isChosen" aria-hidden="true"></span>}
+  <span class="hq-radio__label">@if (label) {{{ label }}} @else {<ng-content></ng-content>}</span>
+</label>

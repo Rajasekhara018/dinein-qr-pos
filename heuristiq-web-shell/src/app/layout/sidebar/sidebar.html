@@ -1,0 +1,139 @@
+<aside
+  class="sidebar"
+  [class.collapsed]="collapsed && !mobileOpen"
+  [class.mobile-open]="mobileOpen"
+  [attr.aria-label]="'sidebar.ariaLabel' | translate: { appName: branding.appName }"
+>
+  <!-- Brand -->
+  <div class="brand">
+    <!-- Collapsed: IRCTC logo icon -->
+    <ng-container *ngIf="collapsed && !mobileOpen">
+      <div class="brand-icon-collapsed brand-icon-btn"
+        role="button" tabindex="0"
+        [attr.aria-label]="'sidebar.expand' | translate"
+        (click)="onToggle()"
+        (keyup.enter)="onToggle()"
+        (keyup.space)="onToggle()">
+        <div class="brand-logo-pill">
+          <img [src]="branding.logoImagePath" [alt]="branding.appName" class="brand-icon-collapsed__img" />
+        </div>
+      </div>
+    </ng-container>
+
+    <!-- Expanded: full logo -->
+    <ng-container *ngIf="!collapsed || mobileOpen">
+      <div class="brand-logo-wrap">
+        <img [src]="branding.logoImagePath" [alt]="branding.appName" class="brand-logo-img" />
+      </div>
+      <button class="collapse-btn collapse-btn--desktop" type="button" [attr.aria-label]="'sidebar.collapse' | translate" (click)="onToggle()">
+        <i class="bi bi-chevron-left"></i>
+      </button>
+      <button class="collapse-btn mobile-close-btn" type="button" [attr.aria-label]="'sidebar.close' | translate" (click)="onCloseMobile()">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </ng-container>
+  </div>
+
+  <!-- Search: narrows the menu below by page or section name -->
+  <div class="sidebar-search" role="search" *ngIf="!collapsed || mobileOpen">
+    <hq-field
+      type="search"
+      icon="bi bi-search"
+      class="sidebar-search__input"
+      autocomplete="off"
+      [spellcheck]="false"
+      [(ngModel)]="searchQuery"
+      [placeholder]="'sidebar.search.placeholder' | translate"
+      [ariaLabel]="'sidebar.search.ariaLabel' | translate"
+      (keydown)="onSearchKeydown($event)"></hq-field>
+    <button *ngIf="searchQuery" type="button" class="sidebar-search__clear"
+      [attr.aria-label]="'sidebar.search.clear' | translate" (click)="clearSearch()">
+      <i class="bi bi-x-lg"></i>
+    </button>
+  </div>
+  <!-- Area switcher: the menu below lists one area's pages at a time (a search still looks through all of them) -->
+  <div class="sidebar-areas" *ngIf="(!collapsed || mobileOpen) && areas.length > 1">
+    <i class="bi bi-grid-1x2 sidebar-areas__icon" aria-hidden="true"></i>
+    <hq-searchable-select
+      class="sidebar-areas__select"
+      [ariaLabel]="'sidebar.area.ariaLabel' | translate"
+      [placeholder]="'nav.areas.all' | translate"
+      [ngModel]="activeArea"
+      (ngModelChange)="setArea($event || allAreasKey)"
+      [allowOther]="false">
+      <hq-ss-option [value]="allAreasKey" [label]="'nav.areas.all' | translate"></hq-ss-option>
+      <hq-ss-option *ngFor="let area of areas" [value]="area.key" [label]="area.label | translate"></hq-ss-option>
+    </hq-searchable-select>
+  </div>
+
+  <!-- Starred pages and the latest few opened, each in its own section -->
+  <div class="nav-quick" *ngIf="!searching && (!collapsed || mobileOpen) && favouriteItems.length">
+    <p class="nav-quick__title">{{ 'sidebar.favourites.title' | translate }}</p>
+    <a *ngFor="let item of favouriteItems" class="nav-quick__link" [routerLink]="item.path" [class.active]="item.path === activePath"
+      (click)="onCloseMobile()"><i class="bi bi-star-fill"></i><span>{{ item.label | translate }}</span></a>
+  </div>
+  <div class="nav-quick" *ngIf="!searching && (!collapsed || mobileOpen) && recentItems.length">
+    <p class="nav-quick__title">{{ 'sidebar.recent.title' | translate }}</p>
+    <a *ngFor="let item of recentItems" class="nav-quick__link" [routerLink]="item.path" [class.active]="item.path === activePath"
+      (click)="onCloseMobile()"><i class="bi bi-clock-history"></i><span>{{ item.label | translate }}</span></a>
+  </div>
+
+  <p class="visually-hidden" aria-live="polite" *ngIf="searching">{{ 'sidebar.search.results' | translate: { count: rows.length } }}</p>
+
+  <!-- Nav -->
+  <nav class="sidebar-nav" #navList [attr.aria-busy]="appsLoading ? 'true' : null">
+    <ng-container *ngFor="let row of rows; let i = index">
+      <button *ngIf="showSectionLabel(i)" type="button" class="nav-section-label"
+        [attr.aria-expanded]="isSectionOpen(row.item)" (click)="toggleSection(row.item.section)">
+        <span>{{ row.item.section | translate }}</span>
+        <i class="bi bi-chevron-down nav-section-label__chevron" [class.is-folded]="!isSectionOpen(row.item)"></i>
+      </button>
+      <a
+        *ngIf="isSectionOpen(row.item)"
+        [routerLink]="row.item.path"
+        [class.active]="row.item.path === activePath"
+        [attr.aria-current]="row.item.path === activePath ? 'page' : null"
+        class="nav-item"
+        [attr.aria-label]="row.item.label | translate"
+        [attr.title]="(collapsed && !mobileOpen) ? (row.item.label | translate) : null"
+        (click)="onCloseMobile(); clearSearch()"
+      >
+        <i class="bi" [ngClass]="row.item.icon"></i>
+        <span class="nav-label" *ngIf="!collapsed || mobileOpen"><ng-container *ngFor="let part of row.segments"><mark class="nav-match" *ngIf="part.match">{{ part.text }}</mark><ng-container *ngIf="!part.match">{{ part.text }}</ng-container></ng-container></span>
+        <button *ngIf="!collapsed || mobileOpen" type="button" class="nav-star" [class.is-starred]="isFavourite(row.item.path)"
+          [disabled]="!isFavourite(row.item.path) && favouritesFull"
+          [attr.aria-pressed]="isFavourite(row.item.path)"
+          [attr.aria-label]="(isFavourite(row.item.path) ? 'sidebar.favourites.remove' : 'sidebar.favourites.add') | translate"
+          [title]="(isFavourite(row.item.path) ? 'sidebar.favourites.remove' : (favouritesFull ? 'sidebar.favourites.full' : 'sidebar.favourites.add')) | translate"
+          (click)="toggleFavourite(row.item.path, $event)">
+          <i class="bi" [ngClass]="isFavourite(row.item.path) ? 'bi-star-fill' : 'bi-star'"></i>
+        </button>
+        <ng-container *ngIf="row.item.badge && badgeText(row.item, pendingReviews$ | async) as text">
+          <span class="nav-badge" [class.nav-badge--dot]="collapsed && !mobileOpen"
+            [attr.aria-label]="'sidebar.pendingReviews' | translate: { count: text }">{{ collapsed && !mobileOpen ? '' : text }}</span>
+        </ng-container>
+      </a>
+    </ng-container>
+    <div class="nav-skeleton" *ngIf="appsLoading && (!collapsed || mobileOpen)" aria-hidden="true">
+      <span class="nav-skeleton__line"></span><span class="nav-skeleton__line"></span><span class="nav-skeleton__line"></span>
+    </div>
+    <p class="nav-empty" *ngIf="searching && rows.length === 0">{{ 'sidebar.search.empty' | translate }}</p>
+  </nav>
+
+  <!-- User footer -->
+  <div class="sidebar-footer">
+    <div class="user-block" [class.centered]="collapsed && !mobileOpen">
+      <div class="user-avatar">
+        <img *ngIf="photoUrl$ | async as photo; else sidebarInitial" class="user-avatar__img" [src]="photo" alt="" />
+        <ng-template #sidebarInitial>{{ userInitial }}</ng-template>
+      </div>
+      <div class="user-info" *ngIf="!collapsed || mobileOpen">
+        <div class="user-name" *ngIf="userName">{{ userName }}</div>
+        <div class="user-role text-capitalize">{{ userRole }}</div>
+      </div>
+      <button class="logout-btn" type="button" (click)="logout()" [title]="'sidebar.logout' | translate" [attr.aria-label]="'sidebar.logout' | translate">
+        <i class="bi bi-box-arrow-right"></i>
+      </button>
+    </div>
+  </div>
+</aside>

@@ -1,0 +1,59 @@
+<div class="roles-dialog">
+  <h2 class="roles-dialog__title" [id]="titleId">{{ 'orgStructure.tree.rolesDialog.title' | translate: { name: data.unitName } }}</h2>
+
+  <p class="roles-dialog__explain" data-testid="roles-explain">{{ 'orgStructure.tree.rolesDialog.explanation' | translate }}</p>
+  <p class="roles-dialog__people" data-testid="roles-headcount" *ngIf="data.headcount !== null">
+    <i class="bi bi-people" aria-hidden="true"></i> {{ 'orgStructure.tree.rolesDialog.headcount' | translate: { count: data.headcount } }}
+  </p>
+
+  <div role="status" aria-live="polite" data-testid="roles-loading" *ngIf="state === 'loading'">{{ 'orgStructure.tree.rolesDialog.loading' | translate }}</div>
+
+  <hq-error-state data-testid="roles-load-error" *ngIf="state === 'error'" [title]="'orgStructure.tree.rolesDialog.loadError' | translate" (retry)="retry()"></hq-error-state>
+
+  <ng-container *ngIf="state === 'ready'">
+    <p class="roles-dialog__muted" data-testid="roles-empty" *ngIf="unitRules.length === 0">{{ 'orgStructure.tree.rolesDialog.empty' | translate }}</p>
+    <ul class="roles-dialog__list" data-testid="roles-list" *ngIf="unitRules.length > 0">
+      <li class="roles-dialog__item" *ngFor="let rule of unitRules" [attr.data-testid]="'roles-rule-' + rule.id">
+        <span class="roles-dialog__role">
+          <strong>{{ rule.roleCode }}</strong>
+          <span class="roles-dialog__muted" *ngIf="roleName(rule.roleCode) as name">{{ name }}</span>
+          <span class="roles-dialog__position" *ngIf="rule.positionName" data-testid="roles-position">{{ 'orgStructure.tree.rolesDialog.position' | translate: { name: rule.positionName } }}</span>
+        </span>
+        <ng-container *hqHasPrivilege="privileges.ruleDelete">
+          <button hqButton="secondary" type="button" class="danger" data-testid="roles-delete" [disabled]="busy"
+                  [attr.aria-label]="'orgStructure.tree.rolesDialog.removeLabel' | translate: { role: rule.roleCode }"
+                  (click)="remove(rule)">
+            <i class="bi bi-trash" aria-hidden="true"></i> {{ 'orgStructure.logins.deleteRule' | translate }}
+          </button>
+        </ng-container>
+      </li>
+    </ul>
+
+    <ng-container *hqHasPrivilege="privileges.ruleCreate">
+      <div class="roles-dialog__add" data-testid="roles-add">
+        <hq-form-field for="org-dept-roles-select" [label]="'orgStructure.tree.rolesDialog.addLabel' | translate"><hq-searchable-select inputId="org-dept-roles-select" name="role" [(ngModel)]="newRole" [disabled]="busy || offeredRoles.length === 0"
+                               [allowOther]="false" [placeholder]="'orgStructure.tree.rolesDialog.pick' | translate"
+                               [ariaLabel]="'orgStructure.tree.rolesDialog.addLabel' | translate"
+                               [attr.aria-describedby]="rolesFailed ? 'org-dept-roles-note' : null">
+          <hq-ss-option *ngFor="let role of offeredRoles" [value]="role.code" [label]="role.name ? role.code + ' — ' + role.name : role.code"></hq-ss-option>
+        </hq-searchable-select></hq-form-field>
+        <button hqButton="accent" type="button" data-testid="roles-add-button" [disabled]="!canAdd" (click)="add()">
+          <i class="bi bi-plus-lg" aria-hidden="true"></i> {{ 'orgStructure.tree.rolesDialog.add' | translate }}
+        </button>
+      </div>
+      <p class="roles-dialog__muted" id="org-dept-roles-note" role="note" data-testid="roles-roles-failed" *ngIf="rolesFailed">{{ 'orgStructure.tree.rolesDialog.rolesFailed' | translate }}</p>
+      <p class="roles-dialog__muted" role="note" data-testid="roles-none-left" *ngIf="!rolesFailed && roles.length > 0 && offeredRoles.length === 0">{{ 'orgStructure.tree.rolesDialog.noneLeft' | translate }}</p>
+    </ng-container>
+
+    <hq-alert tone="danger" dense data-testid="roles-action-error" *ngIf="actionError">{{ actionError }}</hq-alert>
+  </ng-container>
+
+  <div class="roles-dialog__footer">
+    <ng-container *hqHasPrivilege="privileges.loginCreate">
+      <a hqButton="secondary" data-testid="roles-logins-link" [routerLink]="loginsRoute" (click)="close()">
+        <i class="bi bi-person-plus" aria-hidden="true"></i> {{ 'orgStructure.tree.rolesDialog.createLogins' | translate }}
+      </a>
+    </ng-container>
+    <button hqButton="accent" type="button" data-testid="roles-close" (click)="close()">{{ 'orgStructure.tree.rolesDialog.close' | translate }}</button>
+  </div>
+</div>

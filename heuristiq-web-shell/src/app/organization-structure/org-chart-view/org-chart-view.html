@@ -1,0 +1,28 @@
+<div class="ocv">
+  <div class="ocv-toolbar" role="toolbar" [attr.aria-label]="'orgStructure.tree.chartTools.label' | translate">
+    <button type="button" class="ocv-tool" [title]="'orgStructure.tree.chartTools.zoomIn' | translate" [attr.aria-label]="'orgStructure.tree.chartTools.zoomIn' | translate" (click)="zoomIn()">
+      <i class="bi bi-zoom-in"></i>
+    </button>
+    <button type="button" class="ocv-tool" [title]="'orgStructure.tree.chartTools.zoomOut' | translate" [attr.aria-label]="'orgStructure.tree.chartTools.zoomOut' | translate" (click)="zoomOut()">
+      <i class="bi bi-zoom-out"></i>
+    </button>
+    <button type="button" class="ocv-tool" [title]="'orgStructure.tree.chartTools.fit' | translate" [attr.aria-label]="'orgStructure.tree.chartTools.fit' | translate" (click)="fit()">
+      <i class="bi bi-fullscreen"></i>
+    </button>
+    <span class="ocv-sep"></span>
+    <button type="button" class="ocv-tool" [title]="'orgStructure.tree.chartTools.expandAll' | translate" [attr.aria-label]="'orgStructure.tree.chartTools.expandAll' | translate" (click)="expandAll()">
+      <i class="bi bi-arrows-expand"></i>
+    </button>
+    <button type="button" class="ocv-tool" [title]="'orgStructure.tree.chartTools.collapseAll' | translate" [attr.aria-label]="'orgStructure.tree.chartTools.collapseAll' | translate" (click)="collapseAll()">
+      <i class="bi bi-arrows-collapse"></i>
+    </button>
+    <button type="button" class="ocv-tool" [title]="'orgStructure.tree.chartTools.layout' | translate" [attr.aria-label]="'orgStructure.tree.chartTools.layout' | translate" (click)="toggleLayout()">
+      <i class="bi" [class.bi-arrow-left-right]="layout === 'top'" [class.bi-arrow-down-up]="layout === 'left'"></i>
+    </button>
+    <span class="ocv-sep"></span>
+    <button type="button" class="ocv-tool" [title]="'orgStructure.tree.chartTools.export' | translate" [attr.aria-label]="'orgStructure.tree.chartTools.export' | translate" (click)="exportImage()">
+      <i class="bi bi-download"></i>
+    </button>
+  </div>
+  <div #host class="ocv-canvas" [style.height.px]="height"></div>
+</div>

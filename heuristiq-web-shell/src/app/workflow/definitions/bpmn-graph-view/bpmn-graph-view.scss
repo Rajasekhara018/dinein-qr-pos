@@ -1,0 +1,25 @@
+.bg-wrap {
+  overflow: auto;
+  padding: 0.5rem;
+  background: var(--workspace-panel, #fff);
+}
+
+.bg-svg {
+  display: block;
+  max-width: none;
+  font-family: var(--hq-font);
+}
+
+.bg-edge { fill: none; stroke: var(--edu-muted, #64748b); stroke-width: 1.5; }
+.bg-arrow-head { fill: var(--edu-muted, #64748b); }
+.bg-edge-label { font-size: 11px; fill: var(--edu-muted, #64748b); }
+
+.bg-event { fill: #dcfce7; stroke: #16a34a; stroke-width: 2; }
+.bg-end { fill: #fee2e2; stroke: #dc2626; stroke-width: 4; }
+.bg-gateway { fill: #fef3c7; stroke: #d97706; stroke-width: 2; }
+.bg-gateway-mark { font-size: 22px; font-weight: 700; fill: #b45309; }
+.bg-task { fill: var(--theme-soft-surface, #eff6ff); stroke: var(--theme-hero-mid, #2563eb); stroke-width: 2; }
+.bg-task-label { font-size: 12px; font-weight: 600; fill: var(--edu-ink, #0f172a); }
+.bg-caption { font-size: 11px; fill: var(--edu-ink, #334155); }
+
+.bg-empty { text-align: center; color: var(--edu-muted, #64748b); }

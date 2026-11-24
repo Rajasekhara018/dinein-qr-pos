@@ -1,0 +1,120 @@
+<div class="ffp">
+  <div class="ffp__header">
+    <button type="button" class="ffp__back" [title]="'shared.adminCrud.backToList' | translate" (click)="cancel()">
+      <i class="bi bi-arrow-left-short"></i>
+    </button>
+    <div class="ffp__heading">
+      <h1>{{ titleKey | translate }}</h1>
+      <nav class="ffp__crumbs">
+        <span>{{ 'nav.sections.accessManagement' | translate }}</span>
+        <i class="bi bi-chevron-right"></i>
+        <a (click)="cancel()">{{ 'nav.items.franchisePlans' | translate }}</a>
+        <i class="bi bi-chevron-right"></i>
+        <span class="ffp__crumbs-current">{{ titleKey | translate }}</span>
+      </nav>
+    </div>
+    <span class="ffp__dirty" *ngIf="hasPendingChanges()">{{ 'shared.adminCrud.unsavedChanges' | translate }}</span>
+  </div>
+
+  <section class="table-surface">
+    <div class="table-surface__header">
+      <div class="table-heading">
+        <span class="table-kicker">{{ 'shared.adminCrud.details' | translate: { entity: ('accessManagement.franchisePlans.entity' | translate) } }}</span>
+      </div>
+    </div>
+
+    <div class="table-surface__body">
+      <p class="ffp__muted" *ngIf="isLoading">{{ 'accessManagement.franchises.loading' | translate }}</p>
+      <hq-error-state *ngIf="loadFailed" [title]="'accessManagement.franchisePlans.errorMessage' | translate"></hq-error-state>
+
+      <form *ngIf="!isLoading && !loadFailed" (ngSubmit)="save()" autocomplete="off">
+        <hq-form-grid cols="2" gap="lg">
+        <p class="ffp__hint hq-span-full">{{ 'accessManagement.franchisePlans.areaHint' | translate }}</p>
+
+        <hq-form-field for="plan-app" [label]="'accessManagement.franchises.application' | translate" required>
+          <hq-searchable-select
+            [(ngModel)]="form.applicationCode"
+            name="planApplication"
+            inputId="plan-app"
+            [allowOther]="false"
+            [placeholder]="'accessManagement.franchises.chooseApplication' | translate">
+            <hq-ss-option *ngFor="let application of applications" [value]="application.code" [label]="application.name || application.code"></hq-ss-option>
+          </hq-searchable-select>
+        </hq-form-field>
+
+        <hq-form-field for="plan-scope" [label]="'accessManagement.franchisePlans.scope' | translate">
+          <hq-searchable-select [(ngModel)]="form.scope" (ngModelChange)="onScopeChange()" name="planScope" inputId="plan-scope" [allowOther]="false">
+            <hq-ss-option *ngFor="let scope of scopes" [value]="scope" [label]="scopeLabel(scope)"></hq-ss-option>
+          </hq-searchable-select>
+        </hq-form-field>
+
+        <hq-form-field *ngIf="form.scope !== 'GENERAL'" for="plan-country" [label]="'accessManagement.franchisePlans.country' | translate" required>
+          <hq-searchable-select
+            [(ngModel)]="form.countryCode"
+            (ngModelChange)="onCountryChange()"
+            name="planCountry"
+            inputId="plan-country"
+            [allowOther]="false"
+            [placeholder]="'accessManagement.franchisePlans.chooseCountry' | translate">
+            <hq-ss-option *ngFor="let country of countries" [value]="country.code" [label]="country.name + ' (' + country.code + ')'"></hq-ss-option>
+          </hq-searchable-select>
+        </hq-form-field>
+
+        <hq-form-field *ngIf="form.scope === 'TYPE_DEFAULT'" for="plan-type" [label]="'accessManagement.franchisePlans.scopeType' | translate" required>
+          <hq-searchable-select
+            [(ngModel)]="form.scopeType"
+            (ngModelChange)="onScopeTypeChange()"
+            name="planScopeType"
+            inputId="plan-type"
+            [allowOther]="false"
+            [placeholder]="'accessManagement.franchiseLocations.chooseType' | translate">
+            <hq-ss-option *ngFor="let type of types" [value]="type" [label]="typeLabel(type)"></hq-ss-option>
+          </hq-searchable-select>
+        </hq-form-field>
+
+        <!-- A place plan: the cascade state > district > city / town > local place, or the deprecated text fields -->
+        <div class="ffp__field hq-span-full" *ngIf="form.scope === 'PLACE'">
+          <ng-container *ngIf="canPickPlaces; else oldPlaceFields">
+            <label>{{ 'accessManagement.franchisePlans.place' | translate }}</label>
+            <p class="ffp__hint">{{ 'accessManagement.franchisePlans.placeHint' | translate }}</p>
+            <app-location-picker [countryCode]="form.countryCode" [chain]="form.chain" (selected)="onPlacePicked($event)"></app-location-picker>
+          </ng-container>
+          <ng-template #oldPlaceFields>
+            <p class="ffp__hint">{{ 'accessManagement.franchisePlans.oldFieldsHint' | translate }}</p>
+            <hq-form-grid cols="2" gap="lg">
+              <hq-field type="text" inputId="plan-state-name" [maxLength]="100" [(ngModel)]="form.stateName" [disabled]="!form.countryCode" name="planStateName" [showCounter]="false" [label]="'accessManagement.franchisePlans.stateName' | translate"></hq-field>
+              <hq-field type="text" inputId="plan-state-code" [maxLength]="10" [(ngModel)]="form.stateCode" [disabled]="!form.countryCode" name="planStateCode" [showCounter]="false" [label]="'accessManagement.franchisePlans.stateCode' | translate"></hq-field>
+              <hq-field type="text" inputId="plan-city" [maxLength]="100" [(ngModel)]="form.city" [disabled]="!form.countryCode" name="planCity" [showCounter]="false" [label]="'accessManagement.franchisePlans.city' | translate"></hq-field>
+            </hq-form-grid>
+          </ng-template>
+        </div>
+
+        <!-- A type default: every place of the type under a state or district (or in the whole country) -->
+        <hq-form-field class="hq-span-full" *ngIf="form.scope === 'TYPE_DEFAULT' && form.scopeType" [label]="'accessManagement.franchisePlans.under' | translate" [hint]="('accessManagement.franchisePlans.underHint' | translate)">
+          <app-location-picker *ngIf="canPickPlaces" [countryCode]="form.countryCode" [chain]="form.chain" [selectableTypes]="underTypes"
+                               (selected)="onUnderPicked($event)"></app-location-picker>
+        </hq-form-field>
+
+        <hq-field type="number" inputId="plan-limit" min="1" [(ngModel)]="form.agentLimit" name="planLimit" [label]="'accessManagement.franchises.agentLimit' | translate" required></hq-field>
+
+        <hq-form-field for="plan-currency" [label]="'accessManagement.franchisePlans.currency' | translate">
+          <hq-searchable-select [(ngModel)]="form.currency" name="planCurrency" inputId="plan-currency" [allowOther]="false">
+            <hq-ss-option *ngFor="let code of currenciesOf(form)" [value]="code" [label]="code + ' (' + symbol(code) + ')'"></hq-ss-option>
+          </hq-searchable-select>
+        </hq-form-field>
+
+        <div class="ffp__field">
+          <label for="plan-fee">{{ 'accessManagement.franchises.fee' | translate }}<em class="ffp__req">*</em></label>
+          <hq-amount-input valueMode="number" inputId="plan-fee" [showLabel]="false" [label]="'accessManagement.franchises.fee' | translate"
+                            [currency]="form.currency" [(ngModel)]="form.fee" name="planFee"></hq-amount-input>
+        </div>
+
+        <hq-form-actions align="start" class="hq-span-full">
+          <button hqButton="accent" type="submit" [disabled]="saving">{{ 'accessManagement.franchises.save' | translate }}</button>
+          <button hqButton="secondary" type="button" [disabled]="saving" (click)="cancel()">{{ 'accessManagement.franchises.cancel' | translate }}</button>
+        </hq-form-actions>
+        </hq-form-grid>
+      </form>
+    </div>
+  </section>
+</div>

@@ -1,0 +1,4 @@
+.qa-name { font-weight: 600; }
+.qa-muted { color: var(--qa-muted); margin-inline-start: 0.4rem; }
+.qa-card + .qa-card { margin-block-start: 1rem; }
+.qa-flaky__list { margin: 0; padding-inline-start: 1.1rem; display: grid; gap: 0.3rem; }

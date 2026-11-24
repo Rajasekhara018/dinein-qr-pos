@@ -1,0 +1,50 @@
+<div class="qa-dialog">
+  <header class="qa-dialog__head">
+    <h2 class="qa-dialog__title">
+      <span class="qa-method" [ngClass]="methodClass(endpoint.method)">{{ endpoint.method }}</span>
+      <span class="qa-mono qa-dialog__path">{{ endpoint.path }}</span>
+    </h2>
+    <button hqButton="secondary" type="button" class="qa-dialog__close" (click)="close()" [attr.aria-label]="'qaDashboard.endpointInventory.close' | translate">
+      <i class="bi bi-x-lg"></i>
+    </button>
+  </header>
+
+  <hq-loading-state *ngIf="isLoading" [label]="'qaDashboard.loading' | translate"></hq-loading-state>
+  <hq-error-state *ngIf="hasError" [title]="'qaDashboard.endpointInventory.detailFailed' | translate"></hq-error-state>
+
+  <ng-container *ngIf="detail as d">
+    <hq-status-badge tone="warning" *ngIf="!d.documented">{{ 'qaDashboard.endpointInventory.undocumented' | translate }}</hq-status-badge>
+    <dl class="qa-facts">
+      <dt>{{ 'qaDashboard.endpointInventory.description' | translate }}</dt>
+      <dd class="qa-facts__description">{{ d.description || ('qaDashboard.endpointInventory.noDescription' | translate) }}</dd>
+      <dt>{{ 'qaDashboard.endpointInventory.privilege' | translate }}</dt>
+      <dd class="qa-mono qa-facts__privilege">{{ d.privilegeName || '—' }}</dd>
+      <dt>{{ 'qaDashboard.endpointInventory.operation' | translate }}</dt>
+      <dd class="qa-facts__operation">{{ d.operation || '—' }}</dd>
+      <dt>{{ 'qaDashboard.columns.module' | translate }}</dt>
+      <dd>{{ d.module }} / {{ d.subModule }}</dd>
+      <dt>{{ 'qaDashboard.endpointInventory.calls' | translate }}</dt>
+      <dd>{{ 'qaDashboard.endpointInventory.callsOf' | translate: { calls: d.callCount, executions: d.hitCount } }}</dd>
+      <dt>{{ 'qaDashboard.endpointInventory.lastHit' | translate }}</dt>
+      <dd>{{ d.lastHitAt ? (d.lastHitAt | hqDate:'medium') : '—' }}</dd>
+    </dl>
+
+    <h3 class="qa-dialog__sub">{{ 'qaDashboard.endpointInventory.testCases' | translate }}</h3>
+    <hq-empty-state class="qa-no-tests" *ngIf="d.tests.length === 0" [title]="'qaDashboard.endpointInventory.noTests' | translate"></hq-empty-state>
+    <div class="qa-table-wrap" *ngIf="d.tests.length > 0">
+      <hq-common-table class="qa-table qa-tests" [columns]="columns" [rows]="d.tests" [rowClass]="rowClassOf" [actionsLabel]="' '">
+        <ng-template hqCell="tcId" let-t><span class="qa-mono">{{ t.tcId || '—' }}</span></ng-template>
+        <ng-template hqCell="name" let-t><span class="qa-name">{{ t.name }}</span><br /><span class="qa-mono qa-muted">{{ t.testKey }}</span></ng-template>
+        <ng-template hqCell="status" let-t><hq-status-badge [tone]="statusTone(t.status)">{{ statusLabel(t.status) }}</hq-status-badge></ng-template>
+        <ng-template hqCell="date" let-t>{{ t.lastRunAt ? (t.lastRunAt | hqDate:'medium') : '—' }}</ng-template>
+        <ng-template #rowActions let-t>
+          <ng-container *hqHasPrivilege="privileges.testCaseList">
+            <a hqButton="secondary" class="qa-open-test" [routerLink]="testCasesRoute" [queryParams]="testCaseParams(t)" (click)="close()">
+              {{ 'qaDashboard.endpointInventory.openTestCase' | translate }}
+            </a>
+          </ng-container>
+        </ng-template>
+      </hq-common-table>
+    </div>
+  </ng-container>
+</div>

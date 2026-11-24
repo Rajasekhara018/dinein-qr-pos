@@ -1,0 +1,153 @@
+// Colours come from the theme tokens (--field-*, --edu-*, --hq-link), so every theme and dark mode follow. The size comes from
+// --hq-control-height (theme/styles.scss), the one height shared by every single-line control: this field, hq-searchable-select,
+// the phone and the amount inputs, and the .input / .form-control / .form-select classes.
+
+:host {
+  display: block;
+  min-width: 0;
+}
+
+.hq-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+.hq-field__label {
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: var(--edu-ink);
+  font-family: var(--hq-font);
+}
+
+.hq-field__req {
+  margin-inline-start: 0.25rem;
+  font-style: normal;
+  color: #dc2626;
+}
+
+// ---- the box: fixed height for a single line, same border, radius and background as the neighbouring controls -------
+
+.hq-field__box {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+  height: var(--hq-control-height, 2.75rem);
+  padding: 0 0.85rem;
+  border: var(--hq-control-border-width, 1.5px) solid var(--field-border);
+  border-radius: var(--hq-control-radius, 12px);
+  background: var(--field-bg);
+  color: var(--field-text);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+  &:hover {
+    border-color: color-mix(in srgb, var(--field-focus-ring, var(--hq-link, #003580)) 45%, var(--field-border));
+  }
+
+  &:focus-within {
+    border-color: var(--field-focus-ring, var(--hq-link, #003580));
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--hq-link, #003580) 14%, transparent);
+  }
+
+  // A textarea grows with its rows instead of keeping one line's height.
+  &.is-textarea {
+    height: auto;
+    align-items: stretch;
+    padding: 0.5rem 0.85rem;
+  }
+}
+
+.has-error .hq-field__box {
+  border-color: #dc2626;
+
+  &:focus-within {
+    box-shadow: 0 0 0 3px color-mix(in srgb, #dc2626 14%, transparent);
+  }
+}
+
+.is-disabled .hq-field__box {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.is-readonly .hq-field__box {
+  background: color-mix(in srgb, var(--field-bg) 70%, var(--field-border));
+}
+
+.hq-field__icon {
+  flex: none;
+  color: var(--edu-muted);
+}
+
+.hq-field__control {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: var(--hq-control-font-size, 0.95rem);
+
+  &::placeholder {
+    color: var(--field-placeholder);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+}
+
+textarea.hq-field__control {
+  height: auto;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.hq-field__toggle {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 1.9rem;
+  height: 1.9rem;
+  margin-inline-end: -0.35rem;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--edu-muted);
+  cursor: pointer;
+
+  &:hover {
+    color: var(--edu-ink);
+    background: color-mix(in srgb, var(--edu-muted) 12%, transparent);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--field-focus-ring, var(--hq-link, #003580));
+    outline-offset: 1px;
+  }
+}
+
+// ---- messages ----------------------------------------------------------------------------------------------------
+
+.hq-field__error {
+  color: #dc2626;
+  font-size: 0.8rem;
+}
+
+.hq-field__hint,
+.hq-field__counter {
+  color: var(--edu-muted);
+  font-size: 0.8rem;
+}
+
+// autoGrow: the height is set from the content, so the user's resize handle would fight it.
+textarea.hq-field__control.is-auto-grow {
+  resize: none;
+  overflow-y: hidden;
+}

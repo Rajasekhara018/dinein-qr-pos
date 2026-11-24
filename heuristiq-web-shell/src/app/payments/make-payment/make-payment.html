@@ -1,0 +1,163 @@
+<section class="make-payment-page">
+    <div class="page-hero">
+        <div>
+            <span class="eyebrow">{{ 'payments.makePayment.hero.eyebrow' | translate }}</span>
+            <h1>{{ 'payments.makePayment.hero.headline' | translate }}</h1>
+            <p>
+                {{ 'payments.makePayment.hero.copy' | translate }}
+            </p>
+        </div>
+        <div class="hero-summary">
+            <div class="summary-card">
+                <span>{{ 'payments.makePayment.hero.preferredRoute.label' | translate }}</span>
+                <strong>{{ 'payments.makePayment.hero.preferredRoute.value' | translate }}</strong>
+                <p>{{ 'payments.makePayment.hero.preferredRoute.note' | translate }}</p>
+            </div>
+            <div class="summary-card">
+                <span>{{ 'payments.makePayment.hero.receiptDelivery.label' | translate }}</span>
+                <strong>{{ 'payments.makePayment.hero.receiptDelivery.value' | translate }}</strong>
+                <p>{{ 'payments.makePayment.hero.receiptDelivery.note' | translate }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="content-grid">
+        <section class="panel form-panel">
+            <div class="panel-head">
+                <div>
+                    <span class="section-kicker">{{ 'payments.makePayment.form.kicker' | translate }}</span>
+                    <h2>{{ 'payments.makePayment.form.title' | translate }}</h2>
+                </div>
+                <p>{{ 'payments.makePayment.form.subtitle' | translate }}</p>
+            </div>
+
+            <form class="payment-form" #paymentForm="ngForm" (keydown.enter)="$event.preventDefault()"
+                name="paymentForm" autocomplete="off">
+                <hq-form-grid cols="2" gap="md">
+                    <div class="hq-span-full">
+                        <hq-field
+                            type="text"
+                            inputId="payment-ride"
+                            [label]="'payments.makePayment.form.rideId.label' | translate"
+                            [error]="paymentRide.errors?.['required'] && paymentRide.touched ? ('payments.makePayment.form.rideId.required' | translate) : null"
+                            [placeholder]="'payments.makePayment.form.rideId.placeholder' | translate"
+                            [(ngModel)]="rideId"
+                            name="paymentRideId"
+                            #paymentRide="ngModel"
+                            [required]="true"
+                            [maxLength]="64"
+                            [showCounter]="false"></hq-field>
+                        <hq-checkbox class="mt-2" inputId="payment-test-transaction" [(ngModel)]="testTransaction" name="testTransaction">{{ 'payments.makePayment.form.testTransaction' | translate }}</hq-checkbox>
+                    </div>
+                    <hq-field
+                            type="text"
+                            inputId="payment-name"
+                            [placeholder]="'payments.makePayment.form.fullName.placeholder' | translate"
+                            [(ngModel)]="customerName"
+                            name="paymentName"
+                            #paymentName="ngModel"
+                            [required]="true"
+                            minlength="3"
+                            [maxLength]="50"
+                            pattern="^[A-Za-z][A-Za-z\s'.-]{2,49}$"
+                            [showCounter]="false" [label]="'payments.makePayment.form.fullName.label' | translate" [error]="(paymentName.errors?.['required'] && paymentName.touched) ? ('payments.makePayment.form.fullName.required' | translate) : (paymentName.errors?.['pattern'] && paymentName.touched) ? ('payments.makePayment.form.fullName.invalid' | translate) : null"></hq-field>
+                    <hq-phone-number-input
+                        [(ngModel)]="customerMobileNo"
+                        name="paymentPhone"
+                        #paymentPhone="ngModel"
+                        [label]="'shared.phoneNumberInput.label' | translate"
+                        [isRequired]="true">
+                    </hq-phone-number-input>
+                    <hq-field
+                            type="email"
+                            inputId="payment-email"
+                            [placeholder]="'payments.makePayment.form.email.placeholder' | translate"
+                            [(ngModel)]="customerEmailId"
+                            name="paymentEmail"
+                            #paymentEmail="ngModel"
+                            [required]="true"
+                            [maxLength]="100"
+                            pattern="^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$"
+                            [showCounter]="false" [label]="'payments.makePayment.form.email.label' | translate" [error]="(paymentEmail.errors?.['required'] && paymentEmail.touched) ? ('payments.makePayment.form.email.required' | translate) : ((paymentEmail.errors?.['email'] || paymentEmail.errors?.['pattern']) && paymentEmail.touched) ? ('payments.makePayment.form.email.invalid' | translate) : null"></hq-field>
+                    <hq-form-field for="payment-amount" required [label]="'payments.makePayment.form.amount.label' | translate"
+                                    [error]="amountErrorKey(paymentAmount.errors, paymentAmount.touched) | translate"
+                                    [hint]="amount ? ('payments.makePayment.form.amount.preview' | translate: { amount: (amount | hqMoney: currency) }) : ''">
+                        <div class="input-group amount-group">
+                            <span class="input-group-text amount-prefix">INR (&#8377;)</span>
+                            <hq-field
+                                type="text"
+                                inputId="payment-amount"
+                                [placeholder]="'payments.makePayment.form.amount.placeholder' | translate"
+                                [ngModel]="amountDisplay"
+                                (ngModelChange)="onAmountInput($event)"
+                                (blur)="onAmountBlur()"
+                                name="paymentAmount"
+                                #paymentAmount="ngModel"
+                                [required]="true"
+                                [maxLength]="14"
+                                pattern="^[0-9,]+(\.[0-9]{0,2})?$"
+                                [showCounter]="false"></hq-field>
+                        </div>
+                    </hq-form-field>
+                    <hq-form-field for="payment-gateway" [label]="'payments.makePayment.form.gateway.label' | translate" required>
+                      <hq-searchable-select
+                         
+                          inputId="payment-gateway"
+                          [(ngModel)]="gateway"
+                          name="paymentGateway"
+                          #paymentGateway="ngModel"
+                          required
+                          [allowOther]="false">
+                          <hq-ss-option *ngFor="let gw of gateways" [value]="gw.value" [label]="gw.label"></hq-ss-option>
+                        </hq-searchable-select>
+                    </hq-form-field>
+                    <div class="inline-note hq-span-full">
+                        {{ 'payments.makePayment.form.reviewNote' | translate }}
+                    </div>
+                    <hq-form-actions align="start" class="hq-span-full">
+                        <ng-container *hqHasPrivilege="'RIDER_PAYMENT_CREATE'">
+                          <button hqButton="primary" type="button" (click)="makePay()"
+                              [disabled]="paymentForm.invalid || amountOutOfRange || submitting">
+                              {{ (submitting ? 'payments.makePayment.form.creating' : 'payments.makePayment.form.submit') | translate }}
+                          </button>
+                        </ng-container>
+                    </hq-form-actions>
+                </hq-form-grid>
+            </form>
+        </section>
+
+        <section class="panel route-panel">
+            <div class="panel-head">
+                <div>
+                    <span class="section-kicker">{{ 'payments.makePayment.routes.kicker' | translate }}</span>
+                    <h2>{{ 'payments.makePayment.routes.title' | translate }}</h2>
+                </div>
+                <p>{{ 'payments.makePayment.routes.subtitle' | translate }}</p>
+            </div>
+
+            <div class="channel-cards">
+                <article class="channel-card" *ngFor="let item of paymentChannels">
+                    <h3>{{ item.label }}</h3>
+                    <p>{{ item.note }}</p>
+                </article>
+            </div>
+        </section>
+
+        <section class="panel checklist-panel">
+            <div class="panel-head">
+                <div>
+                    <span class="section-kicker">{{ 'payments.makePayment.checklist.kicker' | translate }}</span>
+                    <h2>{{ 'payments.makePayment.checklist.title' | translate }}</h2>
+                </div>
+                <p>{{ 'payments.makePayment.checklist.subtitle' | translate }}</p>
+            </div>
+
+            <div class="checklist">
+                <article class="check-item" *ngFor="let item of checkpoints; let i = index">
+                    <div class="check-index">0{{ i + 1 }}</div>
+                    <p>{{ item }}</p>
+                </article>
+            </div>
+        </section>
+    </div>
+</section>

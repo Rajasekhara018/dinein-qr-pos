@@ -1,0 +1,81 @@
+@use '../../shared/status-tones' as rd;
+
+@include rd.host;
+
+.gls {
+  margin-bottom: 1rem;
+}
+
+.gls__muted {
+  margin: 0 0 .75rem;
+}
+
+.gls__list {
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.gls__item {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .5rem .75rem;
+  padding: .5rem .75rem;
+  border: 1px solid transparent;
+  border-radius: .5rem;
+}
+
+.gls__item--done {
+  color: var(--rd-good-fg);
+  background: var(--rd-good-bg);
+  border-color: var(--rd-good-line);
+}
+
+.gls__item--notDone {
+  color: var(--rd-bad-fg);
+  background: var(--rd-bad-bg);
+  border-color: var(--rd-bad-line);
+}
+
+.gls__item--unknown {
+  color: var(--rd-neutral-fg);
+  background: var(--rd-neutral-bg);
+  border-color: var(--rd-neutral-line);
+}
+
+.gls__mark {
+  font-weight: 600;
+}
+
+.gls__text {
+  flex: 1 1 14rem;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.gls__tag {
+  @include rd.chip;
+  color: var(--rd-neutral-fg);
+  background: var(--rd-neutral-bg);
+  border-color: var(--rd-neutral-line);
+}
+
+.gls__tag--optional {
+  opacity: .8;
+}
+
+.gls__waiting {
+  font-size: .8rem;
+}
+
+.gls__fix {
+  display: inline-flex;
+  align-items: center;
+  gap: .3rem;
+  font-weight: 600;
+  text-decoration: none;
+}

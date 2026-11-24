@@ -1,0 +1,73 @@
+<hq-page-header
+  [kicker]="'nav.sections.accessManagement' | translate"
+  [title]="'nav.items.applications' | translate"
+  [subtitle]="'accessManagement.applications.subtitle' | translate">
+</hq-page-header>
+
+<hq-screen-help screen="applications"></hq-screen-help>
+
+<hq-stat-cards [stats]="stats"></hq-stat-cards>
+
+<div class="table-surface">
+  <div class="table-surface__header">
+    <div class="table-heading">
+      <span class="table-kicker">{{ 'shared.listPage.total' | translate: { count: totalElements } }}</span>
+    </div>
+    <ng-container *hqHasPrivilege="'APPLICATION_CREATE'">
+      <button type="button" class="table-create-btn" (click)="openCreate()">
+        <i class="bi bi-plus-lg"></i> {{ 'accessManagement.applications.newButton' | translate }}
+      </button>
+    </ng-container>
+  </div>
+
+  <div class="table-surface__body">
+    <hq-filter-bar collapsible>
+      <hq-field type="text" [placeholder]="'accessManagement.fields.code' | translate" [(ngModel)]="filters.code"></hq-field>
+      <hq-field type="text" [placeholder]="'accessManagement.fields.name' | translate" [(ngModel)]="filters.name"></hq-field>
+      <hq-searchable-select [(ngModel)]="filters.type" [allowOther]="false" [placeholder]="'shared.listPage.anyType' | translate">
+        <hq-ss-option *ngFor="let type of typeOptions" [value]="type" [label]="type"></hq-ss-option>
+      </hq-searchable-select>
+      <div hqFilterActions>
+        <button hqButton="accent" type="button" (click)="applyFilters()"><i class="bi bi-funnel"></i> {{ 'shared.listPage.filter' | translate }}</button>
+        <button hqButton="secondary" type="button" (click)="clearFilters()">{{ 'shared.listPage.clear' | translate }}</button>
+      </div>
+    </hq-filter-bar>
+
+    <hq-common-table
+      [columns]="columns"
+      [rows]="rows"
+      [isLoading]="isLoading"
+      [hasError]="hasError"
+      [emptyMessage]="'accessManagement.applications.emptyMessage' | translate"
+      [errorMessage]="'accessManagement.applications.errorMessage' | translate">
+      <ng-template #rowActions let-row>
+        <a *hqHasPrivilege="governancePrivileges.read" class="row-action-btn" [routerLink]="governanceLink(row)"
+          [title]="governanceTitleKey | translate" [attr.aria-label]="governanceTitleKey | translate">
+          <i class="bi bi-shield-check" aria-hidden="true"></i>
+        </a>
+        <ng-container *hqHasPrivilege="'APPLICATION_UPDATE'">
+          <button type="button" class="row-action-btn" [title]="'shared.listPage.rowActions.edit' | translate" (click)="openEdit(row)">
+            <i class="bi bi-pencil"></i>
+          </button>
+        </ng-container>
+        <ng-container *hqHasPrivilege="'APPLICATION_DELETE'">
+          <button type="button" class="row-action-btn danger" [title]="'shared.listPage.rowActions.delete' | translate" (click)="confirmDelete(row)">
+            <i class="bi bi-trash3"></i>
+          </button>
+        </ng-container>
+      </ng-template>
+    </hq-common-table>
+
+    <hq-table-footer
+      [page]="page"
+      [size]="pageSize"
+      [itemCount]="rows.length"
+      [hasMore]="page + 1 < totalPages"
+      [totalItems]="totalElements"
+      [loading]="isLoading"
+      [sizeOptions]="pageSizeOptions"
+      (pageChange)="goToPage($event)"
+      (sizeChange)="onPageSizeChange($event)">
+    </hq-table-footer>
+  </div>
+</div>

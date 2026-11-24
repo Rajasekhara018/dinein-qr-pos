@@ -1,0 +1,15 @@
+<div class="hq-open-file">
+  <div class="hq-open-file__header">
+    <span class="hq-open-file__name">{{ data.fileName }}</span>
+    <button type="button" hqButton="secondary" appearance="text" iconOnly aria-label="Close preview" (click)="close()">
+      <i class="bi bi-x-lg" aria-hidden="true"></i>
+    </button>
+  </div>
+  <div class="hq-open-file__body">
+    @if (isImage) {
+      <img [src]="safeUrl" [alt]="data.fileName" />
+    } @else if (isPdf) {
+      <iframe [src]="safeUrl" [title]="data.fileName"></iframe>
+    }
+  </div>
+</div>

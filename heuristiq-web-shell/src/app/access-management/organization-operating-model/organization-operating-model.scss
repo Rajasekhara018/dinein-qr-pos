@@ -1,0 +1,57 @@
+:host { display: block; }
+
+.om__hint, .om__muted { margin: 0; font-size: 0.85rem; opacity: 0.7; }
+
+.om__current { margin: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; font-weight: 600; }
+
+.om__model {
+  padding: 0.15rem 0.65rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  background: color-mix(in srgb, var(--hq-primary) 14%, transparent);
+  color: var(--hq-link);
+
+  &--FRANCHISE { background: color-mix(in srgb, #7c3aed 14%, transparent); color: #6d28d9; }
+  &--HYBRID { background: color-mix(in srgb, #0891b2 14%, transparent); color: #0e7490; }
+}
+
+.om__add {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.5rem;
+}
+
+.om__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 0 1 200px;
+  min-width: 0;
+  font-size: 0.85rem;
+
+  .input { width: 100%; min-width: 0; }
+
+hq-field {
+  width: 100%;
+  min-width: 0;
+}
+}
+
+.om__explain { flex-basis: 100%; }
+
+.om__table ::ng-deep .common-table { min-width: 480px; }
+
+.om__state {
+  padding: 0.1rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  background: color-mix(in srgb, #d97706 16%, transparent);
+  color: #b45309;
+
+  &--in-force { background: color-mix(in srgb, #059669 14%, transparent); color: #047857; }
+}
+
+.om__actions { display: flex; flex-wrap: wrap; gap: 0.4rem; justify-content: flex-end; }

@@ -1,0 +1,63 @@
+<hq-page-header
+  [kicker]="'nav.sections.admin' | translate"
+  [title]="'onboardingSubmissions.title' | translate"
+  [subtitle]="'onboardingSubmissions.subtitle' | translate">
+</hq-page-header>
+
+<hq-screen-help screen="onboardedUsers"></hq-screen-help>
+
+<div class="table-surface">
+  <div class="table-surface__header">
+    <div class="table-heading">
+      <span class="table-kicker">{{ 'shared.listPage.total' | translate: { count: totalElements } }}</span>
+    </div>
+    <button type="button" class="table-create-btn" (click)="load()">
+      <i class="bi bi-arrow-clockwise"></i> {{ 'onboardingSubmissions.refresh' | translate }}
+    </button>
+  </div>
+
+  <div class="table-surface__body">
+    <hq-filter-bar collapsible>
+      <hq-field type="text" [placeholder]="'onboardingSubmissions.searchPlaceholder' | translate" [(ngModel)]="filters.query" (keyup.enter)="applyFilters()"></hq-field>
+      <hq-searchable-select [(ngModel)]="filters.type" [allowOther]="false" [placeholder]="'shared.listPage.anyType' | translate">
+        <hq-ss-option *ngFor="let t of typeOptions" [value]="t" [label]="'onboardingSubmissions.types.' + t | translate"></hq-ss-option>
+      </hq-searchable-select>
+      <hq-searchable-select [(ngModel)]="filters.status" [allowOther]="false" [placeholder]="'shared.listPage.anyStatus' | translate">
+        <hq-ss-option *ngFor="let s of statusOptions" [value]="s" [label]="'onboardingSubmissions.statuses.' + s | translate"></hq-ss-option>
+      </hq-searchable-select>
+      <div hqFilterActions>
+        <button hqButton="accent" type="button" (click)="applyFilters()"><i class="bi bi-funnel"></i> {{ 'shared.listPage.filter' | translate }}</button>
+        <button hqButton="secondary" type="button" (click)="clearFilters()">{{ 'shared.listPage.clear' | translate }}</button>
+      </div>
+    </hq-filter-bar>
+
+    <hq-common-table
+      [columns]="columns"
+      [rows]="rows"
+      [isLoading]="isLoading"
+      [hasError]="hasError"
+      [emptyMessage]="'onboardingSubmissions.empty' | translate"
+      [errorMessage]="'onboardingSubmissions.loadFailed' | translate">
+      <ng-template #rowActions let-row>
+        <button type="button" class="row-action-btn" [title]="'shared.listPage.rowActions.viewDetail' | translate" (click)="viewDetail(row)">
+          <i class="bi bi-eye"></i>
+        </button>
+        <button type="button" class="row-action-btn" *ngIf="row.workflowInstanceId" [title]="'onboardingReviews.history' | translate" (click)="history(row)">
+          <i class="bi bi-clock-history"></i>
+        </button>
+      </ng-template>
+    </hq-common-table>
+
+    <hq-table-footer
+      [page]="page"
+      [size]="pageSize"
+      [itemCount]="rows.length"
+      [hasMore]="page + 1 < totalPages"
+      [totalItems]="totalElements"
+      [loading]="isLoading"
+      [sizeOptions]="pageSizeOptions"
+      (pageChange)="goToPage($event)"
+      (sizeChange)="onPageSizeChange($event)">
+    </hq-table-footer>
+  </div>
+</div>

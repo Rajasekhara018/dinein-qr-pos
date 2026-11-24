@@ -1,0 +1,65 @@
+<div class="ffp" [class.ffp--embedded]="embedded">
+  <div class="ffp__header" *ngIf="!embedded">
+    <button type="button" class="ffp__back" [title]="'shared.adminCrud.backToList' | translate" (click)="back()">
+      <i class="bi bi-arrow-left-short"></i>
+    </button>
+    <div class="ffp__heading">
+      <h1>{{ 'legalProfile.title' | translate }}<ng-container *ngIf="ownerName"> &middot; {{ ownerName }}</ng-container></h1>
+      <nav class="ffp__crumbs">
+        <span>{{ 'nav.sections.accessManagement' | translate }}</span>
+        <i class="bi bi-chevron-right"></i>
+        <a (click)="back()">{{ config.listKey | translate }}</a>
+        <i class="bi bi-chevron-right"></i>
+        <span class="ffp__crumbs-current">{{ 'legalProfile.title' | translate }}</span>
+      </nav>
+    </div>
+    <span class="ffp__dirty" *ngIf="hasPendingChanges()">{{ 'shared.adminCrud.unsavedChanges' | translate }}</span>
+  </div>
+
+  <p class="ffp__muted" *ngIf="isLoading">{{ 'legalProfile.messages.loading' | translate }}</p>
+  <hq-error-state *ngIf="loadFailed" [title]="'legalProfile.messages.loadFailed' | translate" (retry)="load()"></hq-error-state>
+
+  <div class="legal-layout" [class.legal-layout--steps]="sectionStepper" *ngIf="!isLoading && !loadFailed">
+    <nav class="legal-steps" *ngIf="sectionStepper" [attr.aria-label]="'legalProfile.title' | translate">
+      <p class="legal-steps__count">{{ 'accessManagement.organizations.setup.stepOf' | translate: { current: sectionIndex + 1, total: sections.length } }}</p>
+      <progress [value]="sectionIndex + 1" [max]="sections.length" [attr.aria-label]="'legalProfile.title' | translate"></progress>
+      <ol>
+        <li *ngFor="let section of sections; let i = index">
+          <button type="button" [class.is-current]="sectionIndex === i" [attr.aria-current]="sectionIndex === i ? 'step' : null" [disabled]="saving" (click)="goToSection(i)" [attr.data-testid]="'legal-step-' + section.id">
+            <span class="legal-steps__number">{{ i + 1 }}</span>
+            <span>{{ section.label | translate }}</span>
+          </button>
+        </li>
+      </ol>
+    </nav>
+    <section class="table-surface legal-card">
+    <div class="table-surface__header">
+      <div class="table-heading">
+        <span class="table-kicker">{{ 'legalProfile.kicker' | translate }}</span>
+        <p class="ffp__hint">{{ (canEdit ? 'legalProfile.hint' : 'legalProfile.readOnlyHint') | translate }}</p>
+      </div>
+    </div>
+    <div class="table-surface__body">
+      <hq-legal-profile-form [formControl]="control" [countries]="countries" [defaultCountry]="defaultCountry"
+                              [addressLookup]="addressLookup" [showAllErrors]="showAllErrors"
+                              [section]="sectionStepper ? sections[sectionIndex].id : 'all'"></hq-legal-profile-form>
+    </div>
+      <footer class="legal-navigation" *ngIf="sectionStepper">
+        <button hqButton="secondary" appearance="text" type="button" [disabled]="saving" (click)="back()">{{ 'legalProfile.cancel' | translate }}</button>
+        <div class="legal-navigation__steps">
+          <button hqButton="secondary" type="button" [disabled]="sectionIndex === 0 || saving" (click)="goToSection(sectionIndex - 1)">{{ 'accessManagement.organizations.setup.previous' | translate }}</button>
+          <button hqButton="accent" type="button" *ngIf="sectionIndex < sections.length - 1" [disabled]="saving" (click)="goToSection(sectionIndex + 1)">{{ 'accessManagement.organizations.setup.next' | translate }} <i class="bi bi-arrow-right" aria-hidden="true"></i></button>
+          <button hqButton="accent" type="button" *ngIf="sectionIndex === sections.length - 1 && canEdit" data-testid="save-legal-profile" [disabled]="saving" (click)="save()">{{ (saving ? 'legalProfile.saving' : 'legalProfile.save') | translate }}</button>
+          <button hqButton="accent" type="button" *ngIf="sectionIndex === sections.length - 1 && !canEdit" (click)="back()">{{ 'accessManagement.organizations.setup.finish' | translate }}</button>
+        </div>
+      </footer>
+    </section>
+  </div>
+
+  <hq-form-actions align="start" *ngIf="!sectionStepper && !isLoading && !loadFailed && canEdit">
+    <button hqButton="accent" type="button" data-testid="save-legal-profile" [disabled]="saving" (click)="save()">
+      {{ (saving ? 'legalProfile.saving' : 'legalProfile.save') | translate }}
+    </button>
+    <button hqButton="secondary" type="button" *ngIf="!embedded" (click)="back()">{{ 'legalProfile.cancel' | translate }}</button>
+  </hq-form-actions>
+</div>

@@ -1,0 +1,49 @@
+pipeline {
+    agent any
+    environment {
+        NPM_CACHE = "/tmp/npm-cache"
+        // Where consuming app pipelines (Rider_Web, Rider_AdminWeb) pick the package up from.
+        TGZ_STORE_PATH = "/home/ubuntu/hq-shared-lib"
+    }
+    stages {
+        stage('Install Dependencies - Rider-angular-common') {
+            steps {
+                dir('Rider-angular-common') {
+                    sh '''
+                        export npm_config_cache=${NPM_CACHE}
+                        npm install --prefer-offline --no-audit
+                    '''
+                }
+            }
+        }
+        stage('Build hq-shared-lib') {
+            steps {
+                dir('Rider-angular-common') {
+                    sh 'npx ng build'
+                }
+            }
+        }
+        stage('Create TGZ Package') {
+            steps {
+                dir('Rider-angular-common/dist/hq-shared-lib') {
+                    sh 'npm pack'
+                }
+            }
+        }
+        stage('Store TGZ File') {
+            steps {
+                sh '''
+                    mkdir -p ${TGZ_STORE_PATH}
+                    rm -f ${TGZ_STORE_PATH}/*.tgz
+                    cp Rider-angular-common/dist/hq-shared-lib/*.tgz ${TGZ_STORE_PATH}/
+                    ls -lrt ${TGZ_STORE_PATH}
+                '''
+                archiveArtifacts artifacts: 'Rider-angular-common/dist/hq-shared-lib/*.tgz', fingerprint: true
+            }
+        }
+    }
+    post {
+        success { echo 'hq-shared-lib TGZ package created and stored successfully.' }
+        failure { echo 'Pipeline failed.' }
+    }
+}

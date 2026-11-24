@@ -1,0 +1,31 @@
+// Button row of a form.
+:host {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+  margin-block-start: 1.25rem;
+  min-width: 0;
+}
+
+:host(.hq-form-actions--end) { justify-content: flex-end; }
+:host(.hq-form-actions--start) { justify-content: flex-start; }
+:host(.hq-form-actions--between) { justify-content: space-between; }
+:host(.hq-form-actions--center) { justify-content: center; }
+
+:host(.hq-form-actions--sticky) {
+  position: sticky;
+  inset-block-end: 0;
+  z-index: 2;
+  padding-block: 0.85rem;
+  background: var(--workspace-panel);
+  border-block-start: 1px solid var(--workspace-border);
+}
+
+@media (max-width: 575.98px) {
+  :host(.hq-form-actions--end) ::ng-deep > *,
+  :host(.hq-form-actions--between) ::ng-deep > * {
+    flex: 1 1 100%;
+    justify-content: center;
+  }
+}

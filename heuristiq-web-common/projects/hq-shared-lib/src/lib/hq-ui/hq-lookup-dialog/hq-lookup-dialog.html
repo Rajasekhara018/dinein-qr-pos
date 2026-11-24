@@ -1,0 +1,164 @@
+<div class="lookup">
+  <header class="lookup__header">
+    <div class="lookup__heading">
+      <h2>{{ config.title }}</h2>
+      <p *ngIf="config.subtitle">{{ config.subtitle }}</p>
+    </div>
+    <button type="button" class="lookup__x" (click)="cancel()">
+      <i class="bi bi-x-circle"></i>{{ words.close }}
+    </button>
+  </header>
+
+  <!-- What is picked so far -->
+  <div class="lookup__chips" *ngIf="multiple && chosen.size">
+    <span class="lookup__count">{{ texts.selected(chosen.size) }}</span>
+    <span class="lookup__chip" *ngFor="let item of chosenItems; trackBy: trackRow">
+      <span class="lookup__chip-avatar">{{ initials(item) }}</span>
+      {{ label(item) }}
+      <button type="button" (click)="toggle(item)" aria-label="remove"><i class="bi bi-x"></i></button>
+    </span>
+    <button type="button" class="lookup__link" (click)="clear()">{{ texts.clearSelection() }}</button>
+  </div>
+
+  <div class="lookup__rule"></div>
+
+  <!-- Which column the search looks in: "All fields" (the columns together) or one column; with `advanced`, the conditions link -->
+  <div class="lookup__modes" *ngIf="!isAdvanced && (searchColumns.length > 1 || config.advanced)">
+    <div class="lookup__scopes" *ngIf="searchColumns.length > 1" role="listbox" [attr.aria-label]="words.searchFields">
+      <button type="button" role="option" class="lookup__scope" [class.is-active]="isField('')" [attr.aria-selected]="isField('')"
+              (click)="selectField('')">{{ words.allFields }}</button>
+      <button type="button" role="option" class="lookup__scope" *ngFor="let column of searchColumns" [class.is-active]="isField(column.key)"
+              [attr.aria-selected]="isField(column.key)" (click)="selectField(column.key)">{{ column.label }}</button>
+    </div>
+    <button type="button" hqButton appearance="text" size="sm" class="lookup__more" *ngIf="config.advanced"
+            (click)="openAdvanced()">{{ words.addConditions }}</button>
+  </div>
+
+  <!-- Advanced mode: column / operator / value rows joined by AND or OR, instead of the quick search -->
+  <div class="lookup__advanced" *ngIf="isAdvanced">
+    <div class="lookup__advanced-bar">
+      <button type="button" hqButton appearance="text" size="sm" (click)="normalSearch()">&lt; {{ words.normalSearch }}</button>
+      <button type="button" hqButton appearance="text" size="sm" (click)="addCondition()">{{ words.addCondition }}</button>
+      <button type="button" hqButton="primary" size="sm" [disabled]="!canRunAdvanced" (click)="runAdvanced()">
+        <i class="bi bi-funnel" aria-hidden="true"></i>{{ words.advancedSearch }}
+      </button>
+      <span class="lookup__total" *ngIf="total !== null && !hasError">{{ total }}</span>
+    </div>
+    <p class="lookup__hint">{{ words.advancedHint }}</p>
+    <div class="lookup__condition" *ngFor="let row of conditions; let i = index; trackBy: trackCondition">
+      <hq-searchable-select *ngIf="i > 0" class="lookup__join" [allowOther]="false" [ariaLabel]="words.join"
+                             [placeholder]="words.join" [(ngModel)]="row.condition">
+        <hq-ss-option value="AND" label="AND"></hq-ss-option>
+        <hq-ss-option value="OR" label="OR"></hq-ss-option>
+      </hq-searchable-select>
+      <hq-searchable-select class="lookup__cond-field" [allowOther]="false" [ariaLabel]="words.field" [placeholder]="words.field"
+                             [ngModel]="row.fieldName" (ngModelChange)="onConditionField(row, $event)">
+        <hq-ss-option *ngFor="let column of conditionColumns" [value]="column.key" [label]="column.label"></hq-ss-option>
+      </hq-searchable-select>
+      <hq-searchable-select class="lookup__op" [allowOther]="false" [ariaLabel]="words.condition" [placeholder]="words.condition"
+                             [(ngModel)]="row.operator">
+        <hq-ss-option *ngFor="let op of operatorsFor(row.fieldName)" [value]="op.value" [label]="op.label"></hq-ss-option>
+      </hq-searchable-select>
+      <hq-searchable-select *ngIf="typeOf(row.fieldName) === 'boolean'; else typedValue" class="lookup__cond-field" [allowOther]="false"
+                             [ariaLabel]="words.value" [placeholder]="words.value" [(ngModel)]="row.value">
+        <hq-ss-option value="true" [label]="words.yes"></hq-ss-option>
+        <hq-ss-option value="false" [label]="words.no"></hq-ss-option>
+      </hq-searchable-select>
+      <ng-template #typedValue>
+        <hq-field class="lookup__cond-field" [type]="typeOf(row.fieldName)" [ariaLabel]="words.value" [placeholder]="words.value"
+                   [showLabel]="false" [showCounter]="false" [(ngModel)]="row.value" (keydown.enter)="runAdvanced()"></hq-field>
+      </ng-template>
+      <button type="button" class="lookup__remove" hqButton="warn" appearance="text" iconOnly [attr.aria-label]="words.removeCondition" (click)="removeCondition(i)">
+        <i class="bi bi-trash" aria-hidden="true"></i>
+      </button>
+    </div>
+  </div>
+
+  <div class="lookup__search" *ngIf="!isAdvanced">
+    <hq-field
+      class="lookup__field"
+      type="search"
+      icon="bi bi-search"
+      autocomplete="off"
+      [spellcheck]="false"
+      [ariaLabel]="words.searchLabel"
+      [placeholder]="placeholder"
+      [ngModel]="query"
+      (ngModelChange)="onQuery($event)"
+      (keydown.enter)="searchNow()"></hq-field>
+    <button type="button" class="lookup__clear" *ngIf="query" [attr.aria-label]="words.clearResult" (click)="clearQuery()">
+      <i class="bi bi-x-lg"></i>
+    </button>
+    <button type="button" class="lookup__link lookup__go" (click)="searchNow()"><i class="bi bi-search"></i>{{ words.searchButton }}</button>
+    <span class="lookup__total" *ngIf="total !== null && !narrowed && !tooShort && !hasError">{{ total }}</span>
+  </div>
+
+  <p class="lookup__showing" *ngIf="!isAdvanced && query.trim() && rows.length && !tooShort && !hasError">
+    {{ words.showingResultsFor }} <b>{{ query.trim() }}</b>
+  </p>
+
+  <div class="lookup__body" [class.lookup__body--scrolled]="scrolled" (scroll)="onBodyScroll($event)">
+    <!-- Loading: placeholder rows keep the dialog from jumping -->
+    <div class="lookup__skeleton" *ngIf="isLoading && !rows.length && !tooShort" aria-hidden="true">
+      <div class="lookup__row lookup__row--skeleton" *ngFor="let n of skeleton"><span class="lookup__shimmer"></span></div>
+    </div>
+
+    <div class="lookup__state" *ngIf="tooShort">
+      <i class="bi bi-keyboard"></i>
+      <p>{{ texts.typeToSearch(minLength) }}</p>
+    </div>
+
+    <div class="lookup__state lookup__state--error" *ngIf="!tooShort && hasError">
+      <i class="bi bi-exclamation-octagon"></i>
+      <p>{{ texts.loadFailed() }}</p>
+      <small *ngIf="errorMessage">{{ errorMessage }}</small>
+      <button type="button" class="lookup__retry" (click)="retry()"><i class="bi bi-arrow-clockwise"></i> {{ texts.retry() }}</button>
+    </div>
+
+    <div class="lookup__state" *ngIf="!tooShort && !hasError && !isLoading && rows.length === 0">
+      <i class="bi bi-search"></i>
+      <p>{{ texts.noResults() }}</p>
+    </div>
+
+    <!-- The results: the shared hq-common-table, so it matches every other table of the app -->
+    <hq-common-table class="lookup__list" *ngIf="!tooShort && !hasError && rows.length" [class.lookup__list--loading]="isLoading"
+                      [class.lookup__list--multiple]="multiple" [columns]="tableColumns" [rows]="rows" [isLoading]="isLoading"
+                      [showActionsColumn]="false" [clickableRows]="true" [keyboardRows]="true" [rowClass]="rowClass"
+                      (rowClick)="rowClick($event)">
+      <!-- Multi-select: a checkbox first (the header one ticks the whole page), always in view -->
+      <ng-template [hqHead]="selectKey">
+        <button type="button" class="lookup__check" role="checkbox" [class.lookup__check--on]="pageAllChosen"
+                [class.lookup__check--some]="pageSomeChosen" [attr.aria-checked]="pageAllChosen ? 'true' : pageSomeChosen ? 'mixed' : 'false'"
+                [attr.aria-label]="words.selectAllOnPage" (click)="togglePage()">
+          <i class="bi" [ngClass]="pageAllChosen ? 'bi-check-lg' : pageSomeChosen ? 'bi-dash-lg' : ''"></i>
+        </button>
+      </ng-template>
+      <ng-template [hqCell]="selectKey" let-row>
+        <span class="lookup__tick lookup__check" role="checkbox" [class.lookup__tick--on]="isChosen(row)" [class.lookup__check--on]="isChosen(row)"
+              [attr.aria-checked]="isChosen(row)" [attr.aria-label]="label(row)"><i class="bi" [ngClass]="isChosen(row) ? 'bi-check-lg' : ''"></i></span>
+      </ng-template>
+      <!-- Single choice: the round pick button last -->
+      <ng-template [hqCell]="pickKey" let-row>
+        <span class="lookup__tick" [class.lookup__tick--on]="isChosen(row)"><i class="bi" [ngClass]="isChosen(row) ? 'bi-check-lg' : 'bi-send'"></i></span>
+      </ng-template>
+      <!-- The first column is the record's headline: an initials avatar, then the name -->
+      <ng-template [hqCell]="leadKey" let-row>
+        <span class="lookup__avatar" [attr.data-initials]="initials(row)" aria-hidden="true"></span><span class="lookup__name">{{ cell(row, config.columns[0]) }}</span>
+      </ng-template>
+    </hq-common-table>
+  </div>
+
+  <div class="lookup__foot" *ngIf="!tooShort && !hasError">
+    <button type="button" class="lookup__link" (click)="clearQuery()">&lt; {{ words.clearResult }}</button>
+    <hq-table-footer
+      [page]="page" [size]="size" [itemCount]="rows.length" [hasMore]="hasMore" [totalItems]="narrowed ? null : total"
+      [loading]="isLoading" [sizeOptions]="[10, 25, 50]" (pageChange)="goTo($event)" (sizeChange)="resize($event)">
+    </hq-table-footer>
+  </div>
+
+  <footer class="lookup__actions" *ngIf="multiple">
+    <button type="button" class="btn btn-confirm lookup__confirm" [disabled]="chosen.size === 0" (click)="confirm()">
+      {{ config.confirmText || texts.select() }}<span class="lookup__confirm-count" *ngIf="chosen.size"> ({{ chosen.size }})</span>
+    </button>
+  </footer>
+</div>

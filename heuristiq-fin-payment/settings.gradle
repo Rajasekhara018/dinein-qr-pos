@@ -1,0 +1,3 @@
+rootProject.name = 'realboom-payment-service'
+
+includeBuild('../heuristiq-core-resilient-client')

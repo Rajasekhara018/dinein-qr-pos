@@ -1,0 +1,34 @@
+<div class="table-surface__body">
+  <p class="hint">{{ 'accessManagement.userDetail.applications.hint' | translate }}</p>
+
+  <ng-container *hqHasPrivilege="privileges.grant">
+    <div class="table-surface__header">
+      <hq-searchable-select
+        [(ngModel)]="chosen"
+        name="userApplication"
+        [ariaLabel]="'accessManagement.userDetail.applications.choose' | translate"
+        [allowOther]="false"
+        [placeholder]="'accessManagement.userDetail.applications.choose' | translate">
+        <hq-ss-option *ngFor="let application of choices" [value]="application.code" [label]="application.name"></hq-ss-option>
+      </hq-searchable-select>
+      <button type="button" class="table-create-btn" [disabled]="!chosen || saving" (click)="grant()">
+        <i class="bi bi-plus-lg"></i> {{ 'applicationAccess.grant.action' | translate }}
+      </button>
+    </div>
+  </ng-container>
+
+  <hq-loading-state *ngIf="isLoading" [label]="'applicationAccess.loading' | translate"></hq-loading-state>
+  <hq-error-state *ngIf="!isLoading && unavailable" [title]="'applicationAccess.unavailable' | translate"></hq-error-state>
+  <hq-empty-state *ngIf="!isLoading && !unavailable && grants.length === 0" [title]="'accessManagement.userDetail.applications.empty' | translate"></hq-empty-state>
+
+  <hq-common-table *ngIf="grants.length > 0" [columns]="columns" [rows]="grants">
+    <ng-template hqCell="applicationCode" let-grant>{{ nameOf(grant.applicationCode) }}</ng-template>
+    <ng-template #rowActions let-grant>
+      <ng-container *hqHasPrivilege="privileges.revoke">
+        <button type="button" class="row-action-btn danger" [title]="'applicationAccess.revoke.action' | translate" (click)="confirmRevoke(grant)">
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </ng-container>
+    </ng-template>
+  </hq-common-table>
+</div>

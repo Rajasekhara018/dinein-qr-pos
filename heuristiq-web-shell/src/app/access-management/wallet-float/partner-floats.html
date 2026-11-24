@@ -1,0 +1,99 @@
+<hq-page-header
+  [kicker]="'nav.sections.accessManagement' | translate"
+  [title]="'nav.items.partnerFloats' | translate"
+  [subtitle]="'walletFloat.admin.subtitle' | translate">
+</hq-page-header>
+
+<div class="table-surface">
+  <div class="table-surface__body">
+    <!-- Lookup of any holder -->
+    <form class="franchise-form" *hqHasPrivilege="privileges.adminRead" (ngSubmit)="lookup()" role="search">
+      <hq-field type="search" [(ngModel)]="lookupUserId" name="lookupUserId" autocomplete="off" [label]="'walletFloat.admin.userId' | translate"></hq-field>
+      <div class="franchise-actions">
+        <button hqButton="accent" type="submit" [disabled]="isLookingUp || !lookupUserId.trim()">{{ 'walletFloat.admin.lookup' | translate }}</button>
+      </div>
+    </form>
+
+    <!-- The holder found -->
+    <section class="franchise-form" *ngIf="detail as d">
+      <h4>{{ 'walletFloat.admin.detailTitle' | translate: { userId: d.userId } }}</h4>
+      <div class="franchise-grid">
+        <div><strong>{{ 'walletFloat.balance' | translate }}</strong><p class="float-amount">{{ d.balance | hqMoney }}</p></div>
+        <div><strong>{{ 'walletFloat.creditLimit' | translate }}</strong><p class="float-amount">{{ d.creditLimit | hqMoney }}</p></div>
+        <div><strong>{{ 'walletFloat.available' | translate }}</strong><p class="float-amount">{{ d.available | hqMoney }}</p></div>
+        <div><strong>{{ 'walletFloat.creditUsed' | translate }}</strong><p class="float-amount">{{ d.creditUsed | hqMoney }}</p></div>
+      </div>
+      <p>
+        <span class="franchise-status">{{ statusLabel(d.status) }}</span>
+        <span class="franchise-hint" *ngIf="d.alertThreshold !== null"> {{ 'walletFloat.alertAt' | translate: { threshold: (d.alertThreshold | hqMoney) } }}</span>
+        <span class="franchise-hint" *ngIf="d.alertThreshold === null"> {{ 'walletFloat.noAlert' | translate }}</span>
+      </p>
+      <p class="franchise-state franchise-state--error" *ngIf="d.belowAlert">{{ 'walletFloat.belowAlert' | translate }}</p>
+      <p class="franchise-hint" *ngIf="d.creditLimitReason">{{ 'walletFloat.admin.creditLimitReason' | translate: { reason: d.creditLimitReason } }}</p>
+
+      <ng-container *hqHasPrivilege="privileges.alertUpdate">
+        <h5>{{ 'walletFloat.admin.thresholdTitle' | translate }}</h5>
+        <p class="franchise-hint">{{ 'walletFloat.admin.thresholdHint' | translate }}</p>
+        <div class="franchise-grid">
+          <hq-amount-input valueMode="amount" [label]="'walletFloat.admin.threshold' | translate"
+                              [currency]="currency" [(ngModel)]="thresholdForm.threshold" name="threshold"></hq-amount-input>
+          <hq-field type="text" [maxLength]="500" [(ngModel)]="thresholdForm.reason" name="thresholdReason" [showCounter]="false" [label]="'walletFloat.admin.reason' | translate"></hq-field>
+        </div>
+        <div class="franchise-actions">
+          <button hqButton="accent" type="button" [disabled]="saving" (click)="saveThreshold()">{{ 'walletFloat.admin.saveThreshold' | translate }}</button>
+        </div>
+      </ng-container>
+
+      <ng-container *hqHasPrivilege="privileges.settlementCreate">
+        <h5>{{ 'walletFloat.admin.settlementTitle' | translate }}</h5>
+        <p class="franchise-hint">{{ 'walletFloat.admin.settlementHint' | translate }}</p>
+        <div class="franchise-grid">
+          <hq-field type="text" [maxLength]="40" [(ngModel)]="settlementForm.appCode" name="settleApp" [showCounter]="false" [label]="'walletFloat.admin.appCode' | translate"></hq-field>
+          <hq-form-field [label]="'walletFloat.admin.direction' | translate"><hq-searchable-select [(ngModel)]="settlementForm.direction" name="settleDirection" [allowOther]="false">
+              <hq-ss-option *ngFor="let direction of directions" [value]="direction" [label]="directionLabel(direction)"></hq-ss-option>
+            </hq-searchable-select></hq-form-field>
+          <hq-amount-input valueMode="amount" [label]="'walletFloat.admin.amount' | translate"
+                              [currency]="currency" [(ngModel)]="settlementForm.amount" name="settleAmount"></hq-amount-input>
+          <hq-field type="text" [maxLength]="500" [(ngModel)]="settlementForm.reason" name="settleReason" [showCounter]="false" [label]="'walletFloat.admin.reason' | translate"></hq-field>
+        </div>
+        <div class="franchise-actions">
+          <button hqButton="accent" type="button" [disabled]="saving" (click)="settle()">{{ 'walletFloat.admin.settle' | translate }}</button>
+        </div>
+      </ng-container>
+
+      <div class="franchise-actions">
+        <button hqButton="secondary" type="button" (click)="close()">{{ 'walletFloat.admin.close' | translate }}</button>
+      </div>
+    </section>
+
+    <!-- Floats below their alert threshold -->
+    <ng-container *hqHasPrivilege="privileges.alertList">
+      <h4>{{ 'walletFloat.admin.alertsTitle' | translate }}</h4>
+      <hq-common-table [columns]="alertColumns" [rows]="alerts" [isLoading]="isLoading" [hasError]="hasError"
+                        [emptyMessage]="'walletFloat.admin.noAlerts' | translate"
+                        [errorMessage]="'walletFloat.admin.errorMessage' | translate">
+        <ng-template hqCell="balance" let-row>{{ row.balance | hqMoney }}</ng-template>
+        <ng-template hqCell="alertThreshold" let-row>{{ row.alertThreshold | hqMoney }}</ng-template>
+        <ng-template hqCell="creditLimit" let-row>{{ row.creditLimit | hqMoney }}</ng-template>
+        <ng-template hqCell="available" let-row>{{ row.available | hqMoney }}</ng-template>
+        <ng-template #rowActions let-row>
+          <ng-container *hqHasPrivilege="privileges.adminRead">
+            <button hqButton="secondary" type="button" (click)="lookup(row.userId)">{{ 'walletFloat.admin.open' | translate }}</button>
+          </ng-container>
+        </ng-template>
+      </hq-common-table>
+
+      <hq-table-footer
+        [page]="page"
+        [size]="pageSize"
+        [itemCount]="alerts.length"
+        [hasMore]="!isLast"
+        [totalItems]="total"
+        [loading]="isLoading"
+        [sizeOptions]="pageSizeOptions"
+        (pageChange)="loadAlerts($event)"
+        (sizeChange)="onPageSizeChange($event)">
+      </hq-table-footer>
+    </ng-container>
+  </div>
+</div>

@@ -1,0 +1,49 @@
+<app-qa-header [title]="'qaDashboard.testSets.title' | translate" [subtitle]="'qaDashboard.testSets.subtitle' | translate"
+               [workspace]="workspace" [loading]="isLoading" (workspaceChange)="setWorkspace($event)" (refresh)="reload()">
+</app-qa-header>
+
+<ng-container *hqHasPrivilege="privileges.testSetList">
+  <div class="qa-sets-bar qa-no-print">
+    <ng-container *hqHasPrivilege="privileges.testSetCreate">
+      <button hqButton="accent" type="button" class="qa-create" (click)="openCreate()">
+        <i class="bi bi-plus-lg"></i> {{ 'qaDashboard.testSets.create' | translate }}
+      </button>
+    </ng-container>
+  </div>
+
+  <hq-error-state *ngIf="hasError" [title]="'qaDashboard.loadFailed' | translate" (retry)="reload()"></hq-error-state>
+  <hq-loading-state *ngIf="isLoading && !loaded && !hasError" [label]="'qaDashboard.loading' | translate"></hq-loading-state>
+  <hq-empty-state *ngIf="!isLoading && !hasError && loaded && testSets.length === 0" [title]="'qaDashboard.testSets.empty' | translate"></hq-empty-state>
+
+  <div class="table-surface" *ngIf="testSets.length > 0">
+    <div class="table-surface__body">
+      <div class="qa-table-wrap">
+        <hq-common-table class="qa-table qa-sets" [columns]="columns" [rows]="testSets" [rowClass]="rowClassOf"
+                          [actionsLabel]="'qaDashboard.columns.actions' | translate">
+          <ng-template hqCell="name" let-set><span class="qa-name">{{ set.name }}</span></ng-template>
+          <ng-template hqCell="suite" let-set>{{ suiteLabel(set.suite) }}</ng-template>
+          <ng-template hqCell="tagExpression" let-set><span class="qa-mono">{{ set.tagExpression }}</span></ng-template>
+          <ng-template hqCell="description" let-set>{{ summary(set.description) || '—' }}</ng-template>
+          <ng-template hqCell="updated" let-set>{{ set.updatedAt | hqDate:'medium' }}</ng-template>
+          <ng-template #rowActions let-set>
+            <span class="qa-actions">
+              <ng-container *hqHasPrivilege="privileges.testSetRun">
+                <button hqButton="secondary" type="button" class="qa-run" (click)="openRun(set)" [disabled]="busyId !== null">
+                  <i class="bi bi-play-fill"></i> {{ 'qaDashboard.testSets.run' | translate }}
+                </button>
+              </ng-container>
+              <ng-container *hqHasPrivilege="privileges.testSetUpdate">
+                <button hqButton="secondary" type="button" class="qa-edit" (click)="openEdit(set)" [disabled]="busyId !== null"
+                        [attr.aria-label]="'qaDashboard.testSets.edit' | translate"><i class="bi bi-pencil"></i></button>
+              </ng-container>
+              <ng-container *hqHasPrivilege="privileges.testSetDelete">
+                <button hqButton="secondary" type="button" class="qa-delete" (click)="confirmDelete(set)" [disabled]="busyId !== null"
+                        [attr.aria-label]="'qaDashboard.testSets.delete' | translate"><i class="bi bi-trash"></i></button>
+              </ng-container>
+            </span>
+          </ng-template>
+        </hq-common-table>
+      </div>
+    </div>
+  </div>
+</ng-container>

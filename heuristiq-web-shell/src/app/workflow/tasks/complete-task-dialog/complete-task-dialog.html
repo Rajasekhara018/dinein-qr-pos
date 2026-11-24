@@ -1,0 +1,115 @@
+<div class="ct-dialog">
+  <h2 class="ct-title">{{ 'workflow.complete.title' | translate }}</h2>
+  <p class="ct-sub">{{ data.task.processKey }} · <span class="ct-mono">{{ data.task.taskId }}</span></p>
+
+  <!-- What is being approved: the before/after of a change request, or the onboarding submission and its documents. -->
+  <section class="ct-review" *ngIf="reviewKind !== 'NONE'">
+    <h3 class="ct-review__title">{{ (reviewKind === 'CHANGE' ? 'workflow.complete.review.changeTitle' : 'workflow.complete.review.onboardingTitle') | translate }}</h3>
+
+    <ng-container *ngIf="reviewKind === 'CHANGE'">
+      <p class="ct-review__note" *ngIf="changeLoading">{{ 'workflow.complete.review.loading' | translate }}</p>
+      <hq-alert tone="warning" dense *ngIf="changeFailed">
+        {{ 'workflow.complete.review.loadFailed' | translate }}
+        <button type="button" class="ct-link" (click)="retryChange()">{{ 'workflow.complete.review.retry' | translate }}</button>
+      </hq-alert>
+      <ng-container *ngIf="change as c">
+        <p class="ct-review__headline">{{ c.request.title }}</p>
+        <p class="ct-review__meta">{{ 'workflow.complete.review.madeBy' | translate }} <span class="ct-mono">{{ c.request.maker }}</span>
+          <ng-container *ngIf="c.request.summary"> · {{ c.request.summary }}</ng-container></p>
+        <p class="ct-review__meta" *ngIf="c.request.makerComment">{{ 'workflow.complete.review.makerComment' | translate }}: {{ c.request.makerComment }}</p>
+        <div class="ct-diff" *ngIf="diffRows.length > 0; else noDiff">
+          <div class="ct-diff__head">
+            <span>{{ 'workflow.complete.review.field' | translate }}</span>
+            <span>{{ 'workflow.complete.review.before' | translate }}</span>
+            <span>{{ 'workflow.complete.review.after' | translate }}</span>
+          </div>
+          <div class="ct-diff__row" *ngFor="let e of diffRows" [ngClass]="'ct-diff__row--' + e.kind.toLowerCase()">
+            <span class="ct-diff__path ct-mono"><b class="ct-diff__mark">{{ e.kind === 'ADDED' ? '+' : e.kind === 'REMOVED' ? '-' : '~' }}</b> {{ e.path }}</span>
+            <span class="ct-diff__old" [title]="show(e.before)">{{ show(e.before) }}</span>
+            <span class="ct-diff__new" [title]="show(e.after)">{{ show(e.after) }}</span>
+          </div>
+        </div>
+        <ng-template #noDiff><p class="ct-review__note">{{ 'workflow.complete.review.noDifference' | translate }}</p></ng-template>
+      </ng-container>
+      <button type="button" class="ct-link" (click)="openInNewTab('CHANGE')">
+        <i class="bi bi-box-arrow-up-right"></i> {{ 'workflow.complete.review.openChange' | translate }}
+      </button>
+    </ng-container>
+
+    <ng-container *ngIf="reviewKind === 'ONBOARDING'">
+      <p class="ct-review__meta" *ngIf="submissionReference">{{ 'workflow.complete.review.reference' | translate }}: <span class="ct-mono">{{ submissionReference }}</span></p>
+      <p class="ct-review__note" *ngIf="submissionLoading">{{ 'workflow.complete.review.loading' | translate }}</p>
+      <hq-alert tone="warning" dense *ngIf="submissionFailed">
+        {{ 'workflow.complete.review.submissionFailed' | translate }}
+        <button type="button" class="ct-link" (click)="retrySubmission()">{{ 'workflow.complete.review.retry' | translate }}</button>
+      </hq-alert>
+
+      <ng-container *ngIf="submission">
+        <p class="ct-review__sub">{{ 'workflow.complete.review.answers' | translate }}</p>
+        <div class="ct-answers" *ngIf="submissionRows.length > 0; else noAnswers">
+          <div class="ct-answers__row" *ngFor="let r of visibleRows">
+            <span class="ct-answers__key">{{ r.field }}</span>
+            <span class="ct-answers__val">{{ r.value }}</span>
+          </div>
+        </div>
+        <ng-template #noAnswers><p class="ct-review__note">{{ 'workflow.complete.review.noAnswers' | translate }}</p></ng-template>
+        <button type="button" class="ct-link" *ngIf="hiddenRowCount > 0" (click)="showAllAnswers = !showAllAnswers">
+          {{ (showAllAnswers ? 'workflow.complete.review.showLess' : 'workflow.complete.review.showAll') | translate: { count: hiddenRowCount } }}
+        </button>
+
+        <p class="ct-review__sub">{{ 'workflow.complete.review.documents' | translate }}</p>
+        <div class="ct-docs" *ngIf="documents.length > 0; else noDocuments">
+          <div class="ct-docs__row" *ngFor="let d of documents">
+            <span class="ct-docs__name">
+              <strong>{{ d.label }}</strong>
+              <span class="ct-docs__file">{{ d.fileName || ('workflow.complete.review.notUploaded' | translate) }}<ng-container *ngIf="d.sizeBytes"> · {{ size(d.sizeBytes) }}</ng-container></span>
+            </span>
+            <button type="button" class="ct-link ct-docs__open" *ngIf="d.documentId && d.stored !== false"
+                    [disabled]="openingDocument === d.fieldKey" (click)="openDocument(d)">
+              <i class="bi bi-box-arrow-up-right"></i> {{ 'workflow.complete.review.viewDocument' | translate }}
+            </button>
+          </div>
+        </div>
+        <ng-template #noDocuments><p class="ct-review__note">{{ 'workflow.complete.review.noDocuments' | translate }}</p></ng-template>
+        <hq-alert tone="warning" dense *ngIf="documentFailed">{{ 'workflow.complete.review.documentFailed' | translate }}</hq-alert>
+      </ng-container>
+
+      <button type="button" class="ct-link" (click)="openInNewTab('ONBOARDING')">
+        <i class="bi bi-box-arrow-up-right"></i> {{ 'workflow.complete.review.openSubmission' | translate }}
+      </button>
+    </ng-container>
+  </section>
+  <div class="ct-vars" *ngIf="existing.length > 0">
+    <div class="ct-vars__row" *ngFor="let v of existing">
+      <span class="ct-vars__key">{{ v.key }}</span>
+      <span class="ct-vars__val">{{ v.value }}</span>
+    </div>
+  </div>
+
+  <hq-form-field [label]="'workflow.complete.decision' | translate"><hq-searchable-select [(ngModel)]="decision" [allowOther]="false" [placeholder]="'workflow.complete.noDecision' | translate">
+    <hq-ss-option *ngFor="let d of decisions" [value]="d" [label]="decisionKeyPrefix + d | translate"></hq-ss-option>
+  </hq-searchable-select></hq-form-field>
+
+  <hq-field
+            type="textarea"
+            [rows]="5"
+            [maxLength]="2000"
+            [(ngModel)]="comment"
+            [placeholder]="'workflow.complete.commentPlaceholder' | translate"
+            [showCounter]="false" [label]="'workflow.complete.comment' | translate"></hq-field>
+
+  <hq-field
+            type="textarea"
+            [rows]="4"
+            [(ngModel)]="variablesText"
+            (ngModelChange)="invalidJson = false"
+            placeholder='{ "comment": "Looks good" }' [label]="'workflow.complete.variables' | translate"></hq-field>
+  <p class="ct-error" *ngIf="invalidJson">{{ 'workflow.invalidJson' | translate }}</p>
+
+  <div class="ct-actions">
+    <button hqButton="secondary" type="button" (click)="cancel()">{{ 'shared.adminCrud.discard.cancel' | translate }}</button>
+    <button hqButton="accent" type="button" (click)="submit()">
+      <i class="bi bi-check2-circle"></i> {{ 'workflow.complete.submit' | translate }}
+    </button>
+  </div>
+</div>

@@ -1,0 +1,71 @@
+// Same look as the apps' old key-value-list, from theme tokens only.
+:host { display: block; }
+
+.kv {
+  margin: 0;
+  display: grid;
+  gap: 0;
+  font-family: var(--hq-font);
+}
+
+.kv__row {
+  display: grid;
+  grid-template-columns: var(--_label-w, minmax(7rem, 38%)) 1fr;
+  gap: 0.75rem;
+  padding-block: 0.5rem;
+  border-block-end: 1px solid var(--theme-soft-border, rgba(11, 110, 79, 0.08));
+
+  &:last-child { border-block-end: 0; }
+}
+
+.kv--dense .kv__row { padding-block: 0.3rem; }
+
+.kv__label {
+  margin: 0;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--edu-muted, #5a6a7e);
+}
+
+.kv__value {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-inline-size: 0;
+  font-size: 0.875rem;
+  color: var(--edu-ink, #1b2a4a);
+  overflow-wrap: anywhere;
+}
+
+.kv__value--mono .kv__text {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.8rem;
+}
+
+.kv__none { color: var(--edu-muted, #5a6a7e); }
+
+.kv__copy {
+  border: 0;
+  background: transparent;
+  color: var(--edu-muted, #5a6a7e);
+  padding: 2px 6px;
+  border-radius: 6px;
+  cursor: pointer;
+
+  &:hover {
+    color: var(--theme-hero-start, var(--hq-primary, #0B6E4F));
+    background: var(--theme-highlight-soft, rgba(11, 110, 79, 0.07));
+  }
+
+  &:focus-visible {
+    outline: 3px solid var(--field-focus-ring, rgba(11, 110, 79, 0.15));
+    outline-offset: 2px;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .kv__row { grid-template-columns: 1fr; gap: 0.15rem; }
+}

@@ -1,0 +1,59 @@
+<app-qa-header [title]="'qaDashboard.executive.title' | translate" [subtitle]="'qaDashboard.executive.subtitle' | translate"
+               [workspace]="workspace" [loading]="isLoading" (workspaceChange)="setWorkspace($event)" (refresh)="reload()">
+</app-qa-header>
+
+<ng-container *hqHasPrivilege="privileges.executiveSummaryRead">
+  <div class="qa-no-print qa-print-bar">
+    <app-qa-filter-bar [facets]="facets" [filters]="filters" (filtersChange)="onFiltersChange($event)"></app-qa-filter-bar>
+    <button hqButton="secondary" type="button" class="qa-print" (click)="print()" [disabled]="!loaded">
+      <i class="bi bi-printer"></i> {{ 'qaDashboard.executive.print' | translate }}
+    </button>
+  </div>
+
+  <hq-error-state *ngIf="hasError" [title]="'qaDashboard.loadFailed' | translate" (retry)="reload()"></hq-error-state>
+  <hq-loading-state *ngIf="isLoading && !loaded && !hasError" [label]="'qaDashboard.loading' | translate"></hq-loading-state>
+  <hq-empty-state *ngIf="!isLoading && !hasError && loaded && !hasRuns" [title]="'qaDashboard.executive.empty' | translate"></hq-empty-state>
+
+  <article class="qa-page" *ngIf="hasRuns">
+    <header class="qa-page__head">
+      <h2>{{ 'qaDashboard.executive.reportTitle' | translate }}</h2>
+      <p class="qa-card__sub">
+        {{ 'qaDashboard.executive.scope' | translate: { workspace: summary.workspace, release: summary.release || ('qaDashboard.filters.all' | translate), environment: summary.environment ? environmentLabel(summary.environment) : ('qaDashboard.filters.all' | translate) } }}
+        · {{ summary.generatedAt | hqDate:'medium' }}
+      </p>
+    </header>
+
+    <ul class="qa-headline">
+      <li *ngFor="let code of summary.headline" class="qa-headline__item">{{ headlineText(code) }}</li>
+    </ul>
+
+    <div class="qa-tiles">
+      <div class="qa-tile"><div class="qa-tile__label">{{ 'qaDashboard.overview.totalUnique' | translate }}</div><div class="qa-tile__value">{{ summary.totals.total }}</div></div>
+      <div class="qa-tile qa-tile--pass"><div class="qa-tile__label">{{ 'qaDashboard.overview.passed' | translate }}</div><div class="qa-tile__value">{{ summary.totals.passed }}</div>
+        <div class="qa-tile__sub">{{ 'qaDashboard.overview.successPct' | translate: { percent: pct(summary.totals.successPct) } }}</div></div>
+      <div class="qa-tile qa-tile--fail"><div class="qa-tile__label">{{ 'qaDashboard.overview.failed' | translate }}</div><div class="qa-tile__value">{{ summary.totals.failed }}</div>
+        <div class="qa-tile__sub" *ngIf="failureDelta !== null">{{ 'qaDashboard.executive.failureDelta' | translate: { delta: failureDelta, release: summary.previousRelease?.release } }}</div></div>
+      <div class="qa-tile qa-tile--skip"><div class="qa-tile__label">{{ 'qaDashboard.overview.skipped' | translate }}</div><div class="qa-tile__value">{{ summary.totals.skipped }}</div></div>
+      <div class="qa-tile"><div class="qa-tile__label">{{ 'qaDashboard.overview.avgDuration' | translate }}</div><div class="qa-tile__value">{{ durationText(summary.totals.avgDurationMs) }}</div></div>
+    </div>
+
+    <hq-card padding="md" [title]="'qaDashboard.executive.modules' | translate"><hq-common-table class="qa-table qa-modules" *ngIf="summary.modules.length > 0; else noModules" [columns]="moduleColumns"
+                        [rows]="summary.modules" [showActionsColumn]="false"></hq-common-table>
+      <ng-template #noModules><hq-empty-state [title]="'qaDashboard.charts.empty' | translate"></hq-empty-state></ng-template>
+    </hq-card>
+
+    <hq-card padding="md" [title]="'qaDashboard.executive.topRisks' | translate"><hq-empty-state *ngIf="risks.length === 0" [title]="'qaDashboard.executive.noRisks' | translate"></hq-empty-state>
+      <ul class="qa-list qa-risks" *ngIf="risks.length > 0">
+        <li *ngFor="let r of risks"><span class="qa-mono">{{ r.tcId || r.testKey }}</span> {{ r.name }}
+          <hq-status-badge [tone]="statusTone(r.status)">{{ statusLabel(r.status) }}</hq-status-badge>
+          <span class="qa-muted" *ngIf="r.failureCategory">{{ categoryLabel(r.failureCategory) }}</span></li>
+      </ul>
+    </hq-card>
+
+    <hq-card padding="md" [title]="'qaDashboard.executive.slowest' | translate"><hq-empty-state *ngIf="slowest.length === 0" [title]="'qaDashboard.charts.empty' | translate"></hq-empty-state>
+      <ul class="qa-list qa-slowest" *ngIf="slowest.length > 0">
+        <li *ngFor="let r of slowest"><span class="qa-mono">{{ r.tcId || r.testKey }}</span> {{ r.name }} <span class="qa-muted">{{ durationText(r.durationMs) }}</span></li>
+      </ul>
+    </hq-card>
+  </article>
+</ng-container>

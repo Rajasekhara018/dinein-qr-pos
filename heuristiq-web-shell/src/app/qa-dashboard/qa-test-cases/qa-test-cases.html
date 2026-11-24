@@ -1,0 +1,113 @@
+<app-qa-header [title]="'qaDashboard.testCases.titles.' + kind | translate" [subtitle]="'qaDashboard.testCases.subtitles.' + kind | translate"
+               [workspace]="workspace" [loading]="isLoading" [exportPrivilege]="exportPrivilege"
+               (workspaceChange)="setWorkspace($event)" (refresh)="reload()" (exported)="export()">
+</app-qa-header>
+
+<ng-container *hqHasPrivilege="privileges.testCaseList">
+  <app-qa-filter-bar [facets]="facets" [filters]="filters" [showSearch]="true" [showModule]="true" [showStatus]="true"
+                     [showSuite]="config.showSuiteFilter" (filtersChange)="onFiltersChange($event)"></app-qa-filter-bar>
+
+  <div class="qa-totals" *ngIf="result">
+    <span>{{ 'qaDashboard.testCases.totalFound' | translate }} <strong class="qa-totals__total">{{ result.totals.total }}</strong></span>
+    <span class="qa-totals__pass">{{ 'qaDashboard.status.PASSED' | translate }}: <strong>{{ result.totals.passed }}</strong></span>
+    <span class="qa-totals__fail">{{ 'qaDashboard.status.FAILED' | translate }}: <strong>{{ result.totals.failed }}</strong></span>
+    <span class="qa-totals__skip">{{ 'qaDashboard.status.SKIPPED' | translate }}: <strong>{{ result.totals.skipped }}</strong></span>
+  </div>
+
+  <hq-error-state *ngIf="hasError" [title]="'qaDashboard.loadFailed' | translate" (retry)="reload()"></hq-error-state>
+  <hq-loading-state *ngIf="isLoading && !result && !hasError" [label]="'qaDashboard.loading' | translate"></hq-loading-state>
+  <hq-empty-state *ngIf="!isLoading && !hasError && result && result.items.length === 0" [title]="(isFiltered ? 'qaDashboard.testCases.emptyFiltered' : 'qaDashboard.testCases.empty') | translate"></hq-empty-state>
+
+  <div class="table-surface" *ngIf="result && result.items.length > 0">
+    <div class="table-surface__body">
+      <div class="qa-table-wrap">
+        <hq-common-table class="qa-table" [columns]="columns" [rows]="result.items" [rowClass]="rowClassOf"
+                          [actionsLabel]="'qaDashboard.columns.actions' | translate">
+          <ng-template hqCell="tcId" let-row><span class="qa-mono">{{ row.tcId || '—' }}</span></ng-template>
+          <ng-template hqCell="name" let-row><span class="qa-name">{{ row.name }}</span><br /><span class="qa-mono qa-muted">{{ row.testKey }}</span></ng-template>
+          <ng-template hqCell="subModule" let-row><span class="qa-mono">{{ row.subModule }}</span></ng-template>
+          <ng-template hqCell="environment" let-row><span class="qa-env">{{ environmentLabel(row.environment) }}</span></ng-template>
+          <ng-template hqCell="status" let-row><hq-status-badge [tone]="statusTone(row.status)">{{ statusLabel(row.status) }}</hq-status-badge></ng-template>
+          <ng-template hqCell="duration" let-row>{{ durationText(row.durationMs) }}</ng-template>
+          <ng-template hqCell="date" let-row>{{ row.lastRunAt ? (row.lastRunAt | hqDate:'medium') : '—' }}</ng-template>
+          <ng-template hqCell="release" let-row><span class="qa-mono">{{ row.release || '—' }}</span></ng-template>
+          <ng-template hqCell="category" let-row>{{ row.failureCategory ? categoryLabel(row.failureCategory) : '—' }}</ng-template>
+          <ng-template #rowActions let-row>
+            <span class="qa-actions">
+              <a hqButton="secondary" *ngIf="reportLink(row.reportUrl) as link" class="qa-report" [href]="link" target="_blank" [attr.rel]="linkRel"
+                 [attr.title]="'qaDashboard.openReport' | translate">
+                <i class="bi bi-box-arrow-up-right"></i> {{ 'qaDashboard.openReport' | translate }}
+              </a>
+              <ng-container *hqHasPrivilege="privileges.testCaseRead">
+                <button hqButton="secondary" type="button" class="qa-details" (click)="openDetails(row)" [disabled]="isLoadingDetail"
+                        [attr.aria-label]="'qaDashboard.testCases.details' | translate">
+                  <i class="bi bi-info-circle"></i>
+                </button>
+              </ng-container>
+              <ng-container *ngIf="config.allowDelete">
+                <ng-container *hqHasPrivilege="privileges.testCaseDelete">
+                  <button hqButton="secondary" type="button" class="qa-delete" (click)="confirmDelete(row)" [disabled]="busyId !== null"
+                          [attr.aria-label]="'qaDashboard.testCases.delete' | translate">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </ng-container>
+              </ng-container>
+            </span>
+          </ng-template>
+        </hq-common-table>
+      </div>
+      <div class="qa-pager qa-no-print" *ngIf="result.totalPages > 1">
+        <button hqButton="secondary" type="button" class="qa-prev" (click)="previousPage()" [disabled]="page === 0 || isLoading">
+          <i class="bi bi-chevron-left"></i> {{ 'qaDashboard.previous' | translate }}
+        </button>
+        <span>{{ 'shared.listPage.pageOf' | translate: { page: page + 1, total: result.totalPages } }}</span>
+        <button hqButton="secondary" type="button" class="qa-next" (click)="nextPage()" [disabled]="page + 1 >= result.totalPages || isLoading">
+          {{ 'qaDashboard.next' | translate }} <i class="bi bi-chevron-right"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <section class="qa-card qa-detail" *ngIf="selected || isLoadingDetail || detailError">
+    <hq-loading-state *ngIf="isLoadingDetail" [label]="'qaDashboard.loading' | translate"></hq-loading-state>
+    <hq-error-state *ngIf="detailError" [title]="'qaDashboard.testCases.detailFailed' | translate"></hq-error-state>
+    <ng-container *ngIf="selected as detail">
+      <div class="qa-detail__head">
+        <h3>{{ detail.testCase.name }}</h3>
+        <button hqButton="secondary" type="button" class="qa-detail__close" (click)="closeDetails()">{{ 'qaDashboard.testCases.close' | translate }}</button>
+      </div>
+      <p class="qa-card__sub qa-mono">{{ detail.testCase.tcId || '' }} {{ detail.testCase.testKey }}</p>
+      <p class="qa-failure" *ngIf="detail.testCase.failureMessage">
+        <strong>{{ categoryLabel(detail.testCase.failureCategory) }}</strong> {{ detail.testCase.failureMessage }}
+      </p>
+      <hq-empty-state *ngIf="detail.history.length === 0" [title]="'qaDashboard.testCases.noHistory' | translate"></hq-empty-state>
+      <hq-common-table class="qa-table qa-table--history" *ngIf="detail.history.length > 0" [columns]="historyColumns" [rows]="detail.history"
+                        [actionsLabel]="'qaDashboard.columns.actions' | translate">
+        <ng-template hqCell="release" let-r><span class="qa-mono">{{ r.release || '—' }}</span></ng-template>
+        <ng-template hqCell="status" let-r><hq-status-badge [tone]="statusTone(r.status)">{{ statusLabel(r.status) }}</hq-status-badge></ng-template>
+        <ng-template hqCell="duration" let-r>{{ durationText(r.durationMs) }}</ng-template>
+        <ng-template hqCell="date" let-r>{{ r.startedAt | hqDate:'medium' }}</ng-template>
+        <ng-template #rowActions let-r>
+          <a hqButton="secondary" *ngIf="reportLink(r.reportUrl) as link" class="qa-report-history" [href]="link" target="_blank" [attr.rel]="linkRel">
+            <i class="bi bi-box-arrow-up-right"></i> {{ 'qaDashboard.openReport' | translate }}
+          </a>
+          <ng-container *hqHasPrivilege="dms.dmsMetadataRead">
+            <ng-container *hqHasPrivilege="dms.dmsDownloadUrl">
+              <ng-container *ngFor="let e of evidenceOf(r)">
+                <app-qa-evidence-thumbnail *ngIf="isPreview(e); else evidenceLink" [documentId]="e.documentId" [kind]="e.kind"
+                                           [disabled]="openingEvidence !== null" (opened)="openEvidence(e)"></app-qa-evidence-thumbnail>
+                <ng-template #evidenceLink>
+                  <button hqButton="secondary" type="button" class="qa-evidence-link" (click)="openEvidence(e)"
+                          [disabled]="openingEvidence !== null" [attr.data-kind]="e.kind">
+                    <i class="bi bi-image"></i> {{ evidenceLabel(e) | translate }}
+                  </button>
+                </ng-template>
+              </ng-container>
+            </ng-container>
+          </ng-container>
+        </ng-template>
+      </hq-common-table>
+      <a class="qa-link" *hqHasPrivilege="privileges.runList" [routerLink]="routes.runs">{{ 'qaDashboard.testCases.openRuns' | translate }}</a>
+    </ng-container>
+  </section>
+</ng-container>

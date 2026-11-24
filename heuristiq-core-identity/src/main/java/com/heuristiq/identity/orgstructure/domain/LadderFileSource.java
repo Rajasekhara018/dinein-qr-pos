@@ -1,0 +1,18 @@
+package com.heuristiq.uam.orgstructure.domain;
+
+import com.heuristiq.uam.orgstructure.domain.LadderImportModels.LadderFile;
+
+/**
+ * Port to wherever uploaded import files live (the document store), for a ladders file. The user uploads the file there; the import
+ * only ever receives the document id and reads the rows back through this port.
+ */
+public interface LadderFileSource {
+
+    /**
+     * Reads and parses the file stored under {@code documentId}.
+     *
+     * @param callerId the signed-in user, recorded by the document store as the reader
+     * @throws OrgStructureException when the file is missing, unreadable, not clean or not a valid ladders CSV
+     */
+    LadderFile fetchLadders(String documentId, String callerId);
+}

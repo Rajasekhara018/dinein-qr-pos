@@ -1,0 +1,429 @@
+<div class="profile-page">
+
+  <!-- ── Hero ──────────────────────────────────────────────────────────── -->
+  <div class="profile-hero mb-4">
+    <div class="profile-hero__copy">
+      <span class="eyebrow">{{ 'profile.hero.eyebrow' | translate }}</span>
+      <h1>{{ 'profile.hero.headline' | translate }}</h1>
+      <p>{{ 'profile.hero.copy' | translate: { appName: branding.appName } }}</p>
+    </div>
+    <div class="profile-hero__metrics">
+      <article class="hero-metric" *ngFor="let m of heroMetrics">
+        <span class="hero-metric__label">{{ m.label }}</span>
+        <strong class="hero-metric__value">{{ m.value }}</strong>
+        <p class="hero-metric__note">{{ m.note }}</p>
+      </article>
+    </div>
+  </div>
+
+  <!-- ── Shell ─────────────────────────────────────────────────────────── -->
+  <div class="profile-shell">
+
+    <hq-tabs class="profile-tabs mb-4" [value]="activeTab" (valueChange)="activeTab = $any($event)" [ariaLabel]="'profile.tabs.myProfile' | translate">
+      <hq-tab value="myProfile" icon="bi-person-fill" data-testid="myProfile-tab" [label]="'profile.tabs.myProfile' | translate"></hq-tab>
+      <hq-tab value="preferences" icon="bi-sliders" data-testid="preferences-tab" [label]="'profile.tabs.preferences' | translate"></hq-tab>
+      <hq-tab value="security" icon="bi-shield-lock-fill" data-testid="security-tab" [label]="'profile.tabs.security' | translate"></hq-tab>
+      <hq-tab value="activity" icon="bi-clock-history" data-testid="activity-tab" [label]="'profile.tabs.activity' | translate"></hq-tab>
+    </hq-tabs>
+
+    <div class="tab-content">
+
+      <!-- ═══════════ TAB: MY PROFILE ═══════════ -->
+      <div class="tab-pane fade" id="myProfile" role="tabpanel" [class.show]="activeTab === 'myProfile'" [class.active]="activeTab === 'myProfile'">
+        <div class="profile-grid">
+
+          <aside class="profile-sidebar">
+            <div class="pf-card pf-card--center">
+              <!-- Profile photo: uploaded with <hq-doc-upload> into DMS under the user's own folder
+                   (category "profile-photo", owner = this user's id), with the same crop step as the Home demo. -->
+              <div class="pf-avatar-upload" *ngIf="user?.id; else avatarInitial">
+                <hq-doc-upload
+                  inputId="profile-photo"
+                  [label]="'profile.photo.label' | translate"
+                  [hints]="'profile.photo.hints' | translate"
+                  accept=".jpg,.jpeg,.png,.webp"
+                  [maxSizeMB]="5"
+                  preview="circle"
+                  [enableCrop]="true"
+                  [cropAspectRatio]="1"
+                  category="profile-photo"
+                  [ownerId]="user!.id"
+                  [autoLoad]="true"
+                  [deleteOnRemove]="true"
+                  (uploaded)="onPhotoUploaded()"
+                  (removed)="onPhotoRemoved()"
+                  (rejected)="onPhotoRejected($event)">
+                </hq-doc-upload>
+              </div>
+              <ng-template #avatarInitial><div class="pf-avatar">{{ userInitial }}</div></ng-template>
+              <span class="pf-role-badge">{{ user?.status || 'ACTIVE' }}</span>
+              <h2 class="pf-name">{{ userDisplayName || branding.appName + ' User' }}</h2>
+              <p class="pf-email">{{ user?.email || '—' }}</p>
+
+              <div class="pf-chips">
+                <hq-status-badge [tone]="mfaEnabled ? 'success' : 'danger'">
+                  <i class="bi" [class.bi-shield-check-fill]="mfaEnabled" [class.bi-shield-exclamation]="!mfaEnabled"></i>
+                  {{ (mfaEnabled ? 'profile.mfa.enabledChip' : 'profile.mfa.disabledChip') | translate }}
+                </hq-status-badge>
+              </div>
+
+              <div class="pf-meta-list">
+                <div class="pf-meta-item">
+                  <i class="bi bi-calendar3"></i>
+                  <span>{{ 'profile.memberSince' | translate: { date: memberSince } }}</span>
+                </div>
+                <div class="pf-meta-item" *ngIf="user?.phoneNumber?.number">
+                  <i class="bi bi-telephone"></i>
+                  <span>{{ user?.phoneNumber?.number }}</span>
+                </div>
+              </div>
+
+              <button class="pf-edit-btn" [class.pf-edit-btn--cancel]="isEditing" (click)="toggleEdit()">
+                <i class="bi" [class.bi-pencil-fill]="!isEditing" [class.bi-x-lg]="isEditing"></i>
+                {{ (isEditing ? 'shared.adminCrud.cancel' : 'profile.editProfile') | translate }}
+              </button>
+            </div>
+          </aside>
+
+          <section class="profile-main">
+            <hq-card padding="md" [title]="'profile.identity.title' | translate" [subtitle]="'profile.identity.kicker' | translate">
+
+              <div class="pf-info-grid" *ngIf="!isEditing">
+                <article class="pf-info-item" *ngFor="let d of profileDetails">
+                  <span class="pf-info-label">{{ d.label }}</span>
+                  <strong class="pf-info-value">{{ d.value }}</strong>
+                </article>
+              </div>
+
+              <ng-container *ngIf="isEditing">
+              <form autocomplete="off">
+                <hq-form-grid cols="2" gap="md">
+                <hq-field type="text" class="pf-input pf-field" [(ngModel)]="editDraft.fullName" name="fullName" [placeholder]="'profile.form.fullName.placeholder' | translate" [label]="'profile.form.fullName.label' | translate"></hq-field>
+                <hq-field type="email" class="pf-input pf-field" [(ngModel)]="editDraft.email" name="email" [placeholder]="'profile.form.email.placeholder' | translate" [label]="'profile.form.email.label' | translate"></hq-field>
+                <div class="pf-field">
+                  <hq-phone-number-input [(ngModel)]="editDraft.phoneNumber" name="phoneNumber" #phoneCtrl="ngModel" [label]="'profile.form.phoneNumber.label' | translate"></hq-phone-number-input>
+                </div>
+                <hq-form-field class="pf-field" [label]="'profile.form.timezone.label' | translate">
+                  <app-timezone-picker [(value)]="editDraft.timezone"></app-timezone-picker>
+                </hq-form-field>
+                <hq-form-field class="pf-field" [label]="'profile.form.preferredLanguage.label' | translate">
+                  <hq-searchable-select
+                   
+                    [(ngModel)]="editDraft.preferredLanguage"
+                    name="preferredLanguage"
+                    [allowOther]="false"
+                    [placeholder]="'shared.adminCrud.select' | translate">
+                    <hq-ss-option *ngFor="let l of languages" [value]="l" [label]="languageLabel(l)"></hq-ss-option>
+                  </hq-searchable-select>
+                </hq-form-field>
+                <hq-form-field class="pf-field" [label]="'profile.form.gender.label' | translate">
+                  <hq-searchable-select
+                   
+                    [(ngModel)]="editDraft.gender"
+                    name="gender"
+                    [allowOther]="false"
+                    [placeholder]="'shared.adminCrud.select' | translate">
+                    <hq-ss-option *ngFor="let g of genders" [value]="g" [label]="g"></hq-ss-option>
+                  </hq-searchable-select>
+                </hq-form-field>
+                </hq-form-grid>
+              </form>
+
+              <div class="pf-edit-actions">
+                <hq-status-badge tone="warning" *ngIf="hasProfileChanges">
+                  <i class="bi bi-dot"></i> {{ 'shared.adminCrud.unsavedChanges' | translate }}
+                </hq-status-badge>
+                <button hqButton="secondary" appearance="outline" type="button" (click)="cancelEdit()">{{ 'shared.adminCrud.cancel' | translate }}</button>
+                <button [loading]="savingProfile" hqButton="primary" type="button" [disabled]="savingProfile || phoneCtrl.invalid" (click)="saveProfile()">
+                  <span *ngIf="!savingProfile"><i class="bi bi-check-lg me-1"></i>{{ 'profile.form.saveChanges' | translate }}</span>
+                  <span *ngIf="savingProfile">{{ 'shared.adminCrud.saving' | translate }}</span>
+                </button>
+              </div>
+              </ng-container>
+            </hq-card>
+          </section>
+        </div>
+      </div>
+
+      <!-- ═══════════ TAB: PREFERENCES ═══════════ -->
+      <div class="tab-pane fade" id="preferences" role="tabpanel" [class.show]="activeTab === 'preferences'" [class.active]="activeTab === 'preferences'">
+        <div class="pf-sec-grid">
+
+          <hq-card class="pf-sec-card" padding="md" [title]="'profile.preferences.interface.title' | translate" [subtitle]="'profile.preferences.interface.kicker' | translate">
+            <div class="pf-field mb-3">
+              <hq-form-field [label]="'profile.preferences.interface.theme.label' | translate"><hq-searchable-select
+               
+                [(ngModel)]="preferencesForm.ui.themeId"
+                (ngModelChange)="previewAppearance()"
+                name="prefTheme"
+                [allowOther]="false"
+                [placeholder]="'profile.preferences.interface.theme.default' | translate">
+                <hq-ss-option *ngFor="let choice of themeChoices" [value]="choice.value" [label]="choice.label"></hq-ss-option>
+              </hq-searchable-select></hq-form-field>
+              <small class="text-muted">{{ 'profile.preferences.interface.theme.hint' | translate }}</small>
+            </div>
+            <div class="pf-field mb-3">
+              <hq-form-field [label]="'profile.preferences.interface.fontSize.label' | translate"><hq-searchable-select
+               
+                [(ngModel)]="preferencesForm.ui.fontScale"
+                (ngModelChange)="previewAppearance()"
+                name="prefFontSize"
+                [allowOther]="false">
+                <hq-ss-option *ngFor="let scale of fontScales" [value]="scale" [label]="fontScaleKey(scale) | translate"></hq-ss-option>
+              </hq-searchable-select></hq-form-field>
+              <small class="text-muted">{{ 'profile.preferences.interface.fontSize.hint' | translate }}</small>
+            </div>
+            <div class="pf-toggle-list">
+              <hq-slide-toggle class="pf-toggle" size="compact" labelPosition="before" [(ngModel)]="preferencesForm.ui.compactMode" (ngModelChange)="previewAppearance()">{{ 'profile.preferences.interface.compactMode' | translate }}</hq-slide-toggle>
+              <hq-slide-toggle class="pf-toggle" size="compact" labelPosition="before" [(ngModel)]="preferencesForm.ui.animationsEnabled" (ngModelChange)="previewAppearance()">{{ 'profile.preferences.interface.animations' | translate }}</hq-slide-toggle>
+              <hq-slide-toggle class="pf-toggle" size="compact" labelPosition="before" [(ngModel)]="preferencesForm.ui.showSidebar">{{ 'profile.preferences.interface.showSidebar' | translate }}</hq-slide-toggle>
+            </div>
+          </hq-card>
+
+          <hq-card class="pf-sec-card" padding="md" [title]="'profile.preferences.notifications.title' | translate" [subtitle]="'profile.preferences.notifications.kicker' | translate">
+            <div class="pf-toggle-list">
+              <hq-slide-toggle class="pf-toggle" size="compact" labelPosition="before" [(ngModel)]="preferencesForm.notification.emailEnabled">{{ 'profile.preferences.notifications.email' | translate }}</hq-slide-toggle>
+              <hq-slide-toggle class="pf-toggle" size="compact" labelPosition="before" [(ngModel)]="preferencesForm.notification.smsEnabled">{{ 'profile.preferences.notifications.sms' | translate }}</hq-slide-toggle>
+              <hq-slide-toggle class="pf-toggle" size="compact" labelPosition="before" [(ngModel)]="preferencesForm.notification.pushEnabled">{{ 'profile.preferences.notifications.push' | translate }}</hq-slide-toggle>
+              <hq-slide-toggle class="pf-toggle" size="compact" labelPosition="before" [(ngModel)]="preferencesForm.notification.whatsappEnabled">{{ 'profile.preferences.notifications.whatsapp' | translate }}</hq-slide-toggle>
+              <hq-slide-toggle class="pf-toggle" size="compact" labelPosition="before" [(ngModel)]="preferencesForm.notification.inAppEnabled">{{ 'profile.preferences.notifications.inApp' | translate }}</hq-slide-toggle>
+              <hq-slide-toggle class="pf-toggle" size="compact" labelPosition="before" [(ngModel)]="preferencesForm.notification.doNotDisturb">{{ 'profile.preferences.notifications.doNotDisturb' | translate }}</hq-slide-toggle>
+            </div>
+          </hq-card>
+
+          <hq-card class="pf-sec-card" padding="md" [title]="'profile.preferences.accessibility.title' | translate" [subtitle]="'profile.preferences.accessibility.kicker' | translate">
+            <div class="pf-toggle-list">
+              <hq-slide-toggle class="pf-toggle" size="compact" labelPosition="before" [(ngModel)]="preferencesForm.accessibility.highContrast" (ngModelChange)="previewAppearance()">{{ 'profile.preferences.accessibility.highContrast' | translate }}</hq-slide-toggle>
+              <hq-slide-toggle class="pf-toggle" size="compact" labelPosition="before" [(ngModel)]="preferencesForm.accessibility.screenReader" (ngModelChange)="previewAppearance()">{{ 'profile.preferences.accessibility.screenReader' | translate }}</hq-slide-toggle>
+              <hq-slide-toggle class="pf-toggle" size="compact" labelPosition="before" [(ngModel)]="preferencesForm.accessibility.reducedMotion" (ngModelChange)="previewAppearance()">{{ 'profile.preferences.accessibility.reducedMotion' | translate }}</hq-slide-toggle>
+            </div>
+          </hq-card>
+
+          <hq-card class="pf-sec-card" padding="md" [title]="'profile.preferences.regional.title' | translate" [subtitle]="'profile.preferences.regional.kicker' | translate">
+            <hq-form-grid cols="2" gap="md">
+              <hq-form-field class="pf-field" [label]="'profile.preferences.regional.language' | translate">
+                <hq-searchable-select
+                 
+                  [(ngModel)]="preferencesForm.regional.language"
+                  [allowOther]="false"
+                  [placeholder]="'shared.adminCrud.select' | translate">
+                  <hq-ss-option *ngFor="let l of languages" [value]="l" [label]="languageLabel(l)"></hq-ss-option>
+                </hq-searchable-select>
+              </hq-form-field>
+              <hq-field type="text" class="pf-input pf-field" [(ngModel)]="preferencesForm.regional.timezone" [placeholder]="'profile.form.timezone.placeholder' | translate" [label]="'profile.form.timezone.label' | translate"></hq-field>
+              <hq-field type="text" class="pf-input pf-field" [(ngModel)]="preferencesForm.regional.currency" [placeholder]="'profile.preferences.regional.currencyPlaceholder' | translate" [label]="'profile.preferences.regional.currency' | translate"></hq-field>
+              <hq-field type="text" class="pf-input pf-field" [(ngModel)]="preferencesForm.regional.dateFormat" [placeholder]="'profile.preferences.regional.dateFormatPlaceholder' | translate" [label]="'profile.preferences.regional.dateFormat' | translate"></hq-field>
+            </hq-form-grid>
+          </hq-card>
+
+          <div class="pf-card pf-card--full pf-pref-actions">
+            <hq-status-badge tone="warning" *ngIf="hasPreferenceChanges">
+              <i class="bi bi-dot"></i> {{ 'shared.adminCrud.unsavedChanges' | translate }}
+            </hq-status-badge>
+            <button [loading]="savingPreferences" hqButton="primary" type="button" [disabled]="savingPreferences" (click)="savePreferences()">
+              <span *ngIf="!savingPreferences"><i class="bi bi-check-lg me-1"></i>{{ 'profile.preferences.savePreferences' | translate }}</span>
+              <span *ngIf="savingPreferences">{{ 'shared.adminCrud.saving' | translate }}</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══════════ TAB: SECURITY ═══════════ -->
+      <div class="tab-pane fade" id="security" role="tabpanel" [class.show]="activeTab === 'security'" [class.active]="activeTab === 'security'">
+        <div class="pf-sec-grid">
+
+          <!-- 2FA -->
+          <hq-card class="pf-sec-card" padding="md" [title]="'profile.security.twoFactor.title' | translate" [subtitle]="'profile.security.twoFactor.kicker' | translate">
+            <div hqCardActions><hq-status-badge [tone]="mfaEnabled ? 'success' : 'warning'">
+                <i class="bi" [class.bi-shield-check]="mfaEnabled" [class.bi-shield-exclamation]="!mfaEnabled"></i>
+                {{ (mfaEnabled ? 'profile.security.twoFactor.protected' : 'profile.security.twoFactor.atRisk') | translate }}
+              </hq-status-badge></div>
+            <p class="pf-body-copy">{{ 'profile.security.twoFactor.copy' | translate }}</p>
+            <div class="pf-stat-grid">
+              <div class="pf-stat-item">
+                <span>{{ 'profile.security.twoFactor.status' | translate }}</span>
+                <strong>{{ (mfaEnabled ? 'profile.security.enabled' : 'profile.security.disabled') | translate }}</strong>
+              </div>
+              <div class="pf-stat-item">
+                <span>{{ 'profile.security.twoFactor.method' | translate }}</span>
+                <strong>{{ mfaMethodLabel }}</strong>
+              </div>
+              <div class="pf-stat-item">
+                <span>{{ 'profile.security.twoFactor.account' | translate }}</span>
+                <strong>{{ user?.email || '—' }}</strong>
+              </div>
+            </div>
+
+            <div class="pf-sec-actions" *ngIf="!mfaEnrollment">
+              <button hqButton="primary" type="button" [disabled]="enrollingMfa" (click)="startEnrollTotp()">
+                <i class="bi bi-shield-plus"></i>
+                {{ (enrollingMfa ? 'profile.security.twoFactor.starting' : (mfaEnabled ? 'profile.security.twoFactor.addAnother' : 'profile.security.twoFactor.enable')) | translate }}
+              </button>
+            </div>
+
+            <div class="pf-mfa-enroll" *ngIf="mfaEnrollment">
+              <p class="pf-body-copy">{{ 'profile.security.twoFactor.scanCopy' | translate }}</p>
+              <div class="pf-mfa-enroll__qr">
+                <img [src]="'data:image/png;base64,' + mfaEnrollment.qrCodeImageBase64" [attr.alt]="'profile.security.twoFactor.scanAlt' | translate">
+              </div>
+              <div class="pf-field">
+                <label class="pf-field__label">{{ 'profile.security.twoFactor.manualKeyLabel' | translate }}</label>
+                <code class="pf-mfa-enroll__secret">{{ mfaEnrollment.secret }}</code>
+              </div>
+              <hq-field type="text" class="pf-input pf-field" [(ngModel)]="mfaVerifyCode" [maxLength]="6" placeholder="123456" autocomplete="one-time-code" [showCounter]="false" [label]="'profile.security.twoFactor.verificationCodeLabel' | translate"></hq-field>
+              <div class="pf-edit-actions">
+                <button hqButton="secondary" appearance="outline" type="button" (click)="cancelEnrollTotp()">{{ 'shared.adminCrud.cancel' | translate }}</button>
+                <button [loading]="verifyingMfa" hqButton="primary" type="button" [disabled]="!mfaVerifyCode || verifyingMfa" (click)="confirmEnrollTotp()">
+                  <span *ngIf="!verifyingMfa"><i class="bi bi-check-lg me-1"></i>{{ 'profile.security.twoFactor.verifyActivate' | translate }}</span>
+                  <span *ngIf="verifyingMfa">{{ 'profile.security.twoFactor.verifying' | translate }}</span>
+                </button>
+              </div>
+            </div>
+          </hq-card>
+
+          <!-- Login details -->
+          <hq-card class="pf-sec-card" padding="md" [title]="'profile.security.loginDetails.title' | translate" [subtitle]="'profile.security.loginDetails.kicker' | translate">
+            <div class="pf-stat-grid pf-stat-grid--auto">
+              <div class="pf-stat-item" *ngFor="let s of accountStatItems">
+                <span>{{ s.label }}</span>
+                <strong>{{ s.value }}</strong>
+              </div>
+            </div>
+            <p class="pf-body-copy mt-3" *ngIf="loginSecurity?.accountLocked">
+              <i class="bi bi-exclamation-triangle-fill text-danger me-1"></i>
+              {{ 'profile.security.loginDetails.accountLocked' | translate }}
+            </p>
+          </hq-card>
+
+          <!-- Theme selector — full width -->
+          <hq-card class="pf-card--full" padding="md" [title]="'profile.security.theme.title' | translate" [subtitle]="'profile.security.theme.kicker' | translate">
+            <p class="pf-body-copy">{{ 'profile.security.theme.copy' | translate }}</p>
+
+            <div class="pf-theme-grid">
+              <button type="button" class="pf-theme-card"
+                *ngFor="let t of themeOptions"
+                [class.pf-theme-card--active]="t.active"
+                (click)="selectTheme(t.id)">
+                <div class="pf-theme-preview">
+                  <div class="pf-theme-preview__sidebar" [style.background]="t.sidebar"></div>
+                  <div class="pf-theme-preview__body" [style.background]="t.surface">
+                    <div class="pf-theme-preview__bar" [style.background]="t.bar"></div>
+                    <div class="pf-theme-preview__card" [style.background]="t.cardBg" [style.border-color]="t.cardBorder"></div>
+                    <div class="pf-theme-preview__accent" [style.background]="t.accent"></div>
+                  </div>
+                </div>
+                <div class="pf-theme-info">
+                  <div class="pf-theme-info__left">
+                    <strong>{{ t.name }}</strong>
+                    <span>{{ 'profile.security.theme.modeSuffix' | translate: { mode: t.mode } }}</span>
+                  </div>
+                  <span class="pf-theme-check" *ngIf="t.active">
+                    <i class="bi bi-check-circle-fill"></i>
+                  </span>
+                </div>
+              </button>
+            </div>
+          </hq-card>
+
+          <!-- Sessions — full width -->
+          <hq-card class="pf-card--full" padding="md" [title]="'profile.security.sessions.title' | translate" [subtitle]="'profile.security.sessions.kicker' | translate">
+            <p class="pf-body-copy">{{ 'profile.security.sessions.copy' | translate }}</p>
+
+            <div class="pf-session-toolbar">
+              <button hqButton="secondary" appearance="outline" type="button" (click)="loadSessions()">
+                <i class="bi bi-arrow-clockwise"></i> {{ 'profile.security.sessions.refresh' | translate }}
+              </button>
+              <button hqButton="primary" type="button" (click)="revokeAllSessions()">
+                <i class="bi bi-box-arrow-right"></i> {{ 'profile.security.sessions.signOutEverywhere' | translate }}
+              </button>
+            </div>
+
+            <div class="pf-session-list" *ngIf="sessions.length > 0">
+              <article class="pf-session-item" *ngFor="let s of sessions">
+                <div class="pf-session-icon"><i class="bi" [ngClass]="sessionIcon(s)"></i></div>
+                <div class="pf-session-body">
+                  <strong>{{ 'profile.security.sessions.browserOnOs' | translate: { browser: (s.browser || ('profile.security.sessions.unknownBrowser' | translate)), os: (s.operatingSystem || ('profile.security.sessions.unknownOs' | translate)) } }}</strong>
+                  <span>{{ s.ipAddress || '—' }}{{ s.city ? ' · ' + s.city : '' }}{{ s.country ? ', ' + s.country : '' }}</span>
+                  <span *ngIf="sessionPosition(s) as pos" class="pf-session-pos">
+                    <i class="bi bi-geo-alt"></i>
+                    <a [href]="pos.url" target="_blank" rel="noopener noreferrer">{{ pos.label }} · {{ 'profile.security.sessions.viewOnMap' | translate }}</a>
+                  </span>
+                  <span>{{ 'profile.security.sessions.lastActive' | translate: { time: ((s.lastActivityAt | hqDate:'medium') || '—') } }}</span>
+                </div>
+                <div class="pf-session-side">
+                  <button hqButton="warn" appearance="outline" size="sm" type="button" [disabled]="revokingSessionId === s.sessionId" (click)="revokeSession(s)">
+                    {{ (revokingSessionId === s.sessionId ? 'profile.security.sessions.revoking' : 'profile.security.sessions.revoke') | translate }}
+                  </button>
+                </div>
+              </article>
+            </div>
+            <hq-empty-state *ngIf="sessions.length === 0" icon="bi-laptop" [title]="'profile.security.sessions.empty' | translate"></hq-empty-state>
+          </hq-card>
+
+          <!-- MFA methods — full width -->
+          <hq-card class="pf-card--full" padding="md" [title]="'profile.security.mfaMethods.title' | translate" [subtitle]="'profile.security.twoFactor.kicker' | translate">
+
+            <div class="pf-session-list" *ngIf="mfaMethods.length > 0">
+              <article class="pf-session-item" *ngFor="let m of mfaMethods">
+                <div class="pf-session-icon"><i class="bi bi-shield-lock"></i></div>
+                <div class="pf-session-body">
+                  <strong>{{ m.mfaType }}</strong>
+                  <span>{{ (m.enabled ? 'profile.security.enabled' : 'profile.security.disabled') | translate }}{{ m.primary ? (' · ' + ('profile.security.mfaMethods.primary' | translate)) : '' }}</span>
+                </div>
+                <div class="pf-session-side">
+                  <button hqButton="warn" appearance="outline" size="sm" *ngIf="m.enabled" type="button" (click)="disableMfa(m)">{{ 'profile.security.mfaMethods.disable' | translate }}</button>
+                  <button hqButton="warn" appearance="outline" size="sm" type="button" (click)="removeMfa(m)">{{ 'profile.security.mfaMethods.remove' | translate }}</button>
+                </div>
+              </article>
+            </div>
+            <hq-empty-state *ngIf="mfaMethods.length === 0" icon="bi-shield-x" [title]="'profile.security.mfaMethods.empty' | translate"></hq-empty-state>
+          </hq-card>
+
+          <!-- Devices — full width -->
+          <hq-card class="pf-card--full" padding="md" [title]="'profile.security.devices.title' | translate" [subtitle]="'profile.security.devices.kicker' | translate">
+
+            <div class="pf-session-list" *ngIf="devices.length > 0">
+              <article class="pf-session-item" *ngFor="let d of devices">
+                <div class="pf-session-icon"><i class="bi" [ngClass]="deviceIcon(d)"></i></div>
+                <div class="pf-session-body">
+                  <strong>{{ d.deviceName || d.model || ('profile.security.devices.unknownDevice' | translate) }}</strong>
+                  <span>{{ d.browser ? d.browser + ' · ' : '' }}{{ d.platform || '—' }} · {{ (d.trusted ? 'profile.security.devices.trusted' : 'profile.security.devices.notTrusted') | translate }}{{ d.blocked ? (' · ' + ('profile.security.devices.blocked' | translate)) : '' }}</span>
+                  <span>{{ 'profile.security.sessions.lastActive' | translate: { time: ((d.lastActiveAt | hqDate:'medium') || '—') } }}</span>
+                </div>
+                <div class="pf-session-side">
+                  <hq-status-badge [tone]="d.trusted ? 'success' : 'warning'">{{ (d.trusted ? 'profile.security.devices.trusted' : 'profile.security.devices.untrusted') | translate }}</hq-status-badge>
+                  <button hqButton="secondary" appearance="outline" type="button" (click)="toggleTrust(d)">{{ (d.trusted ? 'profile.security.devices.untrust' : 'profile.security.devices.trust') | translate }}</button>
+                  <button hqButton="secondary" appearance="outline" type="button" (click)="toggleBlock(d)">{{ (d.blocked ? 'profile.security.devices.unblock' : 'profile.security.devices.block') | translate }}</button>
+                  <button hqButton="warn" appearance="outline" size="sm" type="button" (click)="removeDevice(d)">{{ 'profile.security.mfaMethods.remove' | translate }}</button>
+                </div>
+              </article>
+            </div>
+            <hq-empty-state *ngIf="devices.length === 0" icon="bi-hdd-stack" [title]="'profile.security.devices.empty' | translate"></hq-empty-state>
+          </hq-card>
+
+        </div>
+      </div>
+
+      <!-- ═══════════ TAB: ACTIVITY ═══════════ -->
+      <div class="tab-pane fade" id="activity" role="tabpanel" [class.show]="activeTab === 'activity'" [class.active]="activeTab === 'activity'">
+        <hq-card padding="md" [title]="'profile.activity.title' | translate" [subtitle]="'profile.tabs.activity' | translate">
+          <div class="pf-activity-list">
+            <article class="pf-activity-item" *ngFor="let e of activityEvents">
+              <div class="pf-activity-icon" [ngClass]="e.color">
+                <i class="bi" [ngClass]="e.icon"></i>
+              </div>
+              <div class="pf-activity-body">
+                <strong>{{ e.title }}</strong>
+                <span>{{ e.desc }}</span>
+              </div>
+              <span class="pf-activity-time">{{ e.time }}</span>
+            </article>
+            <hq-empty-state *ngIf="activityEvents.length === 0" icon="bi-clock-history" [title]="'profile.activity.empty' | translate"></hq-empty-state>
+          </div>
+        </hq-card>
+      </div>
+
+    </div>
+  </div>
+
+</div>

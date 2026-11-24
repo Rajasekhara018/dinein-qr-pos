@@ -1,0 +1,192 @@
+// "Which plan applies?" on the franchise plans screen: a heading, the application and country beside each other, the place's
+// cascading choices in a row of their own, the Check button on the right, and the answer as a summary card.
+.plan-resolve {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.plan-resolve__head {
+  h2 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--edu-ink, #1b2a4a);
+  }
+
+  p {
+    margin: 0.25rem 0 0;
+    font-size: 0.82rem;
+    color: var(--edu-muted, #5a6a7e);
+  }
+}
+
+.plan-resolve__filters {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem 1.5rem;
+  align-items: start;
+
+  @media (max-width: 767px) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.plan-resolve__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: 0;
+
+  > label {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    line-height: 1.4;
+    color: var(--edu-ink, #1b2a4a);
+  }
+
+  hq-searchable-select {
+    width: 100%;
+  }
+}
+
+// The place takes the whole row; its levels (state, district, city ...) sit three to a row, so a deep place stays compact.
+.plan-resolve__place {
+  grid-column: 1 / -1;
+
+  ::ng-deep .location-picker {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.75rem 1.5rem;
+    align-items: start;
+
+    @media (max-width: 991px) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    @media (max-width: 575px) {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    > p,
+    > small {
+      grid-column: 1 / -1;
+      margin: 0;
+    }
+
+    .location-picker__level {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      min-width: 0;
+      margin: 0;
+
+      hq-searchable-select,
+      .input {
+        width: 100%;
+      }
+    }
+  }
+}
+
+.plan-resolve__actions {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--workspace-border, rgba(0, 0, 0, 0.08));
+
+  .btn-accent i {
+    margin-right: 0.35rem;
+  }
+}
+
+.plan-resolve__result {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  margin: 0;
+  padding: 1rem 1.25rem;
+  border: 1px solid color-mix(in srgb, var(--hq-primary, #0B6E4F) 25%, transparent);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--hq-primary, #0B6E4F) 4%, var(--workspace-panel, #fff));
+}
+
+.plan-resolve__summary {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem 2rem;
+}
+
+.plan-resolve__rule {
+  padding: 0.2rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  background: color-mix(in srgb, var(--hq-primary, #0B6E4F) 12%, var(--workspace-panel, #fff));
+  color: var(--hq-link, var(--hq-primary, #0B6E4F));
+}
+
+.plan-resolve__stat {
+  display: flex;
+  flex-direction: column;
+
+  span {
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--edu-muted, #5a6a7e);
+  }
+
+  strong {
+    font-size: 1.25rem;
+    color: var(--edu-ink, #1b2a4a);
+  }
+}
+
+// Label and value on one line each, the labels in a column of their own width.
+.plan-resolve__facts {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: 0.45rem 1.25rem;
+  margin: 0;
+  padding-top: 0.85rem;
+  border-top: 1px solid var(--workspace-border, rgba(0, 0, 0, 0.08));
+  font-size: 0.85rem;
+
+  dt {
+    font-weight: 600;
+    color: var(--edu-muted, #5a6a7e);
+  }
+
+  dd {
+    margin: 0;
+    color: var(--edu-ink, #1b2a4a);
+  }
+}
+
+.plan-resolve__path {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+
+  i {
+    font-size: 0.65rem;
+    color: var(--edu-muted, #5a6a7e);
+  }
+}
+
+.plan-resolve__note {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--edu-muted, #5a6a7e);
+
+  i {
+    color: var(--hq-link, var(--hq-primary, #0B6E4F));
+  }
+}

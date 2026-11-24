@@ -1,0 +1,15 @@
+<div
+  class="hq-rg"
+  role="radiogroup"
+  [class.is-row]="direction === 'row'"
+  [class.is-disabled]="isDisabled"
+  [class.is-invalid]="isInvalid"
+  [attr.aria-label]="ariaLabel || null"
+  [attr.aria-invalid]="isInvalid ? 'true' : null"
+  [attr.aria-describedby]="error ? errorId : null"
+>
+  <ng-content></ng-content>
+</div>
+@if (error) {
+  <div class="hq-rg__error" [id]="errorId" role="alert">{{ error }}</div>
+}

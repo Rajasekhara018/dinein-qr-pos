@@ -1,0 +1,186 @@
+plugins {
+    id 'java'
+    // Pinned to 4.0.x, not 4.1.0: Spring Cloud 2025.1.0 ("Oakwood") only supports Boot 4.0.x
+    // so far — its own CompatibilityVerifier hard-fails on 4.1.0. This is the only one of the
+    // 7 services on Spring Cloud, so it's the only one held back from 4.1.0.
+    id 'org.springframework.boot' version '4.0.7'
+    id 'io.spring.dependency-management' version '1.1.7'
+    id 'jacoco'
+}
+
+group = 'com.heuristiq.gateway'
+version = '1.0.0'
+
+// Docker's service-only build context uses the committed catalog generated in the full repository.
+if (file('../privileges').isDirectory()) {
+    apply from: '../privileges/catalog.gradle'
+    tasks.named('processResources') { dependsOn 'generatePrivilegeCatalog' }
+    tasks.named('check') { dependsOn 'verifyPrivilegeCatalog' }
+    tasks.named('verifyPrivilegeCatalog') { mustRunAfter 'generatePrivilegeCatalog' }
+}
+description = 'RailCab API Gateway'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Gateway core (reactive WebFlux)
+    implementation 'org.springframework.cloud:spring-cloud-gateway-server-webflux'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    // WebClient.Builder auto-configuration is its own starter under Boot 4's modularization —
+    // -webflux alone (the reactive web server) no longer brings it in (KeycloakAuthProvider needs it).
+    implementation 'org.springframework.boot:spring-boot-starter-webclient'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+
+    // MongoDB (blocking MongoTemplate wrapped in boundedElastic)
+    implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+
+    // JPA/Postgres -- alternate backend for RolePrivilegeRepository (railcab.gateway.persistence.type).
+    // Read-only from the gateway's side: UAM owns the schema/migrations for these tables.
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    runtimeOnly 'org.postgresql:postgresql'
+
+    // JWT (HMAC-SHA256 — same library as AdminAPI/BookingsAPI)
+    implementation 'io.jsonwebtoken:jjwt-api:0.12.6'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.6'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.6'
+
+    // Keycloak admin client — on classpath always; KeycloakAuthProvider bean is only exercised
+    // when railcab.gateway.identity-provider.type=keycloak (see AuthProviderRouter)
+    implementation 'org.keycloak:keycloak-admin-client:26.0.0'
+    implementation 'jakarta.ws.rs:jakarta.ws.rs-api:3.1.0'
+    implementation 'org.glassfish.jersey.core:jersey-client:3.1.4'
+    implementation 'org.glassfish.jersey.inject:jersey-hk2:3.1.4'
+    implementation 'org.glassfish.jersey.media:jersey-media-json-jackson:3.1.4'
+
+    // Circuit breaker (Resilience4j reactive — used by CloudGateway CircuitBreaker filter).
+    // Excludes its transitive resilience4j-spring-boot3, which still registers Boot-3-era
+    // autoconfiguration classes (e.g. BulkheadConfigurationOnMissingBean) that collide with
+    // resilience4j-spring-boot4's own bean definitions of the same name.
+    implementation('org.springframework.cloud:spring-cloud-starter-circuitbreaker-reactor-resilience4j') {
+        exclude group: 'io.github.resilience4j', module: 'resilience4j-spring-boot3'
+    }
+    // Resilience4j Spring Boot actuator endpoints (/actuator/circuitbreakers, /actuator/circuitbreakerevents)
+    // Boot-4-compatible artifact is renamed spring-boot4; pinned explicitly since early
+    // releases of this artifact were missing from resilience4j's own BOM.
+    implementation 'io.github.resilience4j:resilience4j-spring-boot4:2.4.0'
+
+    // Rate limiting (Redis-backed RequestRateLimiter filter)
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis-reactive'
+
+    // Service discovery -- registers with realboom-service-registry (Eureka) and resolves lb://
+    // route URIs in RouteConfig via the reactive LoadBalancer client.
+    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+    // Secrets management -- pulls jwt-secret/gateway-forward-key from the local dev Vault instance
+    // (docker-compose.vault.yml); see docs/design/Platform/SecretsManagement.md.
+    implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
+    implementation 'org.springframework.cloud:spring-cloud-starter-loadbalancer'
+
+    // Keycloak introspection cache
+    implementation 'com.github.ben-manes.caffeine:caffeine'
+
+    // Validation & actuator
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    // Prometheus metrics + distributed tracing, matching the platform-wide convention.
+    implementation 'io.micrometer:micrometer-registry-prometheus'
+    implementation 'org.springframework.boot:spring-boot-starter-opentelemetry'
+    // API docs -- reactive/WebFlux variant (the gateway has no MVC dispatcher). Low practical
+    // value beyond documenting FallbackController since this service is a router, not a business
+    // API, but kept for platform-wide consistency.
+    implementation 'org.springdoc:springdoc-openapi-starter-webflux-ui:3.0.1'
+
+    // Utilities
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
+
+    // Lombok
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'io.projectreactor:reactor-test'
+    testImplementation 'org.springframework.security:spring-security-test'
+    testImplementation 'org.testcontainers:junit-jupiter'
+    testImplementation 'org.testcontainers:mongodb'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+dependencyManagement {
+    imports {
+        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2025.1.0'
+        mavenBom 'org.testcontainers:testcontainers-bom:1.20.4'
+    }
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+tasks.named('jar') { enabled = false }
+tasks.named('javadoc') {
+    source = sourceSets.main.allJava
+    classpath = sourceSets.main.compileClasspath
+    options.encoding = 'UTF-8'
+    options.charSet = 'UTF-8'
+    options.docEncoding = 'UTF-8'
+    options.memberLevel = JavadocMemberLevel.PRIVATE
+    failOnError = false
+}
+tasks.withType(JavaCompile).configureEach { options.compilerArgs += '-parameters' }
+
+// Ships the javadoc inside the boot jar as static content, served publicly at
+// /javadoc/index.html (through the gateway: /api/<service>/javadoc/).
+tasks.named('bootJar') {
+    from(tasks.named('javadoc')) {
+        into 'BOOT-INF/classes/static/javadoc/gateway'
+    }
+}
+
+// ── Code coverage (JaCoCo) ───────────────────────────────────────────────────────────────────────
+// Run:  ./gradlew test jacocoTestReport      HTML report: build/reports/jacoco/test/html/index.html
+//       (XML for CI/Sonar: build/reports/jacoco/test/jacocoTestReport.xml)
+// Coverage is produced only when jacocoTestReport is asked for, so a plain `./gradlew test` is not slowed down.
+jacoco {
+    toolVersion = '0.8.13' // first line of releases with full Java 21+ support on current JDKs
+}
+
+tasks.named('jacocoTestReport') {
+    // mustRunAfter, not dependsOn: as a finalizer of `test` it must still run when a test fails
+    mustRunAfter tasks.named('test')
+    reports {
+        xml.required = true
+        html.required = true
+        csv.required = false
+    }
+}
+
+// With -Pcoverage the report is written even when a test fails (known failures would otherwise stop `jacocoTestReport`).
+// Without it a plain `./gradlew test` stays as fast as before.
+tasks.named('test') {
+    if (project.hasProperty('coverage') || gradle.startParameter.taskNames.any { it == 'coverage' || it.endsWith(':coverage') }) {
+        finalizedBy tasks.named('jacocoTestReport')
+    }
+}
+
+// One-word entry point: ./gradlew coverage  (runs the tests, then writes build/reports/jacoco/test/html/index.html even if a test fails)
+tasks.register('coverage') {
+    group = 'verification'
+    description = 'Runs the tests and writes the JaCoCo coverage report (HTML + XML).'
+    // jacocoTestReport is attached to `test` as a finalizer (see above), so it also runs when a test fails
+    dependsOn tasks.named('test')
+}

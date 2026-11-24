@@ -1,0 +1,89 @@
+$primary: var(--hq-primary);
+
+.lc-page {
+  padding: 24px;
+  color: var(--edu-ink);
+}
+
+.lc-tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--workspace-border);
+
+  a {
+    padding: 8px 16px;
+    border-bottom: 3px solid transparent;
+    color: var(--edu-ink);
+    font-weight: 700;
+    font-size: 14px;
+    text-decoration: none;
+
+    &.active {
+      border-bottom-color: $primary;
+      color: $primary;
+    }
+  }
+}
+
+.lc-table-wrap {
+  overflow-x: auto;
+}
+
+.lc-table {
+  width: 100%;
+  font-size: 13px;
+
+  th {
+    white-space: nowrap;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--edu-muted, #6b7280);
+  }
+
+  &.lc-clickable tbody tr {
+    cursor: pointer;
+  }
+}
+
+.lc-mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  word-break: break-all;
+}
+
+.lc-copy {
+  border: 0;
+  background: transparent;
+  padding: 0 4px;
+  color: $primary;
+  cursor: pointer;
+
+  &:focus-visible {
+    outline: 3px solid var(--field-focus-ring);
+    outline-offset: 2px;
+  }
+}
+
+.lc-muted {
+  color: var(--edu-muted, #6b7280);
+}
+
+.lc-note {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(245, 158, 11, 0.12);
+  color: #92400e;
+  font-size: 13px;
+}
+
+.lc-tabs .lc-tab-link {
+  margin-inline-start: auto;
+  font-weight: 600;
+}
+
+// The "include deleted" checkbox in the filter bar sits level with the bottom of the date fields.
+.lc-check {
+  padding-block-end: 6px;
+}

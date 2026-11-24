@@ -1,0 +1,49 @@
+// Label / hint / error around any control -- the same type, sizes and colours as hq-field's own.
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+.hq-ff__label {
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: var(--edu-ink);
+  font-family: var(--hq-font);
+}
+
+.hq-ff__req {
+  margin-inline-start: 0.25rem;
+  font-style: normal;
+  color: var(--hq-warn, #dc2626);
+}
+
+.hq-ff__control {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+.hq-ff__error {
+  color: var(--hq-warn, #dc2626);
+  font-size: 0.8rem;
+}
+
+.hq-ff__hint {
+  color: var(--edu-muted);
+  font-size: 0.8rem;
+}
+
+@media (min-width: 576px) {
+  :host(.hq-form-field--inline) {
+    display: grid;
+    grid-template-columns: minmax(8rem, 30%) minmax(0, 1fr);
+    align-items: start;
+    column-gap: 1rem;
+  }
+  :host(.hq-form-field--inline) .hq-ff__label {
+    padding-block-start: 0.65rem;
+  }
+}

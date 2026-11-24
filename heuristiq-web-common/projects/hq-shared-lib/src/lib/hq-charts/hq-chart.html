@@ -1,0 +1,24 @@
+<div class="hq-chart" [style.min-height.px]="height" role="img" [attr.aria-label]="ariaLabel || null">
+  @if (options; as o) {
+    <apx-chart
+      [series]="$any(o.series ?? [])"
+      [chart]="o.chart ?? { type: 'bar' }"
+      [colors]="o.colors ?? []"
+      [labels]="o.labels ?? []"
+      [xaxis]="o.xaxis ?? {}"
+      [yaxis]="o.yaxis ?? {}"
+      [stroke]="o.stroke ?? {}"
+      [fill]="o.fill ?? {}"
+      [markers]="o.markers ?? {}"
+      [dataLabels]="o.dataLabels ?? {}"
+      [grid]="o.grid ?? {}"
+      [legend]="o.legend ?? {}"
+      [tooltip]="o.tooltip ?? {}"
+      [plotOptions]="o.plotOptions ?? {}"
+      [annotations]="o.annotations ?? {}"
+      [states]="o.states ?? {}"
+      [theme]="o.theme ?? {}"></apx-chart>
+  } @else if (empty) {
+    <div class="hq-chart__empty">{{ emptyMessage }}</div>
+  }
+</div>

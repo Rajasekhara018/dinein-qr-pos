@@ -1,0 +1,38 @@
+<div class="amount-input" [class.is-disabled]="disabled">
+  <label class="amount-input__label" *ngIf="showLabel" [attr.for]="inputId || null">
+    {{ displayLabel }}
+    <span *ngIf="isRequired" class="amount-input__required">*</span>
+  </label>
+
+  <div class="amount-input__field" [class.has-error]="hasError" [class.is-focused]="focused">
+    <hq-searchable-select *ngIf="canChooseCurrency; else fixedCurrency" class="amount-input__currency" data-testid="amount-currency"
+                           [allowOther]="false" [ariaLabel]="currencyLabel" [ngModel]="code" [disabled]="disabled"
+                           (ngModelChange)="chooseCurrency($event)">
+      <hq-ss-option *ngFor="let option of currencyOptions" [value]="option" [label]="option"></hq-ss-option>
+    </hq-searchable-select>
+    <ng-template #fixedCurrency>
+      <span class="amount-input__symbol" data-testid="amount-symbol" [attr.title]="code" aria-hidden="true">{{ symbol }}</span>
+    </ng-template>
+    <input
+      #box
+      type="text"
+      class="amount-input__control"
+      inputmode="decimal"
+      autocomplete="off"
+      data-testid="amount-box"
+      [id]="inputId || null"
+      [placeholder]="displayPlaceholder"
+      [disabled]="disabled"
+      [value]="display"
+      [attr.aria-invalid]="hasError"
+      [attr.aria-label]="showLabel ? null : displayLabel"
+      (input)="onInput(box)"
+      (paste)="onPaste($event, box)"
+      (focus)="onFocus()"
+      (blur)="onBlur()"
+    />
+    <span class="amount-input__code" aria-hidden="true" *ngIf="!canChooseCurrency">{{ code }}</span>
+  </div>
+
+  <div class="amount-input__error" role="alert" *ngIf="hasError">{{ errorMessage }}</div>
+</div>

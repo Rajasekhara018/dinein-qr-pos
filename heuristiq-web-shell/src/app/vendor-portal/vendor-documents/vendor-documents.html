@@ -1,0 +1,105 @@
+<!-- ── Success State ──────────────────────────────────────────────────────── -->
+<div *ngIf="isSuccess" class="vd-page vd-page--center">
+  <div class="vd-success-card">
+    <div class="vd-success-icon">
+      <i class="bi bi-check-circle-fill"></i>
+    </div>
+    <h2 class="vd-success-title">{{ 'vendorPortal.documents.success.title' | translate }}</h2>
+    <p class="vd-success-body" [innerHTML]="'vendorPortal.documents.success.body' | translate"></p>
+    <p class="vd-success-note">{{ 'vendorPortal.documents.success.note' | translate }}</p>
+  </div>
+</div>
+
+<!-- ── Upload Form ────────────────────────────────────────────────────────── -->
+<div *ngIf="!isSuccess" class="vd-page">
+  <div class="container-fluid">
+    <div class="row justify-content-center">
+      <div class="col-12 col-md-10 col-lg-8 col-xl-7">
+
+        <!-- Header -->
+        <div class="text-center mb-5">
+          <div class="vd-brand-logo mb-3">
+            <i class="bi bi-train-front"></i>
+          </div>
+          <h2 class="vd-page-title">{{ 'vendorPortal.documents.page.title' | translate }}</h2>
+          <p class="vd-page-subtitle">
+            {{ 'vendorPortal.documents.page.subtitle' | translate }}
+          </p>
+        </div>
+
+        <!-- Progress Card -->
+        <div class="vd-progress-card mb-4">
+          <div class="d-flex align-items-center justify-content-between mb-2">
+            <span class="vd-progress-label">{{ 'vendorPortal.documents.progress.label' | translate }}</span>
+            <span class="vd-progress-count">{{ 'vendorPortal.documents.progress.count' | translate: { uploaded: uploadedCount, total: docs.length } }}</span>
+          </div>
+          <hq-progress [value]="uploadedCount" [max]="docs.length" [showValue]="false" [tone]="uploadedCount === docs.length ? 'success' : 'primary'"
+                        [label]="'vendorPortal.documents.progress.count' | translate: { uploaded: uploadedCount, total: docs.length }"></hq-progress>
+          <div *ngIf="attemptedSubmit && missingDocs.length > 0" class="vd-progress-error" role="alert">
+            <i class="bi bi-exclamation-triangle"></i>
+            {{ (missingDocs.length === 1 ? 'vendorPortal.documents.progress.missingSingular' : 'vendorPortal.documents.progress.missingPlural') | translate: { count: missingDocs.length } }}
+          </div>
+        </div>
+
+        <!-- Document List -->
+        <div class="vd-doc-list">
+          <div
+            *ngFor="let doc of docs"
+            class="vd-doc-item"
+            [class.uploaded]="hasFile(doc.id)"
+            [class.missing]="isMissing(doc.id)"
+          >
+            <!-- Status Icon -->
+            <div class="vd-doc-icon" [class.uploaded]="hasFile(doc.id)">
+              <i *ngIf="hasFile(doc.id)" class="bi bi-check-circle-fill"></i>
+              <i *ngIf="!hasFile(doc.id)" class="bi bi-file-earmark-text"></i>
+            </div>
+
+            <!-- Info -->
+            <div class="vd-doc-info">
+              <div class="vd-doc-name">{{ doc.label }}</div>
+              <div *ngIf="!hasFile(doc.id)" class="vd-doc-hint">
+                <i class="bi bi-exclamation-circle"></i> {{ 'vendorPortal.documents.fileHint' | translate }}
+              </div>
+              <div *ngIf="isMissing(doc.id)" class="vd-doc-error">
+                <i class="bi bi-exclamation-triangle"></i> {{ 'vendorPortal.documents.requiredBeforeSubmission' | translate }}
+              </div>
+            </div>
+
+            <!-- Action: uploads to DMS immediately, reloads what was filed before -->
+            <div class="vd-doc-action">
+              <hq-doc-upload
+                *ngIf="vendorId"
+                [inputId]="'file-' + doc.id"
+                [label]="'vendorPortal.documents.uploadLabel' | translate"
+                hints="PDF, JPG, PNG"
+                accept=".pdf,.jpg,.jpeg,.png"
+                [maxSizeMB]="5"
+                [category]="categoryFor(doc.id)"
+                [ownerId]="vendorId"
+                [autoLoad]="true"
+                [deleteOnRemove]="true"
+                [isRequired]="true"
+                [ngModel]="uploaded[doc.id]"
+                (ngModelChange)="onChange(doc.id, $event)"
+                (rejected)="onRejected($event)">
+              </hq-doc-upload>
+            </div>
+          </div>
+        </div>
+
+        <!-- Submit Bar -->
+        <div class="vd-submit-bar mt-5">
+          <button hqButton="primary" size="lg"
+            type="button"
+            [disabled]="!allUploaded"
+            (click)="onSubmit()"
+          >
+            <i class="bi bi-send-fill me-2"></i>{{ 'vendorPortal.register.actions.submit' | translate }}
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

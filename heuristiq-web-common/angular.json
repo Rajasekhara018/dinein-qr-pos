@@ -1,0 +1,49 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "cli": {
+    "analytics": false
+  },
+  "version": 1,
+  "newProjectRoot": "projects",
+  "projects": {
+    "hq-shared-lib": {
+      "projectType": "library",
+      "root": "projects/hq-shared-lib",
+      "sourceRoot": "projects/hq-shared-lib/src",
+      "prefix": "hq",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "options": {
+            "project": "projects/hq-shared-lib/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/hq-shared-lib/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/hq-shared-lib/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:unit-test",
+          "options": {
+            "tsConfig": "projects/hq-shared-lib/tsconfig.spec.json",
+            "runner": "vitest",
+            "runnerConfig": "vitest.config.mjs",
+            "coverageInclude": ["projects/hq-shared-lib/src/**/*.ts"],
+            "coverageExclude": ["**/*.spec.ts", "**/public-api.ts"],
+            "coverageThresholds": {
+              "statements": 95,
+              "branches": 95,
+              "functions": 95,
+              "lines": 95
+            }
+          }
+        }
+      }
+    }
+  }
+}

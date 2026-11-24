@@ -1,0 +1,80 @@
+<hq-page-header
+  [kicker]="'nav.sections.accessManagement' | translate"
+  [title]="'nav.items.franchisePackages' | translate"
+  [subtitle]="'accessManagement.franchisePackages.subtitle' | translate">
+</hq-page-header>
+
+<div class="table-surface">
+  <div class="table-surface__header">
+    <div class="table-heading">
+      <span class="table-kicker">{{ 'shared.listPage.total' | translate: { count: total } }}</span>
+    </div>
+    <ng-container *hqHasPrivilege="privileges.create">
+      <button type="button" class="table-create-btn" (click)="addPackage()">
+        <i class="bi bi-plus-lg"></i> {{ 'accessManagement.franchisePackages.newButton' | translate }}
+      </button>
+    </ng-container>
+  </div>
+
+  <div class="table-surface__body">
+    <!-- Filters -->
+    <form class="franchise-grid" (ngSubmit)="load()" role="search">
+      <hq-form-field [label]="'accessManagement.franchises.application' | translate"><hq-searchable-select
+          [(ngModel)]="filters.applicationCode"
+          name="filterApplication"
+          [allowOther]="false"
+          [placeholder]="'accessManagement.franchisePackages.anyApplication' | translate">
+          <hq-ss-option *ngFor="let application of applications" [value]="application.code" [label]="application.name || application.code"></hq-ss-option>
+        </hq-searchable-select></hq-form-field>
+      <hq-form-field [label]="'accessManagement.franchisePackages.status' | translate"><hq-searchable-select
+          [(ngModel)]="filters.active"
+          name="filterActive"
+          [allowOther]="false"
+          [placeholder]="'shared.listPage.anyStatus' | translate">
+          <hq-ss-option value="true" [label]="'accessManagement.franchisePackages.active' | translate"></hq-ss-option>
+          <hq-ss-option value="false" [label]="'accessManagement.franchisePackages.inactive' | translate"></hq-ss-option>
+        </hq-searchable-select></hq-form-field>
+      <hq-field type="search" [(ngModel)]="filters.q" name="filterQ" [label]="'accessManagement.franchisePackages.name' | translate"></hq-field>
+      <div class="franchise-actions">
+        <button hqButton="accent" type="submit">{{ 'shared.listPage.filter' | translate }}</button>
+        <button hqButton="secondary" type="button" (click)="clearFilters()">{{ 'shared.listPage.clear' | translate }}</button>
+      </div>
+    </form>
+
+    <hq-common-table
+      [columns]="columns"
+      [rows]="rows"
+      [isLoading]="isLoading"
+      [hasError]="hasError"
+      [emptyMessage]="'accessManagement.franchisePackages.emptyMessage' | translate"
+      [errorMessage]="'accessManagement.franchisePackages.errorMessage' | translate">
+      <ng-template hqCell="applicationCode" let-row>{{ nameOf(row.applicationCode) }}</ng-template>
+      <ng-template hqCell="commissionPlanCode" let-row>{{ planText(row, 'commission') }}</ng-template>
+      <ng-template hqCell="referralPlanCode" let-row>{{ planText(row, 'referral') }}</ng-template>
+      <ng-template hqCell="active" let-row>
+        <hq-status-badge [tone]="row.active ? 'success' : 'danger'">{{ (row.active ? 'accessManagement.franchisePackages.active' : 'accessManagement.franchisePackages.inactive') | translate }}</hq-status-badge>
+      </ng-template>
+      <ng-template #rowActions let-row>
+        <ng-container *hqHasPrivilege="privileges.update">
+          <button type="button" class="row-action-btn" [title]="'shared.listPage.rowActions.edit' | translate" (click)="editPackage(row)"><i class="bi bi-pencil"></i></button>
+          <button type="button" class="row-action-btn row-action-btn--toggle" (click)="toggleActive(row)"
+                  [title]="(row.active ? 'accessManagement.franchisePackages.switchOff' : 'accessManagement.franchisePackages.switchOn') | translate">
+            <i class="bi" [ngClass]="row.active ? 'bi-toggle-on' : 'bi-toggle-off'"></i>
+          </button>
+        </ng-container>
+      </ng-template>
+    </hq-common-table>
+
+    <hq-table-footer
+      [page]="page"
+      [size]="pageSize"
+      [itemCount]="rows.length"
+      [hasMore]="page + 1 < pageCount"
+      [totalItems]="total"
+      [loading]="isLoading"
+      [sizeOptions]="pageSizeOptions"
+      (pageChange)="goToPage($event)"
+      (sizeChange)="onPageSizeChange($event)">
+    </hq-table-footer>
+  </div>
+</div>

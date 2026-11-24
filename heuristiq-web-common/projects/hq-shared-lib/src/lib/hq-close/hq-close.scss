@@ -1,0 +1,31 @@
+.hq-close {
+  padding: 24px;
+  min-width: 280px;
+
+  &--center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 12px;
+  }
+
+  &__title {
+    margin: 0 0 8px;
+    font-weight: 600;
+
+    &--success {
+      color: #16a34a;
+    }
+  }
+
+  &__message {
+    margin: 0 0 20px;
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+  }
+}

@@ -1,0 +1,95 @@
+<div class="phone-number-input" [class.is-disabled]="disabled" [class.is-compact]="variant === 'compact'">
+  <label class="phone-number-input__label" *ngIf="showLabel">
+    {{ displayLabel }}
+    <span *ngIf="isRequired" class="phone-number-input__required">*</span>
+  </label>
+
+  <div class="phone-number-input__field" [class.has-error]="hasError" [class.is-open]="listOpen" cdkOverlayOrigin #origin="cdkOverlayOrigin">
+    <button
+      type="button"
+      class="phone-number-input__country"
+      #countryTrigger
+      [disabled]="disabled"
+      [attr.aria-label]="countryLabel + ': ' + selectedCountryName + ' +' + callingCode"
+      [attr.title]="selectedCountryName"
+      aria-haspopup="listbox"
+      [attr.aria-expanded]="listOpen"
+      (click)="toggleList(origin.elementRef.nativeElement)"
+      (keydown)="onTriggerKey($event, origin.elementRef.nativeElement)"
+    >
+      <span class="hq-flag phone-number-input__flag" aria-hidden="true">{{ selectedFlag }}</span>
+      <span class="phone-number-input__dial">+{{ callingCode }}</span>
+      <svg class="phone-number-input__chevron" viewBox="0 0 20 20" width="14" height="14" aria-hidden="true">
+        <path d="M5 7.5l5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </button>
+    <input
+      type="tel"
+      class="phone-number-input__control"
+      inputmode="tel"
+      autocomplete="tel-national"
+      [placeholder]="displayPlaceholder"
+      [disabled]="disabled"
+      [value]="nationalDigits"
+      (input)="onInput($any($event.target).value)"
+      (blur)="onBlur()"
+    />
+  </div>
+
+  <div class="phone-number-input__error" *ngIf="hasError">{{ errorMessage }}</div>
+</div>
+
+<ng-template
+  cdkConnectedOverlay
+  [cdkConnectedOverlayOrigin]="origin"
+  [cdkConnectedOverlayOpen]="listOpen"
+  [cdkConnectedOverlayPositions]="panelPositions"
+  [cdkConnectedOverlayWidth]="panelWidth"
+  [cdkConnectedOverlayFlexibleDimensions]="false"
+  [cdkConnectedOverlayPush]="true"
+  (overlayOutsideClick)="closeList()"
+  (attach)="onListAttached()"
+  (detach)="closeList()"
+>
+  <div class="hq-phone-panel" (keydown)="onListKey($event)">
+    <div class="hq-phone-panel__search">
+      <svg viewBox="0 0 20 20" width="16" height="16" aria-hidden="true" class="hq-phone-panel__search-icon">
+        <circle cx="9" cy="9" r="5.5" fill="none" stroke="currentColor" stroke-width="1.7" />
+        <path d="M13.5 13.5L17 17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" />
+      </svg>
+      <input
+        #searchBox
+        type="text"
+        class="hq-phone-panel__search-input"
+        autocomplete="off"
+        spellcheck="false"
+        [attr.aria-label]="searchPlaceholder"
+        [placeholder]="searchPlaceholder"
+        [value]="query"
+        (input)="onQuery($any($event.target).value)"
+      />
+    </div>
+
+    <ul class="hq-phone-panel__list" role="listbox" #countryList [attr.aria-label]="countryLabel">
+      <li
+        *ngFor="let country of filteredCountries; let i = index; trackBy: trackCountry"
+        class="hq-phone-panel__option"
+        role="option"
+        [attr.data-index]="i"
+        [class.is-active]="i === activeIndex"
+        [class.is-selected]="country.iso === selectedCountry"
+        [attr.aria-selected]="country.iso === selectedCountry"
+        (mouseenter)="activeIndex = i"
+        (click)="chooseCountry(country)"
+      >
+        <span class="hq-flag hq-phone-panel__flag" aria-hidden="true">{{ country.flag }}</span>
+        <span class="hq-phone-panel__name">{{ country.name }}</span>
+        <span class="hq-phone-panel__code">+{{ country.callingCode }}</span>
+        <svg class="hq-phone-panel__check" viewBox="0 0 20 20" width="16" height="16" aria-hidden="true">
+          <path d="M4.5 10.5l3.5 3.5 7.5-8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </li>
+      <li class="hq-phone-panel__empty" *ngIf="filteredCountries.length === 0">{{ noCountryFound }}</li>
+    </ul>
+  </div>
+</ng-template>

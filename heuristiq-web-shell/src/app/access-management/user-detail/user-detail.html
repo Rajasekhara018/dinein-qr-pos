@@ -1,0 +1,162 @@
+<hq-page-header
+  [kicker]="'nav.sections.accessManagement' | translate"
+  [title]="userDisplayName || ('accessManagement.userDetail.title' | translate)"
+  [subtitle]="user ? (user.email || '') + ' · ' + user.status : ''"
+  [loading]="isLoadingUser"
+  [loadingLabel]="'shared.pageHeader.loading' | translate">
+</hq-page-header>
+
+<hq-screen-help screen="userDetail"></hq-screen-help>
+
+<mat-tab-group class="table-surface" animationDuration="150ms">
+
+  <ng-container *hqHasPrivilege="['USER_SESSION_LIST', 'UAM_USERS_MANAGE']">
+    <mat-tab [label]="'accessManagement.userDetail.tabs.sessions' | translate">
+      <div class="table-surface__body">
+        <div class="table-surface__header">
+          <div class="table-heading"><span class="table-kicker">{{ 'accessManagement.userDetail.activeCount' | translate: { count: sessions.length } }}</span></div>
+          <ng-container *hqHasPrivilege="'UAM_USERS_MANAGE'">
+            <button type="button" class="table-create-btn" (click)="revokeAllSessions()">
+              <i class="bi bi-x-octagon"></i> {{ 'accessManagement.userDetail.revokeAll' | translate }}
+            </button>
+          </ng-container>
+        </div>
+        <hq-common-table [columns]="sessionColumns" [rows]="sessions" [emptyMessage]="'accessManagement.userDetail.empty.sessions' | translate">
+          <ng-template #rowActions let-row>
+            <ng-container *hqHasPrivilege="'USER_SESSION_DELETE'">
+              <button type="button" class="row-action-btn danger" [title]="'accessManagement.userDetail.revoke' | translate" (click)="revokeSession(row)">
+                <i class="bi bi-x-lg"></i>
+              </button>
+            </ng-container>
+          </ng-template>
+        </hq-common-table>
+      </div>
+    </mat-tab>
+  </ng-container>
+
+  <ng-container *hqHasPrivilege="['USER_DEVICE_LIST', 'UAM_USERS_MANAGE']">
+    <mat-tab [label]="'accessManagement.userDetail.tabs.devices' | translate">
+      <div class="table-surface__body">
+        <hq-common-table [columns]="deviceColumns" [rows]="devices" [emptyMessage]="'accessManagement.userDetail.empty.devices' | translate">
+          <ng-template #rowActions let-row>
+            <ng-container *hqHasPrivilege="'USER_DEVICE_TRUST'">
+              <button type="button" class="row-action-btn" [title]="(row.trusted ? 'profile.security.devices.untrust' : 'profile.security.devices.trust') | translate" (click)="toggleTrust(row)">
+                <i class="bi" [class.bi-shield-check]="!row.trusted" [class.bi-shield-x]="row.trusted"></i>
+              </button>
+            </ng-container>
+            <ng-container *hqHasPrivilege="'USER_DEVICE_BLOCK'">
+              <button type="button" class="row-action-btn" [title]="(row.blocked ? 'profile.security.devices.unblock' : 'profile.security.devices.block') | translate" (click)="toggleBlock(row)">
+                <i class="bi" [class.bi-lock]="!row.blocked" [class.bi-unlock]="row.blocked"></i>
+              </button>
+            </ng-container>
+            <ng-container *hqHasPrivilege="'USER_DEVICE_DELETE'">
+              <button type="button" class="row-action-btn danger" [title]="'profile.security.mfaMethods.remove' | translate" (click)="deleteDevice(row)">
+                <i class="bi bi-trash3"></i>
+              </button>
+            </ng-container>
+          </ng-template>
+        </hq-common-table>
+      </div>
+    </mat-tab>
+  </ng-container>
+
+  <ng-container *hqHasPrivilege="['USER_MFA_LIST', 'UAM_USERS_MANAGE']">
+    <mat-tab label="MFA">
+      <div class="table-surface__body">
+        <hq-common-table [columns]="mfaColumns" [rows]="mfaMethods" [emptyMessage]="'accessManagement.userDetail.empty.mfa' | translate">
+          <ng-template #rowActions let-row>
+            <ng-container *hqHasPrivilege="'USER_MFA_DISABLE'">
+              <button type="button" class="row-action-btn" [title]="'profile.security.mfaMethods.disable' | translate" (click)="disableMfa(row)">
+                <i class="bi bi-shield-slash"></i>
+              </button>
+            </ng-container>
+            <ng-container *hqHasPrivilege="'USER_MFA_DELETE'">
+              <button type="button" class="row-action-btn danger" [title]="'profile.security.mfaMethods.remove' | translate" (click)="deleteMfa(row)">
+                <i class="bi bi-trash3"></i>
+              </button>
+            </ng-container>
+          </ng-template>
+        </hq-common-table>
+      </div>
+    </mat-tab>
+  </ng-container>
+
+  <ng-container *hqHasPrivilege="['USER_LOGIN_SECURITY_READ', 'UAM_USERS_MANAGE']">
+    <mat-tab [label]="'accessManagement.userDetail.tabs.loginSecurity' | translate">
+      <div class="table-surface__body" *ngIf="loginSecurity as ls">
+        <div class="login-security-grid">
+          <div class="login-security-item"><span class="label">{{ 'profile.security.loginStatus.failedAttempts' | translate }}</span><strong>{{ ls.failedLoginAttempts ?? 0 }}</strong></div>
+          <div class="login-security-item"><span class="label">{{ 'accessManagement.userDetail.fields.accountLocked' | translate }}</span><hq-status-badge [tone]="ls.accountLocked ? 'danger' : 'success'">{{ (ls.accountLocked ? 'accessManagement.userDetail.locked' : 'accessManagement.userDetail.unlocked') | translate }}</hq-status-badge></div>
+          <div class="login-security-item"><span class="label">{{ 'accessManagement.userDetail.fields.lockReason' | translate }}</span><span>{{ ls.lockReason || '—' }}</span></div>
+          <div class="login-security-item"><span class="label">{{ 'profile.security.loginStatus.lastSuccessfulLogin' | translate }}</span><span>{{ ls.lastSuccessfulLoginAt || '—' }}</span></div>
+          <div class="login-security-item"><span class="label">{{ 'profile.security.loginStatus.lastFailedLogin' | translate }}</span><span>{{ ls.lastFailedLoginAt || '—' }}</span></div>
+          <div class="login-security-item"><span class="label">{{ 'accessManagement.userDetail.fields.mfaRequired' | translate }}</span><span>{{ (ls.mfaRequired ? 'shared.commonTable.yes' : 'shared.commonTable.no') | translate }}</span></div>
+        </div>
+        <ng-container *hqHasPrivilege="'UAM_USERS_MANAGE'">
+          <button hqButton="accent" type="button" class="mt-3" *ngIf="ls.accountLocked" (click)="unlockAccount()">
+            <i class="bi bi-unlock"></i> {{ 'accessManagement.userDetail.unlockAccount' | translate }}
+          </button>
+        </ng-container>
+      </div>
+      <div class="table-surface__body" *ngIf="!loginSecurity">
+        <hq-empty-state [title]="'accessManagement.userDetail.empty.loginSecurity' | translate"></hq-empty-state>
+      </div>
+    </mat-tab>
+  </ng-container>
+
+  <ng-container *hqHasPrivilege="['USER_CREDENTIAL_LIST', 'UAM_USERS_MANAGE']">
+    <mat-tab [label]="'accessManagement.userDetail.tabs.credentials' | translate">
+      <div class="table-surface__body">
+        <hq-common-table [columns]="credentialColumns" [rows]="credentials" [emptyMessage]="'accessManagement.userDetail.empty.credentials' | translate">
+          <ng-template #rowActions let-row>
+            <ng-container *hqHasPrivilege="'USER_CREDENTIAL_DELETE'">
+              <button type="button" class="row-action-btn danger" [title]="'accessManagement.userDetail.deactivate' | translate" (click)="deactivateCredential(row)">
+                <i class="bi bi-trash3"></i>
+              </button>
+            </ng-container>
+          </ng-template>
+        </hq-common-table>
+      </div>
+    </mat-tab>
+  </ng-container>
+
+  <ng-container *hqHasPrivilege="'REFRESH_TOKEN_LIST'">
+    <mat-tab [label]="'accessManagement.userDetail.tabs.refreshTokens' | translate">
+      <div class="table-surface__body">
+        <div class="table-surface__header">
+          <div class="table-heading"><span class="table-kicker">{{ 'accessManagement.userDetail.activeCount' | translate: { count: refreshTokens.length } }}</span></div>
+          <ng-container *hqHasPrivilege="'REFRESH_TOKEN_PRINCIPAL_DELETE'">
+            <button type="button" class="table-create-btn" (click)="revokeAllRefreshTokens()">
+              <i class="bi bi-x-octagon"></i> {{ 'accessManagement.userDetail.revokeAll' | translate }}
+            </button>
+          </ng-container>
+        </div>
+        <hq-common-table [columns]="refreshTokenColumns" [rows]="refreshTokens" [emptyMessage]="'accessManagement.userDetail.empty.refreshTokens' | translate">
+          <ng-template #rowActions let-row>
+            <ng-container *hqHasPrivilege="'REFRESH_TOKEN_DELETE'">
+              <button type="button" class="row-action-btn danger" [title]="'accessManagement.userDetail.revoke' | translate" (click)="revokeRefreshToken(row)">
+                <i class="bi bi-x-lg"></i>
+              </button>
+            </ng-container>
+          </ng-template>
+        </hq-common-table>
+      </div>
+    </mat-tab>
+  </ng-container>
+
+  <ng-container *hqHasPrivilege="'APPLICATION_ACCESS_LIST'">
+    <mat-tab [label]="'accessManagement.userDetail.tabs.applications' | translate">
+      <app-user-application-access [userId]="userId"></app-user-application-access>
+    </mat-tab>
+  </ng-container>
+
+  <ng-container *hqHasPrivilege="['PASSWORD_HISTORY_LIST', 'UAM_USERS_MANAGE']">
+    <mat-tab [label]="'accessManagement.userDetail.tabs.passwordHistory' | translate">
+      <div class="table-surface__body">
+        <hq-common-table [columns]="passwordHistoryColumns" [rows]="passwordHistory" [showActionsColumn]="false" [emptyMessage]="'accessManagement.userDetail.empty.passwordHistory' | translate">
+        </hq-common-table>
+      </div>
+    </mat-tab>
+  </ng-container>
+
+</mat-tab-group>

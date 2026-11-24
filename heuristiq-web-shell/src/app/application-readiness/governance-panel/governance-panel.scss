@@ -1,0 +1,81 @@
+@use '../../shared/status-tones' as rd;
+
+@include rd.host;
+
+:host {
+  display: block;
+  min-width: 0;
+}
+
+.gp {
+  margin-bottom: 1rem;
+}
+
+.gp__block + .gp__block {
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--rd-track);
+}
+
+.gp__heading {
+  margin: 0 0 .25rem;
+  font-size: .95rem;
+}
+
+.gp__muted {
+  margin: .25rem 0 .5rem;
+  font-size: .85rem;
+  color: var(--rd-neutral-fg);
+}
+
+.gp__note {
+  display: flex;
+  gap: .5rem;
+  padding: .5rem .75rem;
+  border: 1px solid var(--rd-warning-line);
+  border-radius: .5rem;
+  background: var(--rd-warning-bg);
+  color: var(--rd-warning-fg);
+}
+
+
+
+
+
+
+
+
+.gp__chip {
+  @include rd.chip;
+  color: var(--rd-neutral-fg);
+  background: var(--rd-neutral-bg);
+  border-color: var(--rd-neutral-line);
+  margin-inline-end: .3rem;
+}
+
+.gp__facts {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: .3rem 1rem;
+  margin: 0;
+
+  dt {
+    font-weight: 600;
+  }
+
+  dd {
+    margin: 0;
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+}
+
+.gp__reason {
+  white-space: pre-wrap;
+}
+
+@media (max-width: 575px) {
+  .gp__facts {
+    grid-template-columns: 1fr;
+  }
+}

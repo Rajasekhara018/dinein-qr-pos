@@ -1,0 +1,15 @@
+@use '../login/login';
+
+.password-shell {
+  grid-template-columns: minmax(0, 1fr) minmax(360px, 0.78fr);
+}
+
+.password-card {
+  width: min(100%, 420px);
+}
+
+@media (max-width: 980px) {
+  .password-shell {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,228 @@
+.crop-dialog {
+  display: grid;
+  gap: 1.1rem;
+  min-width: 320px;
+  max-width: 900px;
+  color: var(--edu-ink);
+  padding: 0.25rem;
+  font-family: var(--hq-font);
+}
+
+.crop-dialog__header {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.crop-dialog__heading {
+  display: grid;
+  gap: 0.3rem;
+}
+
+.crop-dialog__eyebrow {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 700;
+  color: var(--hq-link, #003580);
+}
+
+.crop-dialog__title {
+  margin: 0;
+  font-size: 1.3rem;
+  font-weight: 800;
+}
+
+.crop-dialog__subtitle {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--edu-muted);
+}
+
+.crop-dialog__close {
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--workspace-border);
+  border-radius: 10px;
+  background: var(--workspace-panel);
+  color: var(--edu-muted);
+  display: grid;
+  place-items: center;
+  transition: all 0.2s ease;
+}
+
+.crop-dialog__close:hover {
+  border-color: color-mix(in srgb, var(--hq-link, #003580) 35%, transparent);
+  color: var(--hq-link, #003580);
+  box-shadow: 0 8px 16px rgba(0, 53, 128, 0.16);
+}
+
+.crop-dialog__body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 228px;
+  gap: 1.1rem;
+}
+
+.crop-dialog__editor {
+  border-radius: 18px;
+  border: 1px solid var(--workspace-border);
+  overflow: hidden;
+  background: var(--theme-soft-surface);
+  min-height: 360px;
+}
+
+:host ::ng-deep .crop-dialog__editor image-cropper {
+  width: 100%;
+  height: 100%;
+  min-height: 360px;
+  background: transparent;
+}
+
+:host ::ng-deep .crop-dialog__editor .ngx-ic-overlay {
+  border-radius: 12px;
+}
+
+.crop-dialog__preview-card {
+  border-radius: 16px;
+  border: 1px solid var(--workspace-border);
+  background: var(--theme-soft-surface);
+  padding: 0.9rem 0.8rem;
+  display: grid;
+  align-content: start;
+  justify-items: center;
+  gap: 0.6rem;
+}
+
+.crop-dialog__preview-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--hq-link, #003580);
+}
+
+.crop-dialog__preview-avatar {
+  width: 110px;
+  height: 110px;
+  border-radius: 999px;
+  overflow: hidden;
+  border: 4px solid var(--workspace-border);
+  background: var(--workspace-panel);
+  display: grid;
+  place-items: center;
+  box-shadow: 0 10px 25px rgba(0, 53, 128, 0.14);
+}
+
+.crop-dialog__preview-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.crop-dialog__preview-avatar i {
+  font-size: 3rem;
+  color: var(--edu-muted);
+}
+
+.crop-dialog__preview-note {
+  margin: 0;
+  font-size: 0.78rem;
+  line-height: 1.45;
+  color: var(--edu-muted);
+  text-align: center;
+}
+
+.crop-dialog__tips {
+  width: 100%;
+  display: grid;
+  gap: 0.45rem;
+  margin-top: 0.25rem;
+}
+
+.crop-dialog__tips span {
+  border-radius: 999px;
+  border: 1px solid var(--workspace-border);
+  background: var(--workspace-panel);
+  color: var(--edu-ink);
+  font-size: 0.73rem;
+  font-weight: 600;
+  padding: 0.3rem 0.55rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  justify-content: center;
+}
+
+.crop-dialog__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.65rem;
+  padding-top: 0.2rem;
+}
+
+.crop-btn {
+  min-width: 112px;
+  border-radius: 999px;
+  font-weight: 700;
+  border: 1px solid transparent;
+  height: 40px;
+}
+
+.crop-btn--cancel {
+  border-color: var(--workspace-border);
+  color: var(--edu-ink);
+  background: var(--workspace-panel);
+}
+
+.crop-btn--save {
+  background: linear-gradient(135deg, var(--hq-link, #003580), color-mix(in srgb, var(--hq-link, #003580) 85%, #000));
+  color: #fff;
+  box-shadow: 0 10px 20px rgba(0, 53, 128, 0.25);
+}
+
+.crop-btn--save:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+@media (max-width: 768px) {
+  .crop-dialog {
+    gap: 0.9rem;
+  }
+
+  .crop-dialog__body {
+    grid-template-columns: 1fr;
+  }
+
+  .crop-dialog__editor {
+    min-height: 300px;
+  }
+
+  :host ::ng-deep .crop-dialog__editor image-cropper {
+    min-height: 300px;
+  }
+
+  .crop-dialog__preview-card {
+    grid-template-columns: auto 1fr;
+    gap: 0.8rem;
+    justify-items: start;
+  }
+
+  .crop-dialog__preview-note {
+    text-align: left;
+  }
+
+  .crop-dialog__tips {
+    grid-column: 1 / -1;
+  }
+
+  .crop-dialog__actions {
+    justify-content: stretch;
+  }
+
+  .crop-btn {
+    flex: 1;
+  }
+}

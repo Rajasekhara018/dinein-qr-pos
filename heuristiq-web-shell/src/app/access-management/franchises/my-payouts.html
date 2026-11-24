@@ -1,0 +1,77 @@
+<hq-page-header
+  [kicker]="'nav.sections.accessManagement' | translate"
+  [title]="'nav.items.myPayouts' | translate"
+  [subtitle]="'accessManagement.myPayouts.subtitle' | translate">
+</hq-page-header>
+
+<div class="table-surface">
+  <div class="table-surface__body">
+    <p class="franchise-hint">{{ 'accessManagement.myPayouts.walletNotice' | translate }}</p>
+
+    <section class="franchise-form" *hqHasPrivilege="privileges.readStatement">
+      <hq-common-table [columns]="balanceColumns" [rows]="accounts"
+                        [emptyMessage]="'accessManagement.myEarnings.noAccounts' | translate">
+        <ng-template hqCell="ownerType" let-account>{{ accountLabel(account) }}</ng-template>
+        <ng-template hqCell="pending" let-account>{{ account.pending | hqMoney }}</ng-template>
+        <ng-template hqCell="available" let-account>{{ account.available | hqMoney }}</ng-template>
+      </hq-common-table>
+    </section>
+
+    <section class="franchise-form" *hqHasPrivilege="privileges.requestPayout">
+      <h4>{{ 'accessManagement.myPayouts.requestTitle' | translate }}</h4>
+      <div class="franchise-grid">
+        <hq-form-field [label]="'accessManagement.myPayouts.franchise' | translate"><hq-searchable-select
+            [(ngModel)]="form.franchiseId"
+            (ngModelChange)="formChanged()"
+            name="payoutFranchise"
+            [allowOther]="false"
+            [placeholder]="'accessManagement.myPayouts.chooseFranchise' | translate">
+            <hq-ss-option *ngFor="let franchise of franchises" [value]="franchise.unitId" [label]="franchise.code"></hq-ss-option>
+          </hq-searchable-select></hq-form-field>
+        <hq-form-field [label]="'accessManagement.myPayouts.party' | translate"><hq-searchable-select
+            [(ngModel)]="form.party"
+            (ngModelChange)="formChanged()"
+            name="payoutParty"
+            [allowOther]="false"
+            [placeholder]="'accessManagement.myPayouts.chooseParty' | translate">
+            <hq-ss-option *ngFor="let party of parties" [value]="party" [label]="partyLabel(party)"></hq-ss-option>
+          </hq-searchable-select></hq-form-field>
+        <hq-amount-input valueMode="number" [label]="'accessManagement.myPayouts.amount' | translate"
+                            [currency]="form.currency" [(ngModel)]="form.amount" (ngModelChange)="formChanged()" name="payoutAmount"></hq-amount-input>
+        <hq-field type="text" [maxLength]="3" [(ngModel)]="form.currency" (ngModelChange)="formChanged()" name="payoutCurrency" [showCounter]="false" [label]="'accessManagement.myPayouts.currency' | translate"></hq-field>
+        <hq-field type="text" [maxLength]="64" [(ngModel)]="form.appCode" (ngModelChange)="formChanged()" name="payoutApp" [showCounter]="false" [label]="'accessManagement.myPayouts.app' | translate"></hq-field>
+        <hq-field type="text" [maxLength]="500" [(ngModel)]="form.note" (ngModelChange)="formChanged()" name="payoutNote" [showCounter]="false" [label]="'accessManagement.myPayouts.note' | translate"></hq-field>
+      </div>
+      <button hqButton="accent" type="button" [disabled]="saving" (click)="request()">{{ 'accessManagement.myPayouts.requestButton' | translate }}</button>
+    </section>
+
+    <section class="franchise-form" *hqHasPrivilege="privileges.listPayouts">
+      <h4>{{ 'accessManagement.myPayouts.listTitle' | translate }}</h4>
+      <div class="franchise-grid" *ngIf="accounts.length > 1">
+        <hq-form-field [label]="'accessManagement.myPayouts.account' | translate"><hq-searchable-select [allowOther]="false" [(ngModel)]="selectedAccount" (ngModelChange)="load()" name="payoutAccount"
+                                 [ariaLabel]="'accessManagement.myPayouts.account' | translate">
+            <hq-ss-option *ngFor="let account of accounts" [value]="accountKey(account)" [label]="accountLabel(account)"></hq-ss-option>
+          </hq-searchable-select></hq-form-field>
+      </div>
+      <hq-common-table [columns]="columns" [rows]="payouts" [isLoading]="isLoading" [hasError]="hasError"
+                        [emptyMessage]="'accessManagement.myPayouts.noPayouts' | translate"
+                        [errorMessage]="'accessManagement.myPayouts.errorMessage' | translate">
+        <ng-template hqCell="createdAt" let-payout>{{ payout.createdAt | hqDate:'medium' }}</ng-template>
+        <ng-template hqCell="amount" let-payout>{{ payout.amount | hqMoney }}</ng-template>
+        <ng-template hqCell="status" let-payout>{{ statusLabel(payout.status) }}</ng-template>
+        <ng-template hqCell="note" let-payout>{{ payout.statusReason || payout.note }}</ng-template>
+      </hq-common-table>
+      <hq-table-footer
+        [page]="page"
+        [size]="pageSize"
+        [itemCount]="payouts.length"
+        [hasMore]="!isLast"
+        [totalItems]="total"
+        [loading]="isLoading"
+        [sizeOptions]="pageSizeOptions"
+        (pageChange)="goToPage($event)"
+        (sizeChange)="onPageSizeChange($event)">
+      </hq-table-footer>
+    </section>
+  </div>
+</div>

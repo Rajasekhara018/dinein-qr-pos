@@ -1,0 +1,131 @@
+// "Fees by place type": a heading, the filters in one even row, then a compact grid of lines whose inputs keep a sensible
+// width (the table would otherwise stretch them across the page) and whose fee carries its currency inside the box.
+.tf {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.tf__head {
+  h2 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--edu-ink, #1b2a4a);
+  }
+
+  p {
+    margin: 0.25rem 0 0;
+    font-size: 0.82rem;
+    color: var(--edu-muted, #5a6a7e);
+  }
+}
+
+// Three equal columns on a wide screen; the cells are top-aligned so a picker that grows a second level does not push the others.
+.tf__filters {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem 1.25rem;
+  align-items: start;
+
+  @media (max-width: 991px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @media (max-width: 575px) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.tf__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: 0;
+
+  hq-searchable-select {
+    width: 100%;
+  }
+}
+
+// The picker belongs to another component: its levels stack with an even gap and fill the cell.
+.tf__under ::ng-deep .location-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  .location-picker__level {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    margin: 0;
+
+    hq-searchable-select,
+    .input {
+      width: 100%;
+    }
+
+hq-field {
+  width: 100%;
+}
+  }
+}
+
+.tf__hint {
+  font-size: 0.75rem;
+  line-height: 1.4;
+  color: var(--edu-muted, #5a6a7e);
+}
+
+.tf__input {
+  width: 100%;
+  max-width: 13rem;
+}
+
+// The shared amount field: currency symbol, the amount formatted to the currency's decimals, and the code.
+.tf__amount {
+  display: block;
+  max-width: 15rem;
+}
+
+.tf__state {
+  display: inline-block;
+  padding: 0.15rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  white-space: nowrap;
+  background: var(--surface-subtle, #f1f4f8);
+  color: var(--edu-muted, #5a6a7e);
+
+  &--unchanged {
+    background: color-mix(in srgb, var(--hq-primary, #0B6E4F) 10%, var(--workspace-panel, #fff));
+    color: var(--hq-link, var(--hq-primary, #0B6E4F));
+  }
+
+  &--new,
+  &--changed {
+    background: var(--theme-pending-pill-bg, #FBF0DC);
+    color: var(--theme-pending-pill-text, #8F5B00);
+  }
+
+  &--incomplete {
+    background: var(--danger-soft, #fee4e2);
+    color: var(--danger-text, #B3261E);
+  }
+}
+// Worked out by the backend's rule, never typed: shown as plain text, not a field.
+.tf__readonly {
+  font-weight: 600;
+  white-space: nowrap;
+  color: var(--edu-ink, #1b2a4a);
+}
+
+.tf__wallet-note {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.4rem !important;
+  font-size: 0.78rem;
+  color: var(--hq-link, var(--hq-primary, #0B6E4F)) !important;
+}

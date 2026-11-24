@@ -1,0 +1,34 @@
+<div class="franchise-terms franchise-terms--lines">
+  <hq-searchable-select
+    [(ngModel)]="referral.valueType"
+    [name]="idPrefix + 'Type'"
+    [ariaLabel]="'accessManagement.franchisePackages.lines.valueType' | translate"
+    [allowOther]="false">
+    <hq-ss-option *ngFor="let type of valueTypes" [value]="type" [label]="valueTypeLabel(type)"></hq-ss-option>
+  </hq-searchable-select>
+  <hq-field
+         type="number"
+         *ngIf="referral.valueType === 'PERCENTAGE'"
+         min="0"
+         max="10000"
+         step="1"
+         [(ngModel)]="referral.basisPoints"
+         [name]="idPrefix + 'Bp'"
+         [placeholder]="'accessManagement.franchisePackages.lines.basisPoints' | translate"
+         [title]="'accessManagement.franchisePackages.lines.basisPointsHint' | translate"></hq-field>
+  <hq-amount-input *ngIf="referral.valueType === 'FIXED'" valueMode="number" [showLabel]="false" [currency]="currency"
+                    [label]="'accessManagement.franchisePackages.lines.fixedAmount' | translate" [(ngModel)]="referral.fixedAmount" [name]="idPrefix + 'Fixed'"></hq-amount-input>
+  <ng-container *ngIf="referral.valueType === 'PERCENTAGE'">
+    <hq-amount-input valueMode="number" [showLabel]="false" [currency]="currency" [label]="'accessManagement.franchisePackages.lines.minAmount' | translate"
+                      [(ngModel)]="referral.minAmount" [name]="idPrefix + 'Min'"></hq-amount-input>
+    <hq-amount-input valueMode="number" [showLabel]="false" [currency]="currency" [label]="'accessManagement.franchisePackages.lines.maxAmount' | translate"
+                      [(ngModel)]="referral.maxAmount" [name]="idPrefix + 'Max'"></hq-amount-input>
+  </ng-container>
+  <hq-field
+         type="number"
+         min="1"
+         step="1"
+         [(ngModel)]="referral.maxReferralsPerMember"
+         [name]="idPrefix + 'MaxRef'"
+         [placeholder]="'accessManagement.franchisePackages.referral.maxPerMember' | translate"></hq-field>
+</div>

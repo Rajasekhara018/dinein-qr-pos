@@ -1,0 +1,269 @@
+@use './org-import-shared' as shared;
+
+// Vertical rhythm: 1.5rem between sections, 1rem inside a card, 0.5rem between tight items.
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding-block: 0.5rem 1.5rem;
+}
+
+.import-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  min-width: 0;
+}
+
+@include shared.card-parts;
+
+.import-card-title {
+  @include shared.card-title;
+}
+
+.btn-secondary,
+.btn-accent {
+  @include shared.button-base;
+}
+
+.import-downloads {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-inline-start: auto;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.75rem;
+}
+
+.muted {
+  margin: 0;
+  color: var(--edu-muted);
+}
+
+.failure {
+  margin: 0;
+  color: var(--danger-text, #b91c1c);
+}
+
+.summary {
+  @include shared.stat-tiles;
+}
+
+// The state of a batch as a small pill (the words are always shown, colour only helps).
+.status {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.7rem;
+  border-radius: 999px;
+  background: var(--theme-highlight-soft);
+  color: var(--edu-ink);
+  font-size: 0.75rem;
+  font-weight: 700;
+
+  &[data-status='APPLIED'] {
+    background: var(--theme-success-pill-bg);
+    color: var(--theme-success-pill-text);
+  }
+
+  &[data-status='FAILED'] {
+    background: var(--theme-failed-pill-bg);
+    color: var(--theme-failed-pill-text);
+  }
+
+  &[data-status='APPLYING'],
+  &[data-status='VALIDATED'] {
+    background: var(--theme-pending-pill-bg);
+    color: var(--theme-pending-pill-text);
+  }
+}
+
+// ---- the stepper: numbered circles joined by a line, each with a compact card under it ----------
+
+.import-stepper {
+  margin: 0;
+}
+
+.import-steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.import-step {
+  position: relative;
+  min-width: 0;
+
+  button {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 0.875rem;
+    width: 100%;
+    height: 100%;
+    padding: 1rem 1.125rem;
+    text-align: start;
+    color: var(--edu-ink);
+    background: var(--workspace-panel);
+    border: 1px solid var(--theme-soft-border);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background-color 0.12s ease, border-color 0.12s ease, box-shadow 0.12s ease;
+
+    &:hover {
+      background: var(--theme-row-hover);
+    }
+
+    &:focus-visible {
+      outline: 3px solid var(--button-accent-start, #d4a017);
+      outline-offset: 2px;
+    }
+  }
+
+  &--active button {
+    border-color: var(--button-accent-start, #d4a017);
+    background: var(--theme-highlight-soft);
+    box-shadow: 0 0 0 1px var(--button-accent-start, #d4a017);
+  }
+
+  &__number {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border: 2px solid var(--edu-muted);
+    border-radius: 50%;
+    background: var(--workspace-panel);
+    color: var(--edu-muted);
+    font-weight: 700;
+    font-size: 0.95rem;
+  }
+
+  &--active &__number {
+    border-color: var(--button-accent-start, #d4a017);
+    color: var(--edu-ink);
+  }
+
+  &__body {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+    min-width: 0;
+  }
+
+  &__of {
+    font-size: 0.7rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--edu-muted);
+  }
+
+  &__label {
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.3;
+    overflow-wrap: anywhere;
+  }
+
+  &__state {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.8rem;
+    color: var(--edu-muted);
+  }
+
+  &__facts,
+  &__hint {
+    font-size: 0.78rem;
+    color: var(--edu-muted);
+    overflow-wrap: anywhere;
+  }
+
+  &__hint {
+    font-style: italic;
+  }
+
+  // not started: dashed ring · preview not confirmed: dotted ring · in progress: solid accent ring · done: filled circle
+  &[data-state='NOT_STARTED'] &__number {
+    border-style: dashed;
+  }
+
+  &[data-state='PREVIEW'] &__number {
+    border-style: dotted;
+    border-width: 3px;
+  }
+
+  &[data-state='IN_PROGRESS'] &__number {
+    border-style: solid;
+    border-color: var(--button-accent-start, #d4a017);
+    color: var(--edu-ink);
+  }
+
+  &[data-state='IN_PROGRESS'] &__state {
+    color: var(--edu-ink);
+    font-weight: 600;
+  }
+
+  &[data-state='DONE'] &__number {
+    border-color: var(--theme-success-pill-text);
+    background: var(--theme-success-pill-text);
+    color: #fff;
+  }
+
+  &[data-state='DONE'] &__state {
+    color: var(--theme-success-pill-text);
+    font-weight: 600;
+  }
+}
+
+// ---- intro of a step: purpose, what it builds on, and a slim banner when that step is not started ----
+
+.import-step-intro {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0;
+}
+
+.import-purpose {
+  margin: 0;
+  font-family: var(--hq-font);
+  font-size: 1.1rem;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--edu-ink);
+}
+
+.import-hint {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0.6rem 1rem;
+  border-inline-start: 4px solid var(--button-accent-start, #d4a017);
+  border-radius: 0.5rem;
+  background: var(--theme-highlight-soft);
+  color: var(--edu-ink);
+  font-size: 0.875rem;
+}
+
+.import-step-intro .import-hint {
+  padding-block: 0.4rem;
+}
+
+.table-heading {
+  margin: 0;
+}

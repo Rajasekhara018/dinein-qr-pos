@@ -1,0 +1,20 @@
+@if (data.confirm) {
+  <div class="hq-close">
+    @if (data.title) {
+      <h6 class="hq-close__title">{{ data.title }}</h6>
+    }
+    <p class="hq-close__message">{{ data.message }}</p>
+    <div class="hq-close__actions">
+      <button type="button" hqButton="secondary" appearance="text" (click)="answer(false)">No</button>
+      <button type="button" hqButton="primary" (click)="answer(true)">Yes</button>
+    </div>
+  </div>
+} @else {
+  <div class="hq-close hq-close--center">
+    <h6 class="hq-close__title hq-close__title--success">{{ data.title || 'Thank you!' }}</h6>
+    @if (data.message) {
+      <p class="hq-close__message">{{ data.message }}</p>
+    }
+    <button type="button" hqButton="primary" (click)="answer(false)">Close</button>
+  </div>
+}

@@ -1,0 +1,34 @@
+<section class="table-surface gls" *ngIf="state !== 'off'" [attr.aria-label]="texts.stepsTitle | translate">
+  <div class="table-surface__header">
+    <div class="table-heading">
+      <span class="table-kicker">{{ texts.stepsTitle | translate }}</span>
+    </div>
+  </div>
+
+  <div class="table-surface__body">
+    <p class="gls__muted">{{ texts.stepsHint | translate }}</p>
+
+    <hq-loading-state *ngIf="state === 'loading'" [label]="texts.stepsLoading | translate"></hq-loading-state>
+
+    <div class="gls__muted" *ngIf="state === 'unavailable'" role="alert">
+      <p>{{ texts.stepsUnavailable | translate }}</p>
+      <button hqButton="secondary" type="button" (click)="load()">{{ texts.stepsRetry | translate }}</button>
+    </div>
+
+    <p class="gls__muted" *ngIf="state === 'empty'">{{ texts.stepsEmpty | translate }}</p>
+
+    <ul class="gls__list" *ngIf="state === 'ready'">
+      <li class="gls__item" *ngFor="let step of steps; trackBy: trackStep" [attr.data-step]="step.id" [ngClass]="'gls__item--' + step.mark">
+        <i class="bi gls__icon" [ngClass]="markIcon(step)" aria-hidden="true"></i>
+        <span class="gls__mark">{{ markKey(step) | translate }}</span>
+        <span class="gls__text">{{ step.textKey | translate }}</span>
+        <span class="gls__tag" *ngIf="step.required">{{ texts.stepRequired | translate }}</span>
+        <span class="gls__tag gls__tag--optional" *ngIf="!step.required">{{ texts.stepOptional | translate }}</span>
+        <span class="gls__waiting" *ngIf="step.waiting">{{ texts.stepWaiting | translate }}</span>
+        <a class="gls__fix" *ngIf="step.fix as fix" [routerLink]="fix.path" [queryParams]="fix.queryParams">
+          <i class="bi bi-wrench-adjustable" aria-hidden="true"></i> {{ texts.stepFix | translate }}
+        </a>
+      </li>
+    </ul>
+  </div>
+</section>

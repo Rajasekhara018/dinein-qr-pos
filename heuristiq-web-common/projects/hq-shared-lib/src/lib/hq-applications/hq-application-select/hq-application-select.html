@@ -1,0 +1,24 @@
+<div class="application-select" [class.is-disabled]="disabled">
+  <label class="application-select__label" *ngIf="label" [attr.for]="inputId">
+    {{ label }}<span *ngIf="required" class="application-select__required">*</span>
+  </label>
+
+  <hq-searchable-select
+    class="application-select__control"
+    [inputId]="inputId"
+    [allowOther]="false"
+    [placeholder]="placeholder"
+    [hasError]="failed && all.length === 0"
+    [ngModel]="value"
+    [disabled]="disabled"
+    (ngModelChange)="select($event ?? '')"
+    (focusout)="touch()"
+  >
+    <hq-ss-option *ngIf="valueOutsideOptions" [value]="value" [label]="value"></hq-ss-option>
+    <hq-ss-option *ngFor="let app of options" [value]="app.code" [label]="labelOf(app)"></hq-ss-option>
+  </hq-searchable-select>
+
+  <div class="application-select__message" *ngIf="message" [class.is-error]="failed && all.length === 0" role="status">
+    {{ message }}
+  </div>
+</div>

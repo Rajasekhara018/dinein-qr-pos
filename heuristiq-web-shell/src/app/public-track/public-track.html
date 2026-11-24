@@ -1,0 +1,138 @@
+<div class="public-track">
+  <header class="public-track__bar">
+    <h1 class="public-track__title">
+      <i class="bi bi-geo-alt-fill" aria-hidden="true"></i>
+      {{ 'publicTrack.heading' | translate }}
+    </h1>
+    <hq-form-field class="visually-hidden" for="publicTrackLanguage" [label]="'publicTrack.language' | translate"><hq-searchable-select
+      inputId="publicTrackLanguage"
+      class="public-track__lang"
+      [allowOther]="false"
+      [ngModel]="currentLanguage"
+      (ngModelChange)="onLanguageChange($event)"
+      [ariaLabel]="'publicTrack.language' | translate"
+    >
+      @for (lang of languages; track lang.code) {
+        <hq-ss-option [value]="lang.code" [label]="lang.nativeName"></hq-ss-option>
+      }
+    </hq-searchable-select></hq-form-field>
+  </header>
+
+  <main class="public-track__body">
+    <div
+      #mapHost
+      class="public-track__map"
+      [class.public-track__map--hidden]="!showMap"
+      role="region"
+      [attr.aria-label]="'publicTrack.mapAria' | translate"
+    ></div>
+
+    @switch (state) {
+      @case ('loading') {
+        <section class="public-track__state" role="status" aria-live="polite">
+          <hq-loading-state [label]="'publicTrack.loading' | translate"></hq-loading-state>
+        </section>
+      }
+      @case ('invalid') {
+        <section class="public-track__state" role="alert">
+          <i class="bi bi-link-45deg public-track__state-icon" aria-hidden="true"></i>
+          <h2>{{ 'publicTrack.invalid.title' | translate }}</h2>
+          <p>{{ 'publicTrack.invalid.body' | translate }}</p>
+        </section>
+      }
+      @case ('ended') {
+        <section class="public-track__state" role="status">
+          <i class="bi bi-flag-fill public-track__state-icon text-success" aria-hidden="true"></i>
+          <h2>{{ 'publicTrack.ended.title' | translate }}</h2>
+          <p>{{ 'publicTrack.ended.body' | translate }}</p>
+        </section>
+      }
+      @case ('unavailable') {
+        <section class="public-track__state" role="status" aria-live="polite">
+          <i class="bi bi-cloud-slash public-track__state-icon" aria-hidden="true"></i>
+          <h2>{{ 'publicTrack.unavailable.title' | translate }}</h2>
+          <p>{{ 'publicTrack.unavailable.body' | translate }}</p>
+        </section>
+      }
+      @case ('live') {
+        @if (data) {
+          @if (mapFailed) {
+            <hq-alert class="public-track__notice" tone="warning" dense>{{ 'publicTrack.mapFailed' | translate }}</hq-alert>
+          }
+          <section class="public-track__card" aria-live="polite">
+            @if (stale) {
+              <div class="public-track__stale" role="status">
+                <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i>
+                {{ 'publicTrack.stale' | translate }}
+              </div>
+            }
+            <div class="public-track__status-row">
+              <span class="public-track__status">{{ statusLabel }}</span>
+              @if (etaText) {
+                <span class="public-track__eta">{{ etaText }}</span>
+              }
+            </div>
+
+            <div class="public-track__driver">
+              @if (data.driverPhotoUrl && !photoFailed) {
+                <img
+                  class="public-track__photo"
+                  [src]="data.driverPhotoUrl"
+                  [alt]="'publicTrack.driverPhotoAlt' | translate"
+                  referrerpolicy="no-referrer"
+                  (error)="onPhotoError()"
+                />
+              } @else {
+                <span class="public-track__photo public-track__photo--empty" aria-hidden="true"><i class="bi bi-person-fill"></i></span>
+              }
+              <div class="public-track__driver-text">
+                <div class="public-track__driver-name">{{ data.driverFirstName || ('publicTrack.driverFallback' | translate) }}</div>
+                @if (data.vehicleModel || data.vehicleNumber) {
+                  <div class="public-track__vehicle">
+                    @if (data.vehicleModel) {
+                      <span>{{ data.vehicleModel }}</span>
+                    }
+                    @if (data.vehicleNumber) {
+                      <span class="public-track__plate" [attr.aria-label]="'publicTrack.plateAria' | translate: { plate: data.vehicleNumber }">{{ data.vehicleNumber }}</span>
+                    }
+                  </div>
+                }
+              </div>
+            </div>
+
+            <dl class="public-track__route">
+              @if (data.pickup?.label) {
+                <div>
+                  <dt><i class="bi bi-circle-fill public-track__dot--pickup" aria-hidden="true"></i>{{ 'publicTrack.pickup' | translate }}</dt>
+                  <dd>{{ data.pickup?.label }}</dd>
+                </div>
+              }
+              @if (data.drop?.label) {
+                <div>
+                  <dt><i class="bi bi-circle-fill public-track__dot--drop" aria-hidden="true"></i>{{ 'publicTrack.drop' | translate }}</dt>
+                  <dd>{{ data.drop?.label }}</dd>
+                </div>
+              }
+            </dl>
+
+            <div class="public-track__footer">
+              <span>
+                @if (!hasLocation) {
+                  {{ 'publicTrack.noLocation' | translate }}
+                } @else if (lastUpdatedText) {
+                  {{ 'publicTrack.lastUpdated' | translate: { time: lastUpdatedText } }}
+                }
+              </span>
+              @if (!mapFailed) {
+                <button hqButton="primary" appearance="outline" size="sm" type="button" (click)="recenter()">
+                  <i class="bi bi-crosshair" aria-hidden="true"></i>
+                  {{ 'publicTrack.recenter' | translate }}
+                </button>
+              }
+            </div>
+          </section>
+        }
+      }
+    }
+  </main>
+</div>

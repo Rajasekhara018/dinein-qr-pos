@@ -1,0 +1,140 @@
+<div class="hq-onb" [attr.data-uid]="uid" [formGroup]="form">
+  @for (step of steps; track trackStep($index, step)) {
+    <section class="hq-onb__step">
+      @if (!hideStepTitles && step.title) {
+        <h4 class="hq-onb__step-title">{{ step.title }}</h4>
+      }
+      <div class="hq-onb__grid">
+        @for (field of step.fields; track trackField($index, field)) {
+          @if (!hiddenFields.includes(field.key)) {
+          @switch (kind(field)) {
+            @case ('document') {}
+            @case ('checkbox') {
+              <div class="hq-onb__field hq-onb__field--full">
+                <hq-checkbox class="hq-onb__check" [inputId]="id(field)" [formControlName]="field.key" [label]="field.label"
+                              [required]="!!field.required" [invalid]="!!errorOf(field)"></hq-checkbox>
+                @if (errorOf(field); as message) {
+                  <div class="hq-onb__error">{{ message }}</div>
+                }
+              </div>
+            }
+            @case ('phone') {
+              <div class="hq-onb__field">
+                <hq-phone-number-input
+                  [formControlName]="field.key"
+                  [label]="field.label"
+                  [isRequired]="!!field.required"
+                  [defaultCountry]="phoneCountry"
+                ></hq-phone-number-input>
+              </div>
+            }
+            @default {
+              <div class="hq-onb__field">
+                <label class="hq-onb__label" [for]="id(field)">
+                  {{ field.label }}@if (field.required) {<span class="hq-onb__required">*</span>}
+                </label>
+                @switch (kind(field)) {
+                  @case ('select') {
+                    <hq-searchable-select
+                      class="hq-onb__select"
+                      [inputId]="id(field)"
+                      [formControlName]="field.key"
+                      [allowOther]="false"
+                      [placeholder]="selectPlaceholder"
+                      [hasError]="!!errorOf(field)"
+                    >
+                      @for (value of choices(field); track value) {
+                        <hq-ss-option [value]="value" [label]="choiceText(field, value)"></hq-ss-option>
+                      }
+                    </hq-searchable-select>
+                  }
+                  @case ('number') {
+                    <hq-field
+                      class="hq-onb__input"
+                      type="number"
+                      inputmode="decimal"
+                      [inputId]="id(field)"
+                      [formControlName]="field.key"
+                      [min]="field.minValue ?? null"
+                      [max]="field.maxValue ?? null"
+                      [invalid]="!!errorOf(field)"
+                    ></hq-field>
+                  }
+                  @case ('date') {
+                    <hq-field
+                      class="hq-onb__input"
+                      type="date"
+                      [inputId]="id(field)"
+                      [formControlName]="field.key"
+                      [min]="dateLimits[field.key]?.min ?? null"
+                      [max]="dateLimits[field.key]?.max ?? null"
+                      [invalid]="!!errorOf(field)"
+                    ></hq-field>
+                  }
+                  @case ('text') {
+                    @if (isSearchable(field)) {
+                      <hq-searchable-select
+                        [formControlName]="field.key"
+                        [inputId]="id(field)"
+                        [options]="optionsOf(field)"
+                        [blockedHint]="blockedHintOf(field)"
+                        [showUnavailableNotice]="!hasParent(field)"
+                        [loading]="loadingFields.includes(field.key)"
+                        [loadFailed]="failedFields.includes(field.key)"
+                        [hasError]="!!errorOf(field)"
+                        (retry)="retryField.emit(field.key)"
+                      ></hq-searchable-select>
+                    } @else {
+                      <hq-field
+                        class="hq-onb__input"
+                        type="text"
+                        [inputId]="id(field)"
+                        [formControlName]="field.key"
+                        [maxLength]="field.maxLength ?? null"
+                        [showCounter]="false"
+                        [list]="suggestionsOf(field).length ? listId(field) : ''"
+                        [autocomplete]="suggestionsOf(field).length ? 'off' : ''"
+                        [invalid]="!!errorOf(field)"
+                      ></hq-field>
+                      @if (suggestionsOf(field).length) {
+                        <datalist [id]="listId(field)">
+                          @for (value of suggestionsOf(field); track value) {
+                            <option [value]="value"></option>
+                          }
+                        </datalist>
+                      }
+                    }
+                  }
+                  @default {
+                    <hq-field
+                      class="hq-onb__input"
+                      [type]="kind(field) === 'email' ? 'email' : 'text'"
+                      [inputId]="id(field)"
+                      [formControlName]="field.key"
+                      [maxLength]="field.maxLength ?? null"
+                      [showCounter]="false"
+                      [list]="suggestionsOf(field).length ? listId(field) : ''"
+                      [autocomplete]="suggestionsOf(field).length ? 'off' : ''"
+                      [invalid]="!!errorOf(field)"
+                    ></hq-field>
+                    @if (suggestionsOf(field).length) {
+                      <datalist [id]="listId(field)">
+                        @for (value of suggestionsOf(field); track value) {
+                          <option [value]="value"></option>
+                        }
+                      </datalist>
+                    }
+                  }
+                }
+                @if (errorOf(field); as message) {
+                  <div class="hq-onb__error">{{ message }}</div>
+                }
+              </div>
+            }
+          }
+          }
+        }
+      </div>
+    </section>
+  }
+</div>

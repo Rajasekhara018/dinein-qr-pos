@@ -1,0 +1,51 @@
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: railcab-uam
+  labels:
+    app: railcab-uam
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: railcab-uam
+  # PLACEHOLDERS, to be replaced by the capacity model and the load test. The capacity numbers in the earlier comments of
+  # this file (logins/s per pod, req/s per core) were estimates, not measurements of the 10-million-user target.
+  #   minReplicas: enough that losing one pod (deploy, node failure) still carries the off-peak load, and at least 2.
+  #   maxReplicas: bounded by the database, not by CPU: maxReplicas x pool size (UAM_POSTGRES_MAX_POOL_SIZE) must stay
+  #                below Postgres max_connections minus headroom (see ops/SIZING.md).
+  minReplicas: 4
+  maxReplicas: 12
+  metrics:
+    # CPU utilisation is a percentage of the CPU REQUEST (2 cores here), so 65% means about 1.3 cores per pod; the
+    # container limit (4) is the burst ceiling. Password hashing is CPU bound, so CPU is the right first signal.
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 65
+    # OPTIONAL custom metric (needs prometheus-adapter or KEDA exposing it as a Pods metric; remove if unavailable):
+    # requests per second per pod, derived from http_server_requests_seconds_count. Set the target from the load
+    # test result (sustainable req/s per pod at the target latency), do not guess it.
+    # - type: Pods
+    #   pods:
+    #     metric:
+    #       name: http_server_requests_per_second
+    #     target:
+    #       type: AverageValue
+    #       averageValue: "REPLACE_FROM_LOAD_TEST"
+  behavior:
+    # Scale up fast (a login burst is short), scale down slowly (avoid flapping, keep warm JIT and pools).
+    scaleUp:
+      stabilizationWindowSeconds: 30
+      policies:
+        - type: Pods
+          value: 2
+          periodSeconds: 60
+    scaleDown:
+      stabilizationWindowSeconds: 300
+      policies:
+        - type: Pods
+          value: 1
+          periodSeconds: 120

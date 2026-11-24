@@ -1,0 +1,87 @@
+<div class="address-input" [class.is-disabled]="disabled" [class.is-compact]="variant === 'compact'">
+  <label class="address-input__label">
+    {{ displayLabel }}
+    <span *ngIf="isRequired" class="address-input__required">*</span>
+  </label>
+
+  <div class="address-input__grid">
+    <div class="address-input__field address-input__field--full">
+      <span class="address-input__field-label">{{ texts.linesLabel() }}</span>
+      <hq-field
+        class="address-input__input"
+        [placeholder]="texts.linesPlaceholder()"
+        [ariaLabel]="texts.linesLabel()"
+        [disabled]="disabled"
+        [ngModel]="value.lines"
+        [ngModelOptions]="{ standalone: true }"
+        (ngModelChange)="updateField('lines', $event)"
+        (blur)="onBlur()"
+      ></hq-field>
+      <div class="address-input__error" *ngIf="fieldError('lines')">{{ fieldError('lines') }}</div>
+    </div>
+
+    <div class="address-input__field" *ngIf="showLandmark">
+      <span class="address-input__field-label">{{ texts.landmarkLabel() }}</span>
+      <hq-field
+        class="address-input__input"
+        [placeholder]="texts.landmarkPlaceholder()"
+        [ariaLabel]="texts.landmarkLabel()"
+        [disabled]="disabled"
+        [ngModel]="value.landmark"
+        [ngModelOptions]="{ standalone: true }"
+        (ngModelChange)="updateField('landmark', $event)"
+        (blur)="onBlur()"
+      ></hq-field>
+    </div>
+
+    <div class="address-input__field">
+      <span class="address-input__field-label">{{ texts.cityLabel() }}</span>
+      <hq-field
+        class="address-input__input"
+        [placeholder]="texts.cityPlaceholder()"
+        [ariaLabel]="texts.cityLabel()"
+        [disabled]="disabled"
+        [ngModel]="value.city"
+        [ngModelOptions]="{ standalone: true }"
+        (ngModelChange)="updateField('city', $event)"
+        (blur)="onBlur()"
+      ></hq-field>
+      <div class="address-input__error" *ngIf="fieldError('city')">{{ fieldError('city') }}</div>
+    </div>
+
+    <div class="address-input__field">
+      <span class="address-input__field-label">{{ texts.stateLabel() }}</span>
+      <hq-field
+        class="address-input__input"
+        [placeholder]="texts.statePlaceholder()"
+        [ariaLabel]="texts.stateLabel()"
+        [disabled]="disabled"
+        [ngModel]="value.state"
+        [ngModelOptions]="{ standalone: true }"
+        (ngModelChange)="updateField('state', $event)"
+        (blur)="onBlur()"
+      ></hq-field>
+      <div class="address-input__error" *ngIf="fieldError('state')">{{ fieldError('state') }}</div>
+    </div>
+
+    <div class="address-input__field">
+      <span class="address-input__field-label">{{ texts.pincodeLabel() }}</span>
+      <hq-field
+        class="address-input__input" inputmode="numeric"
+        [placeholder]="texts.pincodePlaceholder()"
+        [ariaLabel]="texts.pincodeLabel()"
+        [disabled]="disabled"
+        [ngModel]="value.pincode"
+        [ngModelOptions]="{ standalone: true }"
+        (ngModelChange)="updateField('pincode', $event)"
+        (blur)="onBlur()"
+      ></hq-field>
+      <div class="address-input__error" *ngIf="fieldError('pincode')">{{ fieldError('pincode') }}</div>
+    </div>
+
+    <div class="address-input__field">
+      <span class="address-input__field-label">{{ texts.countryLabel() }}</span>
+      <hq-field class="address-input__input" [ariaLabel]="texts.countryLabel()" [value]="country" [disabled]="true"></hq-field>
+    </div>
+  </div>
+</div>

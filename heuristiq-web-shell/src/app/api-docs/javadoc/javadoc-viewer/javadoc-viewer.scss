@@ -1,0 +1,101 @@
+.jd-viewer {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    height: 100%;
+
+    &__bar {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    &__title {
+        display: flex;
+        flex-direction: column;
+        line-height: 1.2;
+        margin-right: auto;
+
+        strong {
+            font-size: 1.05rem;
+        }
+    }
+
+    &__kicker {
+        font-size: 0.7rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--theme-hero-mid, #2563eb);
+    }
+
+    &__actions {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    &__hint {
+        margin: 0;
+        font-size: 0.78rem;
+        color: var(--edu-muted, #64748b);
+    }
+
+    &__frame {
+        position: relative;
+        flex: 1;
+        min-height: 72vh;
+        border: 1px solid var(--workspace-border, #e2e8f0);
+        border-radius: 0.75rem;
+        overflow: hidden;
+        background: #fff;
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            min-height: 72vh;
+            border: 0;
+        }
+    }
+
+    &__unavailable {
+        position: absolute;
+        inset: 0;
+        z-index: 2;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 1.5rem;
+        text-align: center;
+        background: var(--workspace-panel, #fff);
+        color: var(--edu-muted, #64748b);
+
+        i {
+            font-size: 2rem;
+            color: #b45309;
+        }
+
+        p {
+            max-width: 46ch;
+            margin: 0 0 0.5rem;
+        }
+    }
+
+    &__frame-hidden {
+        visibility: hidden;
+    }
+
+    &__loading {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--edu-muted, #64748b);
+        background: var(--workspace-panel, #fff);
+        pointer-events: none;
+        z-index: 1;
+    }
+}

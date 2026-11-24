@@ -1,0 +1,120 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.3.5'
+    id 'io.spring.dependency-management' version '1.1.6'
+    id 'jacoco'
+}
+group = 'com.heuristiq'
+version = '0.0.1'
+java { toolchain { languageVersion = JavaLanguageVersion.of(21) } }
+repositories { mavenCentral() }
+ext {
+    springCloudVersion = "2023.0.3"
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
+}
+dependencies {
+    implementation 'com.heuristiq:realboom-resilient-client'
+    // Phone parsing/E.164/validation for any country (composite build)
+    implementation 'com.heuristiq:realboom-phone'
+    implementation 'org.springframework.kafka:spring-kafka'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    // JJWT — JWT generation and validation (bearer-token validation only in this service)
+    implementation 'io.jsonwebtoken:jjwt-api:0.12.6'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.6'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.6'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    // API docs -- /v3/api-docs + /swagger-ui.html, aggregated by Rider_ApiGateway's Swagger UI.
+    // 2.6.0 = the Spring Boot 3.3.x line (same as this repo's other Boot 3 services).
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0'
+    // WebClient — used (in blocking .block() style) for outbound inter-service HTTP calls
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    // JPA/Postgres — this service's persistence store
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    //Eureka Service Registry
+    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+    runtimeOnly 'org.postgresql:postgresql'
+    implementation 'org.flywaydb:flyway-core'
+    runtimeOnly 'org.flywaydb:flyway-database-postgresql'
+    // Razorpay Java SDK — order creation, webhook signature verification, refunds
+    implementation 'com.razorpay:razorpay-java:1.4.5'
+    // ShedLock — prevents duplicate scheduled-job execution across instances (settlement job),
+    // same libs/versions as Rider_RideService's StaleSearchScheduler/SosEscalationScheduler.
+    implementation 'net.javacrumbs.shedlock:shedlock-spring:5.13.0'
+    implementation 'net.javacrumbs.shedlock:shedlock-provider-jdbc-template:5.13.0'
+    implementation 'org.projectlombok:lombok:1.18.30'
+    annotationProcessor 'org.projectlombok:lombok'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.security:spring-security-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    // Real PostgreSQL for the migration test (downloads the binaries once; no Docker needed).
+    testImplementation 'io.zonky.test:embedded-postgres:2.0.7'
+    // The default binaries cover x86-64 only. This one lets the test also run on an ARM Linux build server; elsewhere it is not used.
+    testRuntimeOnly 'io.zonky.test.postgres:embedded-postgres-binaries-linux-arm64v8:14.10.1'
+    // H2 — in-memory stand-in for Postgres in tests (no live Postgres required to compile/test)
+    testRuntimeOnly 'com.h2database:h2'
+}
+tasks.named('test') { useJUnitPlatform() }
+tasks.withType(JavaCompile).configureEach { options.compilerArgs += '-parameters' }
+
+// Full javadoc -- every type/member, down to private.
+tasks.named('javadoc') {
+    source = sourceSets.main.allJava
+    classpath = sourceSets.main.compileClasspath
+    options.encoding = 'UTF-8'
+    options.charSet = 'UTF-8'
+    options.docEncoding = 'UTF-8'
+    options.memberLevel = JavadocMemberLevel.PRIVATE
+    options.addStringOption('Xdoclint:none', '-quiet')
+    failOnError = false
+}
+
+// Ships the javadoc inside the boot jar as static content, served publicly at
+// /javadoc/index.html (through the gateway: /api/<service>/javadoc/).
+tasks.named('bootJar') {
+    from(tasks.named('javadoc')) {
+        into 'BOOT-INF/classes/static/javadoc'
+    }
+}
+
+// ── Code coverage (JaCoCo) ───────────────────────────────────────────────────────────────────────
+// Run:  ./gradlew test jacocoTestReport      HTML report: build/reports/jacoco/test/html/index.html
+//       (XML for CI/Sonar: build/reports/jacoco/test/jacocoTestReport.xml)
+// Coverage is produced only when jacocoTestReport is asked for, so a plain `./gradlew test` is not slowed down.
+jacoco {
+    toolVersion = '0.8.13' // first line of releases with full Java 21+ support on current JDKs
+}
+
+tasks.named('jacocoTestReport') {
+    // mustRunAfter, not dependsOn: as a finalizer of `test` it must still run when a test fails
+    mustRunAfter tasks.named('test')
+    reports {
+        xml.required = true
+        html.required = true
+        csv.required = false
+    }
+}
+
+// With -Pcoverage the report is written even when a test fails (known failures would otherwise stop `jacocoTestReport`).
+// Without it a plain `./gradlew test` stays as fast as before.
+tasks.named('test') {
+    if (project.hasProperty('coverage') || gradle.startParameter.taskNames.any { it == 'coverage' || it.endsWith(':coverage') }) {
+        finalizedBy tasks.named('jacocoTestReport')
+    }
+}
+
+// One-word entry point: ./gradlew coverage  (runs the tests, then writes build/reports/jacoco/test/html/index.html even if a test fails)
+tasks.register('coverage') {
+    group = 'verification'
+    description = 'Runs the tests and writes the JaCoCo coverage report (HTML + XML).'
+    // jacocoTestReport is attached to `test` as a finalizer (see above), so it also runs when a test fails
+    dependsOn tasks.named('test')
+}

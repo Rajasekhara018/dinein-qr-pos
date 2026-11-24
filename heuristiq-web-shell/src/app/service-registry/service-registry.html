@@ -1,0 +1,76 @@
+<hq-page-header
+  [kicker]="'apiDocs.eyebrow' | translate"
+  [title]="'serviceRegistry.title' | translate"
+  [subtitle]="'serviceRegistry.subtitle' | translate">
+</hq-page-header>
+
+<hq-screen-help screen="serviceRegistry"></hq-screen-help>
+
+<hq-stat-cards [stats]="stats"></hq-stat-cards>
+
+<div class="table-surface">
+  <div class="table-surface__header">
+    <div class="table-heading">
+      <span class="table-kicker" *ngIf="lastUpdated">
+        {{ 'serviceRegistry.lastUpdated' | translate: { time: (lastUpdated | hqDate:'mediumTime') } }}
+      </span>
+    </div>
+    <div class="reg-actions">
+      <hq-checkbox class="reg-auto" [(ngModel)]="autoRefresh" (ngModelChange)="onAutoRefreshChange()"><span>{{ 'serviceRegistry.autoRefresh' | translate }}</span></hq-checkbox>
+      <button type="button" class="table-create-btn" (click)="refresh()" [disabled]="isLoading">
+        <i class="bi bi-arrow-clockwise"></i> {{ 'serviceRegistry.refresh' | translate }}
+      </button>
+    </div>
+  </div>
+
+  <div class="table-surface__body">
+    <hq-filter-bar collapsible>
+      <hq-field
+             type="text"
+             [placeholder]="'serviceRegistry.searchPlaceholder' | translate"
+             [(ngModel)]="query"
+             (ngModelChange)="applyFilters()"></hq-field>
+      <hq-searchable-select
+        [(ngModel)]="statusFilter"
+        (ngModelChange)="applyFilters()"
+        [allowOther]="false"
+        [placeholder]="'shared.listPage.anyStatus' | translate">
+        <hq-ss-option *ngFor="let s of statuses" [value]="s" [label]="statusLabel(s)"></hq-ss-option>
+      </hq-searchable-select>
+      <div hqFilterActions>
+        <button hqButton="secondary" type="button" (click)="clearFilters()">{{ 'shared.listPage.clear' | translate }}</button>
+      </div>
+    </hq-filter-bar>
+
+    <hq-loading-state *ngIf="isLoading && rows.length === 0" [label]="'serviceRegistry.loading' | translate"></hq-loading-state>
+    <hq-error-state *ngIf="hasError" [title]="'serviceRegistry.loadFailed' | translate" (retry)="refresh()"></hq-error-state>
+    <hq-empty-state *ngIf="!isLoading && !hasError && rows.length === 0" [title]="'serviceRegistry.empty' | translate"></hq-empty-state>
+
+    <div class="reg-app" *ngFor="let row of rows; trackBy: trackByApp">
+      <div class="reg-app__head">
+        <strong>{{ row.name }}</strong>
+        <span class="reg-count" [class.reg-count--bad]="row.up < row.total">
+          {{ 'serviceRegistry.upOfTotal' | translate: { up: row.up, total: row.total } }}
+        </span>
+      </div>
+      <div class="reg-table-wrap">
+        <hq-common-table [columns]="columns" [rows]="row.instances" [showActionsColumn]="false">
+          <ng-template hqCell="instance" let-i><span class="reg-mono">{{ i.instanceId }}</span></ng-template>
+          <ng-template hqCell="address" let-i>
+            {{ i.host || i.ip || '—' }}<span *ngIf="i.port">:{{ i.port }}</span>
+            <div class="reg-sub" *ngIf="i.ip && i.host && i.ip !== i.host">{{ i.ip }}</div>
+          </ng-template>
+          <ng-template hqCell="status" let-i><hq-status-badge [tone]="statusTone(i.status)">{{ statusLabel(i.status) }}</hq-status-badge></ng-template>
+          <ng-template hqCell="registered" let-i>{{ i.registeredAt ? (i.registeredAt | hqDate:'medium') : '—' }}</ng-template>
+          <ng-template hqCell="lastRenewed" let-i>{{ i.lastRenewedAt ? (i.lastRenewedAt | hqDate:'mediumTime') : '—' }}</ng-template>
+          <ng-template hqCell="links" let-i>
+            <span class="reg-links">
+              <a *ngIf="i.healthCheckUrl" [href]="i.healthCheckUrl" target="_blank" rel="noopener noreferrer"
+                 [title]="'serviceRegistry.health' | translate"><i class="bi bi-heart-pulse"></i></a>
+            </span>
+          </ng-template>
+        </hq-common-table>
+      </div>
+    </div>
+  </div>
+</div>

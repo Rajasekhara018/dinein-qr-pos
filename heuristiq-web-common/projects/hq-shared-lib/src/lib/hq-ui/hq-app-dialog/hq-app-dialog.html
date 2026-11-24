@@ -1,0 +1,87 @@
+<div class="app-dialog" [class.danger]="data.variant === 'danger'" [class.warning]="data.variant === 'warning'">
+  <div class="dialog-header">
+    <div class="dialog-icon">
+      <i class="bi {{ data.icon || (data.variant === 'danger' ? 'bi-exclamation-triangle' : 'bi-info-circle') }}"></i>
+    </div>
+    <div>
+      <h2>{{ data.title }}</h2>
+      <p *ngIf="data.message">{{ data.message }}</p>
+    </div>
+  </div>
+
+  <div class="dialog-fields" *ngIf="hasFields">
+    <ng-container *ngFor="let field of data.fields">
+      <!-- A checkbox carries its own label, so it is not wrapped in a <label> (nested labels toggle twice). -->
+      <div class="dialog-field dialog-field--checkbox" *ngIf="field.type === 'checkbox'; else labelledField">
+        <hq-checkbox [(ngModel)]="values[field.key]" [disabled]="!!data.loading" [label]="field.label"></hq-checkbox>
+        <small class="field-helper" *ngIf="fieldHint(field)">{{ fieldHint(field) }}</small>
+      </div>
+
+      <ng-template #labelledField>
+        <label class="dialog-field" [class.invalid]="getFieldError(field)">
+          <span>{{ field.label }} <em *ngIf="field.required">*</em></span>
+          <hq-searchable-select
+            *ngIf="field.type === 'multiselect'"
+            class="dialog-multiselect"
+            multiple
+            [allowOther]="false"
+            [(ngModel)]="values[field.key]"
+            [placeholder]="field.placeholder || field.placeholderOption || ''"
+            [ariaLabel]="field.label"
+            [hasError]="!!getFieldError(field)"
+            [disabled]="!!data.loading"
+          >
+            <hq-ss-option *ngFor="let option of field.options" [value]="option.value" [label]="option.label"></hq-ss-option>
+          </hq-searchable-select>
+          <hq-searchable-select
+            *ngIf="field.type === 'select'"
+            class="dialog-select"
+            [allowOther]="false"
+            [placeholder]="field.placeholderOption || field.placeholder || ''"
+            [ariaLabel]="field.label"
+            [hasError]="!!getFieldError(field)"
+            [(ngModel)]="values[field.key]"
+            [disabled]="!!data.loading"
+          >
+            <hq-ss-option *ngFor="let option of field.options" [value]="option.value" [label]="option.label"></hq-ss-option>
+          </hq-searchable-select>
+          <hq-field
+            *ngIf="field.type === 'textarea'"
+            class="dialog-input"
+            type="textarea"
+            [rows]="4"
+            [(ngModel)]="values[field.key]"
+            [placeholder]="field.placeholder || ''"
+            [ariaLabel]="field.label"
+            [invalid]="!!getFieldError(field)"
+            [disabled]="!!data.loading"
+          ></hq-field>
+          <hq-field
+            *ngIf="isInputField(field)"
+            class="dialog-input"
+            [type]="field.type || 'text'"
+            [(ngModel)]="values[field.key]"
+            [placeholder]="field.placeholder || ''"
+            [ariaLabel]="field.label"
+            [min]="field.min"
+            [max]="field.max"
+            [invalid]="!!getFieldError(field)"
+            [disabled]="!!data.loading"
+          ></hq-field>
+          <small class="field-helper" *ngIf="fieldHint(field) && !getFieldError(field)">{{ fieldHint(field) }}</small>
+          <small class="field-error" *ngIf="getFieldError(field)">{{ getFieldError(field) }}</small>
+        </label>
+      </ng-template>
+    </ng-container>
+  </div>
+
+  <div class="dialog-actions">
+    <button type="button" class="btn btn-cancel" [disabled]="!!data.loading" (click)="cancel()">
+      {{ cancelLabel }}
+    </button>
+    <button type="button" class="btn btn-confirm" [disabled]="!canSubmit" (click)="submit()">
+      <span *ngIf="data.loading" class="spinner-border spinner-border-sm" role="status"></span>
+      {{ confirmLabel }}
+    </button>
+  </div>
+</div>

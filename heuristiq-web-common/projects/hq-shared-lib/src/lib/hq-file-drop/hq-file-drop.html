@@ -1,0 +1,72 @@
+<input #fileInput hidden type="file" [attr.id]="inputId || null" [accept]="accept" [multiple]="multiple"
+       [disabled]="inactive" (change)="onInputChange($event)" />
+
+@if (appearance === 'button') {
+  <button type="button" class="hq-drop-button" [ngClass]="buttonClass" [attr.id]="buttonId" [disabled]="inactive"
+          [attr.aria-label]="ariaLabel || null" [attr.title]="title || null" [attr.aria-busy]="loading ? 'true' : null"
+          (click)="choose()">
+    @if (loading) {
+      <span class="hq-drop__spinner hq-drop__spinner--inline" aria-hidden="true"></span>
+    }
+    <span class="hq-drop-button__content" #projected><ng-content></ng-content></span>
+    @if (!projected.childNodes.length) {
+      {{ chooseText }}
+    }
+  </button>
+  @if (showError && errorMessage) {
+    <div class="hq-drop__error" role="alert">
+      <svg aria-hidden="true" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5"/><path d="M12 16.5h.01"/>
+      </svg>
+      <span>{{ errorMessage }}</span>
+    </div>
+  }
+} @else if (appearance === 'zone') {
+  <!-- No Angular Material here on purpose: the drop area looks the same in Material and Bootstrap apps. -->
+  <div class="hq-drop"
+       [class.hq-drop--compact]="compact"
+       [class.hq-drop--over]="dragOver"
+       [class.hq-drop--busy]="loading"
+       [class.hq-drop--disabled]="disabled"
+       [class.hq-drop--invalid]="!!errorMessage"
+       (dragenter)="onDragEnter($event)" (dragover)="onDragOver($event)"
+       (dragleave)="onDragLeave($event)" (drop)="onDrop($event)">
+    <span class="hq-drop__icon" aria-hidden="true">
+      @if (loading) {
+        <span class="hq-drop__spinner"></span>
+      } @else if (dragOver) {
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 4v11"/><path d="m7 10 5 5 5-5"/><path d="M5 20h14"/>
+        </svg>
+      } @else {
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M7 18a4.5 4.5 0 0 1-.6-8.96A6 6 0 0 1 18 8.5a4 4 0 0 1-.5 9.5"/><path d="M12 12v8"/><path d="m8.5 15.5 3.5-3.5 3.5 3.5"/>
+        </svg>
+      }
+    </span>
+
+    <div class="hq-drop__body">
+      @if (label) {
+        <div class="hq-drop__label">{{ label }}@if (isRequired) {<span class="hq-drop__required">&nbsp;*</span>}</div>
+      }
+      <div class="hq-drop__prompt">
+        <span class="hq-drop__text" aria-live="polite">{{ prompt }}</span>
+        <button type="button" class="hq-drop__choose" [attr.id]="buttonId" [disabled]="inactive" (click)="choose()">
+          {{ chooseText }}
+        </button>
+      </div>
+      @if (limits) {
+        <div class="hq-drop__hint">{{ limits }}</div>
+      }
+    </div>
+  </div>
+
+  @if (errorMessage) {
+    <div class="hq-drop__error" role="alert">
+      <svg aria-hidden="true" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5"/><path d="M12 16.5h.01"/>
+      </svg>
+      <span>{{ errorMessage }}</span>
+    </div>
+  }
+}

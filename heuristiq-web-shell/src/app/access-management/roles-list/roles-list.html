@@ -1,0 +1,89 @@
+<hq-page-header
+  [kicker]="'nav.sections.accessManagement' | translate"
+  [title]="'nav.items.roles' | translate"
+  [subtitle]="'accessManagement.roles.subtitle' | translate">
+</hq-page-header>
+
+<hq-screen-help screen="roles"></hq-screen-help>
+
+<div class="rl-stats">
+  <div class="rl-stat-card">
+    <div class="rl-stat-icon rl-stat-icon--blue"><i class="bi bi-shield-fill"></i></div>
+    <div class="rl-stat-body">
+      <p class="rl-stat-label">{{ 'accessManagement.roles.stats.total' | translate }}</p>
+      <p class="rl-stat-value">{{ totalRoles }}</p>
+    </div>
+  </div>
+  <div class="rl-stat-card">
+    <div class="rl-stat-icon rl-stat-icon--purple"><i class="bi bi-grid-fill"></i></div>
+    <div class="rl-stat-body">
+      <p class="rl-stat-label">{{ 'accessManagement.roles.stats.system' | translate }}</p>
+      <p class="rl-stat-value">{{ systemRoles }}</p>
+    </div>
+  </div>
+  <div class="rl-stat-card">
+    <div class="rl-stat-icon rl-stat-icon--orange"><i class="bi bi-people-fill"></i></div>
+    <div class="rl-stat-body">
+      <p class="rl-stat-label">{{ 'accessManagement.roles.stats.custom' | translate }}</p>
+      <p class="rl-stat-value">{{ customRoles }}</p>
+    </div>
+  </div>
+</div>
+
+<div class="table-surface">
+  <div class="table-surface__header">
+    <div class="table-heading">
+      <span class="table-kicker">{{ 'shared.listPage.total' | translate: { count: totalElements } }}</span>
+    </div>
+    <ng-container *hqHasPrivilege="['ROLE_CREATE', 'UAM_ROLES_MANAGE']">
+      <button type="button" class="table-create-btn" (click)="openCreate()">
+        <i class="bi bi-plus-lg"></i> {{ 'accessManagement.roles.createButton' | translate }}
+      </button>
+    </ng-container>
+  </div>
+
+  <div class="table-surface__body">
+    <hq-filter-bar collapsible>
+      <hq-field type="text" [placeholder]="'accessManagement.roles.fields.code' | translate" [(ngModel)]="filters.code"></hq-field>
+      <hq-field type="text" [placeholder]="'accessManagement.roles.fields.name' | translate" [(ngModel)]="filters.name"></hq-field>
+      <div hqFilterActions>
+        <button hqButton="accent" type="button" (click)="applyFilters()"><i class="bi bi-funnel"></i> {{ 'shared.listPage.filter' | translate }}</button>
+        <button hqButton="secondary" type="button" (click)="clearFilters()">{{ 'shared.listPage.clear' | translate }}</button>
+      </div>
+    </hq-filter-bar>
+
+    <hq-common-table
+      [columns]="columns"
+      [rows]="rows"
+      [isLoading]="isLoading"
+      [hasError]="hasError"
+      [emptyMessage]="'accessManagement.roles.emptyMessage' | translate"
+      [errorMessage]="'accessManagement.roles.errorMessage' | translate">
+      <ng-template #rowActions let-row>
+        <ng-container *hqHasPrivilege="['ROLE_UPDATE', 'UAM_ROLES_MANAGE']">
+          <button *ngIf="!isPlatformRole(row)" type="button" class="row-action-btn" [title]="'shared.listPage.rowActions.edit' | translate" (click)="openEdit(row)">
+            <i class="bi bi-pencil"></i>
+          </button>
+        </ng-container>
+        <ng-container *hqHasPrivilege="['ROLE_DELETE', 'UAM_ROLES_MANAGE']">
+          <!-- A built-in (system) role cannot be deleted, so the action is not offered. -->
+          <button *ngIf="!row.systemRole" type="button" class="row-action-btn danger" [title]="'shared.listPage.rowActions.delete' | translate" (click)="confirmDelete(row)">
+            <i class="bi bi-trash3"></i>
+          </button>
+        </ng-container>
+      </ng-template>
+    </hq-common-table>
+
+    <hq-table-footer
+      [page]="page"
+      [size]="pageSize"
+      [itemCount]="rows.length"
+      [hasMore]="page + 1 < totalPages"
+      [totalItems]="totalElements"
+      [loading]="isLoading"
+      [sizeOptions]="pageSizeOptions"
+      (pageChange)="goToPage($event)"
+      (sizeChange)="onPageSizeChange($event)">
+    </hq-table-footer>
+  </div>
+</div>

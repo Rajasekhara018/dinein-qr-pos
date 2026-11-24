@@ -1,0 +1,59 @@
+<div class="table-footer">
+  <span class="table-footer__range">
+    <ng-container *ngIf="itemCount === 0; else rangeText">{{ texts.noResults() }}</ng-container>
+    <ng-template #rangeText>
+      {{ texts.showing() }} <strong>{{ rangeStart }}</strong>&ndash;<strong>{{ rangeEnd }}</strong>
+      <ng-container *ngIf="totalItems != null"> {{ texts.of() }} <strong>{{ totalItems }}</strong></ng-container>
+    </ng-template>
+  </span>
+
+  <div class="table-footer__controls">
+    <div class="table-footer__size" *ngIf="sizeOptions && sizeOptions.length">
+      <span>{{ texts.rows() }}</span>
+      <hq-searchable-select
+        class="table-footer__size-select"
+        [allowOther]="false"
+        [ariaLabel]="texts.rows()"
+        [ngModel]="size"
+        [disabled]="loading"
+        (ngModelChange)="onSizeChange($event)"
+      >
+        <hq-ss-option *ngFor="let opt of sizeOptions" [value]="opt" [label]="opt"></hq-ss-option>
+      </hq-searchable-select>
+    </div>
+
+    <div class="table-footer__pager">
+      <button
+        type="button"
+        class="table-footer__btn"
+        [disabled]="disablePrev"
+        (click)="first()"
+        [title]="texts.firstPage()"
+        [attr.aria-label]="texts.firstPage()"
+      >
+        <i class="bi bi-chevron-double-left"></i>
+      </button>
+      <button
+        type="button"
+        class="table-footer__btn"
+        [disabled]="disablePrev"
+        (click)="prev()"
+        [title]="texts.previousPage()"
+        [attr.aria-label]="texts.previousPage()"
+      >
+        <i class="bi bi-chevron-left"></i>
+      </button>
+      <span class="table-footer__current" aria-current="page">{{ page + 1 }}</span>
+      <button
+        type="button"
+        class="table-footer__btn"
+        [disabled]="disableNext"
+        (click)="next()"
+        [title]="texts.nextPage()"
+        [attr.aria-label]="texts.nextPage()"
+      >
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </div>
+</div>

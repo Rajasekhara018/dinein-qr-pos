@@ -1,0 +1,88 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: railcab-search-api
+  labels:
+    app: railcab-search-api
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: railcab-search-api
+  template:
+    metadata:
+      labels:
+        app: railcab-search-api
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/path: /actuator/prometheus
+        prometheus.io/port: "9107"
+    spec:
+      containers:
+        - name: railcab-search-api
+          image: railcab-search-api:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 9007
+            - name: management
+              containerPort: 9107
+          env:
+            - name: ELASTICSEARCH_URL
+              value: http://railcab-elasticsearch:9200
+            - name: ELASTICSEARCH_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: railcab-search-api-secrets
+                  key: elasticsearch-username
+            - name: ELASTICSEARCH_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: railcab-search-api-secrets
+                  key: elasticsearch-password
+            # Shared cross-service Redis Stream bus -- must match BookingsAPI/UAM/AdminAPI/
+            # PaymentAPI's SEARCH_REDIS_HOST/PORT, not each service's own per-instance cache Redis.
+            - name: SEARCH_REDIS_HOST
+              value: redis
+            - name: SEARCH_REDIS_PORT
+              value: "6379"
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: management
+            initialDelaySeconds: 20
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: management
+            initialDelaySeconds: 60
+            periodSeconds: 20
+            timeoutSeconds: 3
+            failureThreshold: 3
+          resources:
+            requests:
+              cpu: 250m
+              memory: 512Mi
+            limits:
+              cpu: "1"
+              memory: 1Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: railcab-search-api
+  labels:
+    app: railcab-search-api
+spec:
+  selector:
+    app: railcab-search-api
+  ports:
+    - name: http
+      port: 9007
+      targetPort: http
+    - name: management
+      port: 9107
+      targetPort: management

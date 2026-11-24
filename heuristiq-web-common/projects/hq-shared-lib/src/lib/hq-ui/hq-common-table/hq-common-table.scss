@@ -1,0 +1,29 @@
+:host {
+  display: block;
+}
+
+::ng-deep .clickable-row {
+  cursor: pointer;
+}
+
+th.sortable {
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+}
+
+th.sortable .sort-icon {
+  margin-inline-start: 0.35rem;
+  opacity: 0.55;
+  font-size: 0.8em;
+}
+
+tr.highlighted-row > td {
+  background: var(--bs-primary-bg-subtle, rgba(13, 110, 253, 0.1));
+}
+
+// A row's expandable detail strip (`#rowDetail`): a full-width cell below the row, tinted with the theme colour.
+tr.detail-row > td {
+  background: color-mix(in srgb, var(--hq-primary, #0B6E4F) 4%, transparent);
+  padding: 0.75rem 1rem;
+}

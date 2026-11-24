@@ -1,0 +1,179 @@
+<div class="afp" [class.afp--guided]="guide">
+  <div class="afp__header" *ngIf="!embedded">
+    <button type="button" class="afp__back" [title]="'shared.adminCrud.backToList' | translate" (click)="cancel()">
+      <i class="bi bi-arrow-left-short"></i>
+    </button>
+    <div class="afp__heading">
+      <h1>{{ title }}</h1>
+      <nav class="afp__crumbs">
+        <span>{{ 'nav.sections.accessManagement' | translate }}</span>
+        <i class="bi bi-chevron-right"></i>
+        <a (click)="cancel()">{{ page.listLabel | translate }}</a>
+        <i class="bi bi-chevron-right"></i>
+        <span class="afp__crumbs-current">{{ title }}</span>
+      </nav>
+    </div>
+    <span class="afp__dirty" *ngIf="hasPendingChanges()">{{ 'shared.adminCrud.unsavedChanges' | translate }}</span>
+  </div>
+
+  <div class="afp__body" [class.afp__body--guided]="guide">
+  <section class="table-surface">
+    <div class="table-surface__header">
+      <div class="table-heading">
+        <span class="table-kicker">{{ 'shared.adminCrud.details' | translate: { entity: entityName } }}</span>
+      </div>
+    </div>
+
+    <div class="table-surface__body">
+      <p class="afp__muted" *ngIf="isLoading">{{ 'shared.adminCrud.loadingEntity' | translate: { entity: entityName.toLowerCase() } }}</p>
+      <hq-error-state *ngIf="loadFailed" [title]="'shared.adminCrud.messages.loadFailed' | translate: { entity: entityName.toLowerCase() }" (retry)="retryLoad()"></hq-error-state>
+
+      <form *ngIf="!isLoading && !loadFailed" (ngSubmit)="submit()" autocomplete="off">
+        <app-security-policy-preview *ngIf="page.config.resourcePath === '/security-policies'" [values]="values" (apply)="applyPolicyTemplate($event)"></app-security-policy-preview>
+        <hq-form-grid cols="2" gap="lg">
+        <div class="afp__field" *ngFor="let field of visibleFields"
+             [class.hq-span-full]="field.type === 'textarea' || field.type === 'multiselect' || field.type === 'entity-picker'">
+          <label [attr.for]="'f-' + field.key">
+            {{ field.label | translate }}<em *ngIf="isRequired(field)" class="afp__req">*</em>
+          </label>
+
+          <hq-field *ngIf="isReadOnly(field); else editable" [showLabel]="false" type="text" [readonly]="true" [inputId]="'f-' + field.key"
+                     [name]="field.key" [value]="displayOf(field)"></hq-field>
+
+          <ng-template #editable>
+          <ng-container [ngSwitch]="field.type">
+            <hq-field *ngSwitchCase="'textarea'" [showLabel]="false" type="textarea" [rows]="3" [inputId]="'f-' + field.key"
+                       [name]="field.key" [maxLength]="field.maxLength ?? null" [showCounter]="false" [(ngModel)]="values[field.key]"></hq-field>
+
+            <hq-field *ngSwitchCase="'number'" [showLabel]="false" type="number" [inputId]="'f-' + field.key" [name]="field.key"
+                       [(ngModel)]="values[field.key]"></hq-field>
+
+            <hq-checkbox *ngSwitchCase="'checkbox'" class="afp__check" [inputId]="'f-' + field.key" [name]="field.key" [(ngModel)]="values[field.key]"><span>{{ 'shared.adminCrud.enabled' | translate }}</span></hq-checkbox>
+
+            <ng-container *ngSwitchCase="'select'">
+              <!-- A choice that cannot be picked right now is listed greyed out, with the field's hint after it. -->
+              <hq-searchable-select [inputId]="'f-' + field.key" [name]="field.key" [allowOther]="false"
+                                     [placeholder]="'shared.adminCrud.select' | translate" [ariaLabel]="field.label | translate"
+                                     [(ngModel)]="values[field.key]" (ngModelChange)="onSelect(field, $event)">
+                <hq-ss-option *ngFor="let option of allOptionsOf(field)" [value]="option.value" [disabled]="!!option.disabled"
+                               [label]="field.booleanSelect ? (option.label | translate) : option.disabled && field.disabledOptionHint ? option.label + ' · ' + (field.disabledOptionHint | translate) : option.label"></hq-ss-option>
+              </hq-searchable-select>
+            </ng-container>
+
+            <div *ngSwitchCase="'multiselect'" class="afp__multi">
+              <ng-container *ngTemplateOutlet="multi; context: { field: field }"></ng-container>
+            </div>
+            <div *ngSwitchCase="'entity-picker'" class="afp__multi">
+              <ng-container *ngTemplateOutlet="multi; context: { field: field }"></ng-container>
+            </div>
+
+            <hq-field *ngSwitchCase="'tags'" [showLabel]="false" type="text" [inputId]="'f-' + field.key" [name]="field.key"
+                       [placeholder]="'shared.adminCrud.tagsPlaceholder' | translate" [(ngModel)]="values[field.key]"></hq-field>
+
+            <hq-field *ngSwitchCase="'password'" [showLabel]="false" type="password" [inputId]="'f-' + field.key" [name]="field.key"
+                       autocomplete="new-password" [maxLength]="field.maxLength ?? null" [showCounter]="false"
+                       [(ngModel)]="values[field.key]"></hq-field>
+
+            <hq-phone-number-input *ngSwitchCase="'phone'" [showLabel]="false" [name]="field.key"
+                                    [(ngModel)]="values[field.key]"></hq-phone-number-input>
+
+            <hq-field *ngSwitchDefault [showLabel]="false" type="text" [inputId]="'f-' + field.key" [name]="field.key"
+                       [maxLength]="field.maxLength ?? null" [showCounter]="false" [(ngModel)]="values[field.key]"></hq-field>
+          </ng-container>
+          </ng-template>
+
+          <small class="afp__hint" *ngIf="field.maxLength && !isReadOnly(field) && (field.type === 'textarea' || field.type === 'text')">
+            {{ lengthOf(field) }} / {{ field.maxLength }}
+          </small>
+          <small class="afp__error" *ngIf="errorOf(field) as errorKey">{{ errorKey | translate }}</small>
+          <small class="afp__error" role="alert" *ngIf="noOptionsMessage(field) as emptyKey">{{ emptyKey | translate }}</small>
+          <small class="afp__hint" *ngIf="allDisabledMessage(field) as allKey">{{ allKey | translate }}</small>
+          <small class="afp__hint" *ngIf="field.hint">{{ field.hint | translate }}</small>
+
+          <div class="afp__codebox" *ngIf="field.codeBox && codeOf(field) as code">
+            <span class="afp__codebox-label" [id]="'cb-' + field.key">{{ field.codeBox.label | translate }}</span>
+            <div class="afp__codebox-row">
+              <code class="afp__codebox-value" [attr.aria-labelledby]="'cb-' + field.key">{{ code }}</code>
+              <button hqButton="secondary" type="button" class="afp__codebox-copy" (click)="copyCode(field)"
+                      [attr.aria-label]="field.codeBox.copyLabel | translate: { code: code }"
+                      [title]="field.codeBox.copyLabel | translate: { code: code }">
+                <i class="bi bi-clipboard" aria-hidden="true"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <section class="afp__panel" *ngFor="let field of panelFields" [attr.aria-labelledby]="'panel-' + field.key">
+          <h2 class="afp__panel-title" [id]="'panel-' + field.key">{{ field.optionPanel!.title | translate }}</h2>
+          <p class="afp__muted">{{ field.optionPanel!.note | translate }}</p>
+          <p class="afp__error" role="alert" *ngIf="panelEntries(field).length === 0">{{ field.optionPanel!.empty | translate }}</p>
+          <ul class="afp__panel-list" *ngIf="panelEntries(field).length > 0">
+            <li class="afp__panel-item" *ngFor="let entry of panelEntries(field)">
+              <div class="afp__panel-head">
+                <code class="afp__panel-code">{{ entry.value }}</code>
+                <strong>{{ entry.detail!.name }}</strong>
+                <hq-status-badge tone="warning" *ngIf="entry.detail!.flagged">{{ field.optionPanel!.flaggedBadge | translate }}</hq-status-badge>
+              </div>
+              <p class="afp__panel-desc" *ngIf="entry.detail!.description">{{ entry.detail!.description }}</p>
+              <small class="afp__muted" *ngIf="entry.detail!.category">{{ field.optionPanel!.categoryLabel | translate }}: {{ entry.detail!.category }}</small>
+            </li>
+          </ul>
+        </section>
+        </hq-form-grid>
+      </form>
+
+      <div class="afp__admin" *ngIf="!isLoading && offersAdmin">
+        <ng-container *hqHasPrivilege="'ORGANIZATION_ADMIN_CREATE'">
+          <h2 class="afp__admin-title">{{ 'shared.adminCrud.orgAdmin.title' | translate }}</h2>
+          <p class="afp__muted">{{ 'shared.adminCrud.orgAdmin.hint' | translate }}</p>
+          <hq-form-grid cols="2" gap="lg">
+            <hq-field inputId="admin-name" type="text" name="adminName" [(ngModel)]="admin.name" class="afp__field" [label]="'shared.adminCrud.orgAdmin.name' | translate"></hq-field>
+            <hq-field inputId="admin-email" type="email" name="adminEmail" [(ngModel)]="admin.email" class="afp__field" [label]="'shared.adminCrud.orgAdmin.email' | translate"></hq-field>
+            <hq-form-field class="afp__field" [label]="'shared.adminCrud.orgAdmin.mobile' | translate">
+              <hq-phone-number-input [showLabel]="false" name="adminMobile" [(ngModel)]="admin.mobile"></hq-phone-number-input>
+            </hq-form-field>
+          </hq-form-grid>
+        </ng-container>
+      </div>
+
+      <hq-form-actions align="end" *ngIf="!isLoading && !loadFailed">
+        <button hqButton="secondary" type="button" *ngIf="!embedded" (click)="cancel()">{{ 'shared.adminCrud.cancel' | translate }}</button>
+        <ng-container *hqHasPrivilege="savePrivileges">
+          <button hqButton="accent" type="button" [disabled]="!canSubmit" (click)="submit()">
+            <i class="bi bi-check-lg"></i>
+            {{ (isSaving ? 'shared.adminCrud.saving' : (isEdit ? 'shared.adminCrud.update' : 'shared.adminCrud.save')) | translate }}
+          </button>
+        </ng-container>
+      </hq-form-actions>
+    </div>
+  </section>
+
+  <!-- What the screen does and what each choice means, beside the form (below it on narrow screens). -->
+  <app-form-guide *ngIf="guide as g" [guide]="g" [sticky]="true"></app-form-guide>
+  </div>
+
+  <!-- Whether the organization runs its sales itself or through franchises, switched from a chosen date. -->
+  <app-organization-operating-model *ngIf="page.path === 'organizations' && id && !embedded" [tenantId]="id"></app-organization-operating-model>
+
+  <!-- An organization also has the applications it may use (step one of making UAM multi-tenant). -->
+  <app-organization-applications *ngIf="page.path === 'organizations' && id && !embedded" [tenantId]="id"></app-organization-applications>
+
+  <!-- And the people who belong to it: one account can belong to several organizations. -->
+  <app-organization-members *ngIf="page.path === 'organizations' && id && !embedded" [tenantId]="id"></app-organization-members>
+</div>
+
+<!-- A filterable checkbox list: plain and visible, instead of a drop-down inside a pop-up. -->
+<ng-template #multi let-field="field">
+  <hq-field
+         type="text"
+         class="afp__multi-filter"
+         [name]="'filter-' + field.key"
+         [placeholder]="'shared.adminCrud.search' | translate: { label: (field.label | translate) }"
+         [(ngModel)]="filters[field.key]"></hq-field>
+  <div class="afp__multi-list" role="group" [attr.aria-label]="'shared.adminCrud.selectionAriaLabel' | translate: { label: (field.label | translate) }">
+    <hq-checkbox class="afp__multi-item" *ngFor="let option of optionsOf(field)" [checked]="isChecked(field, option.value)" (checkedChange)="toggle(field, option.value)"><span>{{ option.label }}</span></hq-checkbox>
+    <p class="afp__muted" *ngIf="optionsOf(field).length === 0">
+      {{ (filters[field.key] ? 'shared.adminCrud.noMatching' : 'shared.adminCrud.noOptions') | translate: { label: (field.label | translate) } }}
+    </p>
+  </div>
+</ng-template>

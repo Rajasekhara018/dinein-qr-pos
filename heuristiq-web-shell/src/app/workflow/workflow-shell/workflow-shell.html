@@ -1,0 +1,15 @@
+<hq-page-header
+  [kicker]="'apiDocs.eyebrow' | translate"
+  [title]="'workflow.title' | translate"
+  [subtitle]="'workflow.subtitle' | translate">
+</hq-page-header>
+
+<hq-screen-help screen="workflow"></hq-screen-help>
+
+<nav class="wf-tabs">
+  <a *ngFor="let tab of tabs" class="wf-tab" [routerLink]="tab.path" routerLinkActive="wf-tab--active">
+    <i class="bi" [ngClass]="tab.icon"></i> {{ tab.labelKey | translate }}
+  </a>
+</nav>
+
+<router-outlet></router-outlet>

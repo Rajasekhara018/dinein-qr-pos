@@ -1,0 +1,47 @@
+// "My drivers": header actions side by side (stacked on a phone), the headline number, and a name cell with an initial avatar.
+.drivers-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.drivers-stats {
+  display: block;
+  margin-block-end: 1rem;
+}
+
+.drivers-hint {
+  margin: 0.2rem 0 0;
+  font-size: 0.82rem;
+  color: var(--edu-muted, #5a6a7e);
+}
+
+.driver-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-inline-size: 0;
+
+  &__avatar {
+    display: inline-grid;
+    place-items: center;
+    inline-size: 2rem;
+    block-size: 2rem;
+    flex: none;
+    border-radius: 50%;
+    background: var(--theme-highlight-soft, #eef4ff);
+    color: var(--hq-primary, #1d4ed8);
+    font-weight: 700;
+    font-size: 0.85rem;
+  }
+
+  &__text {
+    font-weight: 600;
+    overflow-wrap: anywhere;
+  }
+}
+
+@media (max-width: 600px) {
+  .drivers-actions > * { flex: 1 1 100%; }
+}

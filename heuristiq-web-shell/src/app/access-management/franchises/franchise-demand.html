@@ -1,0 +1,76 @@
+<hq-page-header
+  [kicker]="'nav.sections.accessManagement' | translate"
+  [title]="'nav.items.franchiseDemand' | translate"
+  [subtitle]="'accessManagement.franchiseDemand.subtitle' | translate">
+</hq-page-header>
+
+<div class="table-surface" *hqHasPrivilege="privileges.summary">
+  <div class="table-surface__header">
+    <div class="table-heading">
+      <span class="table-kicker">{{ 'shared.listPage.total' | translate: { count: total } }}</span>
+    </div>
+  </div>
+
+  <div class="table-surface__body">
+    <section class="franchise-filters">
+      <hq-form-field [label]="'accessManagement.franchiseDemand.application' | translate"><hq-searchable-select
+          [(ngModel)]="applicationCode"
+          (ngModelChange)="onApplicationChange()"
+          name="demandApplication"
+          [allowOther]="false"
+          [placeholder]="'accessManagement.franchiseDemand.chooseApplication' | translate">
+          <hq-ss-option *ngFor="let application of applications" [value]="application.code"
+                         [label]="(application.name || application.code) + ' (' + application.code + ')'"></hq-ss-option>
+        </hq-searchable-select></hq-form-field>
+    </section>
+
+    <p class="franchise-hint">{{ 'accessManagement.franchiseDemand.hint' | translate }}</p>
+
+    <nav class="franchise-hint demand-trail" [attr.aria-label]="'accessManagement.franchiseDemand.path' | translate">
+      <button hqButton="secondary" type="button" [disabled]="!trail.length" (click)="goUpTo(-1)">
+        {{ 'accessManagement.franchiseDemand.topPlaces' | translate }}
+      </button>
+      <ng-container *ngFor="let step of trail; let i = index; let last = last">
+        <i class="bi bi-chevron-right"></i>
+        <button hqButton="secondary" type="button" [disabled]="last" (click)="goUpTo(i)">{{ step.name }}</button>
+      </ng-container>
+    </nav>
+
+    <hq-common-table
+      [columns]="columns"
+      [rows]="items"
+      [isLoading]="isLoading"
+      [hasError]="hasError"
+      [emptyMessage]="(applicationCode ? 'accessManagement.franchiseDemand.emptyMessage' : 'accessManagement.franchiseDemand.chooseApplication') | translate"
+      [errorMessage]="'accessManagement.franchiseDemand.errorMessage' | translate">
+      <ng-template hqCell="type" let-place>
+        <hq-status-badge tone="info">{{ typeLabel(place.type) }}</hq-status-badge>
+      </ng-template>
+      <ng-template hqCell="covered" let-place>
+        <hq-status-badge [tone]="place.covered ? 'success' : 'danger'">
+          {{ place.covered
+              ? ('accessManagement.franchiseDemand.coveredBy' | translate: { code: place.coveringFranchiseCode })
+              : ('accessManagement.franchiseDemand.notCovered' | translate) }}
+        </hq-status-badge>
+      </ng-template>
+      <ng-template #rowActions let-place>
+        <button type="button" class="row-action-btn" *ngIf="canDrill(place)" [title]="'accessManagement.franchiseDemand.showInside' | translate"
+                [attr.aria-label]="'accessManagement.franchiseDemand.showInside' | translate" (click)="drillInto(place)">
+          <i class="bi bi-diagram-3"></i>
+        </button>
+      </ng-template>
+    </hq-common-table>
+
+    <hq-table-footer
+      [page]="page"
+      [size]="pageSize"
+      [itemCount]="items.length"
+      [hasMore]="page + 1 < totalPages"
+      [totalItems]="total"
+      [loading]="isLoading"
+      [sizeOptions]="pageSizeOptions"
+      (pageChange)="goToPage($event)"
+      (sizeChange)="onPageSizeChange($event)">
+    </hq-table-footer>
+  </div>
+</div>

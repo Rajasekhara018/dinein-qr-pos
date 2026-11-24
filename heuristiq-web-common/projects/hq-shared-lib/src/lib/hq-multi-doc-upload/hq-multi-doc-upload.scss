@@ -1,0 +1,209 @@
+:host {
+  --hq-multi-accent: var(--hq-primary, #0b6e4f);
+  display: block;
+}
+
+.hq-multi {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  &__picker {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  &__name {
+    width: 260px;
+    max-width: 100%;
+  }
+
+  &__hint {
+    font-size: 12px;
+    color: var(--edu-muted, #5a6a7e);
+  }
+
+  &__list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  &__item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 6px 8px 10px;
+    border: 1px solid color-mix(in srgb, var(--hq-multi-accent) 22%, transparent);
+    border-radius: 12px;
+    background: color-mix(in srgb, var(--hq-multi-accent) 4%, transparent);
+    transition: border-color 0.18s ease;
+
+    &:hover {
+      border-color: color-mix(in srgb, var(--hq-multi-accent) 45%, transparent);
+    }
+  }
+
+  &__chip {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1 1 auto;
+    min-width: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--edu-ink, #1b2a4a);
+    text-align: left;
+    cursor: pointer;
+    font: inherit;
+
+    &:focus-visible {
+      outline: 2px solid var(--hq-multi-accent);
+      outline-offset: 4px;
+      border-radius: 8px;
+    }
+  }
+
+  &__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    flex: 0 0 auto;
+    border-radius: 9px;
+    background: color-mix(in srgb, var(--hq-multi-accent) 12%, transparent);
+    color: var(--hq-multi-accent);
+
+    mat-icon {
+      width: 18px;
+      height: 18px;
+      font-size: 18px;
+    }
+  }
+
+  &__meta {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  &__file {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-weight: 600;
+    font-size: 13px;
+  }
+
+  &__size {
+    font-size: 11px;
+    color: var(--edu-muted, #5a6a7e);
+  }
+
+  &__remove {
+    color: #dc2626;
+  }
+
+  &__error {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: #dc2626;
+
+    mat-icon {
+      width: 16px;
+      height: 16px;
+      font-size: 16px;
+    }
+  }
+}
+
+// Gallery (thumbnails): a grid of picture tiles, the file name and actions under each picture.
+.hq-multi__list--gallery {
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 12px;
+}
+
+.hq-multi__item--tile {
+  display: grid;
+  // File name, then up to three actions (make main, view, remove); an absent action leaves an empty, zero-width column.
+  grid-template-columns: minmax(0, 1fr) auto auto auto;
+  grid-template-rows: auto auto;
+  position: relative;
+  align-items: center;
+  gap: 6px 2px;
+  padding: 6px 4px 6px 6px;
+
+  .hq-multi__thumb { grid-column: 1 / -1; }
+}
+
+.hq-multi__thumb {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 4 / 5;
+  width: 100%;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  border-radius: 9px;
+  background: color-mix(in srgb, var(--hq-multi-accent) 10%, transparent);
+  color: var(--hq-multi-accent);
+  cursor: zoom-in;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.25s ease;
+  }
+
+  &:hover img { transform: scale(1.04); }
+
+  &:focus-visible {
+    outline: 2px solid var(--hq-multi-accent);
+    outline-offset: 2px;
+  }
+
+  mat-icon {
+    width: 36px;
+    height: 36px;
+    font-size: 36px;
+  }
+}
+
+// Files that cannot be read back (own storage without a fetcher): shown, not offered as links.
+.hq-multi__chip--static,
+.hq-multi__thumb--static { cursor: default; }
+
+
+// The main document: a badge in the row (file chips) or over the picture (gallery).
+.hq-multi__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex: 0 0 auto;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--hq-multi-accent);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.hq-multi__item--tile .hq-multi__badge {
+  position: absolute;
+  top: 12px;
+  inset-inline-start: 12px;
+  box-shadow: 0 2px 6px rgb(0 0 0 / 20%);
+}
+
+.hq-multi__primary { color: var(--hq-multi-accent); }

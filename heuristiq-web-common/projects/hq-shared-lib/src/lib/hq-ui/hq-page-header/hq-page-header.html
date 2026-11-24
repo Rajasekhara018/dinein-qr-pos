@@ -1,0 +1,41 @@
+<div class="page-hdr">
+  <div class="page-hdr__lead">
+    <button type="button" class="page-hdr__back" *ngIf="showBack" [attr.aria-label]="backLabel" [title]="backLabel" (click)="backClick.emit()">
+      <i class="bi bi-arrow-left"></i>
+    </button>
+    <div class="page-hdr__identity">
+      @if (breadcrumbs?.length) {
+        <nav class="page-hdr__crumbs" [attr.aria-label]="crumbsLabel">
+          <ol>
+            @for (crumb of breadcrumbs; track $index; let last = $last) {
+              <li>
+                @if (crumb.link && !last) {
+                  <a [routerLink]="$any(crumb.link)">{{ crumb.label }}</a>
+                } @else {
+                  <span [attr.aria-current]="last ? 'page' : null">{{ crumb.label }}</span>
+                }
+                @if (!last) {
+                  <i class="bi bi-chevron-right page-hdr__crumb-sep" aria-hidden="true"></i>
+                }
+              </li>
+            }
+          </ol>
+        </nav>
+      }
+      <span class="page-hdr__kicker" *ngIf="kicker">{{ kicker }}</span>
+      <h2 class="page-hdr__title">{{ title }}</h2>
+      <p class="page-hdr__subtitle" *ngIf="subtitle">{{ subtitle }}</p>
+      <span class="page-hdr__meta" *ngIf="lastUpdated && !loading && lastUpdatedLabel">
+        <i class="bi bi-arrow-repeat"></i>
+        {{ lastUpdatedLabel }}
+      </span>
+      <span class="page-hdr__meta page-hdr__meta--loading" *ngIf="loading">
+        <span class="spinner-border spinner-border-sm me-1"></span>
+        {{ loadingLabel }}
+      </span>
+    </div>
+  </div>
+  <div class="page-hdr__actions">
+    <ng-content select="[actions]"></ng-content>
+  </div>
+</div>

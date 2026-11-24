@@ -1,0 +1,80 @@
+// Styles every QA dashboard component includes. Logical properties keep the screens right-to-left safe (Arabic).
+:host {
+  display: block;
+  --qa-pass: #0ca30c;
+  --qa-fail: #d03b3b;
+  --qa-skip: #8b8b86;
+  --qa-ink: var(--edu-text, #0f172a);
+  --qa-muted: var(--edu-muted, #64748b);
+  --qa-border: var(--workspace-border, #e2e8f0);
+  --qa-surface: var(--theme-soft-surface, #f8fafc);
+}
+
+.qa-actions { display: inline-flex; flex-wrap: wrap; gap: 0.4rem; align-items: center; }
+
+.qa-mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.85em; overflow-wrap: anywhere; }
+
+.qa-table-wrap { overflow-x: auto; }
+
+// The tables are hq-common-table, so their own table, header and cells are reached with ::ng-deep.
+.qa-table {
+  display: block;
+
+  ::ng-deep table { inline-size: 100%; min-inline-size: 860px; }
+  ::ng-deep th, ::ng-deep td { text-align: start; vertical-align: top; }
+  ::ng-deep .qa-num { text-align: end; font-variant-numeric: tabular-nums; }
+}
+
+.qa-card {
+  border: 1px solid var(--qa-border);
+  border-radius: 14px;
+  padding: 1rem 1.1rem;
+  background: var(--card-surface, #fff);
+
+  h3 { margin: 0 0 0.15rem; font-size: 1.05rem; }
+  p.qa-card__sub { margin: 0 0 0.75rem; color: var(--qa-muted); font-size: 0.85rem; }
+}
+
+.qa-tiles {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 170px), 1fr));
+  margin-block-end: 1rem;
+}
+
+.qa-tile {
+  border: 1px solid var(--qa-border);
+  border-radius: 14px;
+  padding: 0.8rem 1rem;
+  background: var(--card-surface, #fff);
+
+  &__label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--qa-muted); }
+  &__value { font-size: 1.8rem; font-weight: 800; font-variant-numeric: tabular-nums; line-height: 1.2; }
+  &__sub { font-size: 0.8rem; color: var(--qa-muted); }
+  &--pass { border-inline-start: 4px solid var(--qa-pass); }
+  &--fail { border-inline-start: 4px solid var(--qa-fail); }
+  &--skip { border-inline-start: 4px solid var(--qa-skip); }
+}
+
+.qa-pager {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 0.75rem;
+}
+
+.qa-visually-hidden {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+@media print {
+  .qa-no-print { display: none !important; }
+  // The row buttons of a table (its actions column) are not printed either.
+  .qa-table ::ng-deep .row-actions { display: none !important; }
+}

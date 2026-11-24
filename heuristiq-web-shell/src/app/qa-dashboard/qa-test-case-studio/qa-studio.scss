@@ -1,0 +1,36 @@
+.qa-sets-bar { display: flex; justify-content: flex-end; margin-block-end: 0.75rem; }
+.qa-name { font-weight: 600; }
+.qa-muted { color: var(--qa-muted); margin-inline-start: 0.4rem; }
+.qa-ui-empty { text-align: center; }
+.qa-case-path { margin-inline-start: 0.4rem; overflow-wrap: anywhere; }
+
+.qa-switch-control { display: inline-flex; align-items: center; gap: 0.4rem; cursor: pointer; }
+
+// Editor
+.qa-studio-form { display: grid; gap: 1rem; }
+.qa-section { margin: 0; min-inline-size: 0; legend { padding: 0 0.4rem; font-weight: 700; } }
+.qa-subsection { margin-block-start: 1rem; h3 { margin: 0 0 0.25rem; font-size: 1rem; } }
+.qa-check { display: inline-flex; align-items: center; gap: 0.4rem; font-weight: 600; }
+.qa-field-grid { margin-block-end: 0.75rem; }
+.qa-field--check { display: flex; align-items: flex-end; }
+.qa-hint { margin: 0.15rem 0 0; font-size: 0.8rem; color: var(--qa-muted); }
+.qa-field-error { margin: 0.15rem 0 0; font-size: 0.82rem; color: #b91c1c; font-weight: 600; }
+
+.qa-suggestions {
+  list-style: none; margin: 0.25rem 0 0; padding: 0.25rem; max-block-size: 16rem; overflow: auto;
+  border: 1px solid var(--qa-border); border-radius: 10px; background: var(--card-surface, #fff);
+}
+.qa-suggestion {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; inline-size: 100%; padding: 0.35rem 0.5rem;
+  border: 0; background: transparent; color: inherit; text-align: start; cursor: pointer; border-radius: 6px;
+  &:hover, &:focus-visible { background: var(--qa-surface); outline: 2px solid var(--button-accent-end, #0b6e4f); outline-offset: -2px; }
+}
+
+.qa-kv, .qa-assertion { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; margin-block-end: 0.5rem; }
+.qa-kv__name, .qa-kv__value, .qa-assertion__path, .qa-assertion__name, .qa-assertion__expected { flex: 1 1 10rem; min-inline-size: 0; }
+.qa-assertion__type { flex: 0 1 15rem; }
+.qa-kv__error, .qa-assertion__error { flex: 1 0 100%; margin: 0; }
+
+.qa-body__text { inline-size: 100%; resize: vertical; white-space: pre; overflow: auto; }
+.qa-body__counter { margin-inline-start: 0.75rem; font-variant-numeric: tabular-nums; }
+.qa-summary { flex: 1 0 100%; }

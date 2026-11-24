@@ -1,0 +1,358 @@
+<div class="wd-bar">
+  <button hqButton="secondary" type="button" (click)="back()">
+    <i class="bi bi-arrow-left"></i> {{ 'workflow.definitions.back' | translate }}
+  </button>
+  <div class="wd-title" *ngIf="detail">
+    <strong>{{ detail.definition.name || key }}</strong>
+    <span class="wd-key">{{ key }}</span>
+  </div>
+  <label class="wd-version" *ngIf="detail && detail.versions.length > 0">
+    <span>{{ 'workflow.definitions.columns.version' | translate }}</span>
+    <hq-searchable-select [ngModel]="version" (ngModelChange)="selectVersion($event)" [allowOther]="false">
+      <hq-ss-option *ngFor="let v of detail.versions" [value]="v.version" [label]="'v' + v.version + (v.deployedAt ? ' · ' + (v.deployedAt | hqDate:'medium') : '')"></hq-ss-option>
+    </hq-searchable-select>
+  </label>
+</div>
+
+<hq-loading-state *ngIf="isLoading && !detail" [label]="'workflow.loading' | translate"></hq-loading-state>
+<hq-error-state *ngIf="loadError" [title]="'workflow.definitions.loadFailed' | translate"></hq-error-state>
+
+<ng-container *ngIf="detail">
+  <p class="wd-note" *ngIf="!isLatest">
+    <i class="bi bi-clock-history"></i> {{ 'workflow.definitions.oldVersion' | translate }}
+  </p>
+  <p class="wd-note" *ngIf="!canEdit">
+    <i class="bi bi-info-circle"></i> {{ 'workflow.definitions.readOnly' | translate }}
+  </p>
+
+  <div class="wd-grid">
+    <hq-card padding="md" [title]="'workflow.definitions.xmlTitle' | translate">
+      <div hqCardActions><div class="wd-actions" *ngIf="canEdit && isLatest">
+          <button hqButton="secondary" type="button" (click)="discard()" [disabled]="!hasChanges || isBusy">
+            {{ 'workflow.definitions.discard' | translate }}
+          </button>
+          <ng-container *hqHasPrivilege="'WORKFLOW_DEFINITION_PREVIEW'">
+            <button hqButton="secondary" type="button" (click)="preview()" [disabled]="isBusy">
+              <i class="bi bi-eye"></i> {{ 'workflow.definitions.preview' | translate }}
+            </button>
+          </ng-container>
+          <ng-container *hqHasPrivilege="'WORKFLOW_DEFINITION_VALIDATE'">
+            <button hqButton="secondary" type="button" (click)="check()" [disabled]="isBusy || hasSlaErrors">
+              <i class="bi bi-check2-square"></i> {{ 'workflow.definitions.check' | translate }}
+            </button>
+          </ng-container>
+          <ng-container *hqHasPrivilege="requireApproval ? 'WORKFLOW_DEFINITION_PROPOSE' : 'WORKFLOW_DEFINITION_DEPLOY'">
+            <button hqButton="accent" type="button" (click)="deploy()" [disabled]="isBusy || !hasChanges || hasSlaErrors">
+              <i class="bi bi-cloud-upload"></i> {{ (requireApproval ? 'workflow.definitions.proposals.submit' : 'workflow.definitions.deploy') | translate }}
+            </button>
+          </ng-container>
+        </div></div>
+      <hq-field type="textarea" class="rf-wd-xml" [spellcheck]="false" [(ngModel)]="xml" [readonly]="!canEdit || !isLatest"></hq-field>
+
+      <div class="wd-validation" *ngIf="validation">
+        <p class="wd-validation__ok" *ngIf="validation.valid"><i class="bi bi-check-circle"></i> {{ 'workflow.definitions.valid' | translate }}</p>
+        <ng-container *ngIf="!validation.valid">
+          <p class="wd-validation__bad"><i class="bi bi-exclamation-triangle"></i> {{ 'workflow.definitions.invalid' | translate }}</p>
+          <ul><li *ngFor="let error of validation.errors">{{ error }}</li></ul>
+        </ng-container>
+      </div>
+      <p class="wd-hint" *ngIf="canEdit && isLatest">{{ 'workflow.definitions.rulesHint' | translate }}</p>
+    </hq-card>
+
+    <hq-card padding="md" [title]="'workflow.definitions.diagramTitle' | translate">
+      <div hqCardActions><hq-status-badge tone="info" *ngIf="previewing">{{ 'workflow.definitions.previewing' | translate }}</hq-status-badge></div>
+      <app-bpmn-graph-view [graph]="graph"></app-bpmn-graph-view>
+    </hq-card>
+  </div>
+
+  <hq-card class="wd-proposals" *ngIf="canEdit && proposals.length > 0" padding="md" [title]="'workflow.definitions.proposals.title' | translate">
+    <ul class="wd-proposals__list">
+      <li class="wd-proposals__item" *ngFor="let p of proposals">
+        <div class="wd-proposals__head">
+          <hq-status-badge [tone]="p.status === 'PENDING' ? 'warning' : 'neutral'">{{ 'workflow.definitions.proposals.status.' + p.status | translate }}</hq-status-badge>
+          <span>{{ p.proposedAt | hqDate:'medium' }}</span>
+          <span>· {{ 'workflow.definitions.proposals.by' | translate: { name: personName(p.proposedBy) } }}</span>
+          <span *ngIf="p.decidedBy">· {{ 'workflow.definitions.proposals.decidedBy' | translate: { name: personName(p.decidedBy) } }}</span>
+          <span *ngIf="p.deployedVersion">· v{{ p.deployedVersion }}</span>
+        </div>
+        <p class="wd-proposals__note" *ngIf="p.note">{{ p.note }}</p>
+        <p class="wd-proposals__note wd-proposals__note--bad" *ngIf="p.decisionNote">{{ p.decisionNote }}</p>
+        <div class="wd-proposals__actions" *ngIf="p.status === 'PENDING'">
+          <button hqButton="secondary" type="button" (click)="viewProposal(p)" [disabled]="isBusy"><i class="bi bi-eye"></i> {{ 'workflow.definitions.proposals.view' | translate }}</button>
+          <ng-container *hqHasPrivilege="'WORKFLOW_DEFINITION_PROPOSAL_APPROVE'">
+            <button hqButton="accent" type="button" *ngIf="p.proposedBy !== myId" (click)="approveProposal(p)" [disabled]="isBusy"><i class="bi bi-check2-circle"></i> {{ 'workflow.definitions.proposals.approve' | translate }}</button>
+          </ng-container>
+          <ng-container *hqHasPrivilege="'WORKFLOW_DEFINITION_PROPOSAL_REJECT'">
+            <button hqButton="secondary" type="button" *ngIf="p.proposedBy !== myId" (click)="rejectProposal(p)" [disabled]="isBusy"><i class="bi bi-x-circle"></i> {{ 'workflow.definitions.proposals.reject' | translate }}</button>
+          </ng-container>
+          <ng-container *hqHasPrivilege="'WORKFLOW_DEFINITION_PROPOSAL_WITHDRAW'">
+            <button hqButton="secondary" type="button" *ngIf="p.proposedBy === myId" (click)="withdrawProposal(p)" [disabled]="isBusy"><i class="bi bi-arrow-counterclockwise"></i> {{ 'workflow.definitions.proposals.withdraw' | translate }}</button>
+          </ng-container>
+        </div>
+      </li>
+    </ul>
+  </hq-card>
+
+  <hq-card class="wd-log" *ngIf="detail.versions.length > 0" padding="md" [title]="'workflow.definitions.changeLog.title' | translate">
+    <div hqCardActions><ng-container *hqHasPrivilege="'WORKFLOW_DEFINITION_MIGRATE'">
+        <button hqButton="secondary" type="button" *ngIf="canEdit && isLatest && detail.versions.length > 1"
+                (click)="migrateRunning()" [disabled]="isBusy" [title]="'workflow.definitions.migrate.hint' | translate">
+          <i class="bi bi-arrow-right-circle"></i> {{ 'workflow.definitions.migrate.button' | translate }}
+        </button>
+      </ng-container></div>
+    <div class="wd-log__migration" *ngIf="migrationResult && migrationResult.problems.length > 0">
+      <strong>{{ 'workflow.definitions.migrate.problems' | translate: { count: migrationResult.problems.length } }}</strong>
+      <ul>
+        <li *ngFor="let p of migrationResult.problems">
+          <a [routerLink]="['/workflow', 'instances', p.instanceId]">v{{ p.fromVersion }} · {{ p.instanceId }}</a>: {{ p.reasons.join('; ') }}
+        </li>
+      </ul>
+    </div>
+    <ol class="wd-log__list">
+      <li class="wd-log__item" *ngFor="let v of detail.versions">
+        <div class="wd-log__head">
+          <strong>v{{ v.version }}</strong>
+          <span>{{ v.deployedAt | hqDate:'medium' }}</span>
+          <span>· {{ deployer(v) }}</span>
+          <button type="button" class="wd-link" *ngIf="v.version !== version" (click)="selectVersion(v.version)">{{ 'workflow.definitions.changeLog.open' | translate }}</button>
+          <hq-status-badge tone="info" *ngIf="v.version === version">{{ 'workflow.definitions.changeLog.viewing' | translate }}</hq-status-badge>
+          <span *ngIf="v.approvedBy">· {{ 'workflow.definitions.proposals.approvedBy' | translate: { name: personName(v.approvedBy) } }}</span>
+        </div>
+        <p class="wd-log__note" *ngIf="v.note">{{ v.note }}</p>
+      </li>
+    </ol>
+  </hq-card>
+
+  <hq-card class="wd-sla" padding="md" [title]="'workflow.definitions.sla.title' | translate">
+    <div hqCardActions><span class="wd-sla__count" *ngIf="steps.length > 0">{{ steps.length }}</span></div>
+
+    <div class="wd-sla__banner">
+      <i class="bi bi-info-circle"></i>
+      <div>
+        <p>{{ 'workflow.definitions.who.hint' | translate }}</p>
+        <p>{{ 'workflow.definitions.sla.hint' | translate }}</p>
+      </div>
+    </div>
+
+    <hq-empty-state *ngIf="steps.length === 0" [title]="'workflow.definitions.sla.empty' | translate"></hq-empty-state>
+
+    <ol class="wd-steps" *ngIf="steps.length > 0">
+      <li class="wd-step" *ngFor="let step of steps; let i = index; trackBy: trackByStep">
+        <div class="wd-step__head">
+          <span class="wd-step__num">{{ i + 1 }}</span>
+          <div class="wd-step__title">
+            <strong>{{ step.name }}</strong>
+            <span class="wd-key">{{ step.id }}</span>
+          </div>
+          <span class="wd-step__badge" [class.wd-step__badge--set]="step.amount !== null || step.custom">
+            <i class="bi bi-stopwatch"></i>
+            <ng-container *ngIf="step.amount !== null">{{ step.amount }} {{ slaUnitKeyPrefix + step.unit | translate }}</ng-container>
+            <ng-container *ngIf="step.amount === null && !step.custom">{{ 'workflow.definitions.sla.none' | translate }}</ng-container>
+            <ng-container *ngIf="step.custom">{{ step.custom }}</ng-container>
+          </span>
+        </div>
+
+        <div class="wd-step__body">
+          <div class="wd-field wd-field--wide">
+            <span class="wd-field__label"><i class="bi bi-diagram-3"></i> {{ 'workflow.definitions.who.modeLabel' | translate }}</span>
+            <hq-tabs appearance="segmented" size="sm" [value]="mode(step)" (valueChange)="setMode(step, $any($event))"
+                      [ariaLabel]="'workflow.definitions.who.modeLabel' | translate">
+              <hq-tab *ngFor="let m of assignModes" [value]="m" [disabled]="!canEdit || !isLatest" [label]="assignModeKeyPrefix + m | translate"></hq-tab>
+            </hq-tabs>
+          </div>
+
+          <div class="wd-field wd-field--wide" *ngIf="mode(step) === 'PERSON'">
+            <span class="wd-field__label"><i class="bi bi-person"></i> {{ 'workflow.definitions.who.assignee' | translate }}</span>
+            <hq-searchable-select [ngModel]="step.assignee || ''" (ngModelChange)="setAssignee(step, $event)" [allowOther]="false"
+                                   [disabled]="!canEdit || !isLatest" [placeholder]="'workflow.definitions.who.noAssignee' | translate"
+                                   [ariaLabel]="'workflow.definitions.who.assignee' | translate">
+              <hq-ss-option value="" [label]="'workflow.definitions.who.noAssignee' | translate"></hq-ss-option>
+              <hq-ss-option *ngIf="step.assignee && !label(userOptions, step.assignee)" [value]="step.assignee" [label]="step.assignee"></hq-ss-option>
+              <hq-ss-option *ngFor="let u of userOptions" [value]="u.value" [label]="u.label"></hq-ss-option>
+            </hq-searchable-select>
+          </div>
+
+          <div class="wd-field wd-field--wide" *ngIf="mode(step) === 'USERS'">
+            <span class="wd-field__label"><i class="bi bi-person-lines-fill"></i> {{ 'workflow.definitions.who.users' | translate }}</span>
+            <div class="wd-chips" *ngIf="step.candidateUsers.length > 0">
+              <span class="wd-chip" *ngFor="let u of step.candidateUsers">
+                {{ label(userOptions, u) }}
+                <button type="button" *ngIf="canEdit && isLatest" [attr.aria-label]="'workflow.definitions.who.remove' | translate"
+                        (click)="removeWho(step, 'candidateUsers', u)"><i class="bi bi-x-lg"></i></button>
+              </span>
+            </div>
+            <hq-searchable-select
+              *ngIf="canEdit && isLatest"
+              [ngModel]="''"
+              (ngModelChange)="addWho(step, 'candidateUsers', $event)"
+              [allowOther]="false"
+              [placeholder]="'workflow.definitions.who.addUser' | translate">
+              <hq-ss-option *ngFor="let u of remaining(userOptions, step.candidateUsers)" [value]="u.value" [label]="u.label"></hq-ss-option>
+            </hq-searchable-select>
+          </div>
+
+          <div class="wd-field wd-field--wide" *ngIf="mode(step) === 'ROLES'">
+            <span class="wd-field__label"><i class="bi bi-people"></i> {{ 'workflow.definitions.who.roles' | translate }}</span>
+            <div class="wd-chips" *ngIf="rolesOf(step).length > 0">
+              <span class="wd-chip" *ngFor="let g of rolesOf(step)">
+                {{ label(roleOptions, g) }}
+                <button type="button" *ngIf="canEdit && isLatest" [attr.aria-label]="'workflow.definitions.who.remove' | translate"
+                        (click)="removeWho(step, 'candidateGroups', g)"><i class="bi bi-x-lg"></i></button>
+              </span>
+            </div>
+            <hq-searchable-select
+              *ngIf="canEdit && isLatest"
+              [ngModel]="''"
+              (ngModelChange)="addWho(step, 'candidateGroups', $event)"
+              [allowOther]="false"
+              [placeholder]="'workflow.definitions.who.addRole' | translate">
+              <hq-ss-option *ngFor="let r of remaining(roleOptions, step.candidateGroups)" [value]="r.value" [label]="r.label"></hq-ss-option>
+            </hq-searchable-select>
+          </div>
+
+          <div class="wd-field wd-field--wide" *ngIf="mode(step) === 'DEPARTMENTS'">
+            <span class="wd-field__label"><i class="bi bi-diagram-3"></i> {{ 'workflow.definitions.who.departments' | translate }}</span>
+            <div class="wd-chips" *ngIf="departmentsOf(step).length > 0">
+              <span class="wd-chip" *ngFor="let d of departmentsOf(step)">
+                {{ label(departmentOptions, d) }}
+                <button type="button" *ngIf="canEdit && isLatest" [attr.aria-label]="'workflow.definitions.who.remove' | translate"
+                        (click)="removeWho(step, 'candidateGroups', d)"><i class="bi bi-x-lg"></i></button>
+              </span>
+            </div>
+            <hq-searchable-select
+              *ngIf="canEdit && isLatest"
+              [ngModel]="''"
+              (ngModelChange)="addWho(step, 'candidateGroups', $event)"
+              [allowOther]="false"
+              [placeholder]="'workflow.definitions.who.addDepartment' | translate">
+              <hq-ss-option *ngFor="let d of remaining(departmentOptions, step.candidateGroups)" [value]="d.value" [label]="d.label"></hq-ss-option>
+            </hq-searchable-select>
+          </div>
+
+          <div class="wd-field wd-field--wide">
+            <span class="wd-field__label"><i class="bi bi-bell"></i> {{ 'workflow.definitions.notify.label' | translate }}</span>
+            <div class="wd-seg wd-seg--multi">
+              <button type="button" class="wd-seg__btn" *ngFor="let c of notifyChannels"
+                      [class.wd-seg__btn--on]="channelOn(step, c)" [attr.aria-pressed]="channelOn(step, c)"
+                      [disabled]="!canEdit || !isLatest" (click)="toggleChannel(step, c)">
+                {{ notifyChannelKeyPrefix + c | translate }}
+              </button>
+            </div>
+            <span class="wd-field__note">
+              <ng-container *ngIf="step.notifyChannels === null">{{ 'workflow.definitions.notify.usingDefault' | translate }}</ng-container>
+              <ng-container *ngIf="step.notifyChannels !== null && step.notifyChannels.length === 0">{{ 'workflow.definitions.notify.off' | translate }}</ng-container>
+              <button type="button" class="wd-link" *ngIf="step.notifyChannels !== null && canEdit && isLatest" (click)="useDefaultChannels(step)">
+                {{ 'workflow.definitions.notify.reset' | translate }}
+              </button>
+            </span>
+          </div>
+
+          <div class="wd-field wd-field--wide">
+            <span class="wd-field__label"><i class="bi bi-exclamation-triangle"></i> {{ 'workflow.definitions.notify.escalate' | translate }}</span>
+            <div class="wd-chips" *ngIf="step.escalateTo.length > 0">
+              <span class="wd-chip" *ngFor="let u of step.escalateTo">
+                {{ label(userOptions, u) }}
+                <button type="button" *ngIf="canEdit && isLatest" [attr.aria-label]="'workflow.definitions.who.remove' | translate"
+                        (click)="removeWho(step, 'escalateTo', u)"><i class="bi bi-x-lg"></i></button>
+              </span>
+            </div>
+            <hq-searchable-select
+              *ngIf="canEdit && isLatest"
+              [ngModel]="''"
+              (ngModelChange)="addWho(step, 'escalateTo', $event)"
+              [allowOther]="false"
+              [placeholder]="'workflow.definitions.notify.addEscalation' | translate">
+              <hq-ss-option *ngFor="let u of remaining(userOptions, step.escalateTo)" [value]="u.value" [label]="u.label"></hq-ss-option>
+            </hq-searchable-select>
+          </div>
+
+          <hq-form-field class="wd-field" [label]="'workflow.definitions.notify.remindBefore' | translate" [error]="reminderInvalid(step, 'remindBefore') ? ('workflow.definitions.sla.range' | translate: { min: reminderLimit('remindBefore', reminderUnit(step, 'remindBefore')).min, max: reminderLimit('remindBefore', reminderUnit(step, 'remindBefore')).max, unit: (slaUnitKeyPrefix + reminderUnit(step, 'remindBefore') | translate) }) : null">
+            <div class="wd-field__pair">
+              <hq-field
+                     type="number"
+                     step="1"
+                     inputmode="numeric"
+                     [invalid]="reminderInvalid(step, 'remindBefore')"
+                     [min]="reminderLimit('remindBefore', reminderUnit(step, 'remindBefore')).min"
+                     [max]="reminderLimit('remindBefore', reminderUnit(step, 'remindBefore')).max"
+                     [ngModel]="reminderAmount(step, 'remindBefore')"
+                     (ngModelChange)="setReminder(step, 'remindBefore', $event, reminderUnit(step, 'remindBefore'))"
+                     [placeholder]="'workflow.definitions.notify.noReminder' | translate"
+                     [disabled]="!canEdit || !isLatest"></hq-field>
+              <hq-searchable-select
+                [ngModel]="reminderUnit(step, 'remindBefore')"
+                (ngModelChange)="setReminder(step, 'remindBefore', reminderAmount(step, 'remindBefore'), $event)"
+                [disabled]="!canEdit || !isLatest"
+                [allowOther]="false">
+                <hq-ss-option *ngFor="let u of slaUnits" [value]="u" [label]="slaUnitKeyPrefix + u | translate"></hq-ss-option>
+              </hq-searchable-select>
+            </div>
+          </hq-form-field>
+
+          <hq-form-field class="wd-field" [label]="'workflow.definitions.notify.repeatEvery' | translate" [error]="reminderInvalid(step, 'repeatEvery') ? ('workflow.definitions.sla.range' | translate: { min: reminderLimit('repeatEvery', reminderUnit(step, 'repeatEvery')).min, max: reminderLimit('repeatEvery', reminderUnit(step, 'repeatEvery')).max, unit: (slaUnitKeyPrefix + reminderUnit(step, 'repeatEvery') | translate) }) : null">
+            <div class="wd-field__pair">
+              <hq-field
+                     type="number"
+                     step="1"
+                     inputmode="numeric"
+                     [invalid]="reminderInvalid(step, 'repeatEvery')"
+                     [min]="reminderLimit('repeatEvery', reminderUnit(step, 'repeatEvery')).min"
+                     [max]="reminderLimit('repeatEvery', reminderUnit(step, 'repeatEvery')).max"
+                     [ngModel]="reminderAmount(step, 'repeatEvery')"
+                     (ngModelChange)="setReminder(step, 'repeatEvery', $event, reminderUnit(step, 'repeatEvery'))"
+                     [placeholder]="'workflow.definitions.notify.once' | translate"
+                     [disabled]="!canEdit || !isLatest"></hq-field>
+              <hq-searchable-select
+                [ngModel]="reminderUnit(step, 'repeatEvery')"
+                (ngModelChange)="setReminder(step, 'repeatEvery', reminderAmount(step, 'repeatEvery'), $event)"
+                [disabled]="!canEdit || !isLatest"
+                [allowOther]="false">
+                <hq-ss-option *ngFor="let u of slaUnits" [value]="u" [label]="slaUnitKeyPrefix + u | translate"></hq-ss-option>
+              </hq-searchable-select>
+            </div>
+          </hq-form-field>
+
+          <hq-form-field class="wd-field" [label]="'workflow.definitions.notify.reassignOnOverdue' | translate">
+            <hq-searchable-select [ngModel]="step.reassignOnOverdue || ''" (ngModelChange)="setReassign(step, $event)" [allowOther]="false"
+                                   [disabled]="!canEdit || !isLatest" [placeholder]="'workflow.definitions.notify.noReassign' | translate"
+                                   [ariaLabel]="'workflow.definitions.notify.reassignOnOverdue' | translate">
+              <hq-ss-option value="" [label]="'workflow.definitions.notify.noReassign' | translate"></hq-ss-option>
+              <hq-ss-option *ngIf="step.reassignOnOverdue && !label(userOptions, step.reassignOnOverdue)" [value]="step.reassignOnOverdue" [label]="step.reassignOnOverdue"></hq-ss-option>
+              <hq-ss-option *ngFor="let u of userOptions" [value]="u.value" [label]="u.label"></hq-ss-option>
+            </hq-searchable-select>
+          </hq-form-field>
+
+          <hq-form-field class="wd-field" [label]="'workflow.definitions.sla.amount' | translate" [error]="slaDraft[step.id] !== undefined ? ('workflow.definitions.sla.range' | translate: { min: limit(displayUnit(step)).min, max: limit(displayUnit(step)).max, unit: (slaUnitKeyPrefix + displayUnit(step) | translate) }) : null">
+            <ng-container *ngIf="!step.custom; else customSla">
+              <div class="wd-field__pair">
+                <hq-field
+                       type="number"
+                       step="1"
+                       inputmode="numeric"
+                       [invalid]="slaDraft[step.id] !== undefined"
+                       [min]="limit(displayUnit(step)).min"
+                       [max]="limit(displayUnit(step)).max"
+                       [ngModel]="displayAmount(step)"
+                       (ngModelChange)="setSla(step, $event, displayUnit(step))"
+                       [placeholder]="'workflow.definitions.sla.none' | translate"
+                       [ariaLabel]="'workflow.definitions.sla.amount' | translate"
+                       [disabled]="!canEdit || !isLatest"></hq-field>
+                <hq-searchable-select
+                  [ngModel]="displayUnit(step)"
+                  (ngModelChange)="setSla(step, displayAmount(step), $event)"
+                  [ariaLabel]="'workflow.definitions.sla.unit' | translate"
+                  [disabled]="!canEdit || !isLatest"
+                  [allowOther]="false">
+                  <hq-ss-option *ngFor="let u of slaUnits" [value]="u" [label]="slaUnitKeyPrefix + u | translate"></hq-ss-option>
+                </hq-searchable-select>
+              </div>
+            </ng-container>
+            <ng-template #customSla>
+              <span class="wd-field__custom">{{ 'workflow.definitions.sla.custom' | translate: { value: step.custom } }}</span>
+            </ng-template>
+          </hq-form-field>
+        </div>
+      </li>
+    </ol>
+  </hq-card>
+</ng-container>

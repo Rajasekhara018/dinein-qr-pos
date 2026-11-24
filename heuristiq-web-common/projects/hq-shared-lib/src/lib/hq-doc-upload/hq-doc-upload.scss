@@ -1,0 +1,179 @@
+:host {
+  display: block;
+}
+
+.hq-doc {
+  --hq-doc-accent: var(--hq-primary, #0b6e4f);
+  --hq-doc-danger: #dc2626;
+  display: block;
+
+  &__hint {
+    font-size: 12px;
+    color: var(--edu-muted, #5a6a7e);
+  }
+
+  // The attached document: a card in the same style as the drop area.
+  &__file {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px 12px;
+    padding: 10px 12px;
+    border: 1px solid color-mix(in srgb, var(--hq-doc-accent) 22%, transparent);
+    border-radius: 12px;
+    background: color-mix(in srgb, var(--hq-doc-accent) 4%, transparent);
+    transition: border-color 0.18s ease, background-color 0.18s ease;
+
+    &:hover {
+      border-color: color-mix(in srgb, var(--hq-doc-accent) 45%, transparent);
+    }
+  }
+
+  &__chip {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1 1 220px;
+    min-width: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--edu-ink, #1b2a4a);
+    text-align: left;
+    cursor: pointer;
+    font: inherit;
+
+    &:focus-visible {
+      outline: 2px solid var(--hq-doc-accent);
+      outline-offset: 4px;
+      border-radius: 8px;
+    }
+  }
+
+  &__file-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    flex: 0 0 auto;
+    border-radius: 10px;
+    background: color-mix(in srgb, var(--hq-doc-accent) 12%, transparent);
+    color: var(--hq-doc-accent);
+
+    mat-icon {
+      width: 20px;
+      height: 20px;
+      font-size: 20px;
+    }
+  }
+
+  &__meta {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  &__label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: var(--edu-muted, #5a6a7e);
+  }
+
+  &__name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-weight: 600;
+    font-size: 13px;
+  }
+
+  &__size {
+    font-size: 11px;
+    color: var(--edu-muted, #5a6a7e);
+  }
+
+  &__actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-left: auto;
+  }
+
+  &__view,
+  &__change {
+    border-radius: 999px;
+  }
+
+  &__remove {
+    color: var(--hq-doc-danger);
+  }
+}
+
+.hq-doc__error {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 6px;
+  font-size: 12px;
+  color: #dc2626;
+
+  mat-icon {
+    width: 16px;
+    height: 16px;
+    font-size: 16px;
+  }
+}
+
+.hq-img {
+  position: relative;
+  display: inline-block;
+
+  &__frame {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 112px;
+    height: 112px;
+    overflow: hidden;
+    cursor: pointer;
+    background: rgba(148, 163, 184, 0.15);
+    border: 1px solid rgba(148, 163, 184, 0.4);
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  &--circle &__frame {
+    border-radius: 50%;
+  }
+
+  &--square &__frame {
+    border-radius: 8px;
+  }
+
+  &__placeholder {
+    width: 56px;
+    height: 56px;
+    font-size: 56px;
+    opacity: 0.5;
+  }
+
+  &__spinner {
+    position: absolute;
+  }
+
+  &__edit {
+    position: absolute;
+    right: -4px;
+    bottom: -4px;
+  }
+}
+
+// A file that cannot be read back (own storage without a fetcher): the name is shown, not offered as a link.
+.hq-doc__chip--static { cursor: default; }

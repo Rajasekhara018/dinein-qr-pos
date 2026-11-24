@@ -1,0 +1,641 @@
+:host {
+  display: block;
+}
+
+.profile-page {
+  font-family: var(--hq-font);
+}
+
+// ── Hero ─────────────────────────────────────────────────────────────────────
+.profile-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(220px, 0.7fr);
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  border-radius: 14px;
+  background: linear-gradient(135deg, var(--theme-hero-start) 0%, var(--theme-hero-mid) 55%, var(--theme-hero-end) 100%);
+  color: #f8fafc;
+  box-shadow: var(--theme-soft-shadow);
+  align-items: center;
+
+  @media (max-width: 860px) { grid-template-columns: 1fr; }
+}
+
+.profile-hero__copy {
+  h1 {
+    margin: 0.3rem 0 0.3rem;
+    font-size: clamp(0.95rem, 1.6vw, 1.25rem);
+    font-weight: 800;
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+  }
+  p {
+    margin: 0;
+    font-size: 0.77rem;
+    line-height: 1.5;
+    color: var(--hero-copy-muted);
+  }
+}
+
+.profile-hero__metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.4rem;
+
+  @media (max-width: 500px) { grid-template-columns: 1fr; }
+}
+
+.hero-metric {
+  padding: 0.5rem 0.65rem;
+  border-radius: 10px;
+  background: var(--hero-card-bg);
+  border: 1px solid var(--hero-card-border);
+  backdrop-filter: blur(6px);
+
+  &__label { display: block; font-size: 0.62rem; font-weight: 600; color: var(--hero-card-muted); text-transform: uppercase; letter-spacing: 0.06em; }
+  &__value  { display: block; font-size: 0.88rem; font-weight: 700; color: #f8fafc; margin: 0.08rem 0 0.06rem; }
+  &__note   { margin: 0; font-size: 0.65rem; color: var(--hero-card-muted); line-height: 1.35; }
+}
+
+.eyebrow,
+.section-kicker {
+  display: inline-flex;
+  width: fit-content;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  background: var(--hero-chip-bg);
+  color: var(--hero-chip-text);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+// ── Shell ─────────────────────────────────────────────────────────────────────
+.profile-shell {
+  background: var(--workspace-panel);
+  border: 1px solid var(--workspace-border);
+  border-radius: 18px;
+  padding: 1.25rem 1.4rem;
+  box-shadow: var(--theme-soft-shadow);
+}
+
+// ── Tabs ──────────────────────────────────────────────────────────────────────
+.profile-tabs {
+  display: block;
+}
+
+// ── Profile grid ──────────────────────────────────────────────────────────────
+.profile-grid {
+  display: grid;
+  grid-template-columns: 288px minmax(0, 1fr);
+  gap: 1.25rem;
+  align-items: start;
+
+  @media (max-width: 960px) { grid-template-columns: 1fr; }
+}
+
+.profile-sidebar,
+.profile-main {
+  display: grid;
+  gap: 1.25rem;
+  align-content: start;
+}
+
+// ── Card base ─────────────────────────────────────────────────────────────────
+.pf-card {
+  background: var(--workspace-panel);
+  border: 1px solid var(--workspace-border);
+  border-radius: 16px;
+  padding: 1.25rem;
+  box-shadow: var(--theme-soft-shadow);
+
+  &--center { text-align: center; }
+
+  &--narrow {
+    max-width: 480px;
+  }
+
+  &--full {
+    // spans full width in security/preferences grid
+  }
+}
+.pf-body-copy {
+  font-size: 0.84rem;
+  color: var(--edu-muted);
+  margin: 0 0 1rem;
+  line-height: 1.6;
+}
+
+// ── Profile card (sidebar) ────────────────────────────────────────────────────
+.pf-avatar-upload {
+  display: flex;
+  justify-content: center;
+  margin: 0 auto 0.85rem;
+}
+
+.pf-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--button-accent-start), var(--button-accent-end));
+  color: #fff;
+  font-size: 1.9rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 0.85rem;
+  box-shadow: 0 6px 22px color-mix(in srgb, var(--button-accent-start) 32%, transparent);
+  border: 3px solid var(--workspace-panel);
+  outline: 2px solid color-mix(in srgb, var(--button-accent-start) 22%, transparent);
+}
+
+.pf-role-badge {
+  display: inline-block;
+  padding: 0.25rem 0.7rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--button-accent-start) 10%, transparent);
+  color: var(--button-accent-start);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  margin-bottom: 0.4rem;
+}
+
+.pf-name {
+  margin: 0 0 0.2rem;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--edu-ink);
+}
+
+.pf-email {
+  font-size: 0.78rem;
+  color: var(--edu-muted);
+  margin: 0 0 0.85rem;
+  word-break: break-all;
+}
+
+.pf-chips {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-bottom: 0.85rem;
+}
+
+.pf-meta-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin: 0 0 1rem;
+  text-align: left;
+}
+
+.pf-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.65rem;
+  border-radius: 10px;
+  background: var(--theme-soft-surface);
+  font-size: 0.76rem;
+  color: var(--edu-muted);
+  font-weight: 500;
+
+  i { color: var(--button-accent-start); flex-shrink: 0; font-size: 0.78rem; }
+
+  &--mono { font-family: 'Courier New', monospace; font-size: 0.7rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+}
+
+.pf-edit-btn {
+  width: 100%;
+  min-height: 44px;
+  border: none;
+  border-radius: 999px;
+  font-weight: 700;
+  font-family: inherit;
+  font-size: 0.875rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  cursor: pointer;
+  transition: opacity 0.15s;
+  background: linear-gradient(135deg, var(--button-accent-start), var(--button-accent-end));
+  color: #fff;
+
+  &:hover { opacity: 0.88; }
+
+  &--cancel {
+    background: var(--theme-soft-surface);
+    color: var(--edu-ink);
+    border: 1px solid var(--workspace-border);
+
+    &:hover { background: var(--theme-row-hover); }
+  }
+}
+
+// ── Info grid ─────────────────────────────────────────────────────────────────
+.pf-info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.85rem;
+
+  @media (max-width: 600px) { grid-template-columns: 1fr; }
+}
+
+.pf-info-item {
+  padding: 0.85rem 1rem;
+  border-radius: 14px;
+  background: var(--theme-soft-surface);
+  border: 1px solid var(--workspace-border);
+  display: grid;
+  gap: 0.3rem;
+}
+
+.pf-info-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--edu-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.pf-info-value {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--edu-ink);
+  word-break: break-word;
+}
+
+.pf-field {
+  display: grid;
+  gap: 0.35rem;
+
+  &__label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--edu-ink);
+  }
+
+  &__error {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #b91c1c;
+  }
+
+  &__hint {
+    font-size: 0.72rem;
+    color: var(--edu-muted);
+  }
+}
+
+.required-mark { color: #dc2626; }
+
+.pf-input {
+  min-height: 44px;
+  border-radius: 11px;
+  border: 1px solid var(--field-border);
+  background: var(--field-bg);
+  color: var(--field-text);
+  font-family: inherit;
+  font-size: 0.875rem;
+  box-shadow: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+
+  &:focus {
+    border-color: var(--button-accent-start);
+    box-shadow: 0 0 0 3px var(--field-focus-ring);
+    outline: none;
+    background: var(--field-bg);
+  }
+
+  &:disabled {
+    background: var(--theme-soft-surface);
+    color: var(--edu-muted);
+    cursor: not-allowed;
+    opacity: 0.8;
+  }
+
+  &::placeholder { color: var(--field-placeholder); }
+}
+
+.pf-pref-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.65rem;
+}
+
+.pf-edit-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.65rem;
+  padding-top: 1rem;
+  margin-top: 0.85rem;
+  border-top: 1px solid var(--workspace-border);
+}
+
+// ── Activity ──────────────────────────────────────────────────────────────────
+// Fed by a plain, unpaginated array (no "load more") -- cap the height and scroll internally
+// instead of letting a long history stretch the whole page.
+.pf-activity-list {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  max-height: 420px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding-right: 0.4rem;
+}
+
+.pf-activity-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.8rem;
+  padding: 0.8rem 0;
+  border-bottom: 1px solid var(--workspace-border);
+
+  &:last-child { border-bottom: none; }
+
+  strong { display: block; font-size: 0.82rem; font-weight: 700; color: var(--edu-ink); overflow-wrap: anywhere; }
+  span { font-size: 0.76rem; color: var(--edu-muted); line-height: 1.4; overflow-wrap: anywhere; }
+}
+
+.pf-activity-icon {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.82rem;
+
+  &.icon-blue  { background: color-mix(in srgb, var(--button-accent-start) 12%, transparent); color: var(--button-accent-start); }
+  &.icon-green { background: color-mix(in srgb, #16a34a 12%, transparent); color: #16a34a; }
+  &.icon-amber { background: color-mix(in srgb, #d97706 12%, transparent); color: #d97706; }
+  &.icon-red   { background: color-mix(in srgb, #dc2626 10%, transparent); color: #dc2626; }
+}
+
+.pf-activity-body { flex: 1; min-width: 0; }
+.pf-activity-time { font-size: 0.7rem; color: var(--edu-muted); flex-shrink: 0; margin-top: 2px; }
+
+// ── Security / Preferences grid ────────────────────────────────────────────────
+.pf-sec-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem;
+
+  @media (max-width: 860px) { grid-template-columns: 1fr; }
+}
+
+.pf-card--full { grid-column: 1 / -1; }
+
+.pf-sec-card {}
+.pf-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.7rem;
+  margin-bottom: 1rem;
+
+  &--auto { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); }
+
+  @media (max-width: 600px) { grid-template-columns: 1fr 1fr; }
+}
+
+.pf-stat-item {
+  padding: 0.75rem 0.9rem;
+  border-radius: 12px;
+  background: var(--theme-soft-surface);
+  border: 1px solid var(--workspace-border);
+  display: grid;
+  gap: 0.25rem;
+
+  span { font-size: 0.7rem; font-weight: 700; color: var(--edu-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+  strong { font-size: 0.84rem; font-weight: 700; color: var(--edu-ink); word-break: break-word; }
+}
+
+// ── Security card actions / MFA enrollment ─────────────────────────────────────
+.pf-sec-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+
+  a { text-decoration: none; }
+}
+
+.pf-mfa-enroll {
+  display: grid;
+  gap: 0.85rem;
+  padding-top: 0.85rem;
+  margin-top: 0.85rem;
+  border-top: 1px solid var(--workspace-border);
+
+  &__qr {
+    display: flex;
+    justify-content: center;
+    padding: 0.75rem;
+    border-radius: 14px;
+    background: #fff;
+    border: 1px solid var(--workspace-border);
+    width: fit-content;
+
+    img { width: 176px; height: 176px; display: block; }
+  }
+
+  &__secret {
+    display: block;
+    padding: 0.5rem 0.7rem;
+    border-radius: 10px;
+    background: var(--theme-soft-surface);
+    border: 1px solid var(--workspace-border);
+    font-size: 0.8rem;
+    letter-spacing: 0.04em;
+    word-break: break-all;
+    color: var(--edu-ink);
+  }
+}
+
+// ── Theme selector ────────────────────────────────────────────────────────────
+.pf-theme-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.pf-theme-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border: 2px solid var(--workspace-border);
+  border-radius: 16px;
+  overflow: hidden;
+  cursor: pointer;
+  font-family: inherit;
+  text-align: left;
+  background: var(--workspace-panel);
+  transition: border-color 0.18s, box-shadow 0.18s, transform 0.15s;
+
+  &:hover {
+    border-color: color-mix(in srgb, var(--button-accent-start) 40%, transparent);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px color-mix(in srgb, var(--button-accent-start) 12%, transparent);
+  }
+
+  &--active {
+    border-color: var(--button-accent-start);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--button-accent-start) 16%, transparent);
+  }
+}
+
+.pf-theme-preview {
+  display: flex;
+  height: 72px;
+  overflow: hidden;
+
+  &__sidebar {
+    width: 28px;
+    flex-shrink: 0;
+  }
+
+  &__body {
+    flex: 1;
+    padding: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  &__bar {
+    height: 8px;
+    border-radius: 4px;
+    opacity: 0.3;
+  }
+
+  &__card {
+    height: 18px;
+    border-radius: 5px;
+    border: 1px solid;
+    opacity: 0.7;
+  }
+
+  &__accent {
+    height: 8px;
+    border-radius: 4px;
+    width: 50%;
+    opacity: 0.8;
+  }
+}
+
+.pf-theme-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.6rem 0.85rem;
+  border-top: 1px solid var(--workspace-border);
+
+  &__left {
+    strong { display: block; font-size: 0.82rem; font-weight: 700; color: var(--edu-ink); }
+    span   { font-size: 0.72rem; color: var(--edu-muted); }
+  }
+}
+
+.pf-theme-check {
+  font-size: 1.05rem;
+  color: var(--button-accent-start);
+}
+
+// ── Sessions / device lists ────────────────────────────────────────────────────
+.pf-session-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  margin-bottom: 1rem;
+}
+
+// Shared by Sessions, MFA methods and Devices -- all three are fed by a "get all, no
+// pagination" API call (getMySessions/getMyMfa/getMyDevices), so a user with many of any one
+// of them would otherwise stretch the whole page; cap height and scroll internally instead.
+.pf-session-list {
+  display: grid;
+  max-height: 420px;
+  overflow-y: auto;
+  padding-right: 0.4rem;
+}
+
+.pf-session-item {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0.8rem 0;
+  border-bottom: 1px solid var(--workspace-border);
+  flex-wrap: wrap;
+
+  &:last-child { border-bottom: none; }
+}
+
+.pf-session-icon {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: var(--theme-soft-surface);
+  border: 1px solid var(--workspace-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+  color: var(--button-accent-start);
+}
+
+.pf-session-body {
+  flex: 1;
+  min-width: 200px;
+
+  strong { display: block; font-size: 0.84rem; font-weight: 700; color: var(--edu-ink); }
+  span   { display: block; font-size: 0.74rem; color: var(--edu-muted); line-height: 1.5; }
+}
+
+.pf-session-side {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+// ── Preferences: toggle list ───────────────────────────────────────────────────
+.pf-toggle-list {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.pf-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.55rem 0.75rem;
+  border-radius: 11px;
+  background: var(--theme-soft-surface);
+  border: 1px solid var(--workspace-border);
+  font-size: 0.83rem;
+  font-weight: 600;
+  color: var(--edu-ink);
+  cursor: pointer;
+
+  --hq-toggle-font-size: .83rem;
+  --hq-toggle-active: var(--button-accent-start, #176b45);
+  --hq-toggle-handle: #fff;
+
+}
+
+.pf-session-pos {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+
+  a { color: var(--theme-hero-mid, #0b6e4f); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+}

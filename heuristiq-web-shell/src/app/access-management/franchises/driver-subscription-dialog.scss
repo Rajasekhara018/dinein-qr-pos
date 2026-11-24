@@ -1,0 +1,134 @@
+// The "driver subscription" dialog: a header with the driver, the plans as selectable rows (price on the right), the charge note
+// and the buttons at the end.
+.sub-dialog {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  padding: 1.25rem 1.5rem;
+
+  &__head {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  &__icon {
+    display: inline-grid;
+    place-items: center;
+    inline-size: 2.5rem;
+    block-size: 2.5rem;
+    flex: none;
+    border-radius: 12px;
+    background: var(--theme-highlight-soft, #eef4ff);
+    color: var(--hq-primary, #1d4ed8);
+    font-size: 1.15rem;
+  }
+
+  &__title {
+    margin: 0;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--edu-ink, #1b2a4a);
+  }
+
+  &__driver {
+    margin: 0.1rem 0 0;
+    font-size: 0.85rem;
+    color: var(--edu-muted, #5a6a7e);
+  }
+
+  &__hint,
+  &__charge {
+    margin: 0;
+    font-size: 0.82rem;
+    line-height: 1.45;
+    color: var(--edu-muted, #5a6a7e);
+  }
+
+  &__charge {
+    display: flex;
+    gap: 0.45rem;
+  }
+
+  &__notice {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    margin: 0;
+    padding: 0.65rem 0.85rem;
+    border-radius: 10px;
+    font-size: 0.85rem;
+    background: var(--theme-pending-pill-bg, #fbf0dc);
+    color: var(--theme-pending-pill-text, #8f5b00);
+  }
+
+  &__plans {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}
+
+.sub-plan {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  inline-size: 100%;
+  padding: 0.75rem 0.9rem;
+  border: 1px solid var(--workspace-border, #e3e8ef);
+  border-radius: 12px;
+  background: var(--workspace-panel, #fff);
+  color: var(--edu-ink, #1b2a4a);
+  text-align: start;
+  cursor: pointer;
+  transition: border-color 0.15s, box-shadow 0.15s, background-color 0.15s;
+
+  &:hover:not(:disabled) { border-color: color-mix(in srgb, var(--hq-primary, #1d4ed8) 45%, var(--workspace-border, #e3e8ef)); }
+
+  &:focus-visible {
+    outline: 2px solid var(--hq-primary, #1d4ed8);
+    outline-offset: 2px;
+  }
+
+  &:disabled { cursor: not-allowed; opacity: 0.7; }
+
+  &--selected {
+    border-color: var(--hq-primary, #1d4ed8);
+    background: color-mix(in srgb, var(--hq-primary, #1d4ed8) 6%, var(--workspace-panel, #fff));
+    box-shadow: 0 0 0 1px var(--hq-primary, #1d4ed8);
+  }
+
+  &__check {
+    flex: none;
+    font-size: 1.1rem;
+    color: var(--hq-primary, #1d4ed8);
+  }
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    flex: 1 1 auto;
+    min-inline-size: 0;
+  }
+
+  &__name {
+    font-weight: 700;
+    overflow-wrap: anywhere;
+  }
+
+  &__meta {
+    font-size: 0.78rem;
+    color: var(--edu-muted, #5a6a7e);
+  }
+
+  &__price {
+    flex: none;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sub-plan { transition: none; }
+}

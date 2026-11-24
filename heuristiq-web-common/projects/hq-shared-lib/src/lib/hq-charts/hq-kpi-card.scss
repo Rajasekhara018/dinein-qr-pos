@@ -1,0 +1,97 @@
+:host {
+  display: block;
+}
+
+.kpi {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+  padding: 1.125rem 1.25rem 1rem;
+  background: var(--workspace-panel, #fff);
+  border: 1px solid var(--hq-card-border, var(--workspace-border, rgba(0, 0, 0, 0.08)));
+  border-radius: var(--hq-radius-card, 14px);
+  box-shadow: var(--hq-card-shadow, 0 1px 2px rgba(16, 24, 40, 0.05));
+  transition: box-shadow 0.18s;
+
+  &:hover {
+    box-shadow: var(--hq-card-shadow-hover, 0 4px 14px rgba(16, 24, 40, 0.08));
+  }
+}
+
+.kpi__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.kpi__label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--edu-muted, #5a6a7e);
+}
+
+.kpi__badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--hq-primary, #0B6E4F) 12%, transparent);
+  color: var(--hq-link, var(--hq-primary, #0B6E4F));
+}
+
+.kpi__value {
+  margin-top: 0.35rem;
+  font-size: 1.9rem;
+  font-weight: 700;
+  line-height: 1.15;
+  color: var(--edu-ink, #1b2a4a);
+}
+
+.kpi--pending .kpi__value {
+  color: var(--snackBar-warn, #E8A33D);
+}
+
+.kpi--bad .kpi__value {
+  color: var(--danger-text, #B3261E);
+}
+
+.kpi__foot {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.3rem;
+  font-size: 0.78rem;
+}
+
+.kpi__trend {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.1rem 0.45rem 0.1rem 0.2rem;
+  border-radius: 999px;
+  font-weight: 700;
+  background: color-mix(in srgb, var(--edu-muted, #5a6a7e) 14%, transparent);
+  color: var(--edu-muted, #5a6a7e);
+
+  &--good {
+    background: var(--theme-success-pill-bg, #E3F2E6);
+    color: var(--theme-success-pill-text, #2F7343);
+  }
+
+  &--bad {
+    background: var(--theme-failed-pill-bg, #F9E3E1);
+    color: var(--theme-failed-pill-text, #B3261E);
+  }
+}
+
+.kpi__caption {
+  color: var(--edu-muted, #5a6a7e);
+}
+
+.kpi__spark {
+  margin: 0.35rem -0.35rem -0.45rem;
+}

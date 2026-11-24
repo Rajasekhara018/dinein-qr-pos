@@ -1,0 +1,156 @@
+.app-dialog {
+  width: min(460px, 92vw);
+  background: var(--workspace-panel, #fff);
+  border-radius: var(--hq-popup-radius, 22px);
+  overflow: hidden;
+  font-family: var(--hq-font);
+}
+
+.dialog-header {
+  display: flex;
+  gap: 16px;
+  padding: 26px 28px 16px;
+
+  h2 {
+    margin: 0 0 4px;
+    color: var(--edu-ink, #111827);
+    font-size: 1.12rem;
+    font-weight: 700;
+  }
+
+  p {
+    margin: 0;
+    color: var(--edu-muted, #64748b);
+    font-size: 0.88rem;
+    line-height: 1.45;
+  }
+}
+
+.dialog-icon {
+  width: 46px;
+  height: 46px;
+  border-radius: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background: var(--theme-soft-surface);
+  color: var(--button-accent-end, #003580);
+  font-size: 1.1rem;
+}
+
+.app-dialog.danger .dialog-icon {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.app-dialog.warning .dialog-icon {
+  background: #fef3c7;
+  color: #b45309;
+}
+
+.dialog-fields {
+  padding: 8px 28px 2px;
+}
+
+.dialog-field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-bottom: 14px;
+
+  span {
+    color: var(--edu-ink, #111827);
+    font-size: 0.82rem;
+    font-weight: 700;
+
+    em {
+      color: #dc2626;
+      font-style: normal;
+    }
+  }
+
+  .dialog-input {
+    display: block;
+    width: 100%;
+  }
+
+  // The multi-choice field is a hq-searchable-select: it draws its own box, error and disabled state.
+  .dialog-multiselect {
+    display: block;
+    width: 100%;
+  }
+
+  &--checkbox {
+    gap: 2px;
+
+    .field-helper {
+      padding-inline-start: 1.7rem;
+    }
+  }
+}
+
+.field-helper,
+.field-error {
+  font-size: 0.76rem;
+  line-height: 1.35;
+}
+
+.field-helper {
+  color: var(--edu-muted, #64748b);
+}
+
+.field-error {
+  color: #b91c1c;
+}
+
+.dialog-actions {
+  display: flex;
+  // Cancel on the left, the action on the right, with a clear gap between them
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  padding: 26px 28px 28px;
+}
+
+.btn {
+  min-width: 96px;
+  border-radius: 999px;
+  padding: 10px 22px;
+  font-weight: 700;
+  transition: transform 0.12s, box-shadow 0.15s, background 0.15s;
+
+  &:not(:disabled):hover { transform: translateY(-1px); }
+}
+
+.btn-cancel {
+  border: 1px solid var(--workspace-border, #e5e7eb);
+  background: var(--workspace-panel);
+  color: var(--edu-muted);
+}
+
+.btn-confirm {
+  border: 1px solid var(--button-accent-start, #003580);
+  background: linear-gradient(135deg, var(--button-accent-start, #2d6cf2), var(--button-accent-end, #003580));
+  color: #fff;
+  box-shadow: 0 8px 18px rgba(0, 53, 128, 0.22);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  &:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+}
+
+.app-dialog.danger .btn-confirm {
+  border-color: #dc2626;
+  background: #dc2626;
+}
+
+.app-dialog.warning .btn-confirm {
+  border-color: #b45309;
+  background: #b45309;
+}

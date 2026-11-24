@@ -1,0 +1,111 @@
+.ct-dialog {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.ct-title { margin: 0; font-size: 1.15rem; }
+.ct-sub { margin: 0 0 0.5rem; font-size: 0.8rem; color: var(--edu-muted, #64748b); }
+.ct-mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+
+.ct-vars {
+  max-height: 130px;
+  overflow: auto;
+  margin-bottom: 0.5rem;
+  border: 1px solid var(--workspace-border, #e2e8f0);
+  border-radius: 8px;
+
+  &__row {
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.3rem 0.6rem;
+    font-size: 0.75rem;
+    border-bottom: 1px solid var(--workspace-border, #e2e8f0);
+
+    &:last-child { border-bottom: 0; }
+  }
+
+  &__key { flex: 0 0 38%; font-weight: 700; color: var(--edu-muted, #64748b); word-break: break-all; }
+  &__val { flex: 1; word-break: break-all; }
+}
+
+.ct-label {
+  margin-top: 0.4rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--edu-muted, #64748b);
+}
+
+.ct-textarea { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.8rem; }
+.ct-error { margin: 0; font-size: 0.78rem; color: #b91c1c; }
+
+.ct-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.6rem;
+  margin-top: 0.8rem;
+}
+
+// ── What is being approved ────────────────────────────────────────────────────
+.ct-dialog { max-height: 90vh; overflow-y: auto; }
+.ct-review {
+  margin: 0.4rem 0 0.6rem;
+  padding: 0.75rem 0.9rem;
+  border: 1px solid var(--workspace-border, #e2e8f0);
+  border-radius: 10px;
+  background: var(--theme-soft-surface, transparent);
+
+  &__title { margin: 0 0 0.4rem; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--edu-muted, #64748b); }
+  &__headline { margin: 0; font-weight: 600; }
+  &__meta { margin: 0.15rem 0 0; font-size: 0.78rem; color: var(--edu-muted, #64748b); }
+  &__note { margin: 0.2rem 0; font-size: 0.8rem; color: var(--edu-muted, #64748b); }
+}
+.ct-link { margin-top: 0.4rem; padding: 0; border: 0; background: none; font-size: 0.8rem; font-weight: 600; color: var(--theme-hero-start, #0b6e4f); cursor: pointer; text-align: start; }
+.ct-diff {
+  margin-top: 0.5rem;
+  max-height: 300px;
+  overflow: auto;
+  border: 1px solid var(--workspace-border, #e2e8f0);
+  border-radius: 8px;
+  font-size: 0.78rem;
+
+  &__head, &__row { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr) minmax(0, 1fr); gap: 0.6rem; padding: 0.35rem 0.6rem; }
+  &__head { position: sticky; top: 0; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--edu-muted, #64748b); background: var(--workspace-panel, #fff); border-bottom: 1px solid var(--workspace-border, #e2e8f0); }
+  &__row { border-bottom: 1px solid var(--workspace-border, #e2e8f0); &:last-child { border-bottom: 0; } }
+  &__path { word-break: break-all; }
+  &__old, &__new { word-break: break-word; overflow-wrap: anywhere; }
+  &__old { color: #b91c1c; background: rgba(220, 38, 38, 0.08); border-radius: 4px; padding: 0 0.25rem; }
+  &__new { font-weight: 600; color: #166534; background: rgba(22, 163, 74, 0.10); border-radius: 4px; padding: 0 0.25rem; }
+  &__mark { display: inline-block; width: 0.9rem; }
+  &__row--added &__mark { color: #166534; }
+  &__row--removed &__mark { color: #b91c1c; }
+  &__row--changed &__mark { color: #b45309; }
+}
+
+.ct-review__sub { margin: 0.6rem 0 0.2rem; font-size: 0.74rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--edu-muted, #64748b); }
+.ct-answers, .ct-docs {
+  max-height: 200px;
+  overflow: auto;
+  border: 1px solid var(--workspace-border, #e2e8f0);
+  border-radius: 8px;
+  font-size: 0.78rem;
+}
+.ct-answers__row, .ct-docs__row { display: flex; gap: 0.75rem; align-items: center; padding: 0.35rem 0.6rem; border-bottom: 1px solid var(--workspace-border, #e2e8f0); &:last-child { border-bottom: 0; } }
+.ct-answers__key { flex: 0 0 38%; font-weight: 700; color: var(--edu-muted, #64748b); word-break: break-word; }
+.ct-answers__val { flex: 1; word-break: break-word; overflow-wrap: anywhere; }
+.ct-docs__name { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+.ct-docs__file { color: var(--edu-muted, #64748b); word-break: break-all; }
+.ct-docs__open { margin-top: 0; white-space: nowrap; }
+
+/* Comment and variables need room to write: the shared .input rule collapses a textarea to one line. */
+.ct-dialog textarea.ct-textarea { display: block; width: 100%; min-height: 110px; height: auto; resize: vertical; line-height: 1.45; }
+.ct-dialog textarea.ct-textarea--vars { min-height: 90px; }
+.ct-answers, .ct-docs { max-height: 280px; }
+
+/* The dialog is a scrolling flex column: without this its children are squeezed to fit instead of the dialog scrolling. */
+.ct-dialog > * { flex-shrink: 0; }
+.ct-dialog textarea.ct-textarea { min-height: 120px !important; }
+.ct-dialog textarea.ct-textarea--vars { min-height: 100px !important; }

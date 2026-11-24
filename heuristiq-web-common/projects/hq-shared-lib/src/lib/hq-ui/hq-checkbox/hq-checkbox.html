@@ -1,0 +1,39 @@
+<div class="hq-cb" [class.is-compact]="size === 'compact'" [class.is-disabled]="isDisabled" [class.is-invalid]="isInvalid">
+  <label class="hq-cb__row" [class.is-plain]="hideControl" [attr.for]="controlId">
+    <input
+      #box
+      type="checkbox"
+      class="hq-cb__input"
+      [id]="controlId"
+      [attr.name]="name || null"
+      [checked]="checked"
+      [indeterminate]="indeterminate"
+      [disabled]="isDisabled"
+      [required]="required"
+      [attr.aria-label]="ariaLabel || null"
+      [attr.aria-checked]="indeterminate ? 'mixed' : checked"
+      [attr.aria-invalid]="isInvalid ? 'true' : null"
+      [attr.aria-describedby]="error ? errorId : null"
+      (change)="onToggle($event)"
+      (blur)="onBlur()"
+    />
+    @if (!hideControl) {
+    <span class="hq-cb__box" [class.is-checked]="checked && !indeterminate" [class.is-mixed]="indeterminate" aria-hidden="true">
+      @if (indeterminate) {
+        <svg viewBox="0 0 16 16" width="12" height="12"><path d="M3.5 8h9" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" /></svg>
+      } @else if (checked) {
+        <svg viewBox="0 0 16 16" width="12" height="12">
+          <path d="M3.2 8.4l3 3 6.6-6.8" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      }
+    </span>
+    }
+    <span class="hq-cb__label">
+      @if (label) {{{ label }}} @else {<ng-content></ng-content>}
+      @if (required) {<em class="hq-cb__req" aria-hidden="true">*</em>}
+    </span>
+  </label>
+  @if (error) {
+    <div class="hq-cb__error" [id]="errorId" role="alert">{{ error }}</div>
+  }
+</div>

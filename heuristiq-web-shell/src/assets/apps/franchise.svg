@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Franchise Management">
+  <!-- Franchise Management glyph: a storefront with a striped awning. One colour on transparent: the app paints it in the theme
+       colour through a CSS mask; the light awning stripes are a lower opacity. -->
+  <path fill="#000" d="M30 22h17l-4 26H18z" />
+  <path fill="#000" fill-opacity=".55" d="M47 22h17v26H43z" />
+  <path fill="#000" d="M64 22h17l4 26H64z" />
+  <path fill="#000" fill-opacity=".55" d="M81 22h17l12 26H85z" />
+  <path fill="#000" d="M18 48h25a12.5 9 0 0 1-25 0zm25 0h21a10.5 9 0 0 1-21 0zm21 0h21a10.5 9 0 0 1-21 0zm21 0h25a12.5 9 0 0 1-25 0z" />
+  <path fill="#000" fill-rule="evenodd" d="M26 62h76v44H26zm10 10v34h20V72zm32 0v16h24V72z" />
+</svg>

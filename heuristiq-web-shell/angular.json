@@ -1,0 +1,232 @@
+{
+	"$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+	"version": 1,
+	"cli": {
+		"packageManager": "npm",
+		"analytics": false
+	},
+	"newProjectRoot": "projects",
+	"projects": {
+		"heuristiq-web-shell": {
+			"projectType": "application",
+			"schematics": {
+				"@schematics/angular:component": {
+					"style": "scss",
+					"standalone": false
+				},
+				"@schematics/angular:directive": {
+					"standalone": false
+				},
+				"@schematics/angular:pipe": {
+					"standalone": false
+				}
+			},
+			"root": "",
+			"sourceRoot": "src",
+			"prefix": "app",
+			"architect": {
+				"build": {
+					"builder": "@angular-architects/native-federation-v4:build",
+					"options": {
+						"cacheExternalArtifacts": true
+					},
+					"configurations": {
+						"production": {
+							"target": "heuristiq-web-shell:esbuild:production"
+						},
+						"development": {
+							"target": "heuristiq-web-shell:esbuild:development",
+							"dev": true
+						},
+						"adityarailcab": {
+							"target": "heuristiq-web-shell:esbuild:adityarailcab"
+						},
+						"realboom": {
+							"target": "heuristiq-web-shell:esbuild:realboom"
+						},
+						"dev": {
+							"target": "heuristiq-web-shell:esbuild:dev"
+						}
+					},
+					"defaultConfiguration": "production"
+				},
+				"serve": {
+					"builder": "@angular-architects/native-federation-v4:build",
+					"options": {
+						"target": "heuristiq-web-shell:serve-original:development",
+						"rebuildDelay": 500,
+						"cacheExternalArtifacts": true,
+						"dev": true,
+						"devServer": true,
+						"port": 0
+					},
+					"configurations": {
+						"production": {
+							"target": "heuristiq-web-shell:serve-original:production"
+						},
+						"development": {
+							"target": "heuristiq-web-shell:serve-original:development"
+						},
+						"adityarailcab": {
+							"target": "heuristiq-web-shell:serve-original:adityarailcab"
+						},
+						"realboom": {
+							"target": "heuristiq-web-shell:serve-original:realboom"
+						},
+						"dev": {
+							"target": "heuristiq-web-shell:serve-original:dev"
+						}
+					},
+					"defaultConfiguration": "development"
+				},
+				"test": {
+					"builder": "@angular/build:unit-test",
+					"options": {
+						"setupFiles": ["src/test-setup.ts"],
+						"coverageInclude": ["src/app/**/*.ts"],
+						"coverageExclude": [
+							"**/*.spec.ts",
+							"**/*.routes.ts",
+							"**/*-routing-module.ts",
+							"**/*-module.ts",
+							"src/main.ts",
+							"src/environments/**",
+							"**/*.models.ts",
+							"**/*.model.ts",
+							"**/*.types.ts"
+						]
+					}
+				},
+				"esbuild": {
+					"builder": "@angular/build:application",
+					"options": {
+						"browser": "src/main.ts",
+						"polyfills": [
+							"zone.js",
+							"es-module-shims"
+						],
+						"tsConfig": "tsconfig.app.json",
+						"inlineStyleLanguage": "scss",
+						"assets": [
+							{
+								"glob": "**/*",
+								"input": "public"
+							},
+							{
+								"glob": "**/*",
+								"input": "src/assets",
+								"output": "assets"
+							},
+							{
+								"glob": "firebase-messaging-sw.js",
+								"input": "public",
+								"output": "/"
+							}
+						],
+						"styles": [
+							"node_modules/bootstrap/dist/css/bootstrap.min.css",
+							"node_modules/bootstrap-icons/font/bootstrap-icons.css",
+							"node_modules/quill/dist/quill.snow.css",
+							"node_modules/hq-shared-lib/theme/styles.scss",
+							"node_modules/hq-shared-lib/theme/typography.scss"
+						],
+						"scripts": [
+							"node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"
+						],
+						"allowedCommonJsDependencies": [
+							"leaflet",
+							"@stomp/stompjs",
+							"sockjs-client"
+						]
+					},
+					"configurations": {
+						"production": {
+							"budgets": [
+								{
+									"type": "initial",
+									"maximumWarning": "2MB",
+									"maximumError": "5MB"
+								},
+								{
+									"type": "anyComponentStyle",
+									"maximumWarning": "250kB",
+									"maximumError": "150kB"
+								}
+							],
+							"outputHashing": "all"
+						},
+						"development": {
+							"optimization": false,
+							"extractLicenses": false,
+							"sourceMap": true,
+							"fileReplacements": [
+								{
+									"replace": "src/environments/environment.ts",
+									"with": "src/environments/environment.development.ts"
+								}
+							]
+						},
+						"adityarailcab": {
+							"optimization": false,
+							"extractLicenses": false,
+							"sourceMap": true,
+							"fileReplacements": [
+								{
+									"replace": "src/environments/environment.ts",
+									"with": "src/environments/environment.adityarailcab.ts"
+								}
+							]
+						},
+						"realboom": {
+							"optimization": false,
+							"extractLicenses": false,
+							"sourceMap": true,
+							"fileReplacements": [
+								{
+									"replace": "src/environments/environment.ts",
+									"with": "src/environments/environment.realboom.ts"
+								}
+							]
+						},
+						"dev": {
+							"optimization": false,
+							"extractLicenses": false,
+							"sourceMap": true,
+							"fileReplacements": [
+								{
+									"replace": "src/environments/environment.ts",
+									"with": "src/environments/environment.dev.ts"
+								}
+							]
+						}
+					},
+					"defaultConfiguration": "production"
+				},
+				"serve-original": {
+					"builder": "@angular/build:dev-server",
+					"configurations": {
+						"production": {
+							"buildTarget": "heuristiq-web-shell:esbuild:production"
+						},
+						"development": {
+							"buildTarget": "heuristiq-web-shell:esbuild:development"
+						},
+						"adityarailcab": {
+							"buildTarget": "heuristiq-web-shell:esbuild:adityarailcab"
+						},
+						"realboom": {
+							"buildTarget": "heuristiq-web-shell:esbuild:realboom"
+						},
+						"dev": {
+							"buildTarget": "heuristiq-web-shell:esbuild:dev"
+						}
+					},
+					"defaultConfiguration": "development",
+					"options": {
+						"port": 4200
+					}
+				}
+			}
+		}
+	}
+}

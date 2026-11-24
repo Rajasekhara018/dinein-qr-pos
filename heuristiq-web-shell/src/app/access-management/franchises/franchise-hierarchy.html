@@ -1,0 +1,53 @@
+<hq-page-header
+  [kicker]="'nav.sections.accessManagement' | translate"
+  [title]="'franchiseHierarchy.title' | translate: { code: code }"
+  [subtitle]="'franchiseHierarchy.subtitle' | translate">
+</hq-page-header>
+
+<div class="table-surface">
+  <div class="table-surface__body">
+    <p *ngIf="errorMessage" class="form-error" role="alert">{{ errorMessage }}</p>
+    <p *ngIf="isLoading && !errorMessage" role="status">{{ 'franchiseHierarchy.loading' | translate }}</p>
+
+    <ng-container *ngIf="hierarchy">
+      <div class="franchise-grid">
+        <div>
+          <strong>{{ 'franchiseHierarchy.parent' | translate }}</strong>
+          <div data-testid="current-parent">
+            {{ hierarchy.parentFranchiseId ? codeOf(hierarchy.parentFranchiseId) : ('franchiseHierarchy.topLevel' | translate) }}
+          </div>
+        </div>
+        <div>
+          <strong>{{ 'franchiseHierarchy.children' | translate }}</strong>
+          <div *ngIf="hierarchy.childFranchiseIds.length === 0">{{ 'franchiseHierarchy.noChildren' | translate }}</div>
+          <ul class="list-unstyled mb-0">
+            <li *ngFor="let id of hierarchy.childFranchiseIds">{{ codeOf(id) }}</li>
+          </ul>
+        </div>
+        <div>
+          <strong>{{ 'franchiseHierarchy.allBelow' | translate }}</strong>
+          <div>{{ hierarchy.descendantFranchiseIds.length }}</div>
+        </div>
+      </div>
+
+      <form *hqHasPrivilege="privileges.setParent" class="franchise-grid" (ngSubmit)="save()">
+        <label>{{ 'franchiseHierarchy.chooseParent' | translate }}
+          <hq-searchable-select
+            [(ngModel)]="parentId"
+            name="parentFranchise"
+            [allowOther]="false"
+            [placeholder]="'franchiseHierarchy.topLevel' | translate">
+            <hq-ss-option value="" [label]="'franchiseHierarchy.topLevel' | translate"></hq-ss-option>
+            <hq-ss-option *ngFor="let franchise of parentOptions" [value]="franchise.unitId" [label]="franchise.code"></hq-ss-option>
+          </hq-searchable-select>
+          <span class="stat-hint">{{ 'franchiseHierarchy.rules' | translate }}</span>
+        </label>
+        <div class="franchise-actions">
+          <button hqButton="accent" type="submit" data-testid="save-parent" [disabled]="isSaving || !changed">
+            {{ 'franchiseHierarchy.save' | translate }}
+          </button>
+        </div>
+      </form>
+    </ng-container>
+  </div>
+</div>

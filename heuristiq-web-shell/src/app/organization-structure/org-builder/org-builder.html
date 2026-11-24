@@ -1,0 +1,105 @@
+<hq-page-header
+  [kicker]="(organization.currentName$ | async) ?? ('nav.sections.organization' | translate)"
+  [title]="'orgStructure.builder.title' | translate"
+  [subtitle]="'orgStructure.builder.subtitle' | translate">
+</hq-page-header>
+
+<hq-screen-help screen="orgBuilder"></hq-screen-help>
+
+<app-org-selector></app-org-selector>
+
+<div class="builder__undo" *hqHasPrivilege="privileges.rollback">
+  <button hqButton="secondary" type="button" [disabled]="busy" [title]="'orgStructure.builder.rollbackHint' | translate" (click)="rollbackLast()">
+    <i class="bi bi-arrow-counterclockwise"></i> {{ 'orgStructure.builder.rollback' | translate }}
+  </button>
+</div>
+
+<p class="muted" *ngIf="isLoading">{{ 'orgStructure.builder.loading' | translate }}</p>
+
+<!-- No open draft: start one. -->
+<section class="table-surface" *ngIf="!isLoading && !draft">
+  <div class="table-surface__body">
+    <hq-empty-state icon="bi-diagram-3" [title]="'orgStructure.builder.noDraft' | translate">
+      <ng-container *hqHasPrivilege="privileges.draftOpen">
+        <button hqButton="accent" type="button" [disabled]="busy" (click)="startDraft()">
+          <i class="bi bi-plus-lg"></i> {{ 'orgStructure.builder.startDraft' | translate }}
+        </button>
+      </ng-container>
+    </hq-empty-state>
+  </div>
+</section>
+
+<div class="builder" *ngIf="draft">
+  <div class="builder__left">
+    <!-- The departments, edited in place -->
+    <section class="table-surface">
+      <div class="table-surface__header">
+        <div class="table-heading"><span class="table-kicker">{{ 'orgStructure.tree.title' | translate }}</span></div>
+      </div>
+      <div class="table-surface__body">
+        <app-org-dept-tree [draftId]="draft.id" [changes]="changes" (changesChange)="onTreeChanged($event)"></app-org-dept-tree>
+      </div>
+    </section>
+  </div>
+
+  <!-- The draft's changes, preview and actions -->
+  <section class="table-surface">
+    <div class="table-surface__header">
+      <div class="table-heading">
+        <span class="table-kicker">{{ 'orgStructure.builder.changesTitle' | translate: { count: changes.length } }}</span>
+      </div>
+    </div>
+    <div class="table-surface__body">
+      <hq-common-table
+        [columns]="changeColumns"
+        [rows]="changes"
+        [emptyMessage]="'orgStructure.builder.noChanges' | translate"
+        [showActionsColumn]="true">
+        <ng-template #rowActions let-row>
+          <ng-container *hqHasPrivilege="privileges.changeRemove">
+            <button type="button" class="row-action-btn danger" [title]="'orgStructure.builder.remove' | translate" (click)="remove(row)">
+              <i class="bi bi-trash3"></i>
+            </button>
+          </ng-container>
+        </ng-template>
+      </hq-common-table>
+
+      <div class="actions">
+        <ng-container *hqHasPrivilege="privileges.preview">
+          <button hqButton="secondary" type="button" [disabled]="busy || changes.length === 0" (click)="preview()">
+            <i class="bi bi-eye"></i> {{ 'orgStructure.builder.preview' | translate }}
+          </button>
+        </ng-container>
+        <ng-container *hqHasPrivilege="privileges.publish">
+          <button hqButton="accent" type="button" [disabled]="busy || changes.length === 0 || hasErrorIssues" (click)="publish()">
+            <i class="bi bi-check2-circle"></i> {{ 'orgStructure.builder.publish' | translate }}
+          </button>
+        </ng-container>
+        <ng-container *hqHasPrivilege="privileges.discard">
+          <button hqButton="secondary" type="button" class="danger" [disabled]="busy" (click)="discard()">
+            <i class="bi bi-x-circle"></i> {{ 'orgStructure.builder.discard' | translate }}
+          </button>
+        </ng-container>
+      </div>
+
+      <div class="result" *ngIf="result">
+        <h4>{{ 'orgStructure.builder.issuesTitle' | translate }}</h4>
+        <hq-alert tone="warning" dense *ngIf="hasErrorIssues">{{ 'orgStructure.builder.fixHint' | translate }}</hq-alert>
+        <hq-common-table
+          [columns]="issueColumns"
+          [rows]="result.issues"
+          [showActionsColumn]="false"
+          [emptyMessage]="'orgStructure.builder.noIssues' | translate">
+        </hq-common-table>
+
+        <h4 *ngIf="result.rootUnits.length">{{ 'orgStructure.builder.resultTitle' | translate }}</h4>
+        <hq-common-table
+          *ngIf="result.rootUnits.length"
+          [columns]="unitColumns"
+          [rows]="result.rootUnits"
+          [showActionsColumn]="false">
+        </hq-common-table>
+      </div>
+    </div>
+  </section>
+</div>

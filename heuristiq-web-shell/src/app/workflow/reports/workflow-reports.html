@@ -1,0 +1,79 @@
+<div class="table-surface">
+  <div class="table-surface__body">
+    <hq-filter-bar collapsible>
+      <label class="rp-field"><span>{{ 'workflow.reports.from' | translate }}</span>
+        <hq-field type="date" [(ngModel)]="from" [max]="to"></hq-field></label>
+      <label class="rp-field"><span>{{ 'workflow.reports.to' | translate }}</span>
+        <hq-field type="date" [(ngModel)]="to" [min]="from"></hq-field></label>
+      <label class="rp-field rp-field--grow"><span>{{ 'workflow.tasks.processKey' | translate }}</span>
+        <hq-field type="text" [(ngModel)]="processKey" (keyup.enter)="load()"></hq-field></label>
+      <div hqFilterActions>
+        <button hqButton="accent" type="button" (click)="load()" [disabled]="isLoading">
+          <i class="bi bi-arrow-clockwise"></i> {{ 'workflow.reports.apply' | translate }}
+        </button>
+        <button hqButton="secondary" type="button" (click)="exportCsv()" [disabled]="!report">
+          <i class="bi bi-download"></i> {{ 'workflow.reports.export.button' | translate }}
+        </button>
+      </div>
+    </hq-filter-bar>
+
+    <hq-loading-state *ngIf="isLoading && !report" [label]="'workflow.loading' | translate"></hq-loading-state>
+    <hq-error-state *ngIf="hasError" [title]="'workflow.reports.loadFailed' | translate" (retry)="load()"></hq-error-state>
+    <p class="rp-note" *ngIf="report?.truncated"><i class="bi bi-info-circle"></i> {{ 'workflow.reports.truncated' | translate }}</p>
+
+    <ng-container *ngIf="report as r">
+      <div class="rp-cards">
+        <div class="rp-card"><span>{{ 'workflow.reports.cards.started' | translate }}</span><strong>{{ r.totals.started }}</strong></div>
+        <div class="rp-card"><span>{{ 'workflow.reports.cards.finished' | translate }}</span><strong>{{ r.totals.finished }}</strong></div>
+        <div class="rp-card rp-card--good"><span>{{ 'workflow.reports.cards.approved' | translate }}</span><strong>{{ r.totals.approved }}</strong></div>
+        <div class="rp-card rp-card--bad"><span>{{ 'workflow.reports.cards.rejected' | translate }}</span><strong>{{ r.totals.rejected }}</strong></div>
+        <div class="rp-card rp-card--warn"><span>{{ 'workflow.reports.cards.returned' | translate }}</span><strong>{{ r.totals.returned }}</strong></div>
+        <div class="rp-card"><span>{{ 'workflow.reports.cards.open' | translate }}</span><strong>{{ r.totals.openTasks }}</strong></div>
+        <div class="rp-card rp-card--bad"><span>{{ 'workflow.reports.cards.overdue' | translate }}</span><strong>{{ r.totals.overdueOpenTasks }}</strong></div>
+      </div>
+
+      <h3 class="wf-section">{{ 'workflow.reports.steps.title' | translate }}</h3>
+      <hq-empty-state *ngIf="r.steps.length === 0" [title]="'workflow.reports.empty' | translate"></hq-empty-state>
+      <div class="wf-table-wrap" *ngIf="r.steps.length > 0">
+        <hq-common-table [columns]="stepColumns" [rows]="r.steps" [showActionsColumn]="false">
+          <ng-template hqCell="step" let-s>{{ s.taskName || s.taskKey }}</ng-template>
+          <ng-template hqCell="process" let-s><span class="wf-mono">{{ s.processKey }}</span></ng-template>
+          <ng-template hqCell="completed" let-s>{{ s.completed }}</ng-template>
+          <ng-template hqCell="avg" let-s>{{ duration(s.avgDurationMillis) }}</ng-template>
+          <ng-template hqCell="max" let-s>{{ duration(s.maxDurationMillis) }}</ng-template>
+          <ng-template hqCell="sla" let-s>{{ s.withSla }}</ng-template>
+          <ng-template hqCell="late" let-s>
+            <ng-container *ngIf="breachRate(s.withSla, s.breached) !== null; else noSla">
+              <hq-status-badge [tone]="s.breached > 0 ? 'danger' : 'neutral'">{{ s.breached }} ({{ breachRate(s.withSla, s.breached) }}%)</hq-status-badge>
+            </ng-container>
+            <ng-template #noSla>—</ng-template>
+          </ng-template>
+        </hq-common-table>
+      </div>
+
+      <h3 class="wf-section">{{ 'workflow.reports.people.title' | translate }}</h3>
+      <div class="wf-table-wrap" *ngIf="r.reviewers.length > 0">
+        <hq-common-table [columns]="reviewerColumns" [rows]="r.reviewers" [showActionsColumn]="false">
+          <ng-template hqCell="person" let-p>{{ person(p.userId) }}</ng-template>
+          <ng-template hqCell="completed" let-p>{{ p.completed }}</ng-template>
+          <ng-template hqCell="approved" let-p>{{ p.approved }}</ng-template>
+          <ng-template hqCell="rejected" let-p>{{ p.rejected }}</ng-template>
+          <ng-template hqCell="avg" let-p>{{ duration(p.avgDurationMillis) }}</ng-template>
+          <ng-template hqCell="late" let-p>{{ p.breached }}</ng-template>
+        </hq-common-table>
+      </div>
+
+      <h3 class="wf-section">{{ 'workflow.reports.waiting.title' | translate }}</h3>
+      <hq-empty-state *ngIf="r.open.length === 0" [title]="'workflow.reports.waiting.none' | translate"></hq-empty-state>
+      <div class="wf-table-wrap" *ngIf="r.open.length > 0">
+        <hq-common-table [columns]="openColumns" [rows]="r.open" [showActionsColumn]="false">
+          <ng-template hqCell="step" let-o>{{ o.taskName || o.taskKey }}</ng-template>
+          <ng-template hqCell="process" let-o><span class="wf-mono">{{ o.processKey }}</span></ng-template>
+          <ng-template hqCell="open" let-o>{{ o.open }}</ng-template>
+          <ng-template hqCell="overdue" let-o><hq-status-badge [tone]="o.overdue > 0 ? 'danger' : 'neutral'">{{ o.overdue }}</hq-status-badge></ng-template>
+          <ng-template hqCell="oldest" let-o>{{ duration(o.oldestAgeMillis) }}</ng-template>
+        </hq-common-table>
+      </div>
+    </ng-container>
+  </div>
+</div>

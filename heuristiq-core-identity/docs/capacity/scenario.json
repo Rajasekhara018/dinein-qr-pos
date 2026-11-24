@@ -1,0 +1,135 @@
+{
+  "schema_version": 1,
+  "description": "Inputs for capacity_model.py. Every leaf that matters is {v, basis, note}. basis is one of: CODE (read from Rider_UAM source/config defaults), ASSUMPTION (a judgement, not measured, change it), USER (stated by the product owner), PLACEHOLDER (must be replaced by a measurement from ops/loadtest before the output is used for sizing), MEASUREMENT (a value copied from a filled ops/loadtest/results-template.md; none exist yet). As committed, nothing in this file is a measurement.",
+
+  "population": {
+    "registered_users": {"v": 10000000, "basis": "USER", "note": "Registered accounts (uam_users rows)."},
+    "daily_active_pct_low": {"v": 30, "basis": "USER", "note": "Daily active share of registered users, low end (3.0M DAU)."},
+    "daily_active_pct_high": {"v": 40, "basis": "USER", "note": "Daily active share of registered users, high end (4.0M DAU)."},
+    "registration_growth_pct_per_year": {"v": 15, "basis": "ASSUMPTION", "note": "New accounts per year as a percentage of the current base."},
+    "ever_logged_in_pct": {"v": 80, "basis": "ASSUMPTION", "note": "Share of registered users that have at least one session/device/login-security row."},
+    "devices_per_logged_in_user": {"v": 1.5, "basis": "ASSUMPTION", "note": "user_devices rows per user that has logged in (one per distinct User-Agent fingerprint)."}
+  },
+
+  "peak_scenarios": {
+    "low": {"peak_active_pct": {"v": 10, "basis": "USER", "note": "Low end of the stated 10-20% busiest-window range (1.0M of 10M)."}},
+    "expected": {"peak_active_pct": {"v": 15, "basis": "ASSUMPTION", "note": "Midpoint of the stated range (1.5M). The midpoint is our choice, not a forecast."}},
+    "high": {"peak_active_pct": {"v": 20, "basis": "USER", "note": "High end of the stated range (2.0M)."}}
+  },
+
+  "windows": {
+    "peak_hour": {
+      "minutes": {"v": 60, "basis": "USER", "note": "Default window length."},
+      "login_fraction": {"v": 0.25, "basis": "ASSUMPTION", "note": "Share of the active users that perform a FULL login (password/OTP) inside the window. The rest hold a 30-day refresh token and only refresh. Unknown: depends on client behaviour and whether the peak coincides with a start-of-day login wave."}
+    },
+    "burst_15m": {
+      "minutes": {"v": 15, "basis": "USER", "note": "Short burst window."},
+      "login_fraction": {"v": 0.15, "basis": "ASSUMPTION", "note": "Share of the active users that perform a full login inside the 15-minute burst (a login storm, e.g. a push notification or a shift change)."}
+    }
+  },
+
+  "per_active_user": {
+    "refresh_participation": {"v": 1.0, "basis": "ASSUMPTION", "note": "Fraction of active users whose client keeps the session alive by refreshing once per access-token lifetime (refreshes in window = minutes / access_ttl_minutes x participation)."},
+    "me_privileges_per_hour": {"v": 0.6, "basis": "ASSUMPTION", "note": "GET /identity/me/privileges. Rider_Web calls it at app load; mobile apps were not found to call it. 0.6 = 'about 60% of active users load a web screen in an hour'."},
+    "me_organizations_per_hour": {"v": 0.6, "basis": "ASSUMPTION", "note": "GET /identity/me/organizations, called with the privilege fetch by Rider_Web (organization switcher)."},
+    "user_lookup_per_hour": {"v": 0.2, "basis": "ASSUMPTION", "note": "Service-to-service reads of UAM (GET /users/{id}, /users/by-phone, /users/batch, /directory/users) per active user per hour. The gateway does NOT call UAM per request (see capacity-model.md section 2), so this is only other services' lookups."},
+    "logout_per_hour": {"v": 0.1, "basis": "ASSUMPTION", "note": "POST /identity/auth/logout."}
+  },
+
+  "staff": {
+    "active_staff_in_window": {"v": 3000, "basis": "ASSUMPTION", "note": "Back-office users active in the window; they use the user list and search screens."},
+    "list_calls_per_staff_per_hour": {"v": 20, "basis": "ASSUMPTION", "note": "GET /users?page=..&size=.. (paged list, count query included)."},
+    "search_calls_per_staff_per_hour": {"v": 10, "basis": "ASSUMPTION", "note": "GET /users?search=.. (case-insensitive LIKE '%term%' over 7 columns)."}
+  },
+
+  "load_shape": {
+    "intra_window_peak_factor": {"v": 1.5, "basis": "ASSUMPTION", "note": "Busiest second inside the window as a multiple of the window average. 1.0 = perfectly flat arrivals."}
+  },
+
+  "uam_config": {
+    "access_ttl_minutes": {"v": 60, "basis": "CODE", "read_from": "application.properties:railcab.uam.auth.expiry-minutes", "note": "JWT lifetime. Default of UAM_JWT_EXPIRY_MINUTES; a deployment may override it."},
+    "refresh_ttl_days": {"v": 30, "basis": "CODE", "read_from": "application.properties:railcab.uam.auth.refresh-expiry-days", "note": "Refresh token lifetime (UAM_REFRESH_EXPIRY_DAYS)."},
+    "bcrypt_strength": {"v": 11, "basis": "CODE", "read_from": "application.properties:railcab.uam.auth.password.bcrypt-strength", "note": "bcrypt cost factor; each +1 doubles the CPU cost of a login."},
+    "hash_pool_queue_capacity": {"v": 64, "basis": "CODE", "read_from": "application.properties:railcab.uam.auth.password.hash-pool-queue-capacity", "note": "Logins that may wait for a free bcrypt worker before new ones get 503."},
+    "hash_timeout_ms": {"v": 2000, "basis": "CODE", "read_from": "application.properties:railcab.uam.auth.password.hash-timeout-ms", "note": "A login that cannot get its bcrypt result in this time gets 503."},
+    "db_pool_size_per_instance": {"v": 5, "basis": "CODE", "read_from": "application-postgres.properties:spring.datasource.hikari.maximum-pool-size", "note": "HikariCP maximum-pool-size per UAM instance (UAM_POSTGRES_MAX_POOL_SIZE)."}
+  },
+
+  "cost_per_request": {
+    "login_cpu_ms": {"v": 250, "basis": "PLACEHOLDER", "note": "CPU milliseconds of one full login (bcrypt + session/token/audit writes). The code comment in PasswordService says ~202 ms per bcrypt op at strength 11 on 'reference hardware'; that is a claim in the repo, not a measurement on your hardware. Replace with the measured value (results-template.md)."},
+    "other_cpu_ms": {"v": 3, "basis": "PLACEHOLDER", "note": "CPU milliseconds of every non-login request on average (JWT parse, JSON, one or two queries). Replace with a measured value."},
+    "db_hold_ms": {
+      "login": {"v": 30, "basis": "PLACEHOLDER", "note": "Total time a pooled connection is held per login across its roughly 20 statements (code review: user x3 lookups, lockout x2, credential, mfa, membership, tenant, application access, device, session, refresh token, login security, 2 audit inserts). Measure with pg_stat_statements / Hikari metrics."},
+      "refresh": {"v": 12, "basis": "PLACEHOLDER", "note": "Connection hold per refresh (token, user, membership, tenant, app access, 2 token writes, session update)."},
+      "logout": {"v": 5, "basis": "PLACEHOLDER", "note": "Connection hold per logout."},
+      "me_privileges": {"v": 6, "basis": "PLACEHOLDER", "note": "Connection hold per privilege fetch (user, one role per role code, permissions IN)."},
+      "me_organizations": {"v": 4, "basis": "PLACEHOLDER", "note": "Connection hold per organization list."},
+      "user_lookup": {"v": 3, "basis": "PLACEHOLDER", "note": "Connection hold per single-user lookup."},
+      "user_list": {"v": 400, "basis": "PLACEHOLDER", "note": "Connection hold per paged user list at 10M rows. Includes the count(*) the Page query runs, which on 10M rows is a scan; dominated by that."},
+      "user_search": {"v": 3000, "basis": "PLACEHOLDER", "note": "Connection hold per free-text user search at 10M rows (LIKE '%x%' over 7 columns cannot use a b-tree index, plus count). Order of seconds is expected until a trigram index or search service is used."}
+    }
+  },
+
+  "instance": {
+    "cores": {"v": 4, "basis": "ASSUMPTION", "note": "CPU cores (limit) per UAM pod; the bcrypt worker pool is sized to availableProcessors()."},
+    "cpu_target_utilization": {"v": 0.7, "basis": "ASSUMPTION", "note": "Fraction of the CPU you accept to run at in the peak (rest is headroom for GC, spikes, a lost pod)."},
+    "headroom": {"v": 0.3, "basis": "ASSUMPTION", "note": "Used in required_instances = ceil(rps / (sustainable_rps_per_instance x (1 - headroom)))."},
+    "sustainable_rps_per_instance": {"v": null, "basis": "PLACEHOLDER", "note": "REPLACE with the rps at breakpoint from ops/loadtest/breakpoint.js on ONE instance sized like production (results-template.md). Leave null to print the table below only."},
+    "sustainable_rps_table": [50, 100, 200, 400, 800]
+  },
+
+  "postgres": {
+    "max_connections": {"v": 200, "basis": "PLACEHOLDER", "note": "Postgres max_connections of the real server (PostgreSQL's own default is 100)."},
+    "connections_reserved_for_others": {"v": 60, "basis": "ASSUMPTION", "note": "Connections used by the gateway, other services, admin sessions, replication and superuser_reserved_connections."},
+    "usable_fraction": {"v": 0.85, "basis": "ASSUMPTION", "note": "Never plan to use more than this fraction of the connections left for UAM."},
+    "ram_gb": {"v": 64, "basis": "PLACEHOLDER", "note": "RAM of the database host, for the working-set comparison."}
+  },
+
+  "gateway": {
+    "instances": {"v": 3, "basis": "ASSUMPTION", "note": "ApiGateway instances."},
+    "requests_per_active_user_per_hour": {"v": 60, "basis": "ASSUMPTION", "note": "Requests an active user sends through the gateway per hour (all services)."},
+    "user_status_ttl_seconds": {"v": 60, "basis": "CODE", "note": "railcab.gateway.cache.user-status-ttl-seconds default (Rider_ApiGateway application.properties)."},
+    "user_status_cache_max_size": {"v": 10000, "basis": "CODE", "note": "railcab.gateway.cache.user-status-max-size, per gateway instance."}
+  },
+
+  "storage": {
+    "event_rates": {
+      "logins_per_dau_per_day": {"v": 0.5, "basis": "ASSUMPTION", "note": "Full logins per daily active user per day."},
+      "active_minutes_per_dau_per_day": {"v": 90, "basis": "ASSUMPTION", "note": "Minutes a DAU keeps the app open; refreshes per day = this / access_ttl_minutes."},
+      "failed_attempts_per_dau_per_day": {"v": 0.05, "basis": "ASSUMPTION", "note": "Failed login attempts (typos, bots) per DAU per day."}
+    },
+    "tables": [
+      {"name": "uam_users", "rows": "registered", "heap_bytes": 520, "index_bytes": 380, "retention_days": null, "basis": "ASSUMPTION", "note": "index_bytes: pk + user_name + email + phone_e164 + V15 upper(user_name), upper(email), number."},
+      {"name": "uam_user_roles", "rows": "registered", "heap_bytes": 60, "index_bytes": 60, "retention_days": null, "basis": "ASSUMPTION", "note": "one role per user."},
+      {"name": "user_credentials", "rows": "registered", "heap_bytes": 330, "index_bytes": 150, "retention_days": null, "basis": "ASSUMPTION", "note": "includes the 60-character bcrypt hash."},
+      {"name": "tenant_memberships", "rows": "registered", "heap_bytes": 170, "index_bytes": 200, "retention_days": null, "basis": "ASSUMPTION", "note": "one membership per user."},
+      {"name": "password_history", "rows": "registered", "heap_bytes": 260, "index_bytes": 60, "retention_days": null, "basis": "ASSUMPTION", "note": "one row at registration, one per password change."},
+      {"name": "user_login_security", "rows": "ever_logged_in", "heap_bytes": 330, "index_bytes": 120, "retention_days": null, "basis": "ASSUMPTION", "note": "one per user that has logged in; updated on every login (hot row per user)."},
+      {"name": "user_devices", "rows": "devices", "heap_bytes": 420, "index_bytes": 130, "retention_days": null, "basis": "ASSUMPTION", "note": "one per user and User-Agent fingerprint."},
+      {"name": "user_sessions", "rows": "daily_logins", "heap_bytes": 430, "index_bytes": 150, "retention_days": null, "basis": "ASSUMPTION", "note": "one per full login, never deleted by the current code (no cleanup job found)."},
+      {"name": "refresh_tokens", "rows": "daily_logins_plus_refreshes", "heap_bytes": 400, "index_bytes": 200, "retention_days": null, "basis": "ASSUMPTION", "note": "one per login AND one per refresh (rotation inserts a new row, marks the old revoked); never deleted by the current code."},
+      {"name": "audit_logs", "rows": "daily_logins_plus_failures", "heap_bytes": 520, "index_bytes": 40, "retention_days": null, "basis": "ASSUMPTION", "note": "one per login success/failure from the auth path; admin actions add more (not counted)."},
+      {"name": "uam_auth_audit_events", "rows": "daily_logins_plus_failures", "heap_bytes": 230, "index_bytes": 90, "retention_days": null, "basis": "ASSUMPTION", "note": "one per login success/failure/lockout; never deleted by the current code."},
+      {"name": "uam_login_attempts", "rows": "daily_failures", "heap_bytes": 110, "index_bytes": 60, "retention_days": 1, "basis": "ASSUMPTION", "note": "one row per failed identifier; an expired row is deleted only when the same identifier tries again, so it effectively accumulates. retention_days here is the lockout window, NOT an implemented purge."}
+    ],
+    "proposed_retention_days": {"v": {"user_sessions": 90, "refresh_tokens": 35, "audit_logs": 180, "uam_auth_audit_events": 180, "uam_login_attempts": 1}, "basis": "ASSUMPTION", "note": "Used for the 'with retention' column. No purge job exists in UAM today, so the 'unbounded' column is the current behaviour."},
+    "working_set": {
+      "login_path_indexes": ["uam_users"],
+      "page_size_bytes": {"v": 8192, "basis": "CODE", "note": "PostgreSQL block size."}
+    }
+  },
+
+  "loadtest": {
+    "note": "Weights used by ops/loadtest/mixed-peak.js (they must add to 100). They are the endpoint shares printed by capacity_model.py for the 'expected' scenario, peak_hour window, rounded; capacity_model.py warns if they drift more than 2 points from its own output.",
+    "mix": {
+      "login": 9,
+      "refresh": 36,
+      "me_privileges": 21,
+      "me_organizations": 21,
+      "user_lookup": 7,
+      "logout": 4,
+      "user_list": 1,
+      "user_search": 1
+    }
+  }
+}

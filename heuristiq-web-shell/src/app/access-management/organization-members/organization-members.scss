@@ -1,0 +1,26 @@
+:host { display: block; }
+
+.om__hint, .om__muted { margin: 0; font-size: 0.85rem; opacity: 0.7; }
+.om__count { margin-left: 0.5rem; font-size: 0.75rem; opacity: 0.7; }
+
+.om__add { display: flex; justify-content: flex-end; gap: 0.5rem; }
+
+/* The grid and its rows are drawn inside hq-common-table, so they are reached through ::ng-deep. */
+.om__table ::ng-deep .common-table { min-width: 560px; }
+.om__table ::ng-deep .om__row--removed { opacity: 0.55; }
+.om__code { display: block; font-size: 0.72rem; opacity: 0.6; }
+
+.om__status {
+  padding: 0.1rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  background: color-mix(in srgb, var(--hq-primary) 14%, transparent);
+  color: var(--hq-link);
+
+  &--SUSPENDED { background: color-mix(in srgb, #d97706 16%, transparent); color: #b45309; }
+  &--REMOVED { background: color-mix(in srgb, #d92d20 14%, transparent); color: #b42318; }
+}
+
+.om__actions { display: flex; flex-wrap: wrap; gap: 0.4rem; justify-content: flex-end; }
+.om__type { font-weight: 600; white-space: nowrap; }

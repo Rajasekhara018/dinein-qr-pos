@@ -1,0 +1,223 @@
+<div class="tree">
+  <div class="tree__toolbar">
+    <p class="tree__hint">{{ (view === 'chart' ? 'orgStructure.tree.chartHint' : 'orgStructure.tree.hint') | translate }}</p>
+    <div class="tree__tools">
+      <hq-tabs class="tree__views" appearance="segmented" size="sm" [value]="view" (valueChange)="showView($any($event))"
+                [ariaLabel]="'orgStructure.tree.viewList' | translate">
+        <hq-tab value="list" icon="bi-list-nested" [label]="'orgStructure.tree.viewList' | translate"></hq-tab>
+        <hq-tab value="chart" icon="bi-diagram-3" [disabled]="isLoading" [label]="'orgStructure.tree.viewChart' | translate"></hq-tab>
+      </hq-tabs>
+      <ng-container *hqHasPrivilege="privileges.changeAdd">
+        <button hqButton="accent" type="button" *ngIf="view === 'list'" [disabled]="busy" (click)="startAdd(topLevel)">
+          <i class="bi bi-plus-lg"></i> {{ 'orgStructure.tree.addTop' | translate }}
+        </button>
+      </ng-container>
+    </div>
+  </div>
+
+  <!-- The result, drawn as a zoomable chart: one card per department, joined to its parent. -->
+  <ng-container *ngIf="view === 'chart' && !isLoading">
+    <p class="tree__muted" *ngIf="chartNodes.length === 0">{{ 'orgStructure.tree.empty' | translate }}</p>
+    <app-org-chart-view *ngIf="chartNodes.length" [nodes]="chartNodes" [height]="chartHeight"></app-org-chart-view>
+  </ng-container>
+
+  <ng-container *ngIf="view === 'list'">
+
+  <!-- Add a top-level department -->
+  <form class="tree__editor" *ngIf="isEditing('add', topLevel)" (ngSubmit)="confirmAdd()">
+    <ng-container *ngTemplateOutlet="addEditor"></ng-container>
+  </form>
+
+  <p class="tree__muted" *ngIf="isLoading">{{ 'orgStructure.tree.loading' | translate }}</p>
+  <hq-error-state *ngIf="hasError" [title]="'orgStructure.tree.loadFailed' | translate"></hq-error-state>
+  <p class="tree__muted" *ngIf="!isLoading && !hasError && rows.length === 0 && !isEditing('add', topLevel)">
+    {{ 'orgStructure.tree.empty' | translate }}
+  </p>
+
+  <ul class="tree__list" *ngIf="rows.length">
+    <li *ngFor="let row of rows; trackBy: trackRow" class="tree__item">
+      <div class="tree__row" [class.tree__row--archived]="row.node.state === 'archived'"
+           [style.paddingLeft.rem]="row.depth * indentRem">
+        <button type="button" class="tree__caret" *ngIf="canExpand(row.node); else spacer"
+                [attr.aria-label]="row.node.name" [attr.aria-expanded]="isExpanded(row.node)"
+                (click)="toggle(row.node)">
+          <i class="bi bi-chevron-right" [class.tree__chevron--open]="isExpanded(row.node)"></i>
+        </button>
+        <ng-template #spacer><span class="tree__caret tree__caret--empty"></span></ng-template>
+
+        <span class="tree__name">{{ row.node.name }}</span>
+        <span class="tree__code">{{ row.node.code }}</span>
+        <span class="tree__head" *ngIf="row.node.headEmployeeId" [title]="'orgStructure.chart.headBadge' | translate">
+          <i class="bi bi-person-badge-fill"></i> {{ row.node.headName || ('orgStructure.chart.headBadge' | translate) }}
+        </span>
+        <span class="tree__count" *ngIf="row.node.headcount !== null" [title]="'orgStructure.tree.person.peopleCountHint' | translate">
+          <i class="bi bi-people"></i> {{ row.node.headcount }}
+        </span>
+        <span class="tree__badge tree__badge--{{ row.node.state }}" *ngIf="row.node.state !== 'live'">
+          {{ 'orgStructure.tree.state.' + row.node.state | translate }}
+        </span>
+
+        <span class="tree__actions">
+          <ng-container *hqHasPrivilege="loginPrivileges.ruleList">
+            <button type="button" class="tree__btn" *ngIf="canManageRoles(row.node)" data-testid="tree-roles"
+                    [title]="'orgStructure.tree.rolesOf' | translate: { name: row.node.name }"
+                    [attr.aria-label]="'orgStructure.tree.rolesOf' | translate: { name: row.node.name }"
+                    aria-haspopup="dialog" (click)="openRoles(row.node, $event)">
+              <i class="bi bi-person-gear" aria-hidden="true"></i>
+            </button>
+          </ng-container>
+          <ng-container *hqHasPrivilege="privileges.changeAdd">
+            <ng-container *ngIf="row.node.state !== 'archived'">
+              <button type="button" class="tree__btn" [class.tree__btn--on]="isPeopleOpen(row.node.id)" [title]="'orgStructure.tree.people.toggle' | translate" (click)="togglePeople(row.node)">
+                <i class="bi bi-people"></i>
+              </button>
+              <button type="button" class="tree__btn" [disabled]="busy" [title]="'orgStructure.tree.addSub' | translate" (click)="startAdd(row.node.id)">
+                <i class="bi bi-plus-circle"></i>
+              </button>
+              <ng-container *hqHasPrivilege="privileges.employeeCreate">
+                <button type="button" class="tree__btn" [disabled]="busy" [title]="'orgStructure.tree.addPerson' | translate" (click)="startPerson(row.node)">
+                  <i class="bi bi-person-plus"></i>
+                </button>
+              </ng-container>
+              <button type="button" class="tree__btn" *ngIf="row.node.headEmployeeId" [disabled]="busy"
+                      [title]="'orgStructure.tree.removeHead' | translate" (click)="removeHead(row.node)">
+                <i class="bi bi-person-dash"></i>
+              </button>
+              <button type="button" class="tree__btn" [disabled]="busy" [title]="'orgStructure.tree.rename' | translate" (click)="startRename(row.node)">
+                <i class="bi bi-pencil"></i>
+              </button>
+              <button type="button" class="tree__btn" [disabled]="busy" [title]="'orgStructure.tree.move' | translate" (click)="startMove(row.node)">
+                <i class="bi bi-arrows-move"></i>
+              </button>
+              <button type="button" class="tree__btn tree__btn--danger" [disabled]="busy" [title]="'orgStructure.tree.archive' | translate" (click)="archive(row.node)">
+                <i class="bi bi-archive"></i>
+              </button>
+            </ng-container>
+          </ng-container>
+          <ng-container *hqHasPrivilege="privileges.changeRemove">
+            <button type="button" class="tree__btn" *ngIf="row.node.state !== 'live'" [disabled]="busy"
+                    [title]="'orgStructure.tree.undo' | translate" (click)="undo(row.node)">
+              <i class="bi bi-arrow-counterclockwise"></i>
+            </button>
+          </ng-container>
+        </span>
+      </div>
+
+      <div class="tree__people" *ngIf="isPeopleOpen(row.node.id)" [style.marginLeft.rem]="(row.depth + 1) * indentRem">
+        <div class="tree__people-head">
+          <span class="tree__people-title">{{ 'orgStructure.tree.people.toggle' | translate }}</span>
+          <button type="button" class="tree__pill" [disabled]="busy" (click)="startPerson(row.node)">
+            <i class="bi bi-person-plus"></i> {{ 'orgStructure.tree.addPerson' | translate }}
+          </button>
+        </div>
+        <p class="tree__muted" *ngIf="peopleOf(row.node).length === 0">{{ 'orgStructure.tree.people.empty' | translate }}</p>
+        <ul class="tree__people-list" *ngIf="peopleOf(row.node).length">
+          <li class="tree__person" *ngFor="let person of peopleOf(row.node)" [class.tree__person--head]="person.isHead">
+            <div class="tree__person-main">
+              <i class="bi" [ngClass]="person.isHead ? 'bi-person-badge-fill' : 'bi-person-circle'"></i>
+              <strong class="tree__person-name">{{ person.name }}</strong>
+              <span class="tree__person-role" *ngIf="person.position">{{ person.position }}</span>
+              <hq-status-badge tone="info" *ngIf="person.isHead">{{ 'orgStructure.chart.headBadge' | translate }}</hq-status-badge>
+              <span class="tree__pending" *ngIf="person.pending">{{ 'orgStructure.tree.people.pending' | translate }}</span>
+            </div>
+            <div class="tree__person-actions">
+              <button type="button" class="tree__btn" *ngIf="!person.isHead && !person.pending" [disabled]="busy"
+                      [title]="'orgStructure.tree.people.makeHead' | translate" [attr.aria-label]="'orgStructure.tree.people.makeHead' | translate" (click)="makeHead(row.node, person)">
+                <i class="bi bi-person-badge"></i>
+              </button>
+              <button type="button" class="tree__btn" [class.tree__btn--on]="isMoving(row.node, person)" [disabled]="busy"
+                      [title]="'orgStructure.tree.people.move' | translate" [attr.aria-label]="'orgStructure.tree.people.move' | translate" (click)="startMovePerson(row.node, person)">
+                <i class="bi bi-arrow-left-right"></i>
+              </button>
+              <button type="button" class="tree__btn tree__btn--danger" [disabled]="busy"
+                      [title]="'orgStructure.tree.people.remove' | translate" [attr.aria-label]="'orgStructure.tree.people.remove' | translate" (click)="removePerson(row.node, person)">
+                <i class="bi bi-person-dash"></i>
+              </button>
+              <ng-container *ngIf="person.userId as userId">
+                <a class="tree__btn" *hqHasPrivilege="'WALLET_ADMIN_USER_WALLET_READ'" [routerLink]="['/wallet/admin/users', userId]" [title]="'orgStructure.chart.headWallet' | translate">
+                  <i class="bi bi-wallet2"></i>
+                </a>
+                <a class="tree__btn" *hqHasPrivilege="'WALLET_ADMIN_TEAM_MOVEMENT_READ'" [routerLink]="['/wallet/admin/team-movement']" [queryParams]="{ user: userId }" [title]="'orgStructure.chart.headMovement' | translate">
+                  <i class="bi bi-bar-chart-steps"></i>
+                </a>
+              </ng-container>
+            </div>
+            <div class="tree__person-move" *ngIf="isMoving(row.node, person)">
+              <hq-searchable-select
+                [(ngModel)]="moveToUnitId"
+                (ngModelChange)="onMoveTargetChange(person)"
+                [ngModelOptions]="{ standalone: true }"
+                [ariaLabel]="'orgStructure.tree.people.moveTo' | translate"
+                [allowOther]="false"
+                [placeholder]="'orgStructure.tree.people.moveTo' | translate">
+                <hq-ss-option *ngFor="let t of moveTargets(row.node)" [value]="t.id" [label]="t.name"></hq-ss-option>
+              </hq-searchable-select>
+              <hq-searchable-select
+                *ngIf="moveTargetPositions.length"
+                [(ngModel)]="movePositionId"
+                [ngModelOptions]="{ standalone: true }"
+                [ariaLabel]="'orgStructure.tree.people.moveJob' | translate"
+                [allowOther]="false"
+                [placeholder]="'orgStructure.tree.people.moveChooseJob' | translate">
+                <hq-ss-option *ngFor="let p of moveTargetPositions" [value]="p.id" [label]="p.name"></hq-ss-option>
+              </hq-searchable-select>
+              <small class="text-danger" *ngIf="moveLadderMissing">{{ 'orgStructure.tree.people.moveNoLadder' | translate }}</small>
+              <button type="button" class="tree__pill tree__pill--primary" [disabled]="!canConfirmMove" (click)="confirmMovePerson(row.node, person)">{{ 'orgStructure.tree.people.moveConfirm' | translate }}</button>
+              <button type="button" class="tree__btn" (click)="cancelMove()" [attr.aria-label]="'orgStructure.tree.people.cancel' | translate"><i class="bi bi-x-lg"></i></button>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <form class="tree__editor" *ngIf="isEditing('add', row.node.id)" [style.marginLeft.rem]="(row.depth + 1) * indentRem" (ngSubmit)="confirmAdd()">
+        <ng-container *ngTemplateOutlet="addEditor"></ng-container>
+      </form>
+
+      <form class="tree__editor" *ngIf="isEditing('rename', row.node.id)" [style.marginLeft.rem]="(row.depth + 1) * indentRem" (ngSubmit)="confirmRename()">
+        <hq-field
+               type="text"
+               name="rename"
+               autofocus
+               [(ngModel)]="nameDraft"
+               [placeholder]="'orgStructure.tree.namePlaceholder' | translate"></hq-field>
+        <button hqButton="accent" type="submit" [disabled]="busy || !nameDraft.trim()">{{ 'orgStructure.tree.save' | translate }}</button>
+        <button hqButton="secondary" type="button" (click)="cancelEdit()">{{ 'orgStructure.tree.cancel' | translate }}</button>
+      </form>
+
+      <div class="tree__editor tree__editor--block" *ngIf="isEditing('person', row.node.id)" [style.marginLeft.rem]="(row.depth + 1) * indentRem">
+        <app-org-person-editor [draftId]="draftId" [node]="row.node" [changes]="changes"
+                               (changesChange)="onChangesFromEditor($event)" (closed)="cancelEdit()">
+        </app-org-person-editor>
+      </div>
+
+      <div class="tree__editor" *ngIf="isEditing('move', row.node.id)" [style.marginLeft.rem]="(row.depth + 1) * indentRem">
+        <hq-searchable-select
+          class="tree__select"
+          name="moveTo"
+          [(ngModel)]="moveTargetId"
+          [ariaLabel]="'orgStructure.tree.moveTo' | translate"
+          [allowOther]="false"
+          [placeholder]="'orgStructure.tree.moveTo' | translate">
+          <hq-ss-option *ngFor="let option of moveOptions(row.node); trackBy: trackOption" [value]="option.id" [label]="option.label"></hq-ss-option>
+        </hq-searchable-select>
+        <button hqButton="accent" type="button" [disabled]="busy || !moveTargetId" (click)="confirmMove()">{{ 'orgStructure.tree.move' | translate }}</button>
+        <button hqButton="secondary" type="button" [disabled]="busy" (click)="confirmMove(true)">{{ 'orgStructure.tree.makeTopLevel' | translate }}</button>
+        <button hqButton="secondary" type="button" (click)="cancelEdit()">{{ 'orgStructure.tree.cancel' | translate }}</button>
+      </div>
+    </li>
+  </ul>
+  </ng-container>
+</div>
+
+<!-- Name box shared by "add top-level" and "add sub-department". -->
+<ng-template #addEditor>
+  <hq-field
+         type="text"
+         name="name"
+         autofocus
+         [(ngModel)]="nameDraft"
+         [placeholder]="'orgStructure.tree.namePlaceholder' | translate"></hq-field>
+  <small class="tree__muted" *ngIf="codePreview">{{ 'orgStructure.tree.codeHint' | translate: { code: codePreview } }}</small>
+  <button hqButton="accent" type="submit" [disabled]="busy || !nameDraft.trim()">{{ 'orgStructure.tree.add' | translate }}</button>
+  <button hqButton="secondary" type="button" (click)="cancelEdit()">{{ 'orgStructure.tree.cancel' | translate }}</button>
+</ng-template>

@@ -1,0 +1,228 @@
+<hq-page-header
+  [kicker]="(organization.currentName$ | async) ?? ('nav.sections.organization' | translate)"
+  [title]="k('title') | translate"
+  [subtitle]="k('subtitle') | translate">
+</hq-page-header>
+
+<hq-screen-help screen="orgImport"></hq-screen-help>
+
+<app-org-selector></app-org-selector>
+
+<nav class="import-stepper" [attr.aria-label]="'orgStructure.import.steps.label' | translate" *ngIf="visibleModes.length > 1">
+  <ol class="import-steps">
+    <li class="import-step" *ngFor="let step of visibleSteps" [class.import-step--active]="step.mode === mode" [attr.data-state]="step.state">
+      <button type="button" [id]="tabId(step.mode)" [attr.data-testid]="'import-step-' + stepKey(step.mode)"
+              [attr.aria-current]="step.mode === mode ? 'step' : null" [attr.aria-controls]="panelId"
+              (click)="setMode(step.mode)" (keydown)="onTabKeydown($event)">
+        <span class="import-step__number" aria-hidden="true"><i class="bi bi-check-lg" *ngIf="step.state === 'DONE'; else stepNumber"></i><ng-template #stepNumber>{{ step.number }}</ng-template></span>
+        <span class="import-step__body">
+          <span class="import-step__of">{{ 'orgStructure.import.steps.stepOf' | translate: { step: step.number, total: stepCount } }}</span>
+          <span class="import-step__label">{{ 'orgStructure.import.tabs.' + stepKey(step.mode) | translate }}</span>
+          <span class="import-step__state" [attr.data-testid]="'import-step-state-' + stepKey(step.mode)">
+            <i class="bi" [ngClass]="stepIcons[step.state]" aria-hidden="true"></i>
+            {{ 'orgStructure.import.steps.state.' + step.state | translate }}
+          </span>
+          <span class="import-step__hint" *ngIf="step.state === 'PREVIEW'" [attr.data-testid]="'import-step-hint-' + stepKey(step.mode)">{{ 'orgStructure.import.steps.previewHint' | translate }}</span>
+          <span class="import-step__facts" *ngIf="step.facts.length">
+            <ng-container *ngFor="let fact of step.facts; let last = last">{{ 'orgStructure.import.steps.facts.' + fact.key | translate: { count: fact.count } }}<ng-container *ngIf="!last">, </ng-container></ng-container>
+          </span>
+        </span>
+      </button>
+    </li>
+  </ol>
+</nav>
+
+<div class="import-panel" role="region" [id]="panelId" [attr.aria-labelledby]="tabId(mode)">
+<section class="import-step-intro" *ngIf="visibleModes.length > 1">
+  <p class="import-purpose" data-testid="step-purpose">{{ 'orgStructure.import.steps.purpose.' + stepKey(mode) | translate }}</p>
+  <p class="muted" data-testid="step-depends" *ngIf="previousStep">{{ 'orgStructure.import.steps.depends.' + stepKey(mode) | translate }}</p>
+  <p class="import-hint" role="status" data-testid="step-warning" *ngIf="previousNotStarted && previousStep as previous">
+    {{ 'orgStructure.import.steps.previousNotStarted' | translate: { step: previous.number, name: ('orgStructure.import.tabs.' + stepKey(previous.mode) | translate) } }}
+  </p>
+</section>
+<section class="table-surface" data-testid="latest-import" *ngIf="latestImport as latest">
+  <div class="table-surface__header">
+    <h3 class="table-heading"><span class="import-card-title">{{ 'orgStructure.import.latest.title' | translate }}</span></h3>
+    <span class="status" [attr.data-status]="latest.status">{{ statusLabel(latest.status) }}</span>
+  </div>
+  <div class="table-surface__body">
+    <p class="muted">{{ 'orgStructure.import.latest.by' | translate: { file: latest.fileName, who: latest.createdBy, when: formatWhen(latest.createdAt) } }}</p>
+    <dl class="summary">
+      <div><dt>{{ 'orgStructure.import.summary.total' | translate }}</dt><dd>{{ latest.totalRows }}</dd></div>
+      <div><dt>{{ 'orgStructure.import.summary.valid' | translate }}</dt><dd>{{ latest.validRows }}</dd></div>
+      <div><dt>{{ 'orgStructure.import.summary.rejected' | translate }}</dt><dd>{{ latest.errorRows }}</dd></div>
+      <div><dt>{{ 'orgStructure.import.summary.created' | translate }}</dt><dd>{{ latest.createdCount }}</dd></div>
+      <div><dt>{{ 'orgStructure.import.summary.updated' | translate }}</dt><dd>{{ latest.updatedCount }}</dd></div>
+      <div *ngIf="isLadders && latest.laddersCreated != null"><dt>{{ 'orgStructure.import.summary.laddersCreated' | translate }}</dt><dd data-testid="latest-ladders-created">{{ latest.laddersCreated }}</dd></div>
+      <div *ngIf="isEmployees && latest.headsSet != null"><dt>{{ 'orgStructure.import.latest.headsSet' | translate }}</dt><dd data-testid="latest-heads-set">{{ latest.headsSet }}</dd></div>
+    </dl>
+    <p class="muted" role="note" *ngIf="latest.status === 'VALIDATED'" data-testid="latest-stale">{{ 'orgStructure.import.latest.waiting' | translate }}</p>
+    <div class="actions">
+      <ng-container *hqHasPrivilege="rejectedPrivilege">
+        <button hqButton="secondary" type="button" data-testid="latest-show-rejected" *ngIf="latest.errorRows > 0" (click)="showRejected(latest)">
+          <i class="bi bi-list-ul" aria-hidden="true"></i> {{ 'orgStructure.import.latest.showRejected' | translate }}
+        </button>
+      </ng-container>
+      <ng-container *hqHasPrivilege="privileges.cancel">
+        <button hqButton="secondary" type="button" class="danger" data-testid="latest-cancel-preview" *ngIf="latest.status === 'VALIDATED'" [disabled]="busy" (click)="cancelPreview(latest)">
+          <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'orgStructure.import.latest.cancelPreview' | translate }}
+        </button>
+      </ng-container>
+    </div>
+  </div>
+</section>
+
+<section class="table-surface">
+  <div class="table-surface__header">
+    <div class="table-heading"><span class="import-card-title">{{ k('uploadTitle') | translate }}</span></div>
+    <span class="import-downloads">
+      <button hqButton="secondary" type="button" data-testid="download-template" (click)="downloadTemplate()">
+        <i class="bi bi-download"></i> {{ 'orgStructure.import.downloadTemplate' | translate }}
+      </button>
+      <button hqButton="secondary" type="button" data-testid="download-sample" (click)="downloadSample()">
+        <i class="bi bi-file-earmark-spreadsheet"></i> {{ 'orgStructure.import.downloadSample' | translate }}
+      </button>
+    </span>
+  </div>
+  <div class="table-surface__body">
+    <p class="muted">{{ k('help') | translate }}</p>
+    <ng-container *ngIf="isEmployees">
+      <ng-container *hqHasPrivilege="privileges.create">
+        <hq-doc-upload
+          [inputId]="uploadInputId"
+          [label]="'orgStructure.import.uploadLabel' | translate"
+          [hints]="'orgStructure.import.uploadHints' | translate"
+          [accept]="fileAccept"
+          [maxSizeMB]="maxSizeMb"
+          [category]="dmsCategory"
+          [disabled]="busy"
+          (uploaded)="onUploaded($event)">
+        </hq-doc-upload>
+      </ng-container>
+    </ng-container>
+    <ng-container *ngIf="!isEmployees">
+      <ng-container *hqHasPrivilege="privileges.create">
+        <hq-doc-upload
+          [inputId]="isLadders ? ladderUploadInputId : departmentUploadInputId"
+          [label]="k('uploadLabel') | translate"
+          [hints]="k('uploadHints') | translate"
+          [accept]="fileAccept"
+          [maxSizeMB]="maxSizeMb"
+          [category]="dmsCategory"
+          [disabled]="busy"
+          (uploaded)="onUploaded($event)"
+          (rejected)="onUploadRejected($event)">
+        </hq-doc-upload>
+      </ng-container>
+    </ng-container>
+  </div>
+</section>
+
+<app-org-import-loaded [mode]="mode" [refresh]="loadedRefresh"></app-org-import-loaded>
+
+<section class="table-surface" *ngIf="selected as batch">
+  <div class="table-surface__header">
+    <div class="table-heading">
+      <span class="import-card-title">{{ k('reportTitle') | translate: { file: batch.fileName } }}</span>
+    </div>
+    <span class="status" role="status" aria-live="polite" [attr.data-status]="batch.status">{{ statusLabel(batch.status) }}</span>
+  </div>
+  <div class="table-surface__body">
+    <dl class="summary">
+      <div><dt>{{ 'orgStructure.import.summary.total' | translate }}</dt><dd>{{ batch.totalRows }}</dd></div>
+      <div><dt>{{ 'orgStructure.import.summary.valid' | translate }}</dt><dd>{{ batch.validRows }}</dd></div>
+      <div><dt>{{ 'orgStructure.import.summary.rejected' | translate }}</dt><dd>{{ batch.errorRows }}</dd></div>
+      <div><dt>{{ 'orgStructure.import.summary.created' | translate }}</dt><dd>{{ batch.createdCount }}</dd></div>
+      <div><dt>{{ 'orgStructure.import.summary.updated' | translate }}</dt><dd>{{ batch.updatedCount }}</dd></div>
+      <div *ngIf="isLadders"><dt>{{ 'orgStructure.import.summary.laddersCreated' | translate }}</dt><dd data-testid="ladders-created">{{ laddersCreatedCount }}</dd></div>
+    </dl>
+
+    <p class="muted" *ngIf="batch.status === 'APPLYING'">{{ k('applying') | translate }}</p>
+    <p class="failure" *ngIf="batch.status === 'FAILED' && batch.message">{{ batch.message }}</p>
+    <p class="muted" *ngIf="batch.status === 'VALIDATED' && batch.errorRows > 0">{{ k('rejectedSkipped') | translate }}</p>
+
+    <p class="muted" role="note" data-testid="without-ladder-note" *ngIf="withoutLadderCount > 0">{{ withoutLadderKey | translate: { count: withoutLadderCount } }}</p>
+
+    <p class="muted" role="note" data-testid="heads-set-note" *ngIf="headsSetCount > 0">{{ headsSetKey | translate: { count: headsSetCount } }}</p>
+
+    <div class="import-hint" role="note" data-testid="unknown-department-hint" *ngIf="showUnknownDepartmentHint">
+      <span>{{ 'orgStructure.import.unknownDepartmentHint.text' | translate }}</span>
+      <ng-container *hqHasPrivilege="departmentPrivileges.create">
+        <button hqButton="secondary" type="button" data-testid="hint-open-departments" (click)="setMode('DEPARTMENTS')">
+          <i class="bi bi-diagram-3"></i> {{ 'orgStructure.import.unknownDepartmentHint.action' | translate }}
+        </button>
+      </ng-container>
+    </div>
+
+    <div class="import-hint" role="note" data-testid="no-ladder-hint" *ngIf="showNoLadderHint">
+      <span>{{ 'orgStructure.import.ladderHint.text' | translate }}</span>
+      <ng-container *hqHasPrivilege="departmentPrivileges.create">
+        <button hqButton="secondary" type="button" data-testid="ladder-hint-open-departments" (click)="setMode('DEPARTMENTS')">
+          <i class="bi bi-diagram-3"></i> {{ 'orgStructure.import.ladderHint.action' | translate }}
+        </button>
+      </ng-container>
+    </div>
+
+    <div class="import-hint" role="note" data-testid="ladders-hint" *ngIf="showLaddersHint">
+      <span>{{ 'orgStructure.import.laddersHint.text' | translate }}</span>
+      <ng-container *hqHasPrivilege="ladderPrivileges.create">
+        <button hqButton="secondary" type="button" data-testid="ladders-hint-open" (click)="setMode('LADDERS')">
+          <i class="bi bi-bar-chart-steps"></i> {{ 'orgStructure.import.laddersHint.action' | translate }}
+        </button>
+      </ng-container>
+    </div>
+
+    <div class="actions" *ngIf="nextStep as next">
+      <button hqButton="accent" type="button" data-testid="next-step" (click)="setMode(next)">
+        <i class="bi bi-arrow-right-circle"></i> {{ 'orgStructure.import.steps.next' | translate: { step: stepNumber(next) } }}
+      </button>
+    </div>
+
+    <div class="actions">
+      <ng-container *hqHasPrivilege="privileges.confirm">
+        <button hqButton="accent" type="button" *ngIf="canConfirm" [disabled]="busy" (click)="confirm()">
+          <i class="bi bi-check2-circle"></i> {{ 'orgStructure.import.confirm' | translate }}
+        </button>
+      </ng-container>
+      <ng-container *hqHasPrivilege="privileges.cancel">
+        <button hqButton="secondary" type="button" class="danger" *ngIf="canCancel" [disabled]="busy" (click)="cancel()">
+          <i class="bi bi-x-circle"></i> {{ 'orgStructure.import.cancel' | translate }}
+        </button>
+      </ng-container>
+    </div>
+
+    <ng-container *ngIf="batch.errorRows > 0">
+      <h4>{{ k('errorsTitle') | translate }}</h4>
+      <p class="muted" data-testid="errors-not-allowed" *ngIf="errorsNotAllowed">{{ k('noErrorAccess') | translate }}</p>
+      <ng-container *ngIf="!errorsNotAllowed">
+        <hq-common-table
+          [columns]="errorColumns"
+          [rows]="errorRows"
+          [showActionsColumn]="false"
+          [emptyMessage]="k('noErrors') | translate">
+        </hq-common-table>
+        <button hqButton="secondary" type="button" *ngIf="hasMoreErrors" (click)="loadMoreErrors()">
+          {{ 'orgStructure.chart.loadMore' | translate }}
+        </button>
+      </ng-container>
+    </ng-container>
+  </div>
+</section>
+
+<section class="table-surface">
+  <div class="table-surface__header">
+    <div class="table-heading"><span class="import-card-title">{{ k('recentTitle') | translate }}</span></div>
+  </div>
+  <div class="table-surface__body">
+    <hq-common-table
+      [columns]="recentColumns"
+      [rows]="recent"
+      [isLoading]="isLoading"
+      [clickableRows]="true"
+      [showActionsColumn]="false"
+      (rowClick)="open($event)"
+      [emptyMessage]="k('noImports') | translate">
+    </hq-common-table>
+  </div>
+</section>
+</div>

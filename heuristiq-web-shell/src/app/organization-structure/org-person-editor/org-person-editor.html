@@ -1,0 +1,89 @@
+<form class="pe" (ngSubmit)="add()">
+  <h4 class="pe__title">{{ 'orgStructure.tree.person.title' | translate: { name: node.name } }}</h4>
+
+  <!-- 1. The ladder: the job titles this department uses -->
+  <div class="pe__step">
+    <label class="pe__label" for="pe-ladder">1. {{ 'orgStructure.tree.person.ladder' | translate }}</label>
+    <hq-searchable-select
+      inputId="pe-ladder"
+      name="ladder"
+      [(ngModel)]="ladderId"
+      (ngModelChange)="onLadderChosen()"
+      [allowOther]="false"
+      [placeholder]="'orgStructure.tree.person.choose' | translate">
+      <hq-ss-option *ngFor="let ladder of ladderOptions; trackBy: trackOption" [value]="ladder.id" [label]="ladder.label"></hq-ss-option>
+    </hq-searchable-select>
+    <small class="pe__hint">{{ 'orgStructure.tree.person.ladderHint' | translate }}</small>
+    <div class="pe__inline">
+      <hq-field
+             type="text"
+             name="newLadder"
+             [(ngModel)]="newLadderName"
+             [placeholder]="'orgStructure.tree.person.newLadder' | translate"></hq-field>
+      <button hqButton="secondary" type="button" [disabled]="busy || !newLadderName.trim()" (click)="createLadder()">
+        {{ 'orgStructure.tree.person.createLadder' | translate }}
+      </button>
+    </div>
+  </div>
+
+  <!-- 2. The job title on that ladder -->
+  <div class="pe__step">
+    <label class="pe__label" for="pe-position">2. {{ 'orgStructure.tree.person.position' | translate }}</label>
+    <hq-searchable-select
+      inputId="pe-position"
+      name="position"
+      [(ngModel)]="positionId"
+      [disabled]="!ladderId"
+      [allowOther]="false"
+      [placeholder]="'orgStructure.tree.person.choose' | translate">
+      <hq-ss-option *ngFor="let position of positionOptions; trackBy: trackOption" [value]="position.id" [label]="position.label"></hq-ss-option>
+    </hq-searchable-select>
+    <div class="pe__inline">
+      <hq-field
+             type="text"
+             name="newPosition"
+             [(ngModel)]="newPositionName"
+             [disabled]="!ladderId"
+             [placeholder]="'orgStructure.tree.person.newPosition' | translate"></hq-field>
+      <hq-field
+             type="number"
+             class="pe__rank"
+             name="newRank"
+             min="1"
+             [(ngModel)]="newPositionRank"
+             [placeholder]="'orgStructure.tree.person.rank' | translate"></hq-field>
+      <button hqButton="secondary" type="button" [disabled]="busy || !ladderId || !newPositionName.trim()" (click)="createPosition()">
+        {{ 'orgStructure.tree.person.createPosition' | translate }}
+      </button>
+    </div>
+  </div>
+
+  <!-- 3. The person, from the existing users -->
+  <div class="pe__step">
+    <label class="pe__label" for="pe-person">3. {{ 'orgStructure.tree.person.person' | translate }}</label>
+    <button hqButton="secondary" type="button" id="pe-person" class="pe__pick" (click)="browseUsers()">
+      <i class="bi bi-people"></i>
+      {{ (selectedUsers.length ? 'orgStructure.tree.person.changePeople' : 'orgStructure.tree.person.choosePeople') | translate }}
+    </button>
+    <div class="pe__chips" *ngIf="selectedUsers.length">
+      <span class="pe__chip" *ngFor="let chosen of selectedUsers; trackBy: trackUser">
+        {{ displayName(chosen) }}
+        <button type="button" class="pe__chip-x" [attr.aria-label]="displayName(chosen)" (click)="removeUser(chosen)"><i class="bi bi-x"></i></button>
+      </span>
+    </div>
+    <small class="pe__hint">{{ 'orgStructure.tree.person.oneDepartment' | translate }}</small>
+    <hq-checkbox class="pe__head" *ngIf="selectedUsers.length === 1" name="makeHead" [(ngModel)]="makeHead" [disabled]="!headAvailable">{{ 'orgStructure.tree.person.makeHead' | translate }}</hq-checkbox>
+    <small class="pe__hint" *ngIf="selectedUsers.length === 1 && !headAvailable">{{ 'orgStructure.tree.person.headTaken' | translate }}</small>
+  </div>
+
+  <p class="pe__missing" *ngIf="missingKey as key" role="status">
+    <i class="bi bi-info-circle"></i> {{ key | translate }}
+  </p>
+
+  <hq-form-actions align="start">
+    <button hqButton="accent" type="submit" [disabled]="!canAdd">
+      <i class="bi bi-person-plus"></i> {{ 'orgStructure.tree.person.add' | translate }}<ng-container *ngIf="selectedUsers.length > 1"> ({{ selectedUsers.length }})</ng-container>
+    </button>
+    <button hqButton="secondary" type="button" (click)="cancel()">{{ 'orgStructure.tree.person.done' | translate }}</button>
+  </hq-form-actions>
+</form>

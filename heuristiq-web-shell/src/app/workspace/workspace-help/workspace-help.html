@@ -1,0 +1,27 @@
+<section class="ws-help" [class.is-folded]="folded" [attr.aria-label]="'workspace.help.title' | translate">
+  <button type="button" class="ws-help__head" (click)="toggle()" [attr.aria-expanded]="!folded">
+    <i class="bi bi-lightbulb" aria-hidden="true"></i>
+    <span class="ws-help__title">{{ 'workspace.help.title' | translate }}</span>
+    <span class="ws-help__summary" *ngIf="folded">{{ content.summaryKey | translate }}</span>
+    <span class="ws-help__toggle">{{ (folded ? 'workspace.help.show' : 'workspace.help.hide') | translate }}
+      <i class="bi" [ngClass]="folded ? 'bi-chevron-down' : 'bi-chevron-up'" aria-hidden="true"></i></span>
+  </button>
+
+  <div class="ws-help__body" *ngIf="!folded">
+    <p class="ws-help__lead">{{ content.summaryKey | translate }}</p>
+    <div class="ws-help__cols">
+      <div>
+        <h3 class="ws-help__sub">{{ 'workspace.help.howTitle' | translate }}</h3>
+        <ul class="ws-help__list">
+          <li *ngFor="let key of content.pointKeys">{{ key | translate }}</li>
+        </ul>
+      </div>
+      <div class="ws-help__example">
+        <h3 class="ws-help__sub"><i class="bi bi-play-circle" aria-hidden="true"></i> {{ 'workspace.help.exampleTitle' | translate }}</h3>
+        <ol class="ws-help__steps">
+          <li *ngFor="let key of content.exampleKeys">{{ key | translate }}</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>

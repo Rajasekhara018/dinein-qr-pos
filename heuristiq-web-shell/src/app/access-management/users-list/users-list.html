@@ -1,0 +1,100 @@
+<hq-page-header
+  [kicker]="'nav.sections.accessManagement' | translate"
+  [title]="'nav.items.users' | translate"
+  [subtitle]="'accessManagement.users.subtitle' | translate">
+</hq-page-header>
+
+<hq-screen-help screen="users"></hq-screen-help>
+
+<hq-stat-cards [stats]="stats"></hq-stat-cards>
+
+<div class="table-surface">
+  <div class="table-surface__header">
+    <div class="table-heading">
+      <span class="table-kicker">{{ 'shared.listPage.total' | translate: { count: totalElements } }}</span>
+    </div>
+    <ng-container *hqHasPrivilege="['USER_CREATE', 'UAM_USERS_MANAGE']">
+      <button type="button" class="table-create-btn" (click)="openCreate()">
+        <i class="bi bi-plus-lg"></i> {{ 'accessManagement.users.newButton' | translate }}
+      </button>
+    </ng-container>
+  </div>
+
+  <div class="table-surface__body">
+    <hq-filter-bar collapsible>
+      <hq-field type="text" [placeholder]="'accessManagement.users.filters.username' | translate" [(ngModel)]="filters.userName"></hq-field>
+      <hq-field type="text" [placeholder]="'accessManagement.users.filters.email' | translate" [(ngModel)]="filters.email"></hq-field>
+      <hq-field type="text" [placeholder]="'accessManagement.users.filters.roleCode' | translate" [(ngModel)]="filters.roleCode"></hq-field>
+      <hq-searchable-select
+        [(ngModel)]="filters.application"
+        [ariaLabel]="'accessManagement.users.filters.application' | translate"
+        [allowOther]="false"
+        [placeholder]="'accessManagement.users.filters.anyApplication' | translate">
+        <hq-ss-option *ngFor="let app of applicationChoices" [value]="app.code" [label]="app.name"></hq-ss-option>
+      </hq-searchable-select>
+      <hq-searchable-select [(ngModel)]="filters.status" [allowOther]="false" [placeholder]="'shared.listPage.anyStatus' | translate">
+        <hq-ss-option value="ACTIVE" [label]="'ACTIVE'"></hq-ss-option>
+        <hq-ss-option value="INACTIVE" [label]="'INACTIVE'"></hq-ss-option>
+        <hq-ss-option value="PENDING" [label]="'PENDING'"></hq-ss-option>
+        <hq-ss-option value="LOCKED" [label]="'LOCKED'"></hq-ss-option>
+        <hq-ss-option value="SUSPENDED" [label]="'SUSPENDED'"></hq-ss-option>
+        <hq-ss-option value="DISABLED" [label]="'DISABLED'"></hq-ss-option>
+      </hq-searchable-select>
+      <div hqFilterActions>
+        <button hqButton="accent" type="button" (click)="applyFilters()"><i class="bi bi-funnel"></i> {{ 'shared.listPage.filter' | translate }}</button>
+        <button hqButton="secondary" type="button" (click)="clearFilters()">{{ 'shared.listPage.clear' | translate }}</button>
+      </div>
+    </hq-filter-bar>
+
+    <hq-common-table
+      [columns]="columns"
+      [rows]="rows"
+      [isLoading]="isLoading"
+      [hasError]="hasError"
+      [emptyMessage]="'accessManagement.users.emptyMessage' | translate"
+      [errorMessage]="'accessManagement.users.errorMessage' | translate">
+      <ng-template #rowActions let-row>
+        <button type="button" class="row-action-btn" [title]="'shared.listPage.rowActions.viewDetail' | translate" (click)="viewDetail(row)">
+          <i class="bi bi-eye"></i>
+        </button>
+        <ng-container *hqHasPrivilege="['USER_UPDATE', 'UAM_USERS_MANAGE']">
+          <button type="button" class="row-action-btn" [title]="'shared.listPage.rowActions.edit' | translate" (click)="openEdit(row)">
+            <i class="bi bi-pencil"></i>
+          </button>
+        </ng-container>
+        <ng-container *hqHasPrivilege="'UAM_USERS_MANAGE'">
+          <button type="button" class="row-action-btn" [title]="'accessManagement.users.actions.setPassword' | translate" (click)="setPassword(row)">
+            <i class="bi bi-key"></i>
+          </button>
+        </ng-container>
+        <ng-container *hqHasPrivilege="'UAM_USERS_MANAGE'">
+          <button type="button" class="row-action-btn" [title]="'accessManagement.users.actions.requireTotp' | translate" (click)="requireTotp(row)">
+            <i class="bi bi-shield-lock"></i>
+          </button>
+        </ng-container>
+        <ng-container *hqHasPrivilege="'UAM_USERS_MANAGE'">
+          <button type="button" class="row-action-btn" [title]="'accessManagement.users.actions.disableTotp' | translate" (click)="disableTotp(row)">
+            <i class="bi bi-shield-slash"></i>
+          </button>
+        </ng-container>
+        <ng-container *hqHasPrivilege="['USER_DELETE', 'UAM_USERS_MANAGE']">
+          <button type="button" class="row-action-btn danger" [title]="'shared.listPage.rowActions.delete' | translate" (click)="confirmDelete(row)">
+            <i class="bi bi-trash3"></i>
+          </button>
+        </ng-container>
+      </ng-template>
+    </hq-common-table>
+
+    <hq-table-footer
+      [page]="page"
+      [size]="pageSize"
+      [itemCount]="rows.length"
+      [hasMore]="page + 1 < totalPages"
+      [totalItems]="totalElements"
+      [loading]="isLoading"
+      [sizeOptions]="pageSizeOptions"
+      (pageChange)="goToPage($event)"
+      (sizeChange)="onPageSizeChange($event)">
+    </hq-table-footer>
+  </div>
+</div>

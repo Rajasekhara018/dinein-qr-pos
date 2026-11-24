@@ -1,0 +1,139 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 230" role="img" aria-label="A train arriving at a station with a cab waiting">
+  <!-- Original animated illustration for the rail-cab sign-in page: a train glides along the track past a station, a cab
+       waits on the road below with turning wheels and a blinking headlight, a location pin bounces above it and a dotted
+       route with a running pulse joins the platform to the cab. White and gold line art for a dark panel. The animations
+       are CSS inside the SVG (they run when shown as an <img>) and stop for reduced motion. -->
+  <defs>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ffe29a"/>
+      <stop offset="55%" stop-color="#f4b223"/>
+      <stop offset="100%" stop-color="#d69210"/>
+    </linearGradient>
+    <radialGradient id="lamp" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffe29a" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#ffe29a" stop-opacity="0"/>
+    </radialGradient>
+    <g id="coach">
+      <rect x="0" y="0" width="104" height="40" rx="9" fill="#ffffff"/>
+      <rect x="0" y="27" width="104" height="5" fill="url(#gold)"/>
+      <g fill="#7b1c25" fill-opacity="0.75">
+        <rect x="9" y="8" width="16" height="12" rx="3"/><rect x="31" y="8" width="16" height="12" rx="3"/>
+        <rect x="53" y="8" width="16" height="12" rx="3"/><rect x="75" y="8" width="16" height="12" rx="3"/>
+      </g>
+      <circle cx="20" cy="42" r="5" fill="#ffe29a"/><circle cx="84" cy="42" r="5" fill="#ffe29a"/>
+    </g>
+    <path id="spark" d="M0 -7 L 1.8 -1.8 L 7 0 L 1.8 1.8 L 0 7 L -1.8 1.8 L -7 0 L -1.8 -1.8 Z"/>
+  </defs>
+
+  <style>
+    .train { animation: run 9s linear infinite; }
+    .wheel { transform-box: fill-box; transform-origin: center; animation: spin 0.8s linear infinite; }
+    .cab { animation: idle 1.2s ease-in-out infinite; }
+    .beam { animation: blink 2.4s ease-in-out infinite; }
+    .pin { animation: hop 1.8s ease-in-out infinite; }
+    .route { stroke-dasharray: 10 400; animation: pulse 3s linear infinite; }
+    .cloud { animation: drift 40s linear infinite; }
+    .cloud.c2 { animation-duration: 55s; animation-delay: -20s; }
+    .twinkle { transform-box: fill-box; transform-origin: center; animation: twinkle 2.6s ease-in-out infinite; }
+    .twinkle.t2 { animation-delay: -0.9s; } .twinkle.t3 { animation-delay: -1.7s; }
+    @keyframes run { from { transform: translateX(-380px); } to { transform: translateX(600px); } }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes idle { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-1.5px); } }
+    @keyframes blink { 0%, 100% { opacity: 0.25; } 50% { opacity: 0.9; } }
+    @keyframes hop { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-9px); } }
+    @keyframes pulse { from { stroke-dashoffset: 410; } to { stroke-dashoffset: 0; } }
+    @keyframes drift { from { transform: translateX(-120px); } to { transform: translateX(620px); } }
+    @keyframes twinkle { 0%, 100% { transform: scale(0.4); opacity: 0.25; } 50% { transform: scale(1); opacity: 1; } }
+    @media (prefers-reduced-motion: reduce) {
+      .train, .wheel, .cab, .beam, .pin, .route, .cloud, .twinkle { animation: none; }
+      .train { transform: translateX(40px); }
+    }
+  </style>
+
+  <!-- Sky: drifting clouds and a faint city line -->
+  <g fill="#ffffff" fill-opacity="0.12">
+    <g class="cloud"><ellipse cx="40" cy="30" rx="34" ry="10"/><ellipse cx="58" cy="24" rx="20" ry="10"/></g>
+    <g class="cloud c2"><ellipse cx="40" cy="52" rx="26" ry="8"/><ellipse cx="54" cy="47" rx="15" ry="8"/></g>
+  </g>
+  <path d="M0 98 V 78 h 26 v -14 h 22 v 22 h 18 v -30 h 26 v 26 h 20 v -12 h 30 v 28 h 24 v -20 h 22 v 30 H 560 V 98 Z" fill="#ffffff" fill-opacity="0.07"/>
+
+  <!-- Station: canopy, pillars, clock and a lamp -->
+  <g>
+    <path d="M330 52 h 150 l -10 -16 h -130 z" fill="url(#gold)"/>
+    <rect x="330" y="52" width="150" height="5" fill="#ffffff" fill-opacity="0.8"/>
+    <rect x="344" y="57" width="6" height="44" fill="#ffffff" fill-opacity="0.65"/>
+    <rect x="460" y="57" width="6" height="44" fill="#ffffff" fill-opacity="0.65"/>
+    <circle cx="405" cy="44" r="9" fill="#ffffff"/>
+    <path d="M405 39 v 5 l 4 2" stroke="#7b1c25" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+    <rect x="320" y="101" width="170" height="7" rx="2" fill="#ffffff" fill-opacity="0.75"/>
+    <circle cx="500" cy="62" r="18" fill="url(#lamp)"/>
+    <rect x="498" y="62" width="4" height="46" fill="#ffffff" fill-opacity="0.6"/>
+    <circle cx="500" cy="62" r="5" fill="#ffe29a"/>
+  </g>
+
+  <!-- Track -->
+  <rect x="0" y="146" width="560" height="4" fill="#ffffff" fill-opacity="0.75"/>
+  <g fill="#ffffff" fill-opacity="0.35">
+    <rect x="10" y="150" width="14" height="4"/><rect x="50" y="150" width="14" height="4"/><rect x="90" y="150" width="14" height="4"/>
+    <rect x="130" y="150" width="14" height="4"/><rect x="170" y="150" width="14" height="4"/><rect x="210" y="150" width="14" height="4"/>
+    <rect x="250" y="150" width="14" height="4"/><rect x="290" y="150" width="14" height="4"/><rect x="330" y="150" width="14" height="4"/>
+    <rect x="370" y="150" width="14" height="4"/><rect x="410" y="150" width="14" height="4"/><rect x="450" y="150" width="14" height="4"/>
+    <rect x="490" y="150" width="14" height="4"/><rect x="530" y="150" width="14" height="4"/>
+  </g>
+
+  <!-- Train: engine and two coaches, gliding across -->
+  <g class="train">
+    <use href="#coach" x="0" y="99"/>
+    <use href="#coach" x="110" y="99"/>
+    <g transform="translate(220 99)">
+      <path d="M0 0 h 82 q 30 0 36 30 v 10 h -118 z" fill="#ffffff"/>
+      <rect x="0" y="27" width="116" height="5" fill="url(#gold)"/>
+      <path d="M86 6 q 18 2 24 18 h -24 z" fill="#7b1c25" fill-opacity="0.75"/>
+      <rect x="10" y="8" width="22" height="12" rx="3" fill="#7b1c25" fill-opacity="0.75"/>
+      <rect x="40" y="8" width="22" height="12" rx="3" fill="#7b1c25" fill-opacity="0.75"/>
+      <circle cx="114" cy="34" r="3" fill="#ffe29a"/>
+      <circle cx="22" cy="42" r="5" fill="#ffe29a"/><circle cx="92" cy="42" r="5" fill="#ffe29a"/>
+    </g>
+  </g>
+
+  <!-- Road -->
+  <rect x="0" y="196" width="560" height="26" fill="#ffffff" fill-opacity="0.1"/>
+  <g fill="#ffffff" fill-opacity="0.5">
+    <rect x="12" y="208" width="26" height="3" rx="1.5"/><rect x="70" y="208" width="26" height="3" rx="1.5"/><rect x="128" y="208" width="26" height="3" rx="1.5"/>
+    <rect x="186" y="208" width="26" height="3" rx="1.5"/><rect x="244" y="208" width="26" height="3" rx="1.5"/><rect x="302" y="208" width="26" height="3" rx="1.5"/>
+    <rect x="360" y="208" width="26" height="3" rx="1.5"/><rect x="418" y="208" width="26" height="3" rx="1.5"/><rect x="476" y="208" width="26" height="3" rx="1.5"/>
+    <rect x="534" y="208" width="26" height="3" rx="1.5"/>
+  </g>
+
+  <!-- Route from the platform down to the cab, with a running pulse -->
+  <path d="M405 108 C 405 150 330 160 300 182" fill="none" stroke="#ffffff" stroke-opacity="0.45" stroke-width="1.6" stroke-dasharray="2 6"/>
+  <path class="route" d="M405 108 C 405 150 330 160 300 182" fill="none" stroke="#ffe29a" stroke-width="3" stroke-linecap="round"/>
+
+  <!-- Cab waiting on the road -->
+  <g class="cab">
+    <path class="beam" d="M308 188 L 352 180 L 352 198 Z" fill="#ffe29a" fill-opacity="0.55"/>
+    <path d="M232 196 v -10 q 0 -6 6 -7 l 12 -2 l 10 -12 h 26 l 12 13 l 8 2 q 4 1 4 6 v 10 z" fill="url(#gold)"/>
+    <path d="M254 177 l 8 -10 h 10 v 10 z M276 177 v -10 h 9 l 9 10 z" fill="#7b1c25" fill-opacity="0.75"/>
+    <rect x="262" y="158" width="18" height="6" rx="2" fill="#ffffff"/>
+    <circle cx="306" cy="189" r="2.5" fill="#fff7c2"/>
+    <g class="wheel" transform="translate(248 197)">
+      <circle r="8" fill="#2b2b2b"/><circle r="4" fill="#ffffff"/><path d="M0 -4 V 4 M -4 0 H 4" stroke="#2b2b2b" stroke-width="1.5"/>
+    </g>
+    <g class="wheel" transform="translate(292 197)">
+      <circle r="8" fill="#2b2b2b"/><circle r="4" fill="#ffffff"/><path d="M0 -4 V 4 M -4 0 H 4" stroke="#2b2b2b" stroke-width="1.5"/>
+    </g>
+  </g>
+
+  <!-- Pin above the cab -->
+  <g class="pin">
+    <path d="M271 146 c -9 -10 -12 -15 -12 -20 a 12 12 0 0 1 24 0 c 0 5 -3 10 -12 20 z" fill="#ffffff"/>
+    <circle cx="271" cy="126" r="4.5" fill="#f4b223"/>
+  </g>
+
+  <!-- Sparkles -->
+  <g fill="#fff2b3">
+    <g class="twinkle" transform="translate(150 24)"><use href="#spark"/></g>
+    <g class="twinkle t2" transform="translate(540 30)"><use href="#spark"/></g>
+    <g class="twinkle t3" transform="translate(250 60)"><use href="#spark"/></g>
+  </g>
+</svg>

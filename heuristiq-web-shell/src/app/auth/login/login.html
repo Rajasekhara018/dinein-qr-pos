@@ -1,0 +1,175 @@
+<main class="login-page" appPointerTilt>
+  <hq-language-switcher></hq-language-switcher>
+  <section class="login-shell" [attr.aria-label]="'login.ariaLabel' | translate: { appName: branding.appName }">
+    <div class="login-story">
+      <img *ngIf="storyIllustration" class="story-art" [src]="storyIllustration" alt="" aria-hidden="true" data-testid="login-story-art" />
+      <div class="story-badge">{{ branding.loginStory?.badge ?? ('login.story.badge' | translate) }}</div>
+
+      <h1>{{ branding.loginStory?.headline ?? ('login.story.headline' | translate) }}</h1>
+
+      <p class="story-copy">
+        {{ branding.loginStory?.copy ?? ('login.story.copy' | translate) }}
+      </p>
+
+      <div class="feature-list" [attr.aria-label]="'login.features.ariaLabel' | translate">
+        <div class="feature-row">
+          <span>01</span>
+          <p>{{ branding.loginStory?.features?.[0] ?? ('login.features.pnrBooking' | translate) }}</p>
+        </div>
+        <div class="feature-row">
+          <span>02</span>
+          <p>{{ branding.loginStory?.features?.[1] ?? ('login.features.liveTracking' | translate) }}</p>
+        </div>
+        <div class="feature-row">
+          <span>03</span>
+          <p>{{ branding.loginStory?.features?.[2] ?? ('login.features.wallet' | translate) }}</p>
+        </div>
+      </div>
+
+      <div class="story-stats" [attr.aria-label]="'login.stats.ariaLabel' | translate">
+        <div>
+          <strong>{{ branding.loginStory?.stats?.[0]?.value ?? '24/7' }}</strong>
+          <span>{{ branding.loginStory?.stats?.[0]?.label ?? ('login.stats.bookingAccess' | translate) }}</span>
+        </div>
+        <div>
+          <strong>{{ branding.loginStory?.stats?.[1]?.value ?? '99.9%' }}</strong>
+          <span>{{ branding.loginStory?.stats?.[1]?.label ?? ('login.stats.serviceUptime' | translate) }}</span>
+        </div>
+        <div>
+          <strong>{{ branding.loginStory?.stats?.[2]?.value ?? ('login.stats.secure' | translate) }}</strong>
+          <span>{{ branding.loginStory?.stats?.[2]?.label ?? ('login.stats.protectedSignIn' | translate) }}</span>
+        </div>
+      </div>
+    </div>
+
+    <aside class="login-panel" [attr.aria-label]="'login.panelAriaLabel' | translate">
+      <div class="login-card">
+        <div class="login-brand">
+          <div class="login-logo-box">
+            <img [src]="branding.logoImagePath" [alt]="'login.logoAlt' | translate: { appName: branding.appName }" class="login-logo" />
+          </div>
+          <div>
+            <h2>{{ branding.appName }}</h2>
+            <p>{{ branding.tagline }}</p>
+          </div>
+        </div>
+
+        <!-- While the authenticator is being set up, that step is the page's heading instead of "Welcome back". -->
+        <div class="login-heading" *ngIf="!enrollment && !emailCheck">
+          <h3>{{ 'login.heading.title' | translate }}</h3>
+          <p>{{ 'login.heading.accountSubtitle' | translate }}</p>
+        </div>
+
+        <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate [class.login-form--codes]="!!emailCheck || !!enrollment">
+          <section class="mfa-enrollment" *ngIf="enrollment" aria-labelledby="mfa-enrollment-title">
+            <div class="login-heading mfa-enrollment__heading">
+              <h3 id="mfa-enrollment-title">{{ 'login.enrollment.title' | translate }}</h3>
+              <p>{{ 'login.enrollment.instructions' | translate }}</p>
+            </div>
+            <div class="mfa-enrollment__qr">
+              <img [src]="'data:image/png;base64,' + enrollment.qrCodeImageBase64" [alt]="'login.enrollment.qrAlt' | translate" width="168" height="168">
+            </div>
+            <div class="mfa-enrollment__key">
+              <span>{{ 'login.enrollment.manualKey' | translate }}</span>
+              <code>{{ enrollment.secret }}</code>
+            </div>
+          </section>
+          <!-- The security policy needs a verified email: a code was emailed; entering it verifies the address and signs in. -->
+          <section class="mfa-enrollment" *ngIf="emailCheck" aria-labelledby="email-check-title">
+            <div class="login-heading mfa-enrollment__heading">
+              <h3 id="email-check-title">{{ 'login.emailCheck.title' | translate }}</h3>
+              <p>{{ 'login.emailCheck.instructions' | translate: { email: emailCheck.maskedEmail } }}</p>
+            </div>
+            <hq-field icon="bi bi-envelope-check"
+                  type="text"
+                  inputId="email-code"
+                  formControlName="email_code"
+                  placeholder="123456"
+                  [maxLength]="8"
+                  autocomplete="one-time-code"
+                  [showCounter]="false"
+                  [label]="'login.emailCheck.codeLabel' | translate"></hq-field>
+            <div class="code-resend">
+              <button hqButton="primary" appearance="text" size="sm" type="button" [disabled]="loading" (click)="resendEmailCode()">
+                <i class="bi bi-arrow-repeat" aria-hidden="true"></i> {{ 'login.emailCheck.resend' | translate }}
+              </button>
+            </div>
+          </section>
+          <ng-container *ngIf="!enrollmentToken && !googleIdToken && !emailCheck">
+          <hq-field icon="bi bi-person"
+                type="text"
+                inputId="email"
+                formControlName="email"
+                [placeholder]="'login.form.identifier.placeholder' | translate"
+                autocomplete="username" [label]="'login.form.identifier.label' | translate" required [error]="(emailCtrl?.touched && emailCtrl?.errors?.['required']) ? ('login.form.identifier.required' | translate) : null"></hq-field>
+
+          <hq-form-field for="password" [label]="'login.form.password.label' | translate" required [error]="(passwordCtrl?.touched && passwordCtrl?.errors?.['required']) ? ('login.form.password.required' | translate) : null">
+            <div class="input-wrapper">
+              <hq-field icon="bi bi-lock"
+                inputId="password"
+                [type]="hidePassword ? 'password' : 'text'"
+                [passwordToggle]="false"
+                formControlName="password"
+                [placeholder]="'login.form.password.placeholder' | translate"
+                autocomplete="current-password"></hq-field>
+              <button
+                type="button"
+                class="input-suffix-btn"
+                (click)="hidePassword = !hidePassword"
+                tabindex="-1"
+                [attr.aria-label]="(hidePassword ? 'login.form.password.show' : 'login.form.password.hide') | translate"
+              >
+                <i class="bi" [class.bi-eye]="hidePassword" [class.bi-eye-slash]="!hidePassword"></i>
+              </button>
+            </div>
+          </hq-form-field>
+          </ng-container>
+
+          <hq-field icon="bi bi-shield-lock"
+                type="text"
+                inputId="totp"
+                formControlName="totp_code"
+                placeholder="123456"
+                [maxLength]="6"
+                autocomplete="one-time-code"
+                [showCounter]="false" *ngIf="showTotp" [label]="'login.form.totp.label' | translate"></hq-field>
+
+          <div class="form-options" *ngIf="!enrollmentToken && !googleIdToken && !emailCheck">
+            <hq-checkbox class="remember-option"><span>{{ 'login.form.rememberMe' | translate }}</span></hq-checkbox>
+            <button hqButton="primary" appearance="text" type="button" (click)="goToForgotPassword()">{{ 'login.form.forgotPassword' | translate }}</button>
+          </div>
+
+          <button class="login-submit" [loading]="loading" hqButton="accent" size="lg" block type="submit" [disabled]="loading || (!enrollment && !googleIdToken && !emailCheck && form.invalid)">
+            {{ (loading ? 'login.actions.signingIn' : ((showTotp || emailCheck) ? 'login.actions.verifyAndSignIn' : 'login.actions.login')) | translate }}
+          </button>
+          <div class="login-restart" *ngIf="enrollmentToken || googleIdToken || emailCheck">
+            <button hqButton="secondary" appearance="text" type="button" [disabled]="loading" (click)="restartSignIn()">
+              <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'login.enrollment.restart' | translate }}
+            </button>
+          </div>
+        </form>
+
+        <ng-container *ngIf="!enrollmentToken && !googleIdToken && !emailCheck">
+          <div class="auth-divider" aria-hidden="true"><span>{{ 'login.divider' | translate }}</span></div>
+
+          <button type="button" class="google-signin-btn" [disabled]="googleLoading" (click)="signInWithGoogle()">
+            <hq-spinner *ngIf="googleLoading" size="sm"></hq-spinner>
+            <img *ngIf="!googleLoading" src="assets/icons/google_g_logo.svg" alt="" class="google-signin-btn__icon" />
+            {{ (googleLoading ? 'login.actions.signingIn' : 'login.actions.google') | translate }}
+          </button>
+        </ng-container>
+
+        <!-- Self sign-up is switched off for now: accounts are created by an administrator. Restore this line to offer "Create one" again.
+        <p class="create-account">{{ 'login.links.noAccount' | translate }} <a routerLink="/auth/register">{{ 'login.links.createAccount' | translate }}</a></p>
+        -->
+
+        <div class="trust-row" [attr.aria-label]="'login.trust.ariaLabel' | translate">
+          <span><i class="bi bi-lock-fill"></i> {{ 'login.trust.ssl' | translate }}</span>
+          <span><i class="bi bi-check-square-fill"></i> {{ 'login.trust.soc2' | translate }}</span>
+          <span><i class="bi bi-clock-fill"></i> {{ 'login.trust.uptime' | translate }}</span>
+        </div>
+      </div>
+    </aside>
+  </section>
+  <span class="powered-by">{{ branding.poweredBy }}</span>
+</main>

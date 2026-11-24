@@ -1,0 +1,93 @@
+:host { display: contents; }
+
+.hq-modal {
+  display: flex;
+  flex-direction: column;
+  inline-size: min(calc(100vw - 2rem), var(--_w));
+  max-block-size: calc(100dvh - 2rem);
+  border: 1px solid var(--workspace-border);
+  border-radius: 16px;
+  background: var(--workspace-panel);
+  color: var(--edu-ink);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.28);
+  overflow: hidden;
+  animation: hq-modal-in 0.16s ease-out;
+
+  &--sm { --_w: 420px; }
+  &--md { --_w: 560px; }
+  &--lg { --_w: 800px; }
+  &--xl { --_w: 1140px; }
+}
+
+.hq-modal__header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1.25rem;
+  border-block-end: 1px solid var(--workspace-border);
+}
+
+.hq-modal__title {
+  flex: 1 1 auto;
+  min-inline-size: 0;
+  margin: 0;
+  font-family: var(--hq-font);
+  font-size: 1.05rem;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.hq-modal__close {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 2rem;
+  block-size: 2rem;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--edu-muted);
+  cursor: pointer;
+
+  &:hover { background: var(--theme-row-hover); color: var(--edu-ink); }
+  &:focus-visible { outline: 2px solid var(--hq-primary); outline-offset: 1px; }
+}
+
+.hq-modal__body {
+  flex: 1 1 auto;
+  min-block-size: 0;
+  padding: 1.25rem;
+  overflow-y: auto;
+}
+
+.hq-modal__footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  padding: 0.85rem 1.25rem;
+  border-block-start: 1px solid var(--workspace-border);
+
+  &:empty { display: none; }
+
+  ::ng-deep > [hqModalFooter] { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 0.5rem; inline-size: 100%; }
+}
+
+@media (max-width: 575.98px) {
+  .hq-modal {
+    inline-size: calc(100vw - 1rem);
+    max-block-size: calc(100dvh - 1rem);
+    border-radius: 12px;
+  }
+  .hq-modal__body { padding: 1rem; }
+}
+
+@keyframes hq-modal-in {
+  from { opacity: 0; transform: translateY(8px) scale(0.98); }
+  to { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hq-modal { animation: none; }
+}

@@ -1,0 +1,285 @@
+<div class="ffp" [class.ffp--embedded]="embedded">
+  <div class="ffp__header" *ngIf="!embedded">
+    <button type="button" class="ffp__back" [title]="'shared.adminCrud.backToList' | translate" (click)="cancel()">
+      <i class="bi bi-arrow-left-short"></i>
+    </button>
+    <div class="ffp__heading">
+      <h1>{{ titleKey | translate }}<ng-container *ngIf="franchise"> &middot; {{ franchise.code }}</ng-container></h1>
+      <nav class="ffp__crumbs">
+        <span>{{ 'nav.sections.accessManagement' | translate }}</span>
+        <i class="bi bi-chevron-right"></i>
+        <a (click)="cancel()">{{ 'nav.items.franchises' | translate }}</a>
+        <i class="bi bi-chevron-right"></i>
+        <span class="ffp__crumbs-current">{{ titleKey | translate }}</span>
+      </nav>
+    </div>
+    <span class="ffp__dirty" *ngIf="hasPendingChanges()">{{ 'shared.adminCrud.unsavedChanges' | translate }}</span>
+  </div>
+
+  <p class="ffp__muted" *ngIf="isLoading">{{ 'accessManagement.franchises.loading' | translate }}</p>
+  <hq-error-state *ngIf="loadFailed" [title]="'accessManagement.franchises.errorMessage' | translate"></hq-error-state>
+
+  <!-- Open a franchise: the owner, then each application with its fee and its agent places -->
+  <section class="table-surface" *ngIf="!isLoading && !loadFailed && isNew">
+    <div class="table-surface__header">
+      <div class="table-heading">
+        <span class="table-kicker">{{ 'shared.adminCrud.details' | translate: { entity: ('accessManagement.franchises.entity' | translate) } }}</span>
+      </div>
+    </div>
+    <div class="table-surface__body">
+      <hq-form-grid cols="2" gap="lg">
+        <p class="ffp__hint hq-span-full">{{ 'accessManagement.franchises.ownerHint' | translate }}</p>
+
+        <hq-field
+                 type="text"
+                 inputId="owner-name"
+                 [maxLength]="200"
+                 [(ngModel)]="form.ownerName"
+                 name="ownerName"
+                 [invalid]="!!openErrors.ownerName"
+                 (input)="clearOpenError('ownerName')"
+                 [showCounter]="false" [label]="'accessManagement.franchises.ownerName' | translate" required [error]="openErrors.ownerName ? (openErrors.ownerName) : null"></hq-field>
+        <hq-field
+                 type="email"
+                 inputId="owner-email"
+                 [maxLength]="200"
+                 [(ngModel)]="form.ownerEmail"
+                 name="ownerEmail"
+                 [invalid]="!!openErrors.ownerEmail"
+                 (input)="clearOpenError('ownerEmail')"
+                 [showCounter]="false" [label]="'accessManagement.franchises.ownerEmail' | translate" required [error]="openErrors.ownerEmail ? (openErrors.ownerEmail) : null"></hq-field>
+        <!-- The phone control also reports a change when it is redrawn; only a keystroke (the input event bubbling up) clears the message. -->
+        <hq-form-field (input)="clearOpenError('ownerPhone')" [error]="openErrors.ownerPhone || null">
+          <hq-phone-number-input [(ngModel)]="form.ownerPhone" name="ownerPhone" #ownerPhone="ngModel"
+                                  [label]="'accessManagement.franchises.ownerPhone' | translate"></hq-phone-number-input>
+        </hq-form-field>
+
+        <h2 class="ffp__section hq-span-full">{{ 'accessManagement.franchises.applicationsTitle' | translate }}</h2>
+        <p class="ffp__hint hq-span-full">{{ 'accessManagement.franchises.agentLimitHint' | translate }}</p>
+
+        <div class="hq-span-full">
+          <div class="franchise-terms franchise-terms--plans" *ngFor="let row of form.rows; let i = index">
+            <!-- Order: 1 application, 2 place (fills the offer), 3 offer, max agents and fee -->
+            <hq-searchable-select
+              class="terms-app"
+              [options]="applicationLabels(optionsFor(i))"
+              [ngModel]="applicationLabelOf(row.applicationCode)"
+              (valueChange)="pickApplication(row, $event)"
+              [ngModelOptions]="{ standalone: true }"
+              [allowOther]="false"
+              [inputId]="'app' + i"
+              [placeholder]="'accessManagement.franchises.chooseApplication' | translate"
+              [ariaLabel]="'accessManagement.franchises.application' | translate">
+            </hq-searchable-select>
+            <button type="button" class="row-action-btn danger terms-remove" *ngIf="form.rows.length > 1" [title]="'accessManagement.franchises.removeRow' | translate" (click)="removeRow(i)">
+              <i class="bi bi-x-lg"></i>
+            </button>
+            <div class="franchise-place terms-full" *ngIf="row.applicationCode && canPickPlaces">
+              <hq-form-field [label]="'accessManagement.franchises.place' | translate" [required]="placeRequired(row.applicationCode)" [hint]="placeHints(row)">
+                <app-location-picker [countryCode]="placeCountry" [franchiseScoped]="franchisePlaceOptions" (selected)="onPlacePicked(row, $event)"></app-location-picker>
+              </hq-form-field>
+            </div>
+            <p class="franchise-state franchise-state--error terms-full"
+               *ngIf="row.applicationCode && !canPickPlaces && placeRequired(row.applicationCode)">{{ 'accessManagement.franchises.placeNoAccess' | translate }}</p>
+            <hq-searchable-select
+              class="terms-offer"
+              [(ngModel)]="row.planKey"
+              (ngModelChange)="onPlanChange(row)"
+              [name]="'plan' + i"
+              [disabled]="plansFor(row).length === 0 || !!row.locationId"
+              [blockedHint]="!row.applicationCode ? ('accessManagement.franchises.regionChooseApplication' | translate)
+                : row.locationId ? ('accessManagement.franchises.regionFromPlace' | translate) : null"
+              [showUnavailableNotice]="false"
+              [ariaLabel]="'accessManagement.franchises.region' | translate"
+              [allowOther]="false"
+              [placeholder]="(plansFor(row).length ? 'accessManagement.franchises.regionCustom' : 'accessManagement.franchises.regionNone') | translate">
+              <hq-ss-option *ngFor="let plan of plansFor(row)" [value]="planKey(plan)" [label]="planLabel(plan)"></hq-ss-option>
+            </hq-searchable-select>
+            <hq-field
+                   type="number"
+                   min="1"
+                   [(ngModel)]="row.agentLimit"
+                   [disabled]="!!row.planKey"
+                   [name]="'limit' + i"
+                   [placeholder]="'accessManagement.franchises.agentLimit' | translate"
+                   [title]="'accessManagement.franchises.agentLimitHint' | translate"></hq-field>
+            <hq-amount-input class="fee-amount" valueMode="number" [showLabel]="false" [label]="'accessManagement.franchises.fee' | translate"
+                              [currency]="currencyOf(row)" [(ngModel)]="row.fee" [disabled]="!!row.planKey" [name]="'fee' + i"></hq-amount-input>
+            <ng-container *ngTemplateOutlet="packageSection; context: { $implicit: row, prefix: 'open' + i }"></ng-container>
+            <div class="terms-full franchise-preview" *ngIf="row.applicationCode">
+              <button hqButton="secondary" size="sm" type="button" [attr.data-testid]="'preview-' + i" (click)="togglePreview(row)">
+                <i class="bi bi-eye" aria-hidden="true"></i>
+                {{ (previewOf(row)?.open ? 'accessManagement.franchises.planPreview.hide' : 'accessManagement.franchises.planPreview.show') | translate }}
+              </button>
+              <app-franchise-plan-preview *ngIf="previewOf(row) as shown" [hidden]="!shown.open" [preview]="shown.data" [loading]="shown.loading"
+                                          [feeText]="previewFee(row)" [agentLimit]="row.agentLimit"></app-franchise-plan-preview>
+            </div>
+          </div>
+          <button hqButton="secondary" type="button" (click)="addRow()"><i class="bi bi-plus"></i> {{ 'accessManagement.franchises.addApplicationRow' | translate }}</button>
+        </div>
+
+        <hq-form-actions align="start" class="hq-span-full">
+          <button hqButton="accent" type="button" [disabled]="saving" (click)="submitOpening(ownerPhone.invalid === true)">{{ 'accessManagement.franchises.submit' | translate }}</button>
+          <button hqButton="secondary" type="button" [disabled]="saving" (click)="cancel()">{{ 'accessManagement.franchises.cancel' | translate }}</button>
+        </hq-form-actions>
+      </hq-form-grid>
+    </div>
+  </section>
+
+  <!-- Manage a franchise: the terms of each of its applications, and more applications -->
+  <section class="table-surface" *ngIf="!isLoading && !loadFailed && franchise as owned">
+    <div class="table-surface__header">
+      <div class="table-heading">
+        <span class="table-kicker">{{ 'accessManagement.franchises.applicationsTitle' | translate }}</span>
+        <div class="ffp__status-row">
+          <hq-status-badge tone="info">{{ statusLabel(owned.status) }}</hq-status-badge>
+          <ng-container *hqHasPrivilege="privileges.setStatus">
+            <button hqButton="secondary" size="sm" type="button" *ngFor="let target of statusTargets(owned)" [disabled]="changingStatus"
+                    [attr.data-testid]="'status-' + target" (click)="changeStatus(target)">
+              {{ statusActionLabel(target) }}
+            </button>
+          </ng-container>
+        </div>
+      </div>
+      <div class="franchise-usage">
+        {{ 'accessManagement.franchises.usage' | translate: { used: owned.totalAgentCount, limit: owned.totalAgentLimit } }}
+        <hq-progress class="usage-meter" size="sm" [value]="usagePercent(owned.totalAgentCount, owned.totalAgentLimit)" [max]="100" [showValue]="false" [tone]="usagePercent(owned.totalAgentCount, owned.totalAgentLimit) >= 100 ? 'danger' : 'primary'" [label]="'accessManagement.franchises.usage' | translate: { used: owned.totalAgentCount, limit: owned.totalAgentLimit }"></hq-progress>
+      </div>
+    </div>
+    <div class="table-surface__body">
+      <hq-common-table
+        [columns]="columns"
+        [rows]="owned.applications"
+        [emptyMessage]="'accessManagement.franchises.emptyApplications' | translate">
+        <ng-template hqCell="applicationCode" let-application>{{ nameOf(application.applicationCode) }}</ng-template>
+        <ng-template hqCell="locationName" let-application>
+          <ng-container *ngIf="application.locationName">{{ application.locationName }}</ng-container>
+          <span *ngIf="!application.locationName && !canPickPlaces">&mdash;</span>
+          <app-location-picker *ngIf="!application.locationName && canPickPlaces" [franchiseScoped]="franchisePlaceOptions"
+                               [countryCode]="placeCountry" (selected)="onEditPlacePicked(edits[application.applicationCode], $event)"></app-location-picker>
+          <small class="franchise-hint" *ngIf="!application.locationName && placeRequired(application.applicationCode)">{{ 'accessManagement.franchises.placeMissing' | translate }}</small>
+        </ng-template>
+        <ng-template hqCell="agentLimit" let-application>
+          <hq-field
+                 type="number"
+                 min="1"
+                 [(ngModel)]="edits[application.applicationCode].agentLimit"
+                 [name]="'edit-limit-' + application.applicationCode"
+                 [ariaLabel]="'accessManagement.franchises.agentLimit' | translate"></hq-field>
+          <small class="franchise-hint">{{ 'accessManagement.franchises.usage' | translate: { used: application.agentCount, limit: application.agentLimit } }}</small>
+        </ng-template>
+        <ng-template hqCell="fee" let-application>
+          <hq-amount-input class="fee-amount" valueMode="number" [showLabel]="false" [label]="'accessManagement.franchises.fee' | translate"
+                            [currency]="currencyOf(edits[application.applicationCode])" [(ngModel)]="edits[application.applicationCode].fee"
+                            [name]="'edit-fee-' + application.applicationCode"></hq-amount-input>
+        </ng-template>
+        <ng-template hqCell="package" let-application>
+          <div class="franchise-package" [attr.data-testid]="'package-' + application.applicationCode">
+            <ng-container *ngIf="canChangePackage; else packageReadOnly">
+              <hq-searchable-select [(ngModel)]="packageEdits[application.applicationCode]"
+                                     [ngModelOptions]="{ standalone: true }" [allowOther]="false"
+                                     [ariaLabel]="'accessManagement.franchises.package.column' | translate">
+                <hq-ss-option value="" [label]="'accessManagement.franchises.package.none' | translate"></hq-ss-option>
+                <hq-ss-option *ngIf="currentPackage(application) && !hasTemplate(application.applicationCode, currentPackage(application))"
+                               [value]="currentPackage(application)" [label]="packageName(application.applicationCode, currentPackage(application))"></hq-ss-option>
+                <hq-ss-option *ngFor="let template of packagesOf(application.applicationCode)" [value]="template.id" [label]="template.name"></hq-ss-option>
+              </hq-searchable-select>
+              <button hqButton="secondary" size="sm" type="button" *ngIf="packageChanged(application)" [disabled]="saving"
+                      [attr.data-testid]="'apply-package-' + application.applicationCode" (click)="applyPackage(application)">
+                {{ 'accessManagement.franchises.package.apply' | translate }}
+              </button>
+            </ng-container>
+            <ng-template #packageReadOnly>{{ packageName(application.applicationCode, currentPackage(application)) }}</ng-template>
+          </div>
+        </ng-template>
+        <ng-template hqCell="rules" let-application>
+          <dl class="franchise-rules" *hqHasPrivilege="rulePrivilege">
+            <div class="franchise-rules__row" *ngFor="let kind of ruleKinds" [attr.data-testid]="'rule-' + kind + '-' + application.applicationCode">
+              <dt>{{ rulesI18n + '.kinds.' + kind | translate }}</dt>
+              <dd *ngIf="ruleOf(application.applicationCode, kind) as rule; else noRule">
+                <ng-container *ngIf="rule !== 'failed'; else ruleFailed">
+                  <span class="franchise-rules__summary" *ngIf="!rule.lines && !rule.eventLines">{{ rule.summary || (rulesI18n + '.noTerms' | translate) }}</span>
+                  <span class="franchise-rules__summary" *ngFor="let line of rule.eventLines">
+                    <strong>{{ line.eventType }}</strong> {{ line.summary || (rulesI18n + '.noTerms' | translate) }}
+                    <small class="franchise-hint">{{ line.sourceKey | translate: line.sourceParams }}</small>
+                  </span>
+                  <span class="franchise-rules__summary" *ngFor="let line of rule.lines">
+                    <strong>{{ line.eventType || ('accessManagement.franchises.planPreview.everyEvent' | translate) }}<ng-container *ngIf="line.placeType"> · {{ line.placeType }}</ng-container></strong>
+                    {{ line.summary || (rulesI18n + '.noTerms' | translate) }}
+                  </span>
+                  <small class="franchise-hint">{{ rule.sourceKey | translate: rule.sourceParams }}</small>
+                </ng-container>
+                <ng-template #ruleFailed><small class="franchise-hint">{{ rulesI18n + '.failed' | translate }}</small></ng-template>
+              </dd>
+              <ng-template #noRule>
+                <dd><small class="franchise-hint">{{ (ruleOf(application.applicationCode, kind) === undefined ? rulesI18n + '.loading' : rulesI18n + '.none') | translate }}</small></dd>
+              </ng-template>
+            </div>
+          </dl>
+        </ng-template>
+        <ng-template #rowActions let-application>
+          <ng-container *hqHasPrivilege="privileges.updateApplication">
+            <button hqButton="accent" type="button" [disabled]="saving" (click)="saveTerms(application)">{{ 'accessManagement.franchises.save' | translate }}</button>
+          </ng-container>
+        </ng-template>
+      </hq-common-table>
+
+      <div class="franchise-terms" *ngIf="addable().length > 0">
+        <ng-container *hqHasPrivilege="privileges.addApplication">
+          <hq-searchable-select
+            [options]="applicationLabels(addable())"
+            [ngModel]="applicationLabelOf(newApplication.applicationCode)"
+            (valueChange)="pickNewApplication($event)"
+            [ngModelOptions]="{ standalone: true }"
+            [allowOther]="false"
+            inputId="newApplication"
+            [placeholder]="'accessManagement.franchises.chooseApplication' | translate"
+            [ariaLabel]="'accessManagement.franchises.application' | translate">
+          </hq-searchable-select>
+          <hq-field type="number" min="1" [(ngModel)]="newApplication.agentLimit" name="newLimit" [placeholder]="'accessManagement.franchises.agentLimit' | translate"></hq-field>
+          <hq-amount-input class="fee-amount" valueMode="number" [showLabel]="false" [label]="'accessManagement.franchises.fee' | translate"
+                            [currency]="currencyOf(newApplication)" [(ngModel)]="newApplication.fee" name="newFee"></hq-amount-input>
+          <div class="franchise-place" style="grid-column: 1 / -1" *ngIf="newApplication.applicationCode && canPickPlaces">
+            <hq-form-field [label]="'accessManagement.franchises.place' | translate" [required]="placeRequired(newApplication.applicationCode)" [hint]="placeHints(newApplication)">
+              <app-location-picker [countryCode]="placeCountry" [franchiseScoped]="franchisePlaceOptions" (selected)="onPlacePicked(newApplication, $event)"></app-location-picker>
+            </hq-form-field>
+          </div>
+          <p class="franchise-state franchise-state--error" style="grid-column: 1 / -1"
+             *ngIf="newApplication.applicationCode && !canPickPlaces && placeRequired(newApplication.applicationCode)">{{ 'accessManagement.franchises.placeNoAccess' | translate }}</p>
+          <ng-container *ngTemplateOutlet="packageSection; context: { $implicit: newApplication, prefix: 'new' }"></ng-container>
+          <div class="franchise-preview" style="grid-column: 1 / -1" *ngIf="newApplication.applicationCode">
+            <button hqButton="secondary" size="sm" type="button" data-testid="preview-new" (click)="togglePreview(newApplication)">
+              <i class="bi bi-eye" aria-hidden="true"></i>
+              {{ (previewOf(newApplication)?.open ? 'accessManagement.franchises.planPreview.hide' : 'accessManagement.franchises.planPreview.show') | translate }}
+            </button>
+            <app-franchise-plan-preview *ngIf="previewOf(newApplication) as shown" [hidden]="!shown.open" [preview]="shown.data" [loading]="shown.loading"
+                                        [feeText]="previewFee(newApplication)" [agentLimit]="newApplication.agentLimit"></app-franchise-plan-preview>
+          </div>
+          <button hqButton="accent" type="button" [disabled]="saving" (click)="addApplication()">{{ 'accessManagement.franchises.addApplication' | translate }}</button>
+        </ng-container>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- Package template picker, explicit commission and referral of one application row. Needs the privileges the service checks too. -->
+<ng-template #packageSection let-row let-prefix="prefix">
+  <div class="package-section" style="grid-column: 1 / -1" *ngIf="row.applicationCode">
+    <ng-container *hqHasPrivilege="[packagePrivileges.list, packagePrivileges.read]">
+      <hq-form-field [label]="'accessManagement.franchisePackages.template' | translate"
+                      [hint]="chosenTemplate(row) ? templatePlansText(row) + ' ' + ('accessManagement.franchisePackages.templateHint' | translate) : ''">
+        <hq-searchable-select
+          [(ngModel)]="row.templateId"
+          (ngModelChange)="onTemplateChange(row)"
+          [name]="prefix + 'Template'"
+          [disabled]="templatesFor(row).length === 0"
+          [showUnavailableNotice]="false"
+          [allowOther]="false"
+          [placeholder]="(templatesFor(row).length ? 'accessManagement.franchisePackages.noTemplate' : 'accessManagement.franchisePackages.noTemplates') | translate">
+          <hq-ss-option *ngFor="let template of templatesFor(row)" [value]="template.id" [label]="template.name"></hq-ss-option>
+        </hq-searchable-select>
+      </hq-form-field>
+    </ng-container>
+    <!-- Commission and referral come only from the package's plans: a franchise has no commission or referral of its own here. -->
+  </div>
+</ng-template>

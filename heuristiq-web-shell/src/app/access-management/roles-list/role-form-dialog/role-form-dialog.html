@@ -1,0 +1,183 @@
+<!-- ── Dialog mode (opened via MatDialog.open) — unchanged chrome ─────────── -->
+<div class="role-dialog" *ngIf="!isPageMode">
+  <div class="role-dialog__header">
+    <div class="role-dialog__header-icon"><i class="bi bi-shield-lock"></i></div>
+    <div class="role-dialog__header-text">
+      <h2>{{ title }}</h2>
+      <p>{{ 'accessManagement.roles.form.dialogSubtitle' | translate }}</p>
+    </div>
+    <button type="button" class="role-dialog__close" (click)="cancel()" [title]="'shared.appDialog.defaultCancel' | translate">
+      <i class="bi bi-x-lg"></i>
+    </button>
+  </div>
+
+  <div class="role-dialog__body">
+    <ng-container *ngTemplateOutlet="bodyTpl"></ng-container>
+  </div>
+
+  <div class="role-dialog__footer">
+    <button hqButton="secondary" type="button" (click)="cancel()">{{ 'shared.adminCrud.cancel' | translate }}</button>
+    <ng-container *hqHasPrivilege="savePrivileges">
+      <button hqButton="accent" type="button" [disabled]="!canSubmit || isLoadingRole || isSaving" (click)="submit()">
+        {{ (isSaving ? 'shared.adminCrud.saving' : (data.mode === 'create' ? 'accessManagement.roles.form.createRole' : 'accessManagement.roles.form.updateRole')) | translate }}
+      </button>
+    </ng-container>
+  </div>
+</div>
+
+<!-- ── Page mode (activated as a route) — mirrors template-form's tf-page layout ── -->
+<div class="role-dialog--page tf-page" *ngIf="isPageMode">
+  <div class="tf-page-header">
+    <div class="d-flex align-items-center gap-2">
+      <button type="button" class="tf-back-btn" (click)="cancel()" [title]="'shared.adminCrud.backToList' | translate">
+        <i class="bi bi-arrow-left-short"></i>
+      </button>
+      <div>
+        <h1 class="tf-title">{{ title }}</h1>
+        <nav class="tf-breadcrumb">
+          <span>{{ 'nav.sections.accessManagement' | translate }}</span>
+          <i class="bi bi-chevron-right tf-bc-sep"></i>
+          <span (click)="cancel()" class="tf-bc-link">{{ 'nav.items.roles' | translate }}</span>
+          <i class="bi bi-chevron-right tf-bc-sep"></i>
+          <span class="tf-bc-active">{{ title }}</span>
+        </nav>
+      </div>
+    </div>
+    <div class="d-flex gap-2 align-items-center">
+      <hq-status-badge tone="warning" *ngIf="hasChanges">
+        <i class="bi bi-dot"></i> {{ 'shared.adminCrud.unsavedChanges' | translate }}
+      </hq-status-badge>
+      <button hqButton="secondary" appearance="outline" size="sm" class="px-3" (click)="cancel()" type="button">{{ 'shared.adminCrud.cancel' | translate }}</button>
+      <ng-container *hqHasPrivilege="savePrivileges">
+        <button [loading]="isSaving" hqButton="primary" size="sm" class="px-4" (click)="submit()" [disabled]="!canSubmit || isLoadingRole || isSaving" type="button">
+          <i *ngIf="!isSaving" class="bi bi-check-lg me-1"></i>
+          {{ (data.mode === 'edit' ? 'shared.adminCrud.update' : 'shared.adminCrud.save') | translate }}
+        </button>
+      </ng-container>
+    </div>
+  </div>
+
+  <!-- The role form on the left, what roles and access levels mean on the right (below it on narrower screens). -->
+  <div class="role-page__body">
+    <hq-card icon="bi-shield-lock" padding="none" [title]="'accessManagement.roles.form.dialogSubtitle' | translate">
+      <div class="role-dialog__body">
+        <ng-container *ngTemplateOutlet="bodyTpl"></ng-container>
+      </div>
+    </hq-card>
+    <app-form-guide [guide]="guide" [sticky]="true"></app-form-guide>
+  </div>
+</div>
+
+<!-- ── Shared body markup (rendered by both modes above) ──────────────────── -->
+<ng-template #bodyTpl>
+  <section class="role-step">
+    <div class="role-step__header">
+      <span class="role-step__badge">1</span>
+      <h3>{{ 'accessManagement.roles.form.roleDetails' | translate }}</h3>
+    </div>
+    <hq-loading-state *ngIf="isLoadingRole" [label]="'accessManagement.roles.form.loadingRole' | translate"></hq-loading-state>
+    <div class="role-step__grid" *ngIf="!isLoadingRole">
+      <hq-field
+               type="text"
+               [(ngModel)]="code"
+               [maxLength]="codeMaxLength"
+               [invalid]="!!(codeError ? 'true' : null)"
+               [placeholder]="'accessManagement.roles.form.codePlaceholder' | translate"
+               [showCounter]="false" [label]="'accessManagement.roles.fields.code' | translate" required [error]="codeError ? ((codeError) | translate) : null"></hq-field>
+      <hq-field type="text" [(ngModel)]="name" [placeholder]="'accessManagement.roles.form.namePlaceholder' | translate" [label]="'accessManagement.roles.fields.name' | translate"></hq-field>
+      <hq-field type="text" [(ngModel)]="description" [placeholder]="'accessManagement.roles.form.descriptionPlaceholder' | translate" [label]="'accessManagement.roles.fields.description' | translate"></hq-field>
+    </div>
+    <hq-checkbox class="role-step__checkbox" *ngIf="canSetSystemRole" [(ngModel)]="systemRole"><span>{{ 'accessManagement.roles.form.systemRoleCheckbox' | translate }}</span></hq-checkbox>
+  </section>
+
+  <section class="role-step">
+    <div class="role-step__header">
+      <span class="role-step__badge">2</span>
+      <h3>{{ 'accessManagement.roles.form.configurePermissions' | translate }}</h3>
+    </div>
+
+    <!-- Simple view: areas and features with None / View / Manage. Advanced view: every technical permission code. -->
+    <div class="role-access-switch">
+      <button hqButton="secondary" type="button" (click)="showAdvanced = !showAdvanced">
+        <i class="bi" [class.bi-sliders]="!showAdvanced" [class.bi-ui-checks-grid]="showAdvanced"></i>
+        {{ (showAdvanced ? 'accessManagement.roles.access.useSimple' : 'accessManagement.roles.access.useAdvanced') | translate }}
+      </button>
+    </div>
+
+    <app-role-access-picker *ngIf="!showAdvanced && !isLoadingPermissions" [permissions]="allPermissions"
+                            [selected]="selectedCodes" (selectedChange)="onAccessChange($event)"></app-role-access-picker>
+    <hq-skeleton *ngIf="!showAdvanced && isLoadingPermissions" variant="text" [lines]="6"
+                  [label]="'accessManagement.roles.form.loadingPermissions' | translate"></hq-skeleton>
+
+    <ng-container *ngIf="showAdvanced">
+    <hq-filter-bar collapsible>
+      <hq-searchable-select
+        class="perm-select"
+        [(ngModel)]="moduleDraft"
+        [allowOther]="false"
+        [placeholder]="'accessManagement.roles.form.allModules' | translate">
+        <hq-ss-option *ngFor="let m of moduleOptions" [value]="m" [label]="m"></hq-ss-option>
+      </hq-searchable-select>
+      <hq-searchable-select
+        class="perm-select"
+        [(ngModel)]="resourceDraft"
+        [allowOther]="false"
+        [placeholder]="'accessManagement.roles.form.allResources' | translate">
+        <hq-ss-option *ngFor="let r of resourceOptions" [value]="r" [label]="r"></hq-ss-option>
+      </hq-searchable-select>
+      <hq-field
+        type="text"
+        class="perm-search-input"
+        [placeholder]="'accessManagement.roles.form.searchPlaceholder' | translate"
+        [(ngModel)]="searchDraft"
+        (keyup.enter)="searchPermissions()"></hq-field>
+      <div hqFilterActions>
+        <button hqButton="accent" size="sm" type="button" (click)="searchPermissions()">
+          <i class="bi bi-search"></i> {{ 'shared.listPage.filter' | translate }}
+        </button>
+        <button hqButton="secondary" size="sm" type="button" (click)="resetPermissionFilter()">
+          <i class="bi bi-x-lg"></i> {{ 'accessManagement.roles.form.reset' | translate }}
+        </button>
+      </div>
+    </hq-filter-bar>
+
+    <div class="perm-table-wrap">
+      <hq-common-table [columns]="permissionColumns" [rows]="pagedPermissions" [isLoading]="isLoadingPermissions"
+                        [showActionsColumn]="false" [emptyMessage]="'accessManagement.roles.form.noPermissionsMatch' | translate">
+        <ng-template hqHead="select">
+          <hq-checkbox [checked]="isAllPageSelected" (checkedChange)="toggleAllOnPage()"></hq-checkbox>
+        </ng-template>
+        <ng-template hqCell="select" let-p>
+          <hq-checkbox [checked]="isSelected(p)" (checkedChange)="toggle(p)"></hq-checkbox>
+        </ng-template>
+      </hq-common-table>
+      <hq-loading-state *ngIf="isLoadingPermissions" [label]="'accessManagement.roles.form.loadingPermissions' | translate"></hq-loading-state>
+    </div>
+    <div class="perm-select-matching" *ngIf="filteredPermissions.length > pagedPermissions.length">
+      <button hqButton="primary" appearance="text" size="sm" type="button" (click)="toggleAllFiltered()">
+        {{ (isAllFilteredSelected ? 'accessManagement.roles.form.clearAllMatching' : 'accessManagement.roles.form.selectAllMatching') | translate: { count: filteredPermissions.length } }}
+      </button>
+    </div>
+
+    <div class="fleet-footer" *ngIf="filteredPermissions.length > 0">
+      <span class="table-summary">{{ 'accessManagement.roles.form.showingRange' | translate: { from: permRangeStart, to: permRangeEnd, total: filteredPermissions.length } }}</span>
+      <div class="fleet-footer__controls">
+        <hq-searchable-select
+          class="fleet-page-size"
+          [ngModel]="permPageSize"
+          (ngModelChange)="onPermPageSizeChange($event)"
+          [allowOther]="false">
+          <hq-ss-option *ngFor="let size of permPageSizes" [value]="size" [label]="'shared.listPage.perPage' | translate: { count: size }"></hq-ss-option>
+        </hq-searchable-select>
+        <ul class="fleet-pagination">
+          <li [class.disabled]="permPage === 0"><button type="button" (click)="goToPermPage(permPage - 1)"><i class="bi bi-chevron-left"></i></button></li>
+          <li *ngFor="let n of permPageNumbers" [class.active]="n === permPage + 1"><button type="button" (click)="goToPermPage(n - 1)">{{ n }}</button></li>
+          <li [class.disabled]="permPage + 1 >= permTotalPages"><button type="button" (click)="goToPermPage(permPage + 1)"><i class="bi bi-chevron-right"></i></button></li>
+        </ul>
+      </div>
+    </div>
+
+    <p class="perm-count">{{ 'accessManagement.roles.form.permissionsSelected' | translate: { count: selectedCodes.size } }}</p>
+    </ng-container>
+  </section>
+</ng-template>

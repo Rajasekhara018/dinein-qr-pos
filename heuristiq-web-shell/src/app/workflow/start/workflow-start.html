@@ -1,0 +1,27 @@
+<div class="table-surface">
+  <div class="table-surface__body wf-form">
+    <hq-field type="text" [(ngModel)]="processKey" class="wf-field" [label]="'workflow.start.processKey' | translate" [error]="(submitted && !processKey.trim()) ? ('workflow.required' | translate) : null" [hint]="((submitted && !processKey.trim()) ? ('workflow.required' | translate) : null) ? '' : ('workflow.start.processKeyHint' | translate)"></hq-field>
+
+    <hq-form-grid cols="2" gap="md">
+      <hq-field type="text" [(ngModel)]="subjectType" placeholder="ONBOARDING" class="wf-field" [label]="'workflow.start.subjectType' | translate" [error]="(submitted && !subjectType.trim()) ? ('workflow.required' | translate) : null"></hq-field>
+      <hq-field type="text" [(ngModel)]="subjectId" class="wf-field" [label]="'workflow.start.subjectId' | translate" [error]="(submitted && !subjectId.trim()) ? ('workflow.required' | translate) : null"></hq-field>
+    </hq-form-grid>
+
+    <hq-field type="url" [(ngModel)]="callbackUrl" placeholder="https://" class="wf-field" [label]="'workflow.start.callbackUrl' | translate" [error]="(submitted && !callbackUrl.trim()) ? ('workflow.required' | translate) : null" [hint]="((submitted && !callbackUrl.trim()) ? ('workflow.required' | translate) : null) ? '' : ('workflow.start.callbackHint' | translate)"></hq-field>
+
+    <hq-field
+                type="textarea"
+                [rows]="5"
+                [(ngModel)]="variablesText"
+                (ngModelChange)="invalidJson = false"
+                placeholder='{ "priority": "high" }' class="wf-field" [label]="'workflow.start.variables' | translate" [error]="invalidJson ? ('workflow.invalidJson' | translate) : null"></hq-field>
+
+    <div class="wf-actions">
+      <ng-container *hqHasPrivilege="'WORKFLOW_INSTANCE_CREATE'">
+        <button [loading]="isSaving" hqButton="accent" type="button" (click)="submit()" [disabled]="isSaving">
+          <i *ngIf="!isSaving" class="bi bi-play-circle"></i> {{ 'workflow.start.submit' | translate }}
+        </button>
+      </ng-container>
+    </div>
+  </div>
+</div>

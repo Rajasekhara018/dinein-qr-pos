@@ -1,0 +1,9 @@
+{
+  "railcab-admin": "https://ops.pasupukumkuma.net/admin-remote/remoteEntry.json",
+  "railcab-matrimony": "https://ops.pasupukumkuma.net/matrimony-remote/remoteEntry.json",
+  "railcab-wallet": "https://ops.pasupukumkuma.net/wallet-remote/remoteEntry.json",
+  "railcab-reports": "https://ops.pasupukumkuma.net/reports-remote/remoteEntry.json",
+  "railcab-accounting": "https://ops.pasupukumkuma.net/accounting-remote/remoteEntry.json",
+  "railcab-food": "https://ops.pasupukumkuma.net/food-remote/remoteEntry.json",
+  "railcab-ims": "https://ops.pasupukumkuma.net/ims-remote/remoteEntry.json"
+}

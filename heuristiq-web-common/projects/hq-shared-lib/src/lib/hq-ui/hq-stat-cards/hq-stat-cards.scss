@@ -1,0 +1,54 @@
+:host {
+  display: block;
+}
+
+.stat-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+
+  // The cards share the row: auto-fit drops the empty tracks auto-fill keeps, so the cards stretch to the full width.
+  &--fill { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
+
+  // Beside another card: no space below, and the cards as tall as the slot so both line up top and bottom.
+  &--flush { margin-bottom: 0; height: 100%; }
+}
+
+:host:has(.stat-cards--flush) { height: 100%; }
+
+// A figure card: label and icon chip on top, the figure below; white with a hairline border (the visual refresh tokens).
+.stat-card {
+  display: flex; flex-direction: row-reverse; align-items: flex-start; justify-content: space-between; gap: 1rem;
+  background: var(--workspace-panel); border: 1px solid var(--hq-card-border, var(--workspace-border));
+  border-radius: var(--hq-radius-card, 14px); padding: 1.125rem 1.25rem; min-height: 96px;
+  box-shadow: var(--hq-card-shadow, 0 1px 2px rgba(16, 24, 40, 0.05));
+  transition: box-shadow .2s;
+  &:hover { box-shadow: var(--hq-card-shadow-hover, 0 4px 14px rgba(16, 24, 40, 0.08)); }
+}
+
+// Soft tinted chips in the tone's colour instead of saturated gradient tiles.
+.stat-icon {
+  width: 36px; height: 36px; border-radius: 10px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.05rem;
+  &--blue   { background: color-mix(in srgb, #2563eb 12%, transparent); color: #1d4ed8; }
+  &--purple { background: color-mix(in srgb, #7c3aed 12%, transparent); color: #6d28d9; }
+  &--green  { background: color-mix(in srgb, var(--hq-primary, #0B6E4F) 12%, transparent); color: var(--hq-link, var(--hq-primary, #0B6E4F)); }
+  &--orange { background: color-mix(in srgb, var(--button-accent-start) 18%, transparent); color: color-mix(in srgb, var(--button-accent-end) 70%, #000); }
+}
+
+:host-context([data-theme-mode='dark']) .stat-icon {
+  &--blue   { color: #93c5fd; }
+  &--purple { color: #c4b5fd; }
+  &--green  { color: color-mix(in srgb, var(--hq-primary, #0B6E4F) 45%, #fff); }
+  &--orange { color: var(--button-accent-start); }
+}
+
+.stat-body { min-width: 0; flex: 1; display: flex; flex-direction: column; gap: .5rem; }
+.stat-label { margin: 0; font-size: .8125rem; color: var(--edu-muted); font-weight: 500; }
+.stat-value { margin: 0; font-size: 1.75rem; font-weight: 700; color: var(--edu-ink); letter-spacing: -.02em; line-height: 1.1; font-family: var(--hq-font); }
+
+@media (prefers-reduced-motion: reduce) {
+  .stat-card { transition: none; }
+}

@@ -1,0 +1,129 @@
+<hq-page-header
+  [kicker]="'nav.sections.qaAutomation' | translate"
+  [title]="'qaDashboard.apiDocuments.title' | translate"
+  [subtitle]="'qaDashboard.apiDocuments.subtitle' | translate"
+  [loading]="isLoadingModules || isLoadingDocument"
+  [loadingLabel]="'shared.pageHeader.loading' | translate">
+</hq-page-header>
+
+<ng-container *hqHasPrivilege="privileges.list">
+  <hq-error-state *ngIf="modulesFailed" [title]="'qaDashboard.loadFailed' | translate"></hq-error-state>
+  <hq-loading-state *ngIf="isLoadingModules && modules.length === 0 && !modulesFailed" [label]="'qaDashboard.loading' | translate"></hq-loading-state>
+  <hq-empty-state *ngIf="!isLoadingModules && !modulesFailed && modules.length === 0" [title]="'qaDashboard.apiDocuments.noModules' | translate"></hq-empty-state>
+
+  <div class="qa-docs" *ngIf="modules.length > 0">
+    <!-- The modules -->
+    <hq-card class="qa-docs__modules" [attr.aria-label]="'qaDashboard.apiDocuments.modules' | translate" role="navigation" padding="md" [title]="'qaDashboard.apiDocuments.modules' | translate"><ul class="qa-module-list">
+        <li *ngFor="let m of modules; trackBy: trackByModule">
+          <button type="button" class="qa-module-item" [class.qa-module-item--active]="m.module === selected"
+                  [attr.aria-current]="m.module === selected ? 'true' : null" (click)="selectModule(m.module)">
+            <span class="qa-module-item__name">{{ m.module }}</span>
+            <span class="qa-module-item__count">{{ m.endpointCount === null ? '—' : ('qaDashboard.apiDocuments.endpointCount' | translate: { count: m.endpointCount }) }}</span>
+            <hq-status-badge [tone]="m.document ? 'success' : 'neutral'" class="qa-module-item__doc">
+              {{ (m.document ? 'qaDashboard.apiDocuments.hasDocument' : 'qaDashboard.apiDocuments.noDocument') | translate }}
+            </hq-status-badge>
+          </button>
+        </li>
+      </ul>
+    </hq-card>
+
+    <!-- The open module -->
+    <section class="qa-docs__main">
+      <hq-empty-state class="qa-pick" *ngIf="!selected" [title]="'qaDashboard.apiDocuments.pickModule' | translate"></hq-empty-state>
+
+      <ng-container *ngIf="selected">
+        <header class="qa-docs__head">
+          <h2>{{ selected }}</h2>
+          <span class="qa-actions qa-no-print">
+            <a hqButton="secondary" class="qa-link-swagger" [routerLink]="links.swagger"><i class="bi bi-braces"></i> {{ 'qaDashboard.apiDocuments.swagger' | translate }}</a>
+            <a hqButton="secondary" class="qa-link-javadoc" [routerLink]="links.javadoc"><i class="bi bi-file-earmark-code"></i> {{ 'qaDashboard.apiDocuments.javadoc' | translate }}</a>
+          </span>
+        </header>
+
+        <!-- Document: viewer or editor -->
+        <section class="qa-card qa-docs__doc">
+          <ng-container *ngIf="!editing">
+            <div class="qa-docs__bar qa-no-print">
+              <h3>{{ document?.title || ('qaDashboard.apiDocuments.document' | translate) }}</h3>
+              <span class="qa-actions">
+                <ng-container *hqHasPrivilege="privileges.create">
+                  <button hqButton="secondary" type="button" class="qa-edit-doc" (click)="startEdit()">
+                    <i class="bi bi-pencil"></i> {{ (document ? 'qaDashboard.apiDocuments.edit' : 'qaDashboard.apiDocuments.write') | translate }}
+                  </button>
+                </ng-container>
+                <ng-container *hqHasPrivilege="privileges.delete">
+                  <button hqButton="secondary" type="button" class="qa-delete-doc" *ngIf="document" (click)="confirmDelete()">
+                    <i class="bi bi-trash"></i> {{ 'qaDashboard.apiDocuments.delete' | translate }}
+                  </button>
+                </ng-container>
+              </span>
+            </div>
+            <hq-loading-state *ngIf="isLoadingDocument" [label]="'qaDashboard.loading' | translate"></hq-loading-state>
+            <hq-error-state *ngIf="documentFailed" [title]="'qaDashboard.apiDocuments.loadFailed' | translate"></hq-error-state>
+            <hq-empty-state class="qa-no-document" *ngIf="!document && !isLoadingDocument && !documentFailed" [title]="'qaDashboard.apiDocuments.noDocument' | translate"></hq-empty-state>
+            <article class="qa-markdown qa-document" *ngIf="document" [innerHTML]="documentHtml"></article>
+          </ng-container>
+
+          <ng-container *ngIf="editing">
+            <hq-field type="text" class="qa-doc-title" inputId="api-doc-title" [(ngModel)]="draftTitle" [maxLength]="200" [showCounter]="false" [label]="'qaDashboard.apiDocuments.docTitle' | translate"></hq-field>
+            <div class="qa-editor">
+              <div>
+                <hq-field
+                          type="textarea"
+                          [label]="'qaDashboard.apiDocuments.markdown' | translate"
+                          class="rf-qa-doc-markdown"
+                          inputId="api-doc-markdown"
+                          [rows]="18"
+                          [spellcheck]="false"
+                          [ngModel]="draftMarkdown"
+                          (ngModelChange)="onDraftInput($event)"
+                          [invalid]="!!draftIssueKey"
+                          [error]="draftIssueKey ? (draftIssueKey | translate) : null"
+                          ariaDescribedBy="api-doc-hint"></hq-field>
+                <p class="qa-hint" id="api-doc-hint">
+                  {{ 'qaDashboard.apiDocuments.markdownHint' | translate }}
+                  <span class="qa-doc-counter">{{ 'qaDashboard.apiDocuments.counter' | translate: { bytes: draftBytes, max: maxBytes } }}</span>
+                </p>
+              </div>
+              <div class="qa-preview">
+                <h4>{{ 'qaDashboard.apiDocuments.preview' | translate }}</h4>
+                <article class="qa-markdown qa-doc-preview" [innerHTML]="draftHtml"></article>
+              </div>
+            </div>
+            <hq-form-actions align="start" class="qa-no-print">
+              <button hqButton="accent" type="button" class="qa-save-doc" (click)="save()" [disabled]="isSaving || !!draftIssueKey">
+                {{ (isSaving ? 'qaDashboard.studio.editor.saving' : 'qaDashboard.studio.editor.save') | translate }}
+              </button>
+              <button hqButton="secondary" type="button" class="qa-cancel-doc" (click)="cancelEdit()" [disabled]="isSaving">{{ 'qaDashboard.apiDocuments.cancel' | translate }}</button>
+            </hq-form-actions>
+          </ng-container>
+        </section>
+
+        <!-- The module's endpoints, from the inventory -->
+        <section class="qa-card qa-docs__endpoints" *hqHasPrivilege="dashboardPrivileges.endpointList">
+          <div class="qa-docs__bar">
+            <h3>{{ 'qaDashboard.apiDocuments.endpoints' | translate }}</h3>
+            <a class="qa-link-inventory" [routerLink]="links.inventory">{{ 'qaDashboard.apiDocuments.openInventory' | translate }}</a>
+          </div>
+          <hq-loading-state *ngIf="isLoadingEndpoints" [label]="'qaDashboard.loading' | translate"></hq-loading-state>
+          <hq-empty-state class="qa-no-endpoints" *ngIf="!isLoadingEndpoints && moduleEndpoints.length === 0" [title]="'qaDashboard.apiDocuments.noEndpoints' | translate"></hq-empty-state>
+          <div class="qa-table-wrap" *ngIf="moduleEndpoints.length > 0">
+            <hq-common-table class="qa-table qa-module-endpoints" [columns]="endpointColumns" [rows]="moduleEndpoints"
+                              [rowClass]="endpointRowClass" [showActionsColumn]="false">
+              <ng-template hqCell="method" let-e><span class="qa-method" [ngClass]="methodClass(e.method)">{{ e.method }}</span></ng-template>
+              <ng-template hqCell="path" let-e><span class="qa-mono">{{ e.path }}</span></ng-template>
+              <ng-template hqCell="tested" let-e>
+                <hq-status-badge [tone]="e.hitCount > 0 ? 'success' : 'neutral'">
+                  {{ (e.hitCount > 0 ? 'qaDashboard.apiDocuments.testedYes' : 'qaDashboard.apiDocuments.testedNo') | translate }}
+                </hq-status-badge>
+              </ng-template>
+            </hq-common-table>
+          </div>
+          <p class="qa-hint" *ngIf="moduleEndpointTotal > moduleEndpoints.length">
+            {{ 'qaDashboard.apiDocuments.moreEndpoints' | translate: { shown: moduleEndpoints.length, total: moduleEndpointTotal } }}
+          </p>
+        </section>
+      </ng-container>
+    </section>
+  </div>
+</ng-container>

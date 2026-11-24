@@ -1,0 +1,5 @@
+{
+  "extends": "./tsconfig.spec.json",
+  "files": [],
+  "include": ["src/**/*.d.ts", "src/test-setup.ts", "src/app/shared/search/web-screen-getall.spec.ts"]
+}

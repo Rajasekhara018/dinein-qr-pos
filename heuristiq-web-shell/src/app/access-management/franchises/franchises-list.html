@@ -1,0 +1,75 @@
+<hq-page-header
+  [kicker]="'nav.sections.accessManagement' | translate"
+  [title]="'nav.items.franchises' | translate"
+  [subtitle]="'accessManagement.franchises.subtitle' | translate">
+</hq-page-header>
+
+<hq-alert *ngIf="activeInDirect > 0" tone="warning" data-testid="direct-organization-notice" [title]="'accessManagement.franchises.directNotice.title' | translate">
+  {{ 'accessManagement.franchises.directNotice.body' | translate: { count: activeInDirect } }}
+</hq-alert>
+
+<div class="table-surface">
+  <div class="table-surface__header">
+    <div class="table-heading">
+      <span class="table-kicker">{{ 'shared.listPage.total' | translate: { count: rows.length } }}</span>
+    </div>
+    <ng-container *hqHasPrivilege="privileges.create">
+      <button type="button" class="table-create-btn" (click)="openFranchise()">
+        <i class="bi bi-plus-lg"></i> {{ 'accessManagement.franchises.openButton' | translate }}
+      </button>
+    </ng-container>
+  </div>
+
+  <div class="table-surface__body">
+    <hq-common-table
+      [columns]="columns"
+      [rows]="pageRows"
+      [isLoading]="isLoading"
+      [hasError]="hasError"
+      [emptyMessage]="'accessManagement.franchises.emptyMessage' | translate"
+      [errorMessage]="'accessManagement.franchises.errorMessage' | translate">
+      <ng-template hqCell="code" let-franchise><strong>{{ franchise.code }}</strong>
+        <hq-status-badge tone="warning" *ngIf="franchise.onboardingStatus === 'ONBOARDING'" data-testid="onboarding-badge">{{ 'franchiseOnboarding.status.ONBOARDING' | translate }}</hq-status-badge>
+      </ng-template>
+      <ng-template hqCell="status" let-franchise><hq-status-badge tone="info">{{ statusLabel(franchise.status) }}</hq-status-badge></ng-template>
+      <ng-template hqCell="owner" let-franchise>{{ ownerLabel(franchise) }}</ng-template>
+      <ng-template hqCell="place" let-franchise>{{ placeLabel(franchise) }}</ng-template>
+      <ng-template hqCell="createdAt" let-franchise>{{ franchise.createdAt ? (franchise.createdAt | hqDate:'medium') : '—' }}</ng-template>
+      <ng-template hqCell="applications" let-franchise>
+        <span *ngFor="let application of franchise.applications; let last = last">{{ nameOf(application.applicationCode) }}<ng-container *ngIf="!last">, </ng-container></span>
+      </ng-template>
+      <ng-template hqCell="usage" let-franchise>
+        <div class="franchise-usage">
+          {{ 'accessManagement.franchises.usage' | translate: { used: franchise.totalAgentCount, limit: franchise.totalAgentLimit } }}
+          <hq-progress class="usage-meter" size="sm" [value]="usagePercent(franchise.totalAgentCount, franchise.totalAgentLimit)" [max]="100" [showValue]="false" [tone]="usagePercent(franchise.totalAgentCount, franchise.totalAgentLimit) >= 100 ? 'danger' : 'primary'" [label]="'accessManagement.franchises.usage' | translate: { used: franchise.totalAgentCount, limit: franchise.totalAgentLimit }"></hq-progress>
+        </div>
+      </ng-template>
+      <ng-template #rowActions let-franchise>
+        <button *hqHasPrivilege="privileges.listAdminMembers" type="button" class="row-action-btn"
+                [title]="'accessManagement.franchises.viewMembers' | translate" (click)="openMembers(franchise)">
+          <i class="bi bi-people"></i>
+        </button>
+        <button *hqHasPrivilege="privileges.readHierarchy" type="button" class="row-action-btn" data-testid="open-hierarchy"
+                [title]="'franchiseHierarchy.open' | translate" (click)="openHierarchy(franchise)">
+          <i class="bi bi-diagram-3"></i>
+        </button>
+        <button type="button" class="row-action-btn" data-testid="open-setup" [title]="'accessManagement.franchises.setup.open' | translate"
+                [attr.aria-label]="'accessManagement.franchises.setup.open' | translate" (click)="manage(franchise)">
+          <i class="bi bi-pencil"></i>
+        </button>
+      </ng-template>
+    </hq-common-table>
+
+    <hq-table-footer
+      [page]="page"
+      [size]="pageSize"
+      [itemCount]="pageRows.length"
+      [hasMore]="page + 1 < pageCount"
+      [totalItems]="rows.length"
+      [loading]="isLoading"
+      [sizeOptions]="pageSizeOptions"
+      (pageChange)="goToPage($event)"
+      (sizeChange)="onPageSizeChange($event)">
+    </hq-table-footer>
+  </div>
+</div>

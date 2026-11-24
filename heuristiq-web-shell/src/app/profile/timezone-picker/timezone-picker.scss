@@ -1,0 +1,58 @@
+.tzp {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.tzp__box {
+  position: relative;
+}
+
+.tzp__list {
+  position: absolute;
+  z-index: 20;
+  inset-inline: 0;
+  max-height: 14rem;
+  margin: 0.2rem 0 0;
+  padding: 0.25rem 0;
+  overflow-y: auto;
+  list-style: none;
+  background: var(--bs-body-bg, #fff);
+  border: 1px solid var(--bs-border-color, #dee2e6);
+  border-radius: 0.5rem;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+}
+
+.tzp__option,
+.tzp__empty {
+  padding: 0.35rem 0.75rem;
+  font-size: 0.875rem;
+}
+
+.tzp__option {
+  cursor: pointer;
+
+  &:hover,
+  &--active {
+    background: var(--bs-secondary-bg, #f1f3f5);
+  }
+}
+
+.tzp__empty {
+  color: var(--bs-secondary-color, #6c757d);
+}
+
+.tzp__device {
+  align-self: flex-start;
+  padding: 0;
+}
+
+.tzp__line {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--bs-secondary-color, #6c757d);
+}
+
+.tzp__preview {
+  font-variant-numeric: tabular-nums;
+}

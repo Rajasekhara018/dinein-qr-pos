@@ -1,0 +1,114 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: railcab-api-gateway
+  labels:
+    app: railcab-api-gateway
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: railcab-api-gateway
+  template:
+    metadata:
+      labels:
+        app: railcab-api-gateway
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/path: /actuator/prometheus
+        prometheus.io/port: "8999"
+    spec:
+      containers:
+        - name: railcab-api-gateway
+          image: railcab-api-gateway:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8999
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: "prod"
+            # No service registry in the cluster: Services and the Ingress discover, the static list in application-prod.properties routes.
+            - name: GATEWAY_DISCOVERY_ENABLED
+              value: "false"
+            - name: GATEWAY_PORT
+              value: "8999"
+            - name: MONGO_URI
+              valueFrom:
+                secretKeyRef:
+                  name: railcab-gateway-secrets
+                  key: mongo-uri
+            - name: BOOKINGS_MONGO_URI
+              valueFrom:
+                secretKeyRef:
+                  name: railcab-gateway-secrets
+                  key: bookings-mongo-uri
+            - name: UAM_MONGO_URI
+              valueFrom:
+                secretKeyRef:
+                  name: railcab-gateway-secrets
+                  key: uam-mongo-uri
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: railcab-gateway-secrets
+                  key: jwt-secret
+            - name: CUSTOMER_JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: railcab-gateway-secrets
+                  key: customer-jwt-secret
+            - name: GATEWAY_FORWARD_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: railcab-gateway-secrets
+                  key: gateway-forward-key
+            - name: INTERNAL_SECRET_KEYS
+              valueFrom:
+                secretKeyRef:
+                  name: railcab-gateway-secrets
+                  key: internal-secret-keys
+            - name: REDIS_HOST
+              value: "redis"
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: railcab-gateway-secrets
+                  key: redis-password
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: http
+            initialDelaySeconds: 20
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: http
+            initialDelaySeconds: 60
+            periodSeconds: 20
+            timeoutSeconds: 3
+            failureThreshold: 3
+          resources:
+            requests:
+              cpu: 250m
+              memory: 512Mi
+            limits:
+              cpu: "1"
+              memory: 1Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: railcab-api-gateway
+  labels:
+    app: railcab-api-gateway
+spec:
+  selector:
+    app: railcab-api-gateway
+  ports:
+    - name: http
+      port: 8999
+      targetPort: http

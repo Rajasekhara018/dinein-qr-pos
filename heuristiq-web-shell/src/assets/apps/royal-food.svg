@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Royal Food">
+  <!-- Royal Food glyph: a crown over a serving cloche on its plate. One colour on transparent: the app paints it in the theme
+       colour through a CSS mask; the crown is a lower opacity. -->
+  <path fill="#000" fill-opacity=".55" d="M38 44l6-26 13 13 7-17 7 17 13-13 6 26z" />
+  <circle cx="64" cy="54" r="5" fill="#000" />
+  <path fill="#000" d="M22 92a42 38 0 0 1 84 0z" />
+  <rect x="12" y="98" width="104" height="10" rx="5" fill="#000" />
+</svg>

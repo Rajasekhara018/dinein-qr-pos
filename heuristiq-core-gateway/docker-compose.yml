@@ -1,0 +1,98 @@
+version: "3.9"
+
+# Shared with the service registry and other services' compose files so containers started from
+# separate compose files can still resolve each other by name. Create once before bringing
+# anything up: `docker network create railcab-net`.
+networks:
+  railcab-net:
+    external: true
+
+services:
+
+  # ── MongoDB ─────────────────────────────────────────────────────────────────
+  mongodb:
+    image: mongo:7.0
+    container_name: railcab-mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER:-railcab}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD:-railcab_pass}
+    volumes:
+      - mongo_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── Redis ────────────────────────────────────────────────────────────────────
+  redis:
+    image: redis:7.2-alpine
+    container_name: railcab-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    command: redis-server --requirepass ${REDIS_PASSWORD:-redis_pass}
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD:-redis_pass}", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── API Gateway ───────────────────────────────────────────────────────────────
+  gateway:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: railcab-gateway
+    restart: unless-stopped
+    ports:
+      - "9101:9101"
+    environment:
+      # MongoDB — admin database
+      MONGO_URI: mongodb://${MONGO_USER:-railcab}:${MONGO_PASSWORD:-railcab_pass}@mongodb:27017/railcab_admin?authSource=admin
+      # MongoDB — bookings database (customer/driver token validation)
+      BOOKINGS_MONGO_URI: mongodb://${MONGO_USER:-railcab}:${MONGO_PASSWORD:-railcab_pass}@mongodb:27017/railcab_bookings?authSource=admin
+      # Redis
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-redis_pass}
+      # Downstream services — override in .env for local dev
+      ADMIN_SERVICE_URL: ${ADMIN_SERVICE_URL:-http://admin-service:8081}
+      BOOKINGS_SERVICE_URL: ${BOOKINGS_SERVICE_URL:-http://bookings-service:8082}
+      IRCTC_SERVICE_URL: ${IRCTC_SERVICE_URL:-http://irctc-service:8083}
+      # Auth — required, set in .env; no fallback so the container fails fast rather than
+      # silently running with a known, publicly-documented placeholder secret.
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET must be set in .env}
+      CUSTOMER_JWT_SECRET: ${CUSTOMER_JWT_SECRET:?CUSTOMER_JWT_SECRET must be set in .env}
+      INTERNAL_SECRET_KEYS: ${INTERNAL_SECRET_KEYS:-internal-dev-key-1}
+      # Injected as X-Gateway-Token on forwarded requests; downstream services verify this header
+      GATEWAY_FORWARD_KEY: ${GATEWAY_FORWARD_KEY:?GATEWAY_FORWARD_KEY must be set in .env}
+      # Spring profile
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-default}
+      # Service discovery -- registers with realboom-service-registry and resolves lb:// routes
+      # against it (bring the registry up separately from 2026_RailCab_ServiceRegistry).
+      EUREKA_URL: ${EUREKA_URL:-http://service-registry:9100/eureka/}
+      SERVICE_ZONE: ${SERVICE_ZONE:-region1}
+    networks:
+      - default
+      - railcab-net
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:9101/actuator/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+volumes:
+  mongo_data:
+  redis_data:

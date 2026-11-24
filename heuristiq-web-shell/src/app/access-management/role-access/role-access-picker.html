@@ -1,0 +1,176 @@
+<div class="ra">
+  <!-- One compact bar: find, filter, quick start, the role's totals, and what the role can do (info) -->
+  <div class="ra__bar-top">
+    <div class="ra__search">
+      <hq-field icon="bi bi-search"
+             type="text"
+             name="accessSearch"
+             autocomplete="off"
+             [(ngModel)]="searchText"
+             [placeholder]="'accessManagement.roles.access.searchPlaceholder' | translate"></hq-field>
+      <button type="button" class="ra__search-clear" *ngIf="searchText" (click)="searchText = ''"
+              [attr.aria-label]="'accessManagement.roles.access.clearSearch' | translate"><i class="bi bi-x-lg"></i></button>
+    </div>
+
+    <hq-checkbox class="ra__toggle" name="onlyOn" [(ngModel)]="onlyOn">{{ 'accessManagement.roles.access.onlyOn' | translate }}</hq-checkbox>
+
+    <span class="ra__templates" role="group" [attr.aria-label]="'accessManagement.roles.access.templates.label' | translate">
+      <button type="button" class="ra__template" [class.ra__template--view]="everythingLevel === 'view'" [attr.aria-pressed]="everythingLevel === 'view'"
+              (click)="setEverything('view')">
+        <i class="bi bi-eye"></i> {{ 'accessManagement.roles.access.templates.readOnly' | translate }}
+      </button>
+      <button type="button" class="ra__template" [class.ra__template--manage]="everythingLevel === 'manage'" [attr.aria-pressed]="everythingLevel === 'manage'"
+              (click)="setEverything('manage')">
+        <i class="bi bi-shield-check"></i> {{ 'accessManagement.roles.access.templates.fullAccess' | translate }}
+      </button>
+      <button type="button" class="ra__template" [class.ra__template--none]="everythingLevel === 'none'" [attr.aria-pressed]="everythingLevel === 'none'"
+              (click)="setEverything('none')">
+        <i class="bi bi-x-circle"></i> {{ 'accessManagement.roles.access.templates.clear' | translate }}
+      </button>
+    </span>
+
+    <span class="ra__stats" *ngIf="areas.length">
+      <span class="ra__stat ra__stat--manage"><strong>{{ summary.manage }}</strong> {{ 'accessManagement.roles.access.levels.manage' | translate }}</span>
+      <span class="ra__stat ra__stat--view"><strong>{{ summary.view }}</strong> {{ 'accessManagement.roles.access.levels.view' | translate }}</span>
+      <span class="ra__stat ra__stat--custom" *ngIf="summary.custom > 0"><strong>{{ summary.custom }}</strong> {{ 'accessManagement.roles.access.levels.custom' | translate }}</span>
+      <span class="ra__stat ra__stat--none"><strong>{{ summary.none }}</strong> {{ 'accessManagement.roles.access.notAllowed' | translate }}</span>
+    </span>
+
+    <span class="ra__icons">
+      <!-- What this role can do, and how to use the picker: a tooltip, not a block of text on the page -->
+      <span class="ra__info">
+        <button type="button" class="ra__icon-btn" [attr.aria-label]="'accessManagement.roles.access.review.title' | translate"
+                aria-haspopup="true">
+          <i class="bi bi-info-circle"></i>
+        </button>
+        <span class="ra__pop" role="tooltip">
+          <strong class="ra__pop-title">{{ 'accessManagement.roles.access.review.title' | translate }}</strong>
+          <span class="ra__pop-text">{{ 'accessManagement.roles.access.intro' | translate }}</span>
+          <span class="ra__pop-text ra__pop-text--strong">
+            {{ 'accessManagement.roles.access.summary' | translate: { count: permissionCount, areas: areasOn } }}
+          </span>
+          <span class="ra__pop-empty" *ngIf="review.length === 0">{{ 'accessManagement.roles.access.review.empty' | translate }}</span>
+          <span class="ra__pop-line" *ngFor="let line of review">
+            <span class="ra__pop-area">{{ areaNameByKey(line.area) }}</span>
+            <span class="ra__tag ra__tag--manage" *ngIf="line.manage.length">{{ 'accessManagement.roles.access.levels.manage' | translate }} {{ line.manage.length }}</span>
+            <span class="ra__tag ra__tag--view" *ngIf="line.view.length">{{ 'accessManagement.roles.access.levels.view' | translate }} {{ line.view.length }}</span>
+          </span>
+        </span>
+      </span>
+      <button type="button" class="ra__icon-btn" (click)="expandAll()" [title]="'accessManagement.roles.access.expandAll' | translate"
+              [attr.aria-label]="'accessManagement.roles.access.expandAll' | translate"><i class="bi bi-arrows-expand"></i></button>
+      <button type="button" class="ra__icon-btn" (click)="collapseAll()" [title]="'accessManagement.roles.access.collapseAll' | translate"
+              [attr.aria-label]="'accessManagement.roles.access.collapseAll' | translate"><i class="bi bi-arrows-collapse"></i></button>
+    </span>
+  </div>
+
+  <div class="ra__split" aria-hidden="true" *ngIf="areas.length">
+    <span class="ra__split-manage" [style.width.%]="percentOf(summary.manage)"></span>
+    <span class="ra__split-view" [style.width.%]="percentOf(summary.view)"></span>
+    <span class="ra__split-custom" [style.width.%]="percentOf(summary.custom)"></span>
+  </div>
+
+  <div class="ra__catalogue-nav">
+    <div class="ra__catalogue-label">{{ 'accessManagement.roles.access.catalogueTitle' | translate }}</div>
+    <div class="ra__categories" role="group" [attr.aria-label]="'accessManagement.roles.access.categoryFilter' | translate">
+      <button type="button" class="ra__category" *ngFor="let key of categories" [class.is-active]="category === key" [attr.aria-pressed]="category === key" (click)="setCategory(key)">{{ 'accessManagement.roles.access.categories.' + key | translate }}</button>
+    </div>
+  </div>
+  <!-- Narrow the cards to one application -->
+  <div class="ra__apps" role="group" [attr.aria-label]="'accessManagement.roles.access.applicationFilter' | translate" *ngIf="categoryApplications.length > 0">
+    <button type="button" class="ra__app-chip" [class.ra__app-chip--on]="!application" [attr.aria-pressed]="!application" (click)="setApplication('')">
+      <i class="bi bi-grid"></i> {{ 'accessManagement.roles.access.applications.all' | translate }}
+    </button>
+    <button type="button" class="ra__app-chip" *ngFor="let app of categoryApplications; trackBy: trackApplication"
+            [class.ra__app-chip--on]="application === app.key" [attr.aria-pressed]="application === app.key" (click)="setApplication(app.key)">
+      <i class="bi" [ngClass]="applicationIcon(app.key)"></i> {{ applicationName(app.key) }}
+      <span class="ra__app-count">{{ applicationProgress(app).on }}/{{ applicationProgress(app).total }}</span>
+    </button>
+  </div>
+
+  <div class="ra__services" *ngIf="serviceAreas.length" role="group" [attr.aria-label]="'accessManagement.roles.access.serviceFilter' | translate">
+    <span class="ra__service-label">{{ 'accessManagement.roles.access.serviceFilter' | translate }}</span>
+    <button type="button" class="ra__app-chip" [class.ra__app-chip--on]="!service" [attr.aria-pressed]="!service" (click)="setService('')">{{ 'accessManagement.roles.access.allServices' | translate }}</button>
+    <button type="button" class="ra__app-chip" *ngFor="let area of serviceAreas; trackBy: trackArea" [class.ra__app-chip--on]="service === area.key" [attr.aria-pressed]="service === area.key" (click)="setService(area.key)"><i class="bi" [ngClass]="icon(area)" aria-hidden="true"></i>{{ areaName(area) }} <span class="ra__app-count">{{ progress(area).on }}/{{ progress(area).total }}</span></button>
+  </div>
+  <p class="ra__scope-note">{{ 'accessManagement.roles.access.scopedActions' | translate }}</p>
+
+  <p class="ra__showing" *ngIf="filtering || category !== 'all' || application || service">
+    {{ 'accessManagement.roles.access.showing' | translate: { shown: shownFeatures, total: totalFeatures } }}
+    <button type="button" class="ra__link" (click)="clearFilters()">{{ 'accessManagement.roles.access.clearFilters' | translate }}</button>
+  </p>
+
+  <section class="ra__application" *ngFor="let app of visibleApplications; trackBy: trackApplication">
+   <header class="ra__application-head" *ngIf="applications.length > 1">
+    <span class="ra__application-title"><i class="bi" [ngClass]="applicationIcon(app.key)"></i> <strong>{{ applicationName(app.key) }}</strong></span>
+    <span class="ra__seg ra__seg--app" role="group" [attr.aria-label]="applicationName(app.key)">
+      <button type="button" [class.ra__seg-on--none]="applicationLevel(app) === 'none'" [attr.aria-pressed]="applicationLevel(app) === 'none'"
+              (click)="setApplicationLevel(app, 'none')">{{ 'accessManagement.roles.access.levels.none' | translate }}</button>
+      <button type="button" [class.ra__seg-on--view]="applicationLevel(app) === 'view'" [attr.aria-pressed]="applicationLevel(app) === 'view'"
+              (click)="setApplicationLevel(app, 'view')">{{ 'accessManagement.roles.access.levels.view' | translate }}</button>
+      <button type="button" [class.ra__seg-on--manage]="applicationLevel(app) === 'manage'" [attr.aria-pressed]="applicationLevel(app) === 'manage'"
+              (click)="setApplicationLevel(app, 'manage')">{{ 'accessManagement.roles.access.levels.manage' | translate }}</button>
+    </span>
+   </header>
+   <div class="ra__areas">
+    <section class="ra__area" *ngFor="let area of app.areas; trackBy: trackArea" [class.ra__area--open]="isOpen(area)">
+      <header class="ra__area-head">
+        <button type="button" class="ra__area-toggle" [attr.aria-expanded]="isOpen(area)" (click)="toggle(area)">
+          <span class="ra__area-icon"><i class="bi" [ngClass]="icon(area)"></i></span>
+          <span class="ra__area-title">
+            <strong>{{ areaName(area) }}</strong>
+            <span class="ra__progress-text">
+              {{ 'accessManagement.roles.access.areaProgress' | translate: { on: progress(area).on, total: progress(area).total } }}
+            </span>
+          </span>
+          <hq-progress class="ra__bar" aria-hidden="true" size="sm" [value]="progress(area).percent" [max]="100" [showValue]="false" [label]="areaName(area)"></hq-progress>
+          <i class="bi ra__chevron" [class.bi-chevron-down]="isOpen(area)" [class.bi-chevron-right]="!isOpen(area)"></i>
+        </button>
+        <span class="ra__seg ra__seg--area" role="group" [attr.aria-label]="areaName(area)">
+          <button type="button" [class.ra__seg-on--none]="areaLevel(area) === 'none'" [attr.aria-pressed]="areaLevel(area) === 'none'"
+                  (click)="setArea(area, 'none')">{{ 'accessManagement.roles.access.levels.none' | translate }}</button>
+          <button type="button" [class.ra__seg-on--view]="areaLevel(area) === 'view'" [attr.aria-pressed]="areaLevel(area) === 'view'"
+                  (click)="setArea(area, 'view')">{{ 'accessManagement.roles.access.levels.view' | translate }}</button>
+          <button type="button" [class.ra__seg-on--manage]="areaLevel(area) === 'manage'" [attr.aria-pressed]="areaLevel(area) === 'manage'"
+                  (click)="setArea(area, 'manage')">{{ 'accessManagement.roles.access.levels.manage' | translate }}</button>
+        </span>
+      </header>
+
+      <ul class="ra__features" *ngIf="isOpen(area)">
+        <li class="ra__feature" *ngFor="let feature of featuresOf(area); trackBy: trackFeature"
+            [class.ra__feature--on]="levelOf(feature) !== 'none'">
+          <span class="ra__feature-text">
+            <span class="ra__feature-name">{{ feature.label }}
+              <span class="ra__sensitive" *ngIf="sensitive(feature)" [title]="'accessManagement.roles.access.sensitiveHint' | translate">
+                <i class="bi bi-exclamation-triangle"></i> {{ 'accessManagement.roles.access.sensitive' | translate }}
+              </span>
+            </span>
+            <span class="ra__feature-desc" *ngIf="feature.description" [title]="feature.description">{{ feature.description }}</span>
+          </span>
+          <span class="ra__seg" role="radiogroup" [attr.aria-label]="feature.label">
+            <button type="button" role="radio" [attr.aria-checked]="levelOf(feature) === 'none'"
+                    [class.ra__seg-on--none]="levelOf(feature) === 'none'" (click)="setLevel(feature, 'none')">
+              {{ 'accessManagement.roles.access.levels.none' | translate }}
+            </button>
+            <button type="button" role="radio" [attr.aria-checked]="levelOf(feature) === 'view'"
+                    [class.ra__seg-on--view]="levelOf(feature) === 'view'" [disabled]="!can(feature, 'view')" (click)="setLevel(feature, 'view')">
+              {{ 'accessManagement.roles.access.levels.view' | translate }}
+            </button>
+            <button type="button" role="radio" [attr.aria-checked]="levelOf(feature) === 'manage'"
+                    [class.ra__seg-on--manage]="levelOf(feature) === 'manage'" [disabled]="!can(feature, 'manage')" (click)="setLevel(feature, 'manage')">
+              {{ 'accessManagement.roles.access.levels.manage' | translate }}
+            </button>
+          </span>
+          <span class="ra__custom" *ngIf="levelOf(feature) === 'custom'" [title]="'accessManagement.roles.access.customHint' | translate">
+            {{ 'accessManagement.roles.access.levels.custom' | translate }}
+          </span>
+        </li>
+      </ul>
+    </section>
+   </div>
+  </section>
+
+  <hq-empty-state class="ra__empty" *ngIf="visibleApplications.length === 0" icon="bi-search" [title]="'accessManagement.roles.access.noMatch' | translate">
+    <button type="button" class="ra__link" (click)="clearFilters()">{{ 'accessManagement.roles.access.clearFilters' | translate }}</button>
+  </hq-empty-state>
+</div>

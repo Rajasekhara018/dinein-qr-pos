@@ -1,0 +1,32 @@
+.wf-tabs {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  margin: 0.25rem 0 1rem;
+  padding: 0.25rem;
+  border: 1px solid var(--workspace-border, #e2e8f0);
+  border-radius: 12px;
+  background: var(--workspace-panel, #fff);
+}
+
+.wf-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.9rem;
+  border-radius: 9px;
+  font-size: 0.8375rem;
+  font-weight: 600;
+  color: var(--edu-muted, #64748b);
+  text-decoration: none;
+  transition: background 0.15s, color 0.15s;
+
+  &:hover { background: var(--theme-highlight-soft, #f1f5f9); color: var(--edu-ink, #0f172a); }
+
+  &--active {
+    background: linear-gradient(135deg, var(--button-accent-start, #0b6e4f), var(--button-accent-end, #0b6e4f));
+    color: #fff;
+
+    &:hover { color: #fff; }
+  }
+}

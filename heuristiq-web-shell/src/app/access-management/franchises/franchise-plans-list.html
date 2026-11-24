@@ -1,0 +1,222 @@
+<hq-page-header
+  [kicker]="'nav.sections.accessManagement' | translate"
+  [title]="'nav.items.franchisePlans' | translate"
+  [subtitle]="'accessManagement.franchisePlans.subtitle' | translate">
+</hq-page-header>
+
+<!-- The plans, the fees by type and the "which plan applies" check each get their own tab, so the list is not buried under two panels -->
+<hq-tabs class="franchise-tabs" [value]="view" (valueChange)="selectView($any($event))" [ariaLabel]="'nav.items.franchisePlans' | translate">
+  <hq-tab value="plans" icon="bi-list-ul" [badge]="total" data-testid="plans-tab-list" [label]="'nav.items.franchisePlans' | translate"></hq-tab>
+  <hq-tab *hqHasPrivilege="[privileges.createPlan, privileges.updatePlan]" value="fees" icon="bi-sliders" data-testid="plans-tab-fees"
+           [label]="'accessManagement.franchisePlans.byType.title' | translate"></hq-tab>
+  <hq-tab *hqHasPrivilege="locationPrivileges.resolvePlan" value="resolve" icon="bi-search" data-testid="plans-tab-resolve"
+           [label]="'accessManagement.franchisePlans.resolve.title' | translate"></hq-tab>
+</hq-tabs>
+
+<div class="table-surface" id="plans-panel" role="tabpanel">
+  <div class="table-surface__header" *ngIf="view === 'plans'">
+    <div class="table-heading">
+      <span class="table-kicker">{{ 'shared.listPage.total' | translate: { count: total } }}</span>
+    </div>
+  </div>
+
+  <div class="table-surface__body">
+    <app-franchise-type-fees *ngIf="view === 'fees'" [applications]="applications" [countries]="countries" [defaultCurrency]="defaultCurrency"
+                             (saved)="load(page)"></app-franchise-type-fees>
+    <!-- Which plan applies to a place? -->
+    <ng-container *ngIf="view === 'resolve'">
+    <section class="plan-resolve" *hqHasPrivilege="locationPrivileges.resolvePlan">
+      <header class="plan-resolve__head">
+        <h2>{{ 'accessManagement.franchisePlans.resolve.title' | translate }}</h2>
+        <p>{{ 'accessManagement.franchisePlans.resolve.hint' | translate }}</p>
+      </header>
+
+      <div class="plan-resolve__filters">
+        <hq-form-field class="plan-resolve__field" for="resolve-application" [label]="'accessManagement.franchises.application' | translate">
+          <hq-searchable-select
+            [(ngModel)]="resolveForm.applicationCode"
+            name="resolveApplication"
+            inputId="resolve-application"
+            [allowOther]="false"
+            [placeholder]="'accessManagement.franchises.chooseApplication' | translate">
+            <hq-ss-option *ngFor="let application of applications" [value]="application.code" [label]="application.name || application.code"></hq-ss-option>
+          </hq-searchable-select>
+        </hq-form-field>
+        <ng-container *ngIf="canPickPlaces">
+          <hq-form-field class="plan-resolve__field" for="resolve-country" [label]="'accessManagement.franchisePlans.country' | translate">
+            <hq-searchable-select
+              [(ngModel)]="resolveForm.countryCode"
+              (ngModelChange)="onResolveCountryChange()"
+              name="resolveCountry"
+              inputId="resolve-country"
+              [allowOther]="false"
+              [placeholder]="'accessManagement.franchisePlans.noCountry' | translate">
+              <hq-ss-option *ngFor="let country of countries" [value]="country.code" [label]="country.name + ' (' + country.code + ')'"></hq-ss-option>
+            </hq-searchable-select>
+          </hq-form-field>
+          <hq-form-field class="plan-resolve__field plan-resolve__place" [label]="'accessManagement.franchisePlans.place' | translate">
+            <app-location-picker [countryCode]="resolveForm.countryCode" (selected)="onResolvePlacePicked($event)"></app-location-picker>
+          </hq-form-field>
+        </ng-container>
+      </div>
+
+      <div class="plan-resolve__actions">
+        <button hqButton="accent" type="button" [disabled]="resolving" (click)="resolve()">
+          <i class="bi bi-search" aria-hidden="true"></i>
+          {{ 'accessManagement.franchisePlans.resolve.check' | translate }}
+        </button>
+      </div>
+
+      <hq-alert tone="danger" dense *ngIf="resolveError">{{ resolveError }}</hq-alert>
+
+      <div class="plan-resolve__result" *ngIf="resolution as found">
+        <div class="plan-resolve__summary">
+          <span class="plan-resolve__rule">{{ ruleLabel(found.rule) }}</span>
+          <div class="plan-resolve__stat">
+            <span>{{ 'accessManagement.franchisePlans.byType.fee' | translate }}</span>
+            <strong>{{ money(found.plan.fee) }}</strong>
+          </div>
+          <div class="plan-resolve__stat">
+            <span>{{ 'accessManagement.franchises.agentLimit' | translate }}</span>
+            <strong>{{ found.plan.agentLimit }}</strong>
+          </div>
+        </div>
+
+        <dl class="plan-resolve__facts">
+          <ng-container *ngIf="found.place.length > 0">
+            <dt>{{ 'accessManagement.franchisePlans.place' | translate }}</dt>
+            <dd class="plan-resolve__path">
+              <ng-container *ngFor="let step of found.place; let last = last">
+                <span>{{ step.name }}</span><i class="bi bi-chevron-right" aria-hidden="true" *ngIf="!last"></i>
+              </ng-container>
+            </dd>
+          </ng-container>
+          <dt>{{ 'accessManagement.franchisePlans.resolve.matched' | translate }}</dt>
+          <dd>{{ region(found.plan) }}</dd>
+        </dl>
+
+        <p class="plan-resolve__note" *ngIf="found.inherited && found.source">
+          <i class="bi bi-info-circle" aria-hidden="true"></i>
+          {{ 'accessManagement.franchisePlans.resolve.inheritedFrom' | translate: { name: found.source.name } }}
+        </p>
+        <p class="plan-resolve__note" *ngIf="found.inherited && !found.source && found.rule !== 'GENERAL'">
+          <i class="bi bi-info-circle" aria-hidden="true"></i>
+          {{ 'accessManagement.franchisePlans.resolve.inheritedCountry' | translate }}
+        </p>
+        <p class="plan-resolve__note" *ngIf="!found.inherited">
+          <i class="bi bi-info-circle" aria-hidden="true"></i>
+          {{ 'accessManagement.franchisePlans.resolve.own' | translate }}
+        </p>
+      </div>
+    </section>
+    </ng-container>
+
+    <ng-container *ngIf="view === 'plans'">
+    <!-- Filters -->
+    <section class="franchise-filters">
+      <hq-form-field [label]="'accessManagement.franchises.application' | translate"><hq-searchable-select
+          [(ngModel)]="filters.applicationCode"
+          name="filterApplication"
+          [allowOther]="false"
+          [placeholder]="'accessManagement.franchisePlans.anyApplication' | translate">
+          <hq-ss-option *ngFor="let application of applications" [value]="application.code" [label]="application.name || application.code"></hq-ss-option>
+        </hq-searchable-select></hq-form-field>
+      <hq-form-field [label]="'accessManagement.franchisePlans.scope' | translate"><hq-searchable-select
+          [(ngModel)]="filters.scope"
+          name="filterScope"
+          [allowOther]="false"
+          [placeholder]="'accessManagement.franchisePlans.anyScope' | translate">
+          <hq-ss-option *ngFor="let scope of scopes" [value]="scope" [label]="scopeLabel(scope)"></hq-ss-option>
+        </hq-searchable-select></hq-form-field>
+      <hq-form-field [label]="'accessManagement.franchiseLocations.type' | translate"><hq-searchable-select
+          [(ngModel)]="filters.locationType"
+          name="filterLocationType"
+          [allowOther]="false"
+          [placeholder]="'accessManagement.franchiseLocations.anyType' | translate">
+          <hq-ss-option *ngFor="let type of types" [value]="type" [label]="typeLabel(type)"></hq-ss-option>
+        </hq-searchable-select></hq-form-field>
+      <hq-form-field [label]="'accessManagement.franchiseLocations.level' | translate"><hq-searchable-select
+          [(ngModel)]="filters.level"
+          name="filterPlanLevel"
+          [allowOther]="false"
+          [placeholder]="'accessManagement.franchiseLocations.anyLevel' | translate">
+          <hq-ss-option *ngFor="let level of levels" [value]="level" [label]="levelLabel(level)"></hq-ss-option>
+        </hq-searchable-select></hq-form-field>
+      <ng-container *ngIf="filterStates.length > 0">
+        <hq-form-field [label]="'accessManagement.franchisePlans.state' | translate"><hq-searchable-select
+            [(ngModel)]="filters.stateId"
+            (ngModelChange)="onFilterStateChange()"
+            name="filterState"
+            [allowOther]="false"
+            [placeholder]="'accessManagement.franchisePlans.allStates' | translate">
+            <hq-ss-option *ngFor="let state of filterStates" [value]="state.id" [label]="state.name + ' (' + state.countryCode + ')'"></hq-ss-option>
+          </hq-searchable-select></hq-form-field>
+        <hq-form-field *ngIf="filterDistricts.length > 0" [label]="'accessManagement.franchisePlans.district' | translate"><hq-searchable-select
+            [(ngModel)]="filters.districtId"
+            name="filterDistrict"
+            [allowOther]="false"
+            [placeholder]="'accessManagement.franchisePlans.allDistricts' | translate">
+            <hq-ss-option *ngFor="let district of filterDistricts" [value]="district.id" [label]="district.name"></hq-ss-option>
+          </hq-searchable-select></hq-form-field>
+      </ng-container>
+      <hq-field
+               type="search"
+               [(ngModel)]="filters.q"
+               (keyup.enter)="load()"
+               name="filterPlanText"
+               [placeholder]="'accessManagement.franchisePlans.searchPlaceholder' | translate" [label]="'accessManagement.franchiseLocations.search' | translate"></hq-field>
+      <div class="franchise-actions">
+        <button hqButton="accent" type="button" (click)="load()">{{ 'accessManagement.franchiseLocations.apply' | translate }}</button>
+        <button hqButton="secondary" type="button" (click)="clearFilters()">{{ 'shared.listPage.clear' | translate }}</button>
+      </div>
+    </section>
+
+    <hq-common-table
+      [columns]="columns"
+      [rows]="plans"
+      [isLoading]="isLoading"
+      [hasError]="hasError"
+      [emptyMessage]="'accessManagement.franchisePlans.emptyMessage' | translate"
+      [errorMessage]="'accessManagement.franchisePlans.errorMessage' | translate">
+      <ng-template hqCell="applicationCode" let-plan>{{ nameOf(plan.applicationCode) }}</ng-template>
+      <ng-template hqCell="scope" let-plan>
+        <hq-status-badge tone="info">{{ scopeLabel(scopeOf(plan)) }}</hq-status-badge>
+      </ng-template>
+      <ng-template hqCell="area" let-plan>{{ region(plan) }}</ng-template>
+      <ng-template hqCell="type" let-plan>
+        <ng-container *ngIf="plan.locationType || plan.scopeType">
+          <hq-status-badge tone="info">{{ typeLabel(plan.locationType || plan.scopeType) }}</hq-status-badge>
+          <hq-status-badge tone="neutral" *ngIf="plan.locationLevel">{{ levelLabel(plan.locationLevel) }}</hq-status-badge>
+        </ng-container>
+      </ng-template>
+      <ng-template hqCell="fee" let-plan>{{ money(plan.fee) }}</ng-template>
+      <ng-template #rowActions let-plan>
+        <ng-container *hqHasPrivilege="privileges.updatePlan">
+          <ng-container *hqHasPrivilege="privileges.readPlan">
+            <button type="button" class="row-action-btn" [title]="'shared.listPage.rowActions.edit' | translate" (click)="editPlan(plan)">
+              <i class="bi bi-pencil"></i>
+            </button>
+          </ng-container>
+        </ng-container>
+        <ng-container *hqHasPrivilege="privileges.deletePlan">
+          <button type="button" class="row-action-btn danger" [title]="'shared.listPage.rowActions.delete' | translate" (click)="confirmDelete(plan)">
+            <i class="bi bi-trash"></i>
+          </button>
+        </ng-container>
+      </ng-template>
+    </hq-common-table>
+
+    <hq-table-footer
+      [page]="page"
+      [size]="pageSize"
+      [itemCount]="plans.length"
+      [hasMore]="page + 1 < pageCount"
+      [totalItems]="total"
+      [loading]="isLoading"
+      [sizeOptions]="pageSizeOptions"
+      (pageChange)="goToPage($event)"
+      (sizeChange)="onPageSizeChange($event)">
+    </hq-table-footer>
+    </ng-container>
+  </div>
+</div>

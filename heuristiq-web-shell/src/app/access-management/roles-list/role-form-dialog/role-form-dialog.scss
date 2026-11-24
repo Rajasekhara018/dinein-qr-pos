@@ -1,0 +1,339 @@
+.role-dialog {
+  width: min(920px, 94vw);
+  max-height: 88vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--workspace-panel, #fff);
+  border-radius: 20px;
+  overflow: hidden;
+  font-family: var(--hq-font);
+}
+
+// ── Routed-page mode ─────────────────────────────────────────────────────────
+// Mirrors nms-templates/template-form's tf-page layout (rules copied from
+// template-form.scss — view encapsulation keeps that file's styles from reaching here).
+// Everything is nested under .role-dialog--page so dialog mode is untouched.
+$tf-primary: var(--hq-primary);
+
+.role-dialog--page {
+  .role-page__body {
+    display: grid;
+    gap: 1rem;
+    min-width: 0;
+
+    @media (min-width: 1200px) {
+      grid-template-columns: minmax(0, 1fr) 340px;
+      align-items: start;
+    }
+  }
+
+  &.tf-page {
+    padding: 24px;
+    font-family: var(--hq-font);
+    color: var(--edu-ink);
+  }
+
+  .tf-page-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 18px;
+  }
+
+  .tf-back-btn {
+    width: 36px;
+    height: 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--edu-ink);
+    flex-shrink: 0;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    background: transparent;
+    font-size: 24px;
+    line-height: 1;
+    cursor: pointer;
+    transition: background .15s, border-color .15s, color .15s, transform .15s;
+
+    &:hover {
+      background: var(--theme-highlight-soft);
+      border-color: var(--workspace-border);
+      color: $tf-primary;
+      transform: translateX(-1px);
+    }
+
+    &:focus-visible {
+      outline: 3px solid var(--field-focus-ring);
+      outline-offset: 2px;
+    }
+  }
+
+  .tf-title {
+    margin: 0 0 4px;
+    font-size: 16px;
+    font-weight: 800;
+    line-height: 1.15;
+    color: var(--edu-ink);
+  }
+
+  .tf-breadcrumb {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 5px;
+    font-size: 12px;
+    color: var(--edu-muted);
+  }
+
+  .tf-bc-link {
+    cursor: pointer;
+    color: var(--edu-ink);
+    font-weight: 600;
+
+    &:hover {
+      color: $tf-primary;
+    }
+  }
+
+  .tf-bc-sep {
+    font-size: 10px;
+    color: var(--edu-muted);
+  }
+
+  .tf-bc-active {
+    color: var(--edu-muted);
+  }
+
+  .role-dialog__body {
+    padding: 24px;
+    overflow: visible;
+  }
+}
+
+:host-context([data-theme-mode="dark"]) .role-dialog--page {
+  .tf-back-btn:hover {
+    color: var(--hq-link);
+  }
+
+}
+
+@media (max-width: 767px) {
+  .role-dialog--page {
+    &.tf-page {
+      padding: 16px;
+    }
+
+    .tf-page-header {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .tf-page-header > .d-flex:last-child {
+      justify-content: flex-end;
+    }
+
+    .tf-title {
+      font-size: 24px;
+    }
+
+    .role-dialog__body {
+      padding-left: 16px;
+      padding-right: 16px;
+    }
+  }
+}
+
+.role-dialog__header {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 20px 28px;
+  background: linear-gradient(135deg, var(--sidebar-bg-start), var(--sidebar-bg-end));
+  color: #fff;
+}
+
+.role-dialog__header-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.05rem;
+  flex-shrink: 0;
+}
+
+.role-dialog__header-text {
+  flex: 1;
+  text-align: center;
+
+  h2 { margin: 0; font-size: 1.15rem; font-weight: 700; }
+  p { margin: 4px 0 0; font-size: 0.78rem; opacity: 0.85; }
+}
+
+.role-dialog__close {
+  background: none;
+  border: none;
+  color: #fff;
+  opacity: 0.85;
+  cursor: pointer;
+  font-size: 1.1rem;
+  padding: 4px;
+  flex-shrink: 0;
+  &:hover { opacity: 1; }
+}
+
+.role-dialog__body {
+  padding: 28px;
+  overflow-y: auto;
+
+  &::-webkit-scrollbar { width: 6px; }
+  &::-webkit-scrollbar-thumb { background: var(--theme-soft-border); border-radius: 10px; }
+}
+
+.role-step {
+  margin-bottom: 28px;
+  &:last-child { margin-bottom: 0; }
+}
+
+.role-step__header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.role-step__badge {
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--button-accent-start), var(--button-accent-end));
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.role-step__header h3 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--edu-ink);
+}
+
+.role-step__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 18px;
+  margin-bottom: 16px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  input {
+    border: 1px solid var(--field-border, #cbd5e1);
+    border-radius: 8px;
+    background: var(--field-bg, #fff);
+    color: var(--field-text, #111827);
+    font: inherit;
+    font-size: 0.9rem;
+    padding: 9px 12px;
+    outline: none;
+
+    &::placeholder { color: var(--field-placeholder); }
+    &:focus {
+      border-color: color-mix(in srgb, var(--button-accent-end) 55%, transparent);
+      box-shadow: 0 0 0 3px var(--field-focus-ring);
+    }
+  }
+}
+
+.role-step__error {
+  color: #b42318;
+  font-size: 0.8rem;
+}
+
+.role-step__checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  color: var(--edu-ink);
+  cursor: pointer;
+}
+
+.perm-select,
+.perm-search-input {
+  border: 1px solid var(--field-border, #cbd5e1);
+  border-radius: 8px;
+  background: var(--field-bg, #fff);
+  color: var(--field-text, #111827);
+  font: inherit;
+  font-size: 0.85rem;
+  padding: 8px 12px;
+  outline: none;
+
+  &:focus {
+    border-color: color-mix(in srgb, var(--button-accent-end) 55%, transparent);
+    box-shadow: 0 0 0 3px var(--field-focus-ring);
+  }
+}
+
+.perm-select { min-width: 160px; }
+.perm-search-input { flex: 1; min-width: 200px; }
+
+.perm-table-wrap {
+  border: 1px solid var(--theme-soft-border);
+  border-radius: 14px;
+  overflow: auto;
+  max-height: 320px;
+}
+
+/* The select column's cells are drawn inside hq-common-table, so they are reached through ::ng-deep. */
+.perm-table-wrap ::ng-deep .perm-col-select {
+  width: 44px;
+  text-align: center;
+}
+
+.perm-select-matching {
+  margin-top: 8px;
+}
+
+.perm-count {
+  margin: 12px 0 0;
+  font-size: 0.8rem;
+  color: var(--edu-muted);
+}
+
+.role-dialog__footer {
+  flex-shrink: 0;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 18px 28px;
+  border-top: 1px solid var(--workspace-border, #e5e7eb);
+}
+
+.btn-cancel {
+  min-width: 92px;
+  border-radius: 9px;
+  padding: 9px 16px;
+  font-weight: 700;
+  border: 1px solid var(--workspace-border, #e5e7eb);
+  background: var(--workspace-panel);
+  color: var(--edu-muted);
+  cursor: pointer;
+}
+
+.role-access-switch { display: flex; justify-content: flex-end; margin-bottom: 0.75rem; }
+

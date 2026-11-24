@@ -1,0 +1,23 @@
+.wf-table-wrap { overflow-x: auto; }
+
+.wf-mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.78rem;
+}
+
+.wf-actions {
+  white-space: nowrap;
+
+  > * + * { margin-left: 0.4rem; }
+}
+
+.wf-view { flex: 0 1 180px; }
+
+.wf-sub {
+  margin-top: 0.15rem;
+  font-size: 0.74rem;
+  color: var(--edu-muted, #64748b);
+}
+
+.wf-search { flex: 2 1 240px; }
+.wf-date { flex: 0 1 150px; min-width: 140px; }

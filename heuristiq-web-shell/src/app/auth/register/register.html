@@ -1,0 +1,118 @@
+<main class="login-page password-page">
+  <hq-language-switcher></hq-language-switcher>
+  <section class="login-shell password-shell" [attr.aria-label]="'register.ariaLabel' | translate: { appName: branding.appName }">
+    <div class="login-story password-story">
+      <div class="story-badge">{{ 'register.story.badge' | translate }}</div>
+
+      <ng-container *ngIf="step === 'details'">
+        <h1>{{ 'register.story.detailsHeadline' | translate: { appName: branding.appName } }}</h1>
+        <p class="story-copy">
+          {{ 'register.story.detailsCopy' | translate }}
+        </p>
+      </ng-container>
+      <ng-container *ngIf="step === 'otp'">
+        <h1>{{ 'register.story.otpHeadline' | translate: { channel: ('register.channels.' + channel | translate) } }}</h1>
+        <p class="story-copy">
+          {{ 'register.story.otpCopy' | translate: { channel: ('register.channels.' + channel | translate) } }}
+        </p>
+      </ng-container>
+
+      <div class="feature-list" [attr.aria-label]="'register.featuresAriaLabel' | translate">
+        <div class="feature-row">
+          <span>01</span>
+          <p>{{ 'login.features.pnrBooking' | translate }}</p>
+        </div>
+        <div class="feature-row">
+          <span>02</span>
+          <p>{{ 'login.features.liveTracking' | translate }}</p>
+        </div>
+        <div class="feature-row">
+          <span>03</span>
+          <p>{{ 'login.features.wallet' | translate }}</p>
+        </div>
+      </div>
+    </div>
+
+    <aside class="login-panel" [attr.aria-label]="'register.panelAriaLabel' | translate">
+      <div class="login-card password-card">
+
+        <!-- Step 1: Details -->
+        <ng-container *ngIf="step === 'details'">
+          <div class="login-brand">
+            <div class="login-logo-box">
+              <img [src]="branding.logoImagePath" [alt]="'login.logoAlt' | translate: { appName: branding.appName }" class="login-logo" />
+            </div>
+            <div>
+              <h1 class="login-title">{{ 'register.details.title' | translate }}</h1>
+              <p class="login-subtitle">{{ 'register.details.subtitle' | translate: { appName: branding.appName } }}</p>
+            </div>
+          </div>
+
+          <form [formGroup]="detailsForm" (ngSubmit)="submitDetails()" novalidate class="mt-3">
+            <hq-field icon="bi bi-person" type="text" inputId="name" formControlName="name" [placeholder]="'register.form.name.placeholder' | translate" autocomplete="name" [label]="'register.form.name.label' | translate" required [error]="(nameCtrl?.touched && nameCtrl?.errors?.['required']) ? ('register.form.name.required' | translate) : null"></hq-field>
+
+            <div class="field-group">
+              <hq-phone-number-input formControlName="mobile" [label]="'register.form.mobile.label' | translate" [isRequired]="true"></hq-phone-number-input>
+            </div>
+
+            <hq-field icon="bi bi-envelope" type="email" inputId="email" formControlName="email" placeholder="customer@example.com" autocomplete="email" [label]="'register.form.email.label' | translate" required [error]="(emailCtrl?.touched && emailCtrl?.errors?.['required']) ? ('register.form.email.required' | translate) : (emailCtrl?.touched && emailCtrl?.errors?.['email']) ? ('register.form.email.invalid' | translate) : null"></hq-field>
+
+            <div class="form-options">
+              <span class="label" style="margin-bottom:0">{{ 'register.form.verifyVia' | translate }}</span>
+              <hq-tabs appearance="segmented" size="sm" [value]="channel" (valueChange)="setChannel($any($event))" [ariaLabel]="'register.form.verifyVia' | translate">
+                <hq-tab value="phone" [label]="'register.form.channelTabs.phone' | translate"></hq-tab>
+                <hq-tab value="email" [label]="'register.form.channelTabs.email' | translate"></hq-tab>
+              </hq-tabs>
+            </div>
+
+            <button [loading]="loading" hqButton="accent" size="lg" block type="submit" class="mt-2" [disabled]="loading || detailsForm.invalid">
+              {{ (loading ? 'register.actions.creating' : 'register.actions.create') | translate }}
+            </button>
+          </form>
+
+          <p class="create-account mt-2">
+            {{ 'register.links.haveAccount' | translate }} <a routerLink="/auth/login">{{ 'register.links.signIn' | translate }}</a>
+          </p>
+          <!-- Vendor/fleet partner sign-up is switched off for now: re-enable by uncommenting.
+          <p class="create-account">
+            {{ 'login.links.ownFleet' | translate }} <a routerLink="/vendor/register">{{ 'login.links.partner' | translate }}</a>
+          </p>
+          -->
+        </ng-container>
+
+        <!-- Step 2: OTP -->
+        <ng-container *ngIf="step === 'otp'">
+          <div class="login-brand">
+            <div class="login-logo-box">
+              <img [src]="branding.logoImagePath" [alt]="'login.logoAlt' | translate: { appName: branding.appName }" class="login-logo" />
+            </div>
+            <div>
+              <h1 class="login-title">{{ (channel === 'phone' ? 'register.otp.titlePhone' : 'register.otp.titleEmail') | translate }}</h1>
+              <p class="login-subtitle">{{ 'register.otp.subtitle' | translate }}</p>
+            </div>
+          </div>
+
+          <form [formGroup]="otpForm" (ngSubmit)="verifyOtp()" novalidate class="mt-3">
+            <hq-field icon="bi bi-key" type="text" inputId="otp" formControlName="otp" [placeholder]="'register.otp.placeholder' | translate" autocomplete="one-time-code" inputmode="numeric" [label]="'register.otp.label' | translate" required [error]="(otpCtrl?.touched && otpCtrl?.errors?.['required']) ? ('register.otp.required' | translate) : (otpCtrl?.touched && otpCtrl?.errors?.['minlength']) ? ('register.otp.invalid' | translate) : null"></hq-field>
+
+            <button [loading]="loading" hqButton="accent" size="lg" block type="submit" class="mt-2" [disabled]="loading || otpForm.invalid">
+              {{ (loading ? 'register.actions.verifying' : 'register.actions.verify') | translate }}
+            </button>
+          </form>
+
+          <p class="create-account mt-2">
+            {{ 'register.otp.noCode' | translate }}
+            <button hqButton="primary" appearance="text" type="button" (click)="resendOtp()" [disabled]="otpCooldown > 0">
+              {{ otpCooldown > 0 ? ('register.otp.resendIn' | translate: { seconds: otpCooldown }) : ('register.otp.resend' | translate) }}
+            </button>
+          </p>
+          <p class="create-account">
+            <button hqButton="primary" appearance="text" type="button" (click)="backToDetails()">{{ 'register.otp.editDetails' | translate }}</button>
+          </p>
+        </ng-container>
+
+      </div>
+    </aside>
+  </section>
+  <span class="powered-by">{{ branding.poweredBy }}</span>
+</main>

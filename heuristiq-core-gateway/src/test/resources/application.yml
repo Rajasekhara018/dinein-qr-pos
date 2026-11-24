@@ -1,0 +1,48 @@
+spring:
+  application:
+    name: railcab-api-gateway-test
+  data:
+    mongodb:
+      bookings-uri: mongodb://localhost:27017/railcab_bookings_test
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
+      - org.springframework.boot.autoconfigure.data.redis.RedisReactiveAutoConfiguration
+
+railcab:
+  gateway:
+    auth:
+      jwt-secret: test-secret-key-for-unit-testing-minimum-256-bits-padding!!
+      customer-jwt-secret: customer-test-secret-key-for-unit-testing-min-256-bits!!
+    internal:
+      secret-keys: test-internal-key-1,test-internal-key-2
+      gateway-forward-key: test-gateway-forward-key
+    cors:
+      allowed-origins: http://localhost:4200
+    rate-limit:
+      enabled: false
+    rbac:
+      enabled: true
+    request:
+      max-body-size-bytes: 1048576  # 1 MB for tests
+    cache:
+      user-status-ttl-seconds: 2   # short TTL so cache-expiry tests run fast
+      user-status-max-size: 100
+
+pathmatchers:
+  admin-vendor-public:   /api/v1/admin/vendors/register
+  bookings-health:       /api/bookings/actuator/**
+  irctc-health:          /api/irctc/health/**
+  irctc-simulator:       /api/irctc/simulator/**
+  uam-identity-auth:     /api/uam/identity/auth/**
+  actuator:              /actuator
+
+management:
+  health:
+    redis:
+      enabled: false
+
+logging:
+  level:
+    root: WARN
+    com.heuristiq.gateway: DEBUG

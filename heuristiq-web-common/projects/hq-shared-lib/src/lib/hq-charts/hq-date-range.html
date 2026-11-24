@@ -1,0 +1,15 @@
+<div class="hq-range" [class.hq-range--sm]="size === 'sm'" role="group" [attr.aria-label]="label">
+  <hq-tabs class="hq-range__presets" appearance="segmented" [size]="size" [ariaLabel]="label" [value]="active" (valueChange)="choose($event)">
+    @for (preset of options; track preset) {
+      <hq-tab [value]="preset" [label]="presetLabel(preset)"></hq-tab>
+    }
+  </hq-tabs>
+  @if (active === 'custom') {
+    <div class="hq-range__custom">
+      <hq-field class="hq-range__date" type="date" [label]="text('from')" [showLabel]="size !== 'sm'" [ariaLabel]="text('from')"
+                 [max]="customTo || null" [ngModel]="customFrom" (ngModelChange)="setFrom($event)"></hq-field>
+      <hq-field class="hq-range__date" type="date" [label]="text('to')" [showLabel]="size !== 'sm'" [ariaLabel]="text('to')"
+                 [min]="customFrom || null" [error]="customError" [ngModel]="customTo" (ngModelChange)="setTo($event)"></hq-field>
+    </div>
+  }
+</div>

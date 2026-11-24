@@ -1,0 +1,125 @@
+<div class="hq-field" [class.is-disabled]="disabled" [class.is-readonly]="readonly" [class.has-error]="hasError">
+  @if (showLabel && label) {
+    <label class="hq-field__label" [attr.for]="controlId">{{ label }}@if (required) {<em class="hq-field__req" aria-hidden="true">*</em>}</label>
+  }
+
+  @if (dateMode) {
+    <hq-date-input
+      class="hq-field__date"
+      [mode]="dateMode"
+      [inputId]="controlId"
+      [name]="name"
+      [placeholder]="placeholder"
+      [ariaLabel]="ariaLabel"
+      [min]="dateMin"
+      [max]="dateMax"
+      [readonly]="readonly"
+      [hasError]="hasError"
+      [ngModel]="text || null"
+      [ngModelOptions]="{ standalone: true }"
+      [disabled]="disabled"
+      (ngModelChange)="onDateValue($event)"
+    ></hq-date-input>
+  } @else {
+  <div class="hq-field__box" [class.is-textarea]="isTextarea">
+    @if (icon) {
+      <i class="hq-field__icon" [ngClass]="icon" aria-hidden="true"></i>
+    }
+
+    @if (isTextarea) {
+      <textarea
+        class="hq-field__control"
+        [id]="controlId"
+        [attr.name]="name || null"
+        [rows]="textareaRows"
+        [class.is-auto-grow]="autoGrow"
+        [attr.placeholder]="placeholder || null"
+        [attr.maxlength]="maxLength"
+        [attr.autocomplete]="autofill"
+        [attr.spellcheck]="spellcheck"
+        [style.text-transform]="textTransform || null"
+        [attr.aria-label]="ariaLabel || null"
+        [attr.aria-required]="required ? 'true' : null"
+        [attr.aria-invalid]="hasError ? 'true' : null"
+        [attr.aria-describedby]="describedBy"
+        [attr.role]="role || null"
+        [attr.aria-expanded]="ariaExpanded === null ? null : ariaExpanded"
+        [attr.aria-controls]="ariaControls || null"
+        [attr.aria-activedescendant]="ariaActiveDescendant || null"
+        [attr.aria-autocomplete]="ariaAutocomplete || null"
+        [disabled]="disabled"
+        [readOnly]="readonly"
+        [value]="text"
+        (input)="onInput($any($event.target).value)"
+        (focus)="onFocus($event)"
+        (blur)="onBlur($event)"
+      ></textarea>
+    } @else {
+      <input
+        class="hq-field__control"
+        [id]="controlId"
+        [attr.type]="inputType"
+        [attr.name]="name || null"
+        [attr.inputmode]="inputMode"
+        [attr.placeholder]="placeholder || null"
+        [attr.maxlength]="maxLength"
+        [attr.min]="min"
+        [attr.max]="max"
+        [attr.step]="step"
+        [attr.autocomplete]="autofill"
+        [attr.spellcheck]="spellcheck"
+        [attr.list]="list || null"
+        [style.text-transform]="textTransform || null"
+        [attr.aria-label]="ariaLabel || null"
+        [attr.aria-required]="required ? 'true' : null"
+        [attr.aria-invalid]="hasError ? 'true' : null"
+        [attr.aria-describedby]="describedBy"
+        [attr.role]="role || null"
+        [attr.aria-expanded]="ariaExpanded === null ? null : ariaExpanded"
+        [attr.aria-controls]="ariaControls || null"
+        [attr.aria-activedescendant]="ariaActiveDescendant || null"
+        [attr.aria-autocomplete]="ariaAutocomplete || null"
+        [disabled]="disabled"
+        [readOnly]="readonly"
+        [value]="text"
+        (input)="onInput($any($event.target).value)"
+        (focus)="onFocus($event)"
+        (blur)="onBlur($event)"
+      />
+    }
+
+    @if (showPasswordToggle) {
+      <button
+        type="button"
+        class="hq-field__toggle"
+        [attr.aria-label]="revealed ? t.hidePassword() : t.showPassword()"
+        [attr.aria-pressed]="revealed"
+        (click)="toggleReveal()"
+      >
+        @if (revealed) {
+          <svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true">
+            <path d="M2.5 10s2.8-5.5 7.5-5.5S17.5 10 17.5 10s-2.8 5.5-7.5 5.5S2.5 10 2.5 10z" fill="none" stroke="currentColor" stroke-width="1.6" />
+            <circle cx="10" cy="10" r="2.2" fill="none" stroke="currentColor" stroke-width="1.6" />
+            <path d="M3.5 3.5l13 13" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+          </svg>
+        } @else {
+          <svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true">
+            <path d="M2.5 10s2.8-5.5 7.5-5.5S17.5 10 17.5 10s-2.8 5.5-7.5 5.5S2.5 10 2.5 10z" fill="none" stroke="currentColor" stroke-width="1.6" />
+            <circle cx="10" cy="10" r="2.2" fill="none" stroke="currentColor" stroke-width="1.6" />
+          </svg>
+        }
+      </button>
+    }
+  </div>
+  }
+
+  @if (shownError) {
+    <small class="hq-field__error" role="alert" [id]="errorId">{{ shownError }}</small>
+  }
+  @if (hint) {
+    <small class="hq-field__hint" [id]="hintId">{{ hint }}</small>
+  }
+  @if (counter; as counterText) {
+    <small class="hq-field__counter">{{ counterText }}</small>
+  }
+</div>

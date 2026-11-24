@@ -1,0 +1,15 @@
+<section class="api-docs-page">
+    <div class="page-hero">
+        <span class="eyebrow">{{ 'apiDocs.eyebrow' | translate }}</span>
+        <h1>{{ 'apiDocs.apiDocs.title' | translate }}</h1>
+        <p>{{ 'apiDocs.apiDocs.copy' | translate: { appName: branding.appName } }}</p>
+    </div>
+
+    <div class="iframe-frame">
+        <iframe
+            [src]="swaggerUrl"
+            [title]="branding.appName + ' API documentation'"
+            loading="lazy">
+        </iframe>
+    </div>
+</section>

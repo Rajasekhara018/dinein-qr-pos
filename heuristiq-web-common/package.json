@@ -1,0 +1,42 @@
+{
+  "name": "realboom-shared-library",
+  "version": "0.0.1",
+  "scripts": {
+    "ng": "ng",
+    "build": "ng build",
+    "watch": "ng build --watch --configuration development",
+    "test": "ng test",
+    "test:coverage": "node scripts/test-coverage.mjs",
+    "pack:lib": "ng build && cd dist/hq-shared-lib && npm pack"
+  },
+  "private": true,
+  "dependencies": {
+    "@angular/animations": "^21.2.0",
+    "@angular/cdk": "^21.2.14",
+    "@angular/common": "^21.2.0",
+    "@angular/compiler": "^21.2.0",
+    "@angular/core": "^21.2.0",
+    "@angular/forms": "^21.2.0",
+    "@angular/material": "^21.2.14",
+    "@angular/platform-browser": "^21.2.0",
+    "@angular/router": "^21.2.25",
+    "libphonenumber-js": "^1.11.0",
+    "rxjs": "~7.8.0",
+    "tslib": "^2.3.0"
+  },
+  "devDependencies": {
+    "@angular/build": "^21.2.7",
+    "@angular/cli": "^21.2.7",
+    "@angular/compiler-cli": "^21.2.0",
+    "@emnapi/core": "1.11.3",
+    "@emnapi/runtime": "1.11.3",
+    "@emnapi/wasi-threads": "1.2.3",
+    "@vitest/coverage-v8": "^4.1.12",
+    "apexcharts": "^7.9.1",
+    "jsdom": "^28.1.0",
+    "ng-apexcharts": "^3.2.0",
+    "ng-packagr": "^21.2.0",
+    "typescript": "~5.9.2",
+    "vitest": "^4.1.12"
+  }
+}

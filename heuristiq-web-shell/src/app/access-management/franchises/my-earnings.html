@@ -1,0 +1,102 @@
+<hq-page-header
+  [kicker]="'nav.sections.accessManagement' | translate"
+  [title]="'nav.items.myEarnings' | translate"
+  [subtitle]="'accessManagement.myEarnings.subtitle' | translate">
+</hq-page-header>
+
+<div class="table-surface">
+  <div class="table-surface__body">
+    <p class="franchise-hint">{{ 'accessManagement.myEarnings.walletNotice' | translate }}</p>
+    <hq-error-state *ngIf="hasError" [title]="'accessManagement.myEarnings.errorMessage' | translate" (retry)="load()"></hq-error-state>
+
+    <section class="franchise-form" *hqHasPrivilege="privileges.readStatement">
+      <h4>{{ 'accessManagement.myEarnings.accountsTitle' | translate }}</h4>
+      <hq-common-table [columns]="accountColumns" [rows]="accounts"
+                        [emptyMessage]="'accessManagement.myEarnings.noAccounts' | translate">
+        <ng-template hqCell="ownerType" let-account>{{ accountLabel(account) }}</ng-template>
+        <ng-template hqCell="settled" let-account>{{ account.settled | hqMoney }}</ng-template>
+        <ng-template hqCell="pending" let-account>{{ account.pending | hqMoney }}</ng-template>
+        <ng-template hqCell="reserved" let-account>{{ account.reserved | hqMoney }}</ng-template>
+        <ng-template hqCell="available" let-account>{{ account.available | hqMoney }}</ng-template>
+      </hq-common-table>
+    </section>
+
+    <section class="franchise-form" *hqHasPrivilege="privileges.listEntries">
+      <h4>{{ 'accessManagement.myEarnings.entriesTitle' | translate }}</h4>
+      <div class="franchise-grid">
+        <hq-form-field *ngIf="accounts.length > 1" [label]="'accessManagement.myEarnings.account' | translate"><hq-searchable-select [allowOther]="false" [(ngModel)]="selectedAccount" name="earningsAccount" (ngModelChange)="resetAccounting()"
+                                 [ariaLabel]="'accessManagement.myEarnings.account' | translate">
+            <hq-ss-option *ngFor="let account of accounts" [value]="accountKey(account)" [label]="accountLabel(account)"></hq-ss-option>
+          </hq-searchable-select></hq-form-field>
+        <hq-form-field [label]="'accessManagement.myEarnings.state' | translate"><hq-searchable-select [allowOther]="false" [(ngModel)]="state" name="earningsState"
+                                 [ariaLabel]="'accessManagement.myEarnings.state' | translate">
+            <hq-ss-option *ngFor="let code of states" [value]="code" [label]="stateLabel(code)"></hq-ss-option>
+          </hq-searchable-select></hq-form-field>
+        <hq-field type="date" [(ngModel)]="from" name="earningsFrom" [label]="'accessManagement.myEarnings.from' | translate"></hq-field>
+        <hq-field type="date" [(ngModel)]="to" name="earningsTo" [label]="'accessManagement.myEarnings.to' | translate"></hq-field>
+        <div class="franchise-actions">
+          <button hqButton="accent" type="button" [disabled]="isLoading" (click)="load()">{{ 'accessManagement.myEarnings.apply' | translate }}</button>
+        </div>
+      </div>
+      <hq-common-table [columns]="entryColumns" [rows]="entries" [isLoading]="isLoading"
+                        [emptyMessage]="'accessManagement.myEarnings.noEntries' | translate">
+        <ng-template hqCell="postedAt" let-entry>{{ entry.postedAt | hqDate:'medium' }}</ng-template>
+        <ng-template hqCell="journalType" let-entry>{{ entry.journalType }}</ng-template>
+        <ng-template hqCell="direction" let-entry>{{ directionLabel(entry.direction) }}</ng-template>
+        <ng-template hqCell="amount" let-entry>{{ entry.amount | hqMoney }}</ng-template>
+      </hq-common-table>
+      <hq-table-footer
+        [page]="page"
+        [size]="pageSize"
+        [itemCount]="entries.length"
+        [hasMore]="!isLast"
+        [totalItems]="total"
+        [loading]="isLoading"
+        [sizeOptions]="pageSizeOptions"
+        (pageChange)="goToPage($event)"
+        (sizeChange)="onPageSizeChange($event)">
+      </hq-table-footer>
+    </section>
+    <section class="franchise-form" *hqHasPrivilege="privileges.readAccounting">
+      <ng-container *ngIf="selectedAccount.startsWith('FRANCHISE:')">
+        <h4>{{ 'accessManagement.myEarnings.accountingTitle' | translate }}</h4>
+        <p class="franchise-hint">{{ 'accessManagement.myEarnings.walletAccounting.hint' | translate }}</p>
+        <button hqButton="accent" type="button" (click)="loadAccounting()" [disabled]="accountingLoading">{{ 'accessManagement.myEarnings.apply' | translate }}</button>
+        <hq-error-state *ngIf="accountingError" [title]="'accessManagement.myEarnings.errorMessage' | translate" (retry)="loadAccounting()"></hq-error-state>
+        <ng-container *ngIf="accounting as a">
+          <div class="franchise-grid">
+            <div><small>{{ 'accessManagement.myEarnings.gross' | translate }}</small><strong class="d-block">{{ a.totals.gross | hqMoney }}</strong></div>
+            <div><small>{{ 'accessManagement.myEarnings.walletAccounting.ownerEarnings' | translate }}</small><strong class="d-block">{{ a.totals.owner | hqMoney }}</strong></div>
+            <div><small>{{ 'accessManagement.myEarnings.walletAccounting.agentCommissions' | translate }}</small><strong class="d-block">{{ a.totals.agent | hqMoney }}</strong></div>
+            <div><small>{{ 'accessManagement.myEarnings.walletAccounting.payable' | translate }}</small><strong class="d-block">{{ a.payable.available | hqMoney }}</strong></div>
+            <div><small>{{ 'accessManagement.myEarnings.walletAccounting.pending' | translate }}</small><strong class="d-block">{{ a.payable.pending | hqMoney }}</strong></div>
+            <div><small>{{ 'accessManagement.myEarnings.walletAccounting.paidOut' | translate }}</small><strong class="d-block">{{ a.payable.paidOut | hqMoney }}</strong></div>
+          </div>
+          <h5>{{ 'accessManagement.myEarnings.walletAccounting.sharesTitle' | translate }}</h5>
+          <hq-common-table [columns]="shareColumns" [rows]="a.shares" [showActionsColumn]="false"
+                            [emptyMessage]="'accessManagement.myEarnings.walletAccounting.noShares' | translate">
+            <ng-template hqCell="shareParty" let-share>{{ codeLabel('share', share.shareParty) }}</ng-template>
+            <ng-template hqCell="amount" let-share>{{ share.amount | hqMoney }}</ng-template>
+          </hq-common-table>
+          <h5>{{ 'accessManagement.myEarnings.walletAccounting.payoutsTitle' | translate }}</h5>
+          <hq-common-table [columns]="payoutColumns" [rows]="a.payouts" [showActionsColumn]="false"
+                            [emptyMessage]="'accessManagement.myEarnings.walletAccounting.noPayouts' | translate">
+            <ng-template hqCell="createdAt" let-payout>{{ payout.createdAt | hqDate:'medium' }}</ng-template>
+            <ng-template hqCell="amount" let-payout>{{ payout.amount | hqMoney }}</ng-template>
+            <ng-template hqCell="status" let-payout>{{ codeLabel('payout', payout.status) }}</ng-template>
+            <ng-template hqCell="paidAt" let-payout>{{ payout.paidAt | hqDate:'medium' }}</ng-template>
+          </hq-common-table>
+          <h5>{{ 'accessManagement.myEarnings.walletAccounting.recentTitle' | translate }}</h5>
+          <hq-common-table [columns]="transactionColumns" [rows]="a.recentTransactions" [showActionsColumn]="false"
+                            [emptyMessage]="'accessManagement.myEarnings.noEntries' | translate">
+            <ng-template hqCell="postedAt" let-t>{{ t.postedAt | hqDate:'medium' }}</ng-template>
+            <ng-template hqCell="appCode" let-t>{{ t.appCode || ('accessManagement.myEarnings.walletAccounting.notRecorded' | translate) }}</ng-template>
+            <ng-template hqCell="eventType" let-t>{{ codeLabel('event', t.eventType || t.journalType) }}</ng-template>
+            <ng-template hqCell="channel" let-t>{{ t.channel ? codeLabel('channel', t.channel) : ('accessManagement.myEarnings.walletAccounting.notRecorded' | translate) }}</ng-template>
+            <ng-template hqCell="amount" let-t>{{ t.amount | hqMoney }}</ng-template>
+          </hq-common-table>
+        </ng-container>
+      </ng-container>
+    </section>
+  </div>
+</div>

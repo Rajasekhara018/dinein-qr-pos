@@ -1,0 +1,46 @@
+// The strip; each tab's own look is in hq-tab.scss (keyed off these host classes with :host-context).
+:host {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: 0.25rem;
+  max-inline-size: 100%;
+}
+
+:host(.hq-tabs--tabs) {
+  gap: 0.25rem;
+  border-block-end: 1px solid var(--workspace-border);
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+// Doubled class so a screen's own `display: block` on the host cannot break the track layout.
+:host(.hq-tabs.hq-tabs--segmented) {
+  display: flex;
+  flex-wrap: nowrap;
+  inline-size: fit-content;
+  gap: 4px;
+  padding: 4px;
+  border: 1px solid var(--workspace-border);
+  border-radius: 14px;
+  background: var(--theme-soft-surface, var(--workspace-panel));
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+:host(.hq-tabs.hq-tabs--segmented.hq-tabs--block) { inline-size: 100%; }
+
+:host(.hq-tabs.hq-tabs--segmented.hq-tabs--sm) {
+  gap: 3px;
+  padding: 3px;
+  border-radius: 12px;
+}
+
+:host(.hq-tabs--pills) {
+  gap: 0.4rem;
+}
+
+:host(.hq-tabs--block) {
+  display: flex;
+}

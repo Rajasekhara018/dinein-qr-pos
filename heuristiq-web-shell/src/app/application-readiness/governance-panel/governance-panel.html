@@ -1,0 +1,46 @@
+<section class="table-surface gp" *ngIf="state !== 'off'" [attr.aria-label]="texts.panelTitle | translate">
+  <div class="table-surface__header">
+    <div class="table-heading">
+      <span class="table-kicker">{{ texts.panelTitle | translate }}</span>
+    </div>
+  </div>
+
+  <div class="table-surface__body">
+    <hq-loading-state *ngIf="state === 'loading'" [label]="texts.panelLoading | translate"></hq-loading-state>
+
+    <div class="gp__muted" *ngIf="state === 'unavailable'" role="alert">
+      <p>{{ texts.panelUnavailable | translate }}</p>
+      <button hqButton="secondary" type="button" (click)="load()">{{ texts.panelRetry | translate }}</button>
+    </div>
+
+    <ng-container *ngIf="state === 'ready' && data">
+      <p class="gp__note" *ngIf="!data.guardEnabled"><i class="bi bi-info-circle" aria-hidden="true"></i> {{ texts.guardOff | translate }}</p>
+
+      <!-- Last override -->
+      <div class="gp__block">
+        <h3 class="gp__heading">{{ texts.lastOverride | translate }}</h3>
+        <p class="gp__muted" *ngIf="!data.override">{{ texts.noOverride | translate }}</p>
+        <dl class="gp__facts" *ngIf="data.override as ov">
+          <dt>{{ texts.overrideBy | translate }}</dt><dd>{{ overriddenBy }}</dd>
+          <dt>{{ texts.overrideAt | translate }}</dt><dd>{{ overriddenAt ? (overriddenAt | hqDate: 'medium') : ov.at }}</dd>
+          <dt>{{ texts.overrideReason | translate }}</dt><dd class="gp__reason">{{ ov.reason }}</dd>
+          <ng-container *ngIf="ov.blockingSteps.length">
+            <dt>{{ texts.overrideSteps | translate }}</dt>
+            <dd><span class="gp__chip" *ngFor="let step of ov.blockingSteps">{{ step }}</span></dd>
+          </ng-container>
+        </dl>
+      </div>
+
+      <!-- Alerts -->
+      <div class="gp__block">
+        <h3 class="gp__heading">{{ texts.alerts | translate }}</h3>
+        <dl class="gp__facts">
+          <dt>{{ texts.lastBlockedAlert | translate }}</dt>
+          <dd>{{ lastBlockedAt ? (lastBlockedAt | hqDate: 'medium') : (texts.never | translate) }}</dd>
+          <dt>{{ texts.lastRefusedAlert | translate }}</dt>
+          <dd>{{ lastRefusedAt ? (lastRefusedAt | hqDate: 'medium') : (texts.never | translate) }}</dd>
+        </dl>
+      </div>
+    </ng-container>
+  </div>
+</section>

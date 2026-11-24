@@ -1,0 +1,160 @@
+<hq-page-header
+  [kicker]="'onboardingSubmissions.title' | translate"
+  [title]="displayName"
+  [subtitle]="subtitle"
+  [loading]="isLoading"
+  [loadingLabel]="'shared.pageHeader.loading' | translate">
+</hq-page-header>
+
+<hq-screen-help screen="onboardedUserDetail"></hq-screen-help>
+
+<div class="detail-toolbar">
+  <button hqButton="secondary" type="button" routerLink="/onboarded-users">
+    <i class="bi bi-arrow-left"></i> {{ 'onboardingSubmissions.back' | translate }}
+  </button>
+  <button hqButton="secondary" type="button" *ngIf="submission?.workflowInstanceId"
+          [routerLink]="['/workflow', 'instances', submission?.workflowInstanceId]">
+    <i class="bi bi-clock-history"></i> {{ 'onboardingReviews.history' | translate }}
+  </button>
+  <ng-container *hqHasPrivilege="adminPrivilege">
+    <button hqButton="accent" type="button" *ngIf="canRetryProvisioning" [disabled]="isRetrying" (click)="retryProvisioning()">
+      <i class="bi bi-arrow-repeat"></i> {{ 'onboardingSubmissions.retry.button' | translate }}
+    </button>
+  </ng-container>
+</div>
+
+<mat-tab-group class="table-surface" animationDuration="150ms">
+
+  <mat-tab [label]="'onboardingSubmissions.tabs.overview' | translate">
+    <div class="table-surface__body" *ngIf="submission as s">
+      <section class="onboarding-progress" aria-labelledby="onboarding-progress-title" [attr.aria-busy]="progressLoading">
+        <header class="onboarding-progress__head">
+          <h2 id="onboarding-progress-title">{{ 'onboardingProgress.title' | translate }}</h2>
+          <button hqButton="secondary" type="button" [disabled]="isLoading || progressLoading" (click)="refreshProgress()">
+            <i class="bi bi-arrow-clockwise" aria-hidden="true"></i> {{ 'onboardingProgress.refresh' | translate }}
+          </button>
+        </header>
+        <p *ngIf="progressLoading" role="status">{{ 'onboardingProgress.loading' | translate }}</p>
+        <p *ngIf="progressFailed" role="alert">{{ 'onboardingProgress.loadFailed' | translate }}</p>
+        <ng-container *ngIf="progress as p">
+          <p *ngIf="p.workflowName">{{ 'onboardingProgress.workflow' | translate }}: <strong>{{ p.workflowName }}</strong></p>
+          <p class="onboarding-progress__overall" role="status">{{ 'onboardingProgress.overall.' + p.overallStatus | translate }}</p>
+          <div class="onboarding-progress__gates">
+            <section class="onboarding-progress__gate">
+              <h3>{{ 'onboardingProgress.reviews' | translate }}</h3>
+              <strong>{{ 'onboardingProgress.states.' + p.reviewStatus | translate }}</strong>
+              <p *ngIf="p.reviews.length">{{ 'onboardingProgress.reviewCount' | translate: { approved: approvedReviewCount, total: p.reviews.length } }}</p>
+              <ul>
+                <li *ngFor="let review of p.reviews">
+                  <span>{{ review.name }}</span>
+                  <strong>{{ 'onboardingProgress.states.' + review.status | translate }}</strong>
+                  <small *ngIf="review.decidedAt">{{ date(review.decidedAt) }}</small>
+                  <small *ngIf="review.actorId">{{ 'onboardingProgress.reviewer' | translate }}: {{ review.actorId }}</small>
+                </li>
+              </ul>
+            </section>
+            <section class="onboarding-progress__gate">
+              <h3>{{ 'onboardingProgress.documents' | translate }}</h3>
+              <strong>{{ 'onboardingProgress.states.' + p.documentsStatus | translate }}</strong>
+              <p>{{ 'onboardingProgress.externalVerification' | translate }}: <strong>{{ 'onboardingProgress.states.' + p.externalVerificationStatus | translate }}</strong></p>
+              <p *ngIf="p.documentsStatus === 'WORKFLOW_MANAGED'">{{ 'onboardingProgress.workflowEvidence' | translate }}</p>
+              <ul>
+                <li *ngFor="let document of p.documents">
+                  <span>{{ documentLabel(document.fieldKey) }}</span>
+                  <small>{{ document.provider || ('onboardingProgress.methods.' + document.method | translate) }}</small>
+                  <strong>{{ 'onboardingProgress.states.' + document.status | translate }}</strong>
+                  <small *ngIf="document.missingInputs.length">{{ 'onboardingProgress.missingInputs' | translate }}: {{ document.missingInputs.join(', ') }}</small>
+                </li>
+              </ul>
+            </section>
+            <section class="onboarding-progress__gate">
+              <h3>{{ 'onboardingProgress.account' | translate }}</h3>
+              <strong>{{ 'onboardingProgress.states.' + p.accountStatus | translate }}</strong>
+              <p *ngIf="s.subjectId" class="mono">{{ s.subjectId }}</p>
+              <p *ngIf="p.accountStatus === 'FAILED'">{{ s.rejectionReason || ('onboardingProgress.accountFailed' | translate) }}</p>
+            </section>
+          </div>
+          <aside class="onboarding-progress__blockers" *ngIf="p.blockers.length">
+            <h3>{{ 'onboardingProgress.blockers' | translate }}</h3>
+            <ul><li *ngFor="let blocker of p.blockers">{{ 'onboardingProgress.reasons.' + blocker | translate }}</li></ul>
+          </aside>
+        </ng-container>
+      </section>
+      <div class="detail-grid">
+        <div class="detail-item"><span class="label">{{ 'onboardingSubmissions.columns.type' | translate }}</span><strong>{{ 'onboardingSubmissions.types.' + s.typeCode | translate }}</strong></div>
+        <div class="detail-item"><span class="label">{{ 'onboardingSubmissions.columns.status' | translate }}</span><strong>{{ 'onboardingSubmissions.statuses.' + s.status | translate }}</strong></div>
+        <div class="detail-item"><span class="label">{{ 'onboardingSubmissions.schemaVersion' | translate }}</span><span>v{{ s.schemaVersion }}</span></div>
+        <div class="detail-item"><span class="label">{{ 'onboardingSubmissions.columns.submitted' | translate }}</span><span>{{ date(s.createdAt) }}</span></div>
+        <div class="detail-item"><span class="label">{{ 'onboardingSubmissions.updated' | translate }}</span><span>{{ date(s.updatedAt) }}</span></div>
+        <div class="detail-item" *ngIf="s.reference"><span class="label">{{ 'onboardingSubmissions.columns.reference' | translate }}</span><strong class="mono">{{ s.reference }}</strong></div>
+        <div class="detail-item"><span class="label">{{ 'onboardingSubmissions.submissionId' | translate }}</span><span class="mono">{{ s.id }}</span></div>
+        <div class="detail-item"><span class="label">{{ 'onboardingSubmissions.accountId' | translate }}</span><span class="mono">{{ s.subjectId || '—' }}</span></div>
+      </div>
+      <section class="detail-placement" *ngIf="s.tenantId || s.franchiseId || s.placeId">
+        <div class="detail-placement__head">
+          <span class="label">{{ 'onboardingSubmissions.placement.title' | translate }}</span>
+          <ng-container *hqHasPrivilege="adminPrivilege">
+            <button hqButton="secondary" type="button" class="relink-btn" *ngIf="canRelinkFranchise" [disabled]="isRelinking" (click)="relinkFranchise()">
+              <i class="bi bi-link-45deg"></i> {{ 'onboardingSubmissions.relink.button' | translate }}
+            </button>
+          </ng-container>
+        </div>
+        <div class="detail-grid">
+          <div class="detail-item"><span class="label">{{ 'onboardingSubmissions.columns.organization' | translate }}</span><span>{{ organization }}</span></div>
+          <div class="detail-item"><span class="label">{{ 'onboardingSubmissions.columns.franchise' | translate }}</span><span>{{ franchise }}</span></div>
+          <div class="detail-item"><span class="label">{{ 'onboardingSubmissions.columns.place' | translate }}</span><span>{{ place }}</span></div>
+        </div>
+      </section>
+      <div class="detail-rounds" *ngIf="s.previousWorkflowInstanceIds?.length">
+        <span class="label">{{ 'onboardingSubmissions.earlierRounds' | translate }}</span>
+        <a class="detail-rounds__link" *ngFor="let id of s.previousWorkflowInstanceIds; let i = index"
+           [routerLink]="['/workflow', 'instances', id]">
+          <i class="bi bi-clock-history"></i> {{ 'onboardingSubmissions.round' | translate: { n: i + 1 } }}
+        </a>
+      </div>
+      <div class="detail-reason" *ngIf="s.returnReason">
+        <span class="label">{{ 'onboardingSubmissions.returnReason' | translate }}</span>
+        <p>{{ s.returnReason }}</p>
+      </div>
+      <div class="detail-reason" *ngIf="s.rejectionReason">
+        <span class="label">{{ 'onboardingSubmissions.reason' | translate }}</span>
+        <p>{{ s.rejectionReason }}</p>
+      </div>
+    </div>
+  </mat-tab>
+
+  <mat-tab [label]="'onboardingSubmissions.tabs.documents' | translate">
+    <div class="table-surface__body">
+      <hq-common-table
+        [columns]="documentColumns"
+        [rows]="documents"
+        [isLoading]="isLoading"
+        [emptyMessage]="'onboardingSubmissions.documents.empty' | translate">
+        <ng-template #rowActions let-row>
+          <button type="button" class="row-action-btn" *ngIf="row.documentId && row.stored !== false" [title]="'onboardingSubmissions.documents.view' | translate" (click)="openDocument(row)">
+            <i class="bi bi-eye"></i>
+          </button>
+        </ng-template>
+      </hq-common-table>
+    </div>
+  </mat-tab>
+
+  <mat-tab [label]="'onboardingSubmissions.tabs.answers' | translate">
+    <div class="table-surface__body">
+      <hq-common-table
+        [columns]="answerColumns"
+        [rows]="answerRows"
+        [isLoading]="isLoading"
+        [showActionsColumn]="false"
+        [emptyMessage]="'onboardingSubmissions.noAnswers' | translate">
+      </hq-common-table>
+    </div>
+  </mat-tab>
+
+  <mat-tab [label]="'workspace.recordNotes.title' | translate">
+    <div class="table-surface__body">
+      <app-record-notes [refType]="recordType" [refId]="submissionId"></app-record-notes>
+    </div>
+  </mat-tab>
+
+</mat-tab-group>

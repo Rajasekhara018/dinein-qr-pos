@@ -1,0 +1,102 @@
+<div class="preview-dialog">
+
+  <!-- Header -->
+  <div class="dialog-header">
+    <div class="d-flex align-items-center gap-2">
+      <i class="bi bi-phone dialog-icon"></i>
+      <div>
+        <h2 class="dialog-title mb-0">{{ 'onboardingForms.previewDialog.title' | translate }}</h2>
+        <span class="dialog-subtitle">{{ data.typeLabel }}</span>
+      </div>
+    </div>
+    <button class="close-btn" type="button" (click)="close()" [title]="'onboardingForms.fieldDialog.close' | translate" [attr.aria-label]="'onboardingForms.fieldDialog.close' | translate">
+      <i class="bi bi-x-lg"></i>
+    </button>
+  </div>
+
+  <div class="dialog-body">
+    <ng-container *ngIf="steps.length > 0; else noSteps">
+
+      <!-- Step progress -->
+      <div class="step-progress mb-3">
+        <span class="field-helper">{{ 'onboardingForms.previewDialog.stepOf' | translate: { current: stepIndex + 1, total: steps.length } }}</span>
+        <hq-progress size="sm" [value]="stepIndex + 1" [max]="steps.length" [showValue]="false"
+                      [label]="'onboardingForms.previewDialog.stepOf' | translate: { current: stepIndex + 1, total: steps.length }"></hq-progress>
+      </div>
+
+      <h5 class="step-title mb-3">{{ currentStep?.title || ('onboardingForms.previewDialog.untitledStep' | translate) }}</h5>
+
+      <form *ngIf="currentForm" [formGroup]="currentForm" class="preview-form">
+        <div class="mb-3" *ngFor="let field of currentStep?.fields ?? []">
+
+          <ng-container [ngSwitch]="field.type">
+
+            <!-- CHECKBOX -->
+            <hq-checkbox *ngSwitchCase="'CHECKBOX'" [inputId]="field.key" [formControlName]="field.key">{{ fieldLabel(field) }}</hq-checkbox>
+
+            <!-- SELECT -->
+            <hq-form-field *ngSwitchCase="'SELECT'" [label]="fieldLabel(field)" [error]="displayError(field)">
+              <hq-searchable-select [formControlName]="field.key" [allowOther]="false" [options]="field.options ?? []"
+                                     [placeholder]="'onboardingForms.previewDialog.chooseOption' | translate"
+                                     [ariaLabel]="fieldLabel(field)" [hasError]="!!displayError(field)"></hq-searchable-select>
+            </hq-form-field>
+
+            <!-- DATE -->
+            <hq-field *ngSwitchCase="'DATE'" type="date" [label]="fieldLabel(field)" [error]="displayError(field)" [formControlName]="field.key"></hq-field>
+
+            <!-- NUMBER -->
+            <hq-field *ngSwitchCase="'NUMBER'" type="number" [label]="fieldLabel(field)" [error]="displayError(field)" [formControlName]="field.key"></hq-field>
+
+            <!-- CURRENCY -->
+            <hq-form-field *ngSwitchCase="'CURRENCY'" [label]="fieldLabel(field)" [error]="displayError(field)">
+              <div class="input-group">
+                <span class="input-group-text">{{ currencySymbol }}</span>
+                <hq-field type="number" step="0.01" [ariaLabel]="fieldLabel(field)" [invalid]="!!displayError(field)" [formControlName]="field.key"></hq-field>
+              </div>
+            </hq-form-field>
+
+            <!-- EMAIL -->
+            <hq-field *ngSwitchCase="'EMAIL'" type="email" [label]="fieldLabel(field)" [error]="displayError(field)" [formControlName]="field.key"></hq-field>
+
+            <!-- PHONE -->
+            <hq-form-field *ngSwitchCase="'PHONE'" [label]="fieldLabel(field)" [error]="displayError(field)">
+              <hq-phone-number-input [showLabel]="false" [formControlName]="field.key"></hq-phone-number-input>
+            </hq-form-field>
+
+            <!-- DOCUMENT -->
+            <hq-form-field *ngSwitchCase="'DOCUMENT'" [label]="fieldLabel(field)" [error]="displayError(field)"
+                            [hint]="field.documentCategory ? ('onboardingForms.previewDialog.category' | translate: { category: field.documentCategory }) : ''">
+              <div class="document-mock">
+                <i class="bi bi-upload me-2"></i>{{ 'onboardingForms.previewDialog.chooseFile' | translate }}
+              </div>
+            </hq-form-field>
+
+            <!-- TEXT (default) -->
+            <hq-field *ngSwitchDefault type="text" [label]="fieldLabel(field)" [error]="displayError(field)" [formControlName]="field.key"></hq-field>
+
+          </ng-container>
+
+          <div class="text-danger small mt-1" *ngIf="field.type === 'CHECKBOX' && displayError(field) as err">{{ err }}</div>
+        </div>
+
+        <div class="field-helper fst-italic" *ngIf="(currentStep?.fields?.length ?? 0) === 0">
+          {{ 'onboardingForms.previewDialog.noFields' | translate }}
+        </div>
+      </form>
+
+      <!-- Nav -->
+      <div class="d-flex gap-3 pt-3 border-top mt-3">
+        <button hqButton="secondary" type="button" class="flex-fill" (click)="back()" [disabled]="isFirstStep">
+          {{ 'onboardingForms.previewDialog.back' | translate }}
+        </button>
+        <button hqButton="accent" type="button" class="flex-fill" (click)="next()" [disabled]="!canAdvance">
+          {{ (isLastStep ? 'onboardingForms.previewDialog.submit' : 'onboardingForms.previewDialog.next') | translate }}
+        </button>
+      </div>
+    </ng-container>
+
+    <ng-template #noSteps>
+      <hq-empty-state [title]="'onboardingForms.previewDialog.noSteps' | translate" icon="bi-layout-text-window"></hq-empty-state>
+    </ng-template>
+  </div>
+</div>

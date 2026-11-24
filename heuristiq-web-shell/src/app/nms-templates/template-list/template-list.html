@@ -1,0 +1,75 @@
+<hq-page-header
+  *ngIf="!embedded"
+  [kicker]="'pageMeta.nmsTemplates.title' | translate"
+  [title]="pageTitle"
+  [loading]="isLoading"
+  [loadingLabel]="'shared.pageHeader.loading' | translate"
+  [showBack]="true"
+  [backLabel]="'nmsTemplates.list.backToChannels' | translate"
+  (backClick)="back()">
+</hq-page-header>
+
+<hq-screen-help screen="nmsTemplate"></hq-screen-help>
+
+<hq-stat-cards [stats]="stats"></hq-stat-cards>
+
+<div class="table-surface">
+  <div class="table-surface__header">
+    <div class="table-heading">
+      <span class="table-kicker">{{ 'shared.listPage.total' | translate: { count: totalElements } }}</span>
+    </div>
+    <ng-container *hqHasPrivilege="['NMS_TEMPLATE_CREATE', 'NMS_MANAGE']">
+      <button type="button" class="table-create-btn" (click)="create()">
+        <i class="bi bi-plus-lg"></i> {{ 'nmsTemplates.list.newButton' | translate }}
+      </button>
+    </ng-container>
+  </div>
+
+  <div class="table-surface__body">
+    <hq-filter-bar collapsible>
+      <hq-field type="text" [placeholder]="'accessManagement.fields.name' | translate" [(ngModel)]="filters.name" (keyup.enter)="applyFilters()"></hq-field>
+      <hq-field type="text" [placeholder]="'nmsTemplates.list.columns.event' | translate" [(ngModel)]="filters.event" (keyup.enter)="applyFilters()"></hq-field>
+      <hq-searchable-select [(ngModel)]="filters.status" [allowOther]="false" [placeholder]="'shared.listPage.anyStatus' | translate">
+        <hq-ss-option value="ACTIVE" [label]="'nmsTemplates.list.stats.active' | translate"></hq-ss-option>
+        <hq-ss-option value="INACTIVE" [label]="'nmsTemplates.list.stats.inactive' | translate"></hq-ss-option>
+      </hq-searchable-select>
+      <div hqFilterActions>
+        <button hqButton="accent" type="button" (click)="applyFilters()"><i class="bi bi-funnel"></i> {{ 'shared.listPage.filter' | translate }}</button>
+        <button hqButton="secondary" type="button" (click)="clearFilters()">{{ 'shared.listPage.clear' | translate }}</button>
+      </div>
+    </hq-filter-bar>
+
+    <hq-common-table
+      [columns]="columns"
+      [rows]="rows"
+      [isLoading]="isLoading"
+      [hasError]="hasError"
+      [emptyMessage]="(hasActiveFilters ? ('nmsTemplates.list.noneFoundMatching' | translate: { query: filterSummary }) : ('nmsTemplates.list.noneFound' | translate))"
+      [errorMessage]="'nmsTemplates.list.messages.loadFailed' | translate">
+      <ng-template #rowActions let-row>
+        <ng-container *hqHasPrivilege="['NMS_TEMPLATE_UPDATE', 'NMS_MANAGE']">
+          <button type="button" class="row-action-btn" [title]="'shared.listPage.rowActions.edit' | translate" (click)="edit(row)">
+            <i class="bi bi-pencil"></i>
+          </button>
+        </ng-container>
+        <ng-container *hqHasPrivilege="['NMS_TEMPLATE_DELETE', 'NMS_MANAGE']">
+          <button type="button" class="row-action-btn danger" [title]="'shared.listPage.rowActions.delete' | translate" (click)="delete(row)">
+            <i class="bi bi-trash3"></i>
+          </button>
+        </ng-container>
+      </ng-template>
+    </hq-common-table>
+
+    <hq-table-footer
+      [page]="page"
+      [size]="pageSize"
+      [itemCount]="rows.length"
+      [hasMore]="page + 1 < totalPages"
+      [totalItems]="totalElements"
+      [loading]="isLoading"
+      [sizeOptions]="pageSizeOptions"
+      (pageChange)="goToPage($event)"
+      (sizeChange)="onPageSizeChange($event)">
+    </hq-table-footer>
+  </div>
+</div>

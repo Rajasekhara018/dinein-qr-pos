@@ -1,0 +1,231 @@
+<hq-page-header
+  [kicker]="'nav.sections.qaAutomation' | translate"
+  [title]="isNew ? ('qaDashboard.studio.editor.newTitle' | translate) : ((current?.tcId ?? '') + ' · ' + (current?.name ?? ''))"
+  [subtitle]="'qaDashboard.studio.editor.subtitle' | translate"
+  [loading]="isLoading || isSaving"
+  [loadingLabel]="'shared.pageHeader.loading' | translate"
+  [showBack]="true"
+  [backLabel]="'qaDashboard.studio.editor.back' | translate"
+  (backClick)="goBack()">
+</hq-page-header>
+
+<hq-error-state class="qa-load-failed" *ngIf="loadFailed" [title]="'qaDashboard.studio.editor.loadFailed' | translate" (retry)="reload()"></hq-error-state>
+<hq-loading-state *ngIf="isLoading" [label]="'qaDashboard.loading' | translate"></hq-loading-state>
+
+<hq-alert class="qa-read-only" tone="info" dense *ngIf="!loadFailed && !isLoading && readOnly">{{ 'qaDashboard.studio.editor.readOnly' | translate }}</hq-alert>
+
+<hq-alert class="qa-conflict" tone="danger" *ngIf="conflict">
+  <span>{{ 'qaDashboard.studio.editor.conflict' | translate }}</span>
+  <button hqButton="secondary" type="button" class="qa-reload" (click)="reload()">{{ 'qaDashboard.studio.editor.reload' | translate }}</button>
+</hq-alert>
+
+<form [formGroup]="form" (ngSubmit)="save()" novalidate class="qa-studio-form" *ngIf="!loadFailed && !isLoading">
+
+  <!-- Basics -->
+  <fieldset class="qa-card qa-section">
+    <legend>{{ 'qaDashboard.studio.editor.basics' | translate }}</legend>
+    <hq-form-grid cols="1" gap="md">
+      <hq-field
+             type="text"
+             inputId="studio-name"
+             formControlName="name"
+             [label]="'qaDashboard.studio.editor.name' | translate"
+             [invalid]="!!errorOf(form.controls.name)"
+             [error]="errorOf(form.controls.name)"></hq-field>
+      <hq-field
+                type="textarea"
+                inputId="studio-description"
+                [rows]="2"
+                formControlName="description"
+                [label]="'qaDashboard.studio.editor.description' | translate"
+                [invalid]="!!errorOf(form.controls.description)"
+                [error]="errorOf(form.controls.description)"></hq-field>
+    </hq-form-grid>
+    <hq-form-grid cols="4" gap="md" class="qa-field-grid">
+      <hq-form-field for="studio-module" [label]="'qaDashboard.filters.module' | translate">
+        <hq-searchable-select inputId="studio-module" formControlName="module" [allowOther]="false">
+          <hq-ss-option *ngFor="let m of modules" [value]="m" [label]="m"></hq-ss-option>
+        </hq-searchable-select>
+      </hq-form-field>
+      <hq-field
+             type="text"
+             inputId="studio-submodule"
+             formControlName="subModule"
+             [label]="'qaDashboard.filters.subModule' | translate"
+             [invalid]="!!errorOf(form.controls.subModule)"
+             [error]="errorOf(form.controls.subModule)"></hq-field>
+      <hq-form-field for="studio-suite" [label]="'qaDashboard.filters.suite' | translate">
+        <hq-searchable-select inputId="studio-suite" formControlName="suite" [allowOther]="false">
+          <hq-ss-option *ngFor="let s of suites" [value]="s" [label]="'qaDashboard.suite.' + s | translate"></hq-ss-option>
+        </hq-searchable-select>
+      </hq-form-field>
+      <div class="qa-field--check">
+        <hq-checkbox class="qa-check" formControlName="enabled">{{ 'qaDashboard.studio.editor.enabled' | translate }}</hq-checkbox>
+      </div>
+    </hq-form-grid>
+  </fieldset>
+
+  <!-- Request -->
+  <fieldset class="qa-card qa-section">
+    <legend>{{ 'qaDashboard.studio.editor.request' | translate }}</legend>
+    <hq-form-grid cols="2" gap="md" class="qa-field-grid">
+      <hq-form-field for="studio-auth" [label]="'qaDashboard.studio.editor.auth' | translate" [hint]="'qaDashboard.studio.editor.authHint' | translate">
+        <hq-searchable-select inputId="studio-auth" formControlName="auth" [allowOther]="false">
+          <hq-ss-option *ngFor="let a of auths" [value]="a" [label]="authKeys[a] | translate"></hq-ss-option>
+        </hq-searchable-select>
+      </hq-form-field>
+      <hq-form-field for="studio-method" [label]="'qaDashboard.endpointInventory.method' | translate">
+        <hq-searchable-select inputId="studio-method" formControlName="method" [allowOther]="false">
+          <hq-ss-option *ngFor="let m of methods" [value]="m" [label]="m"></hq-ss-option>
+        </hq-searchable-select>
+      </hq-form-field>
+    </hq-form-grid>
+
+    <div class="qa-path-field">
+      <hq-field inputId="studio-path" class="qa-mono" type="text" formControlName="path" autocomplete="off" [spellcheck]="false"
+             [label]="'qaDashboard.studio.editor.path' | translate" [role]="'combobox'" [ariaExpanded]="suggestionsOpen" ariaControls="studio-path-suggestions" ariaAutocomplete="list"
+             (input)="onPathInput()" (keydown)="onPathKey($event)"
+             [invalid]="!!errorOf(form.controls.path)" [error]="errorOf(form.controls.path)"
+             [hint]="errorOf(form.controls.path) ? '' : ('qaDashboard.studio.editor.pathHint' | translate)"></hq-field>
+      <ul class="qa-suggestions" id="studio-path-suggestions" role="listbox" *ngIf="suggestionsOpen" [attr.aria-label]="'qaDashboard.studio.editor.suggestions' | translate">
+        <li *ngFor="let s of suggestions; let i = index" role="presentation">
+          <button type="button" class="qa-suggestion" role="option" [attr.aria-selected]="false" (click)="chooseSuggestion(s)" (keydown)="onSuggestionKey($event, i)">
+            <span class="qa-method" [ngClass]="methodClass(s.method)">{{ s.method }}</span>
+            <span class="qa-mono">{{ s.path }}</span>
+            <span class="qa-muted">{{ s.module }}</span>
+          </button>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Query parameters -->
+    <div class="qa-subsection">
+      <h3>{{ 'qaDashboard.studio.editor.query' | translate }}</h3>
+      <p class="qa-hint">{{ 'qaDashboard.studio.editor.limitQuery' | translate: { max: limits.queryMax } }}</p>
+      <div formArrayName="query">
+        <div class="qa-kv" *ngFor="let row of form.controls.query.controls; let i = index; trackBy: trackByIndex" [formGroupName]="i">
+          <hq-field
+                 type="text"
+                 class="qa-kv__name"
+                 formControlName="name"
+                 [ariaLabel]="'qaDashboard.studio.editor.paramName' | translate"
+                 [invalid]="!!(rowError(row) ? 'true' : null)"
+                 [spellcheck]="false"></hq-field>
+          <hq-field type="text" class="qa-kv__value" formControlName="value" [ariaLabel]="'qaDashboard.studio.editor.paramValue' | translate" [spellcheck]="false"></hq-field>
+          <button hqButton="secondary" type="button" class="qa-remove-query" *ngIf="!readOnly" (click)="removeQuery(i)" [attr.aria-label]="'qaDashboard.studio.editor.remove' | translate">
+            <i class="bi bi-x-lg"></i>
+          </button>
+          <p class="qa-field-error qa-kv__error" role="alert" *ngIf="rowError(row) as err">{{ err }}</p>
+        </div>
+      </div>
+      <p class="qa-field-error" role="alert" *ngIf="errorOf(form.controls.query) as err">{{ err }}</p>
+      <button hqButton="secondary" type="button" class="qa-add-query" *ngIf="!readOnly" (click)="addQuery()" [disabled]="form.controls.query.length >= limits.queryMax">
+        <i class="bi bi-plus-lg"></i> {{ 'qaDashboard.studio.editor.addQuery' | translate }}
+      </button>
+    </div>
+
+    <!-- Headers -->
+    <div class="qa-subsection">
+      <h3>{{ 'qaDashboard.studio.editor.headers' | translate }}</h3>
+      <p class="qa-hint">{{ 'qaDashboard.studio.editor.limitHeaders' | translate: { max: limits.headersMax } }}</p>
+      <div formArrayName="headers">
+        <div class="qa-kv" *ngFor="let row of form.controls.headers.controls; let i = index; trackBy: trackByIndex" [formGroupName]="i">
+          <hq-field
+                 type="text"
+                 class="qa-kv__name"
+                 formControlName="name"
+                 [ariaLabel]="'qaDashboard.studio.editor.headerName' | translate"
+                 [invalid]="!!(rowError(row) ? 'true' : null)"
+                 [spellcheck]="false"></hq-field>
+          <hq-field type="text" class="qa-kv__value" formControlName="value" [ariaLabel]="'qaDashboard.studio.editor.headerValue' | translate" [spellcheck]="false"></hq-field>
+          <button hqButton="secondary" type="button" class="qa-remove-header" *ngIf="!readOnly" (click)="removeHeader(i)" [attr.aria-label]="'qaDashboard.studio.editor.remove' | translate">
+            <i class="bi bi-x-lg"></i>
+          </button>
+          <p class="qa-field-error qa-kv__error" role="alert" *ngIf="rowError(row) as err">{{ err }}</p>
+        </div>
+      </div>
+      <p class="qa-field-error" role="alert" *ngIf="errorOf(form.controls.headers) as err">{{ err }}</p>
+      <button hqButton="secondary" type="button" class="qa-add-header" *ngIf="!readOnly" (click)="addHeader()" [disabled]="form.controls.headers.length >= limits.headersMax">
+        <i class="bi bi-plus-lg"></i> {{ 'qaDashboard.studio.editor.addHeader' | translate }}
+      </button>
+    </div>
+
+    <!-- Body: only for the methods that carry one. It is text in a box, never rendered as HTML. -->
+    <div class="qa-subsection qa-body" *ngIf="showBody">
+      <h3><label for="studio-body">{{ 'qaDashboard.studio.editor.body' | translate }}</label></h3>
+      <hq-field
+                type="textarea"
+                inputId="studio-body"
+                [rows]="10"
+                formControlName="body"
+                [spellcheck]="false"
+                [invalid]="!!errorOf(form.controls.body)"
+                [error]="errorOf(form.controls.body)"
+                ariaDescribedBy="studio-body-hint"></hq-field>
+      <p class="qa-hint" id="studio-body-hint">
+        {{ 'qaDashboard.studio.editor.bodyHint' | translate }}
+        <span class="qa-body__counter">{{ 'qaDashboard.studio.editor.bodyCounter' | translate: { bytes: bodyBytes, max: limits.bodyMaxBytes } }}</span>
+      </p>
+      <button hqButton="secondary" type="button" class="qa-format" *ngIf="!readOnly" (click)="formatBody()">{{ 'qaDashboard.studio.editor.format' | translate }}</button>
+    </div>
+  </fieldset>
+
+  <!-- Assertions -->
+  <fieldset class="qa-card qa-section">
+    <legend>{{ 'qaDashboard.studio.editor.assertions' | translate }}</legend>
+    <p class="qa-hint">{{ 'qaDashboard.studio.editor.assertionsHint' | translate: { max: limits.assertionsMax } }}</p>
+    <div formArrayName="assertions">
+      <div class="qa-assertion" *ngFor="let row of form.controls.assertions.controls; let i = index; trackBy: trackByIndex" [formGroupName]="i">
+        <hq-searchable-select
+          class="qa-assertion__type"
+          formControlName="type"
+          [ariaLabel]="'qaDashboard.studio.editor.assertionType' | translate"
+          [allowOther]="false">
+          <hq-ss-option *ngFor="let t of assertionTypes" [value]="t" [label]="assertionTypeKeys[t] | translate"></hq-ss-option>
+        </hq-searchable-select>
+        <hq-field
+               type="text"
+               class="qa-assertion__path"
+               *ngIf="assertionInputs[row.controls.type.value].path"
+               formControlName="path"
+               [spellcheck]="false"
+               placeholder="$.responseObject.id"
+               [ariaLabel]="'qaDashboard.studio.editor.jsonPath' | translate"
+               [invalid]="!!(rowError(row) ? 'true' : null)"></hq-field>
+        <hq-field
+               type="text"
+               class="qa-assertion__name"
+               *ngIf="assertionInputs[row.controls.type.value].name"
+               formControlName="name"
+               [spellcheck]="false"
+               [ariaLabel]="'qaDashboard.studio.editor.headerName' | translate"
+               [invalid]="!!(rowError(row) ? 'true' : null)"></hq-field>
+        <hq-field
+               type="text"
+               class="qa-assertion__expected"
+               *ngIf="assertionInputs[row.controls.type.value].expected"
+               formControlName="expected"
+               [spellcheck]="false"
+               [placeholder]="(row.controls.type.value === 'STATUS' ? 'qaDashboard.studio.editor.expectedStatus' : row.controls.type.value === 'MAX_TIME_MS' ? 'qaDashboard.studio.editor.expectedTime' : 'qaDashboard.studio.editor.expected') | translate"
+               [ariaLabel]="'qaDashboard.studio.editor.expected' | translate"
+               [invalid]="!!(rowError(row) ? 'true' : null)"></hq-field>
+        <button hqButton="secondary" type="button" class="qa-remove-assertion" *ngIf="!readOnly" (click)="removeAssertion(i)" [attr.aria-label]="'qaDashboard.studio.editor.remove' | translate">
+          <i class="bi bi-x-lg"></i>
+        </button>
+        <p class="qa-field-error qa-assertion__error" role="alert" *ngIf="rowError(row) as err">{{ err }}</p>
+      </div>
+    </div>
+    <p class="qa-field-error qa-assertions-error" role="alert" *ngIf="errorOf(form.controls.assertions) as err">{{ err }}</p>
+    <button hqButton="secondary" type="button" class="qa-add-assertion" *ngIf="!readOnly" (click)="addAssertion()" [disabled]="form.controls.assertions.length >= limits.assertionsMax">
+      <i class="bi bi-plus-lg"></i> {{ 'qaDashboard.studio.editor.addAssertion' | translate }}
+    </button>
+  </fieldset>
+
+  <hq-form-actions align="start" class="qa-no-print">
+    <p class="qa-field-error qa-summary" role="alert" *ngIf="submitted && form.invalid">{{ 'qaDashboard.studio.editor.invalidSummary' | translate: { count: issueCount } }}</p>
+    <button hqButton="accent" type="submit" class="qa-save" *ngIf="!readOnly" [disabled]="isSaving">
+      {{ (isSaving ? 'qaDashboard.studio.editor.saving' : 'qaDashboard.studio.editor.save') | translate }}
+    </button>
+    <a hqButton="secondary" class="qa-cancel" [routerLink]="routes.list">{{ 'qaDashboard.studio.editor.back' | translate }}</a>
+  </hq-form-actions>
+</form>

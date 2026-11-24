@@ -1,0 +1,77 @@
+<!-- Opens the file chooser when pickFile() is called from code (the drop area below opens its own). -->
+<hq-file-drop #picker appearance="none" [inputId]="inputId" [accept]="accept" [multiple]="multiple" [validate]="false"
+               (picked)="onFilesPicked($event)"></hq-file-drop>
+
+<div class="hq-multi">
+  @if (!disabled) {
+    <div class="hq-multi__picker">
+      @if (allowCustomName) {
+        <hq-field class="hq-multi__name" [label]="texts.fileName()" [maxLength]="64" [showCounter]="false"
+                   [invalid]="customNameInvalid" [error]="customNameInvalid ? texts.fileNameInvalid() : null"
+                   [(ngModel)]="customName" [ngModelOptions]="{ standalone: true }"></hq-field>
+      }
+      <hq-file-drop
+        [label]="label" [hints]="hints" [accept]="accept" [maxSizeMB]="maxSizeMB" [isRequired]="isRequired"
+        [multiple]="multiple" [maxFiles]="maxFiles" [compact]="compact" [loading]="loading"
+        [disabled]="atLimit || customNameInvalid" [validate]="false" [chooseId]="inputId + 'Btn'"
+        (picked)="onFilesPicked($event)">
+      </hq-file-drop>
+    </div>
+  }
+
+  @if (value.length) {
+    <ul class="hq-multi__list" [class.hq-multi__list--gallery]="thumbnails">
+      @for (doc of value; track doc.id) {
+        <li class="hq-multi__item" [class.hq-multi__item--tile]="thumbnails">
+          @if (thumbnails) {
+            <button type="button" class="hq-multi__thumb" [class.hq-multi__thumb--static]="!canOpen" [disabled]="!canOpen" (click)="open(doc)"
+                    [attr.aria-label]="canOpen ? texts.viewNamed(doc.originalFileName) : doc.originalFileName">
+              @if (thumbs[doc.id]) {
+                <img [src]="thumbs[doc.id]" [alt]="doc.originalFileName" loading="lazy" />
+              } @else {
+                <mat-icon aria-hidden="true">{{ isImage(doc) ? 'image' : 'description' }}</mat-icon>
+              }
+            </button>
+          }
+          <button type="button" class="hq-multi__chip" [class.hq-multi__chip--static]="!canOpen" (click)="open(doc)" [matTooltip]="doc.originalFileName">
+            @if (!thumbnails) {
+              <span class="hq-multi__icon" aria-hidden="true"><mat-icon>description</mat-icon></span>
+            }
+            <span class="hq-multi__meta">
+              <span class="hq-multi__file">{{ doc.originalFileName }}</span>
+              <span class="hq-multi__size">{{ formatSize(doc.sizeBytes) }}</span>
+            </span>
+          </button>
+          @if (isPrimary(doc) && primaryLabel) {
+            <span class="hq-multi__badge"><i class="bi bi-star-fill" aria-hidden="true"></i>{{ primaryLabel }}</span>
+          }
+          @if (canMakePrimary(doc)) {
+            <button type="button" hqButton="primary" appearance="text" iconOnly class="hq-multi__primary" [attr.aria-label]="makePrimaryLabel"
+                    [matTooltip]="makePrimaryLabel" [disabled]="loading" (click)="makePrimary(doc)">
+              <i class="bi bi-star" aria-hidden="true"></i>
+            </button>
+          }
+          <!-- View is offered on read-only lists too: looking at the file is all a viewer may do there (when it can be read back). -->
+          @if (canOpen) {
+            <button type="button" hqButton="primary" appearance="text" iconOnly class="hq-multi__view" [attr.aria-label]="texts.viewNamed(doc.originalFileName)"
+                    [matTooltip]="texts.view()" (click)="open(doc)">
+              <i class="bi bi-eye" aria-hidden="true"></i>
+            </button>
+          }
+          @if (!disabled && removable) {
+            <button type="button" hqButton="warn" appearance="text" iconOnly class="hq-multi__remove" [attr.aria-label]="texts.removeNamed(doc.originalFileName)"
+                    [matTooltip]="texts.remove()" (click)="remove(doc)">
+              <i class="bi bi-trash" aria-hidden="true"></i>
+            </button>
+          }
+        </li>
+      }
+    </ul>
+  } @else if (disabled) {
+    <span class="hq-multi__hint">{{ texts.noDocuments() }}</span>
+  }
+
+  @if (errorMessage) {
+    <div class="hq-multi__error" role="alert"><mat-icon aria-hidden="true">error_outline</mat-icon><span>{{ errorMessage }}</span></div>
+  }
+</div>

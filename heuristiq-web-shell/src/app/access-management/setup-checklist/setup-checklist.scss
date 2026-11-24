@@ -1,0 +1,72 @@
+.setup-note {
+  margin: 0 0 12px;
+  color: var(--text-muted, #6b7280);
+
+}
+
+.setup-summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  border-radius: 8px;
+  background: var(--warning-soft, #fff7e6);
+  color: var(--warning-strong, #8a5a00);
+
+  &--done {
+    background: var(--success-soft, #ecfdf3);
+    color: var(--success-strong, #067647);
+  }
+}
+
+.setup-items {
+  list-style: none;
+  margin: 0 0 16px;
+  padding: 0;
+
+  li {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 12px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border-subtle, #eaecf0);
+  }
+
+  &__label {
+    min-width: 160px;
+    font-weight: 600;
+  }
+
+  &__link {
+    font-size: 0.875rem;
+  }
+}
+
+/* The grids are hq-common-table; a "fix" link sits after the state badge in its cell. */
+.setup-table ::ng-deep td .setup-items__link {
+  margin-inline-start: 8px;
+}
+
+.setup-state {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 0.8125rem;
+
+  &--done {
+    background: var(--success-soft, #ecfdf3);
+    color: var(--success-strong, #067647);
+  }
+
+  &--missing {
+    background: var(--danger-soft, #fef3f2);
+    color: var(--danger, #b42318);
+  }
+
+  &--notNeeded {
+    background: var(--neutral-soft, #f2f4f7);
+    color: var(--text-muted, #6b7280);
+  }
+}

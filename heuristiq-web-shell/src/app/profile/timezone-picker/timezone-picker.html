@@ -1,0 +1,34 @@
+<div class="tzp">
+  <div class="tzp__box">
+    <hq-field
+      type="text"
+      class="pf-input"
+      autocomplete="off"
+      [spellcheck]="false"
+      [value]="query"
+      [ariaLabel]="'timezone.picker.searchLabel' | translate"
+      [placeholder]="'timezone.picker.searchPlaceholder' | translate: { example: example }"
+      [invalid]="invalid"
+      (input)="onType($any($event.target).value)"
+      (focus)="open = true"
+      (blur)="closeSoon()"></hq-field>
+    <ul class="tzp__list" role="listbox" *ngIf="open" [attr.aria-label]="'timezone.picker.listLabel' | translate">
+      <li *ngFor="let zone of options; trackBy: trackZone" role="option" class="tzp__option"
+          [class.tzp__option--active]="zone === query" (mousedown)="choose(zone)">{{ zone }}</li>
+      <li *ngIf="!options.length" class="tzp__empty">{{ 'timezone.picker.noMatches' | translate }}</li>
+    </ul>
+  </div>
+
+  <div class="invalid-feedback d-block" *ngIf="invalid">{{ invalidText }}</div>
+
+  <button hqButton="primary" appearance="text" size="sm" type="button" class="tzp__device" (click)="useDevice()">
+    {{ 'timezone.picker.useDevice' | translate }}
+  </button>
+
+  <p class="tzp__line" *ngIf="!invalid">
+    <span *ngIf="usingDevice">{{ 'timezone.picker.deviceActive' | translate }}. </span>
+    <span>{{ 'timezone.picker.datesShownIn' | translate }}</span>
+    <hq-timezone-badge [timezone]="previewZone"></hq-timezone-badge>
+  </p>
+  <p class="tzp__line tzp__preview" *ngIf="!invalid">{{ previewText }}</p>
+</div>

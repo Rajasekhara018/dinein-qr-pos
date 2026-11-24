@@ -1,0 +1,24 @@
+@if (content) {
+  <section class="rsh" [class.rsh--closed]="closed">
+    <button type="button" class="rsh__toggle" (click)="toggle()" [attr.aria-expanded]="!closed">
+      <i class="bi bi-lightbulb" aria-hidden="true"></i>
+      <span>{{ title }}</span>
+      <i class="bi" [class.bi-chevron-down]="closed" [class.bi-chevron-up]="!closed" aria-hidden="true"></i>
+    </button>
+    @if (!closed) {
+      <div class="rsh__body">
+        <p class="rsh__what">{{ content.what }}</p>
+        @if (content.steps.length) {
+          <ol class="rsh__steps">
+            @for (step of content.steps; track $index) {
+              <li>{{ step }}</li>
+            }
+          </ol>
+        }
+        @if (content.tip) {
+          <p class="rsh__tip"><i class="bi bi-info-circle" aria-hidden="true"></i> {{ content.tip }}</p>
+        }
+      </div>
+    }
+  </section>
+}

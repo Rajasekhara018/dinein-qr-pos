@@ -1,0 +1,88 @@
+<hq-page-header
+  [kicker]="(organization.currentName$ | async) ?? ('nav.sections.organization' | translate)"
+  [title]="'orgStructure.chart.title' | translate"
+  [subtitle]="'orgStructure.chart.subtitle' | translate">
+</hq-page-header>
+
+<hq-screen-help screen="orgChart"></hq-screen-help>
+
+<app-org-selector></app-org-selector>
+
+<div class="org-chart">
+  <section class="table-surface org-chart__tree">
+    <div class="table-surface__header">
+      <div class="table-heading">
+        <span class="table-kicker">{{ 'orgStructure.chart.treeTitle' | translate }}</span>
+      </div>
+    </div>
+    <div class="table-surface__body">
+      <p *ngIf="isLoading" class="muted">{{ 'orgStructure.chart.loading' | translate }}</p>
+      <hq-error-state *ngIf="hasError" [title]="'orgStructure.chart.loadFailed' | translate"></hq-error-state>
+      <p *ngIf="!isLoading && !hasError && roots.length === 0" class="muted">{{ 'orgStructure.chart.noUnits' | translate }}</p>
+
+      <ul class="tree" role="tree">
+        <li
+          *ngFor="let node of visible; trackBy: trackNode"
+          class="tree__row"
+          role="treeitem"
+          [class.tree__row--selected]="selected === node"
+          [style.padding-left.rem]="0.5 + node.depth * 1.25"
+          [attr.aria-expanded]="node.unit.childCount > 0 ? node.expanded : null"
+          (click)="select(node)">
+          <button
+            type="button"
+            class="tree__toggle"
+            *ngIf="node.unit.childCount > 0; else leaf"
+            [attr.aria-label]="'orgStructure.chart.toggle' | translate"
+            (click)="toggle(node, $event)">
+            <i class="bi" [ngClass]="node.loading ? 'bi-hourglass-split' : node.expanded ? 'bi-chevron-down' : 'bi-chevron-right'"></i>
+          </button>
+          <ng-template #leaf><span class="tree__toggle tree__toggle--leaf"></span></ng-template>
+          <span class="tree__name">{{ node.unit.name }}</span>
+          <span class="tree__head" *ngIf="node.unit.headName" [title]="'orgStructure.chart.headBadge' | translate">
+            <i class="bi bi-person-badge-fill"></i> {{ node.unit.headName }}
+          </span>
+          <span class="tree__count">{{ 'orgStructure.chart.headcount' | translate: { count: node.unit.headcount } }}</span>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="table-surface org-chart__people">
+    <div class="table-surface__header">
+      <div class="table-heading">
+        <span class="table-kicker" *ngIf="selected; else pickUnit">
+          {{ 'orgStructure.chart.peopleIn' | translate: { unit: selected.unit.name } }}
+        </span>
+        <ng-template #pickUnit>
+          <span class="table-kicker">{{ 'orgStructure.chart.selectUnit' | translate }}</span>
+        </ng-template>
+      </div>
+    </div>
+    <div class="table-surface__body" *ngIf="selected">
+      <p class="org-chart__head" *ngIf="selected.unit.headName; else noHead">
+        <i class="bi bi-person-badge-fill"></i>
+        {{ 'orgStructure.chart.headOf' | translate: { name: selected.unit.headName } }}
+      </p>
+      <ng-template #noHead><p class="muted org-chart__head">{{ 'orgStructure.chart.noHead' | translate }}</p></ng-template>
+      <div class="org-chart__head-links" *ngIf="selected.unit.headUserId as headUser">
+        <a hqButton="secondary" *hqHasPrivilege="'WALLET_ADMIN_USER_WALLET_READ'" [routerLink]="['/wallet/admin/users', headUser]">
+          <i class="bi bi-wallet2"></i> {{ 'orgStructure.chart.headWallet' | translate }}
+        </a>
+        <a hqButton="secondary" *hqHasPrivilege="'WALLET_ADMIN_TEAM_MOVEMENT_READ'" [routerLink]="['/wallet/admin/team-movement']" [queryParams]="{ user: headUser }">
+          <i class="bi bi-bar-chart-steps"></i> {{ 'orgStructure.chart.headMovement' | translate }}
+        </a>
+      </div>
+      <hq-common-table
+        [columns]="peopleColumns"
+        [rows]="peopleRows"
+        [isLoading]="peopleLoading && people.length === 0"
+        [showActionsColumn]="false"
+        [emptyMessage]="'orgStructure.chart.noPeople' | translate">
+      </hq-common-table>
+      <button hqButton="secondary" type="button" *ngIf="hasMorePeople && !peopleLoading" (click)="loadPeople()">
+        {{ 'orgStructure.chart.loadMore' | translate }}
+      </button>
+    </div>
+  </section>
+</div>

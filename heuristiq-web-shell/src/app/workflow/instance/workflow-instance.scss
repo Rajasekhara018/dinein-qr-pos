@@ -1,0 +1,33 @@
+.wf-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+  justify-content: space-between;
+}
+
+.wf-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--edu-muted, #64748b);
+}
+
+.wf-mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.85rem;
+}
+
+.wf-section {
+  margin: 1.25rem 0 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--edu-muted, #64748b);
+}
+
+.wf-table-wrap { overflow-x: auto; }
+::ng-deep .wf-key { width: 30%; font-weight: 700; word-break: break-all; }
+::ng-deep .wf-val { word-break: break-all; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.8rem; }

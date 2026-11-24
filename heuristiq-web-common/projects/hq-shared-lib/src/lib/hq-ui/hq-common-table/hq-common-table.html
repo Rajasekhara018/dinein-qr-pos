@@ -1,0 +1,50 @@
+<div class="table-frame">
+  <table class="common-table">
+    <thead>
+      <tr>
+        <th *ngFor="let col of columns" [attr.aria-sort]="ariaSort(col)" [class.sortable]="col.sortable" [ngClass]="col.className ?? ''"
+          [attr.tabindex]="col.sortable ? 0 : null" (click)="toggleSort(col)" (keydown.enter)="toggleSort(col)">
+          <ng-container *ngIf="headTemplate(col) as headTpl; else plainHead">
+            <ng-container *ngTemplateOutlet="headTpl; context: { $implicit: col }"></ng-container>
+          </ng-container>
+          <ng-template #plainHead>{{ col.label }}</ng-template>
+          <i *ngIf="col.sortable" class="bi sort-icon" [class.bi-arrow-down-up]="sort?.key !== col.key"
+            [class.bi-sort-up]="sort?.key === col.key && sort?.direction === 'asc'"
+            [class.bi-sort-down]="sort?.key === col.key && sort?.direction === 'desc'"></i>
+        </th>
+        <th *ngIf="showActionsColumn">{{ actionsHeading }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-container *ngFor="let row of displayRows; let i = index">
+      <tr [class.clickable-row]="clickableRows" [ngClass]="classesOf(row)" [attr.tabindex]="clickableRows && keyboardRows ? 0 : null"
+        [class.highlighted-row]="isHighlighted(i)" (click)="clickableRows && rowClick.emit(row)" (keydown.enter)="onRowKey(row)">
+        <td *ngFor="let col of columns" [ngClass]="col.className ?? ''" [attr.title]="col.tooltip ? cellValue(row, col) : null">
+          <ng-container *ngIf="cellTemplate(col) as tpl; else plainCell">
+            <ng-container *ngTemplateOutlet="tpl; context: { $implicit: row }"></ng-container>
+          </ng-container>
+          <ng-template #plainCell>{{ cellValue(row, col) }}</ng-template>
+        </td>
+        <td *ngIf="showActionsColumn">
+          <div class="row-actions">
+            <ng-container *ngTemplateOutlet="rowActionsTpl ?? null; context: { $implicit: row }"></ng-container>
+          </div>
+        </td>
+      </tr>
+      <tr class="detail-row" *ngIf="rowDetailTpl && isRowExpanded(row)">
+        <td [attr.colspan]="columns.length + (showActionsColumn ? 1 : 0)">
+          <ng-container *ngTemplateOutlet="rowDetailTpl; context: { $implicit: row }"></ng-container>
+        </td>
+      </tr>
+      </ng-container>
+      <tr *ngIf="!isLoading && !hasError && rows.length === 0">
+        <td [attr.colspan]="columns.length + (showActionsColumn ? 1 : 0)" class="no-data-cell">{{ emptyText }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="app-state app-state--error" *ngIf="hasError">
+  <div class="app-state__icon"><i class="bi bi-exclamation-triangle"></i></div>
+  <h3>{{ errorText }}</h3>
+</div>

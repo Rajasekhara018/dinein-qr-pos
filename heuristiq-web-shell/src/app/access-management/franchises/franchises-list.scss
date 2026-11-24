@@ -1,0 +1,260 @@
+.franchise-form {
+  border: 1px solid var(--border-color, #e5e7eb);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.franchise-hint,
+.franchise-state {
+  color: var(--text-muted, #6b7280);
+  font-size: 0.875rem;
+}
+
+.franchise-state--error {
+  color: var(--danger, #b42318);
+}
+
+.franchise-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+
+  label {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+  }
+}
+
+.franchise-terms {
+  display: grid;
+  grid-template-columns: minmax(180px, 2fr) 1fr 1fr auto;
+  gap: 8px;
+  align-items: center;
+  margin: 8px 0;
+}
+
+// A new franchise's application row, in the order it is filled in:
+// 1) application (+ remove), 2) place on its own line, 3) offer, max agents and fee (the place fills these).
+.franchise-terms--plans {
+  grid-template-columns: minmax(200px, 2fr) 1fr minmax(160px, 1.4fr) auto;
+
+  .terms-app { grid-column: 1 / 4; }
+  .terms-remove { grid-column: 4; }
+  .terms-full { grid-column: 1 / -1; }
+  .terms-offer { grid-column: 1; }
+
+  @media (max-width: 720px) {
+    grid-template-columns: 1fr auto;
+
+    .terms-app { grid-column: 1; }
+    .terms-remove { grid-column: 2; }
+    .terms-offer, > hq-field, > hq-amount-input { grid-column: 1 / -1; }
+  }
+}
+
+.fee-field {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+
+  .fee-symbol {
+    position: absolute;
+    left: 10px;
+    top: 9px;
+    font-weight: 600;
+    color: var(--text-muted, #6b7280);
+    pointer-events: none;
+  }
+
+  .input {
+    padding-left: 28px;
+  }
+
+  .fee-formatted {
+    margin-top: 2px;
+    color: var(--text-muted, #6b7280);
+  }
+}
+
+.franchise-notice {
+  display: block;
+  margin-top: 12px;
+
+  p {
+    margin: 0 0 8px;
+    font-size: 0.875rem;
+  }
+}
+
+.franchise-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.franchise-card {
+  border: 1px solid var(--border-color, #e5e7eb);
+  border-radius: 12px;
+  padding: 12px 16px;
+  margin-bottom: 12px;
+
+  &__head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    cursor: pointer;
+  }
+}
+
+.franchise-status {
+  margin-left: 8px;
+  font-size: 0.75rem;
+  color: var(--text-muted, #6b7280);
+}
+
+.franchise-usage {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.875rem;
+}
+
+// The usage meter is hq-progress; only its width beside the "used of limit" text is local.
+.usage-meter {
+  display: inline-block;
+  width: 96px;
+}
+
+.franchise-table {
+  width: 100%;
+  margin-top: 8px;
+  font-size: 0.875rem;
+
+  th,
+  td {
+    padding: 6px 8px;
+    text-align: left;
+  }
+}
+
+.franchise-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  margin-right: 4px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: var(--surface-muted, #eef2ff);
+  color: var(--text, #1f2937);
+
+  &--level { background: var(--surface-subtle, #f3f4f6); }
+  &--rule { background: var(--accent-soft, #e0f2fe); }
+  &--off { background: var(--danger-soft, #fee4e2); color: var(--danger, #b42318); }
+  &--pending { background: var(--warning-soft, #fef3c7); color: var(--warning, #b45309); margin-left: 6px; }
+}
+
+.franchise-filters {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px 16px;
+  // Top-aligned, so a cell that is taller than the others (the parent-place picker stacks one dropdown per level) does not
+  // push the other labels and fields out of line with each other.
+  align-items: start;
+  margin-bottom: 16px;
+
+  label {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    line-height: 1.5;
+  }
+
+  // Fields fill their cell, so every box in the row has the same width and height.
+  hq-searchable-select,
+  .input {
+    width: 100%;
+  }
+
+  // The buttons line up with the field boxes, not with the labels above them: one label line plus its gap down.
+  > .franchise-actions {
+    align-self: start;
+    margin-top: 0;
+    padding-top: calc(0.8125rem * 1.5 + 4px);
+  }
+
+  // The parent-place picker is one cell; its levels stack with an even gap.
+  &__parent .location-picker__level {
+    margin: 0 0 8px;
+  }
+}
+
+.franchise-check {
+  flex-direction: row !important;
+  align-items: center;
+}
+
+.franchise-pager {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.franchise-place,
+.franchise-parent {
+  margin-bottom: 16px;
+}
+
+.location-picker__level {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 6px 0;
+}
+
+.plan-resolve__result,
+.location-import__result {
+  margin-top: 12px;
+}
+
+.franchise-terms--lines {
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+}
+
+.inline-check {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.package-section {
+  margin: 8px 0;
+  padding: 8px 12px;
+  border: 1px dashed var(--hq-border, #ccc);
+  border-radius: 8px;
+}
+
+.float-amount {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin: 4px 0;
+}
+
+
+// ── Tabs: pill buttons, accent fill on the open one (same look as the Profile and Communication Templates tabs) ──
+.franchise-tabs {
+  display: block;
+  margin: 0 0 1.1rem;
+}
+
+@media (max-width: 576px) {
+}

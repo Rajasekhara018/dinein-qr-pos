@@ -1,0 +1,535 @@
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 256px;
+  // Visual refresh: one solid theme colour instead of a gradient, and a lighter edge shadow.
+  background: var(--sidebar-bg-start);
+  color: var(--sidebar-text);
+  display: flex;
+  flex-direction: column;
+  z-index: 50;
+  transition: width .3s cubic-bezier(.4,0,.2,1), transform .3s cubic-bezier(.4,0,.2,1);
+  overflow: hidden;
+  box-shadow: 1px 0 0 rgba(0, 0, 0, 0.06), 4px 0 16px rgba(0, 0, 0, 0.08);
+
+  &.collapsed {
+    width: 64px;
+  }
+
+  @media (max-width: 768px) {
+    width: min(286px, calc(100vw - 48px));
+    transform: translateX(-100%);
+    &.mobile-open {
+      transform: translateX(0);
+    }
+  }
+}
+
+// RTL (Arabic): the nav pins to the right edge instead of the left -- :host-context looks up
+// to <html dir="rtl">, set by LanguageService.setLanguage() on language switch.
+:host-context([dir='rtl']) .sidebar {
+  left: auto;
+  right: 0;
+  box-shadow: -4px 0 24px rgba(0, 0, 0, 0.18);
+
+  @media (max-width: 768px) {
+    transform: translateX(100%);
+    &.mobile-open {
+      transform: translateX(0);
+    }
+  }
+}
+
+// Brand
+.brand {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  padding: 1.25rem 1rem;
+  border-bottom: 1px solid rgba(255,255,255,.08);
+  min-height: 64px;
+}
+
+.brand-icon-collapsed {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+
+  &.brand-icon-btn {
+    cursor: pointer;
+    &:focus-visible { outline: 2px solid rgba(255,255,255,.85); outline-offset: 3px; }
+  }
+
+  .brand-logo-pill {
+    width: 40px;
+    height: 40px;
+    background: #fff;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+    transition: transform .15s, box-shadow .15s;
+    box-shadow: 0 2px 8px rgba(0,0,0,.18);
+  }
+
+  &:hover .brand-logo-pill {
+    transform: scale(1.06);
+    box-shadow: 0 4px 14px rgba(0,0,0,.28);
+  }
+
+  &__img {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+  }
+}
+
+.brand-logo-wrap {
+  display: flex;
+  align-items: center;
+  gap: .625rem;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.brand-logo-img {
+  height: 40px;
+  max-width: 160px;
+  object-fit: contain;
+  flex-shrink: 0;
+  background: #fff;
+  border-radius: 10px;
+  padding: 4px 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.18);
+}
+
+.collapse-btn {
+  background: none;
+  border: none;
+  color: var(--sidebar-muted);
+  cursor: pointer;
+  padding: .25rem;
+  border-radius: 7px;
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color .15s, background .15s;
+  &:hover { color: var(--sidebar-text); background: rgba(255,255,255,.1); }
+  &:focus-visible {
+    outline: 2px solid rgba(255,255,255,.8);
+    outline-offset: 2px;
+  }
+}
+
+.mobile-close-btn {
+  margin-left: .25rem;
+
+  // Drawer-only control (<= 768px, matching the .sidebar transform breakpoint above).
+  @media (min-width: 769px) {
+    display: none;
+  }
+}
+
+// Collapse-to-rail only makes sense for the fixed desktop sidebar, not the mobile drawer.
+.collapse-btn--desktop {
+  @media (max-width: 768px) {
+    display: none;
+  }
+}
+
+// Nav
+.sidebar-nav {
+  flex: 1;
+  padding: .625rem 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: none;
+  &::-webkit-scrollbar { display: none; }
+}
+
+.nav-section-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+  padding: 1rem 1rem .45rem;
+  font-size: .6rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--sidebar-muted);
+  white-space: nowrap;
+  opacity: .7;
+
+  &:hover,
+  &:focus-visible {
+    opacity: 1;
+  }
+}
+
+.nav-section-label__chevron {
+  font-size: .7rem;
+  transition: transform .15s ease;
+
+  &.is-folded {
+    transform: rotate(-90deg);
+  }
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  padding: .64rem 1rem;
+  color: var(--sidebar-muted);
+  text-decoration: none;
+  font-size: .875rem;
+  font-weight: 500;
+  font-family: var(--hq-font);
+  transition: background .15s, color .15s, padding-left .15s, box-shadow .15s;
+  position: relative;
+  white-space: nowrap;
+  // Visual refresh: rounded items set in from the edges; the active one is a soft white pill (no edge bar).
+  border-radius: 9px;
+  margin: 1px .625rem;
+  padding-inline: .75rem;
+
+  .bi { font-size: 1rem; flex-shrink: 0; min-width: 1.1rem; text-align: center; }
+
+  &:hover {
+    background: rgba(255,255,255,.09);
+    color: var(--sidebar-text);
+  }
+
+  &:focus-visible {
+    outline: 2px solid rgba(255,255,255,.75);
+    outline-offset: -2px;
+    color: var(--sidebar-text);
+  }
+
+  &.active {
+    background: rgba(255,255,255,.18);
+    color: var(--sidebar-text);
+    font-weight: 600;
+  }
+}
+
+.nav-label { flex: 1; }
+
+// Footer
+.sidebar-footer {
+  border-top: 1px solid rgba(255,255,255,.08);
+  padding: .875rem 1rem;
+}
+
+.user-block {
+  display: flex;
+  align-items: center;
+  gap: .625rem;
+
+  &.centered {
+    justify-content: center;
+    .user-info { display: none; }
+  }
+}
+
+.user-avatar {
+  width: 34px;
+  height: 34px;
+  background: rgba(255,255,255,.15);
+  border: 1px solid rgba(255,255,255,.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: .75rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  color: var(--sidebar-text);
+
+  // Shows the uploaded profile photo (see ProfilePhotoService) in place of the initial.
+  overflow: hidden;
+
+  .user-avatar__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+}
+
+.user-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.user-name {
+  font-size: .8125rem;
+  font-weight: 600;
+  color: var(--sidebar-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.user-role {
+  font-size: .7rem;
+  color: var(--sidebar-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.logout-btn {
+  background: none;
+  border: none;
+  color: var(--sidebar-muted);
+  cursor: pointer;
+  padding: .25rem;
+  border-radius: 7px;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  transition: color .15s, background .15s;
+  &:hover { color: var(--sidebar-text); background: rgba(255,255,255,.1); }
+  &:focus-visible {
+    outline: 2px solid rgba(255,255,255,.75);
+    outline-offset: 2px;
+  }
+}
+
+.sidebar.collapsed {
+  .brand {
+    justify-content: center;
+    padding-inline: .875rem;
+  }
+
+  .sidebar-nav {
+    padding-top: .875rem;
+  }
+
+  .nav-item {
+    justify-content: center;
+    padding-inline: 0;
+    min-height: 44px;
+  }
+
+  .sidebar-footer {
+    padding-inline: .75rem;
+  }
+}
+
+.nav-badge {
+  margin-inline-start: auto;
+  min-width: 1.25rem;
+  padding: 0 .4rem;
+  border-radius: 999px;
+  background: #dc3545;
+  color: #fff;
+  font-size: .7rem;
+  font-weight: 600;
+  line-height: 1.25rem;
+  text-align: center;
+
+  // collapsed menu: a small dot on the icon instead of a number
+  &--dot {
+    position: absolute;
+    top: .45rem;
+    inset-inline-end: .6rem;
+    min-width: .6rem;
+    width: .6rem;
+    height: .6rem;
+    padding: 0;
+  }
+}
+
+// Search box above the menu
+.sidebar-search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  margin: .5rem 1rem .75rem;
+}
+
+// The field is hq-field with its prefix icon; the sidebar only re-colours it for the dark panel through the theme tokens it reads.
+.sidebar-search__input {
+  width: 100%;
+  --hq-control-height: 2.1rem;
+  --hq-control-radius: .55rem;
+  --hq-control-border-width: 1px;
+  --hq-control-font-size: .8125rem;
+  --field-bg: rgba(255, 255, 255, .07);
+  --field-border: rgba(255, 255, 255, .14);
+  --field-text: var(--sidebar-text);
+  --field-placeholder: var(--sidebar-muted);
+  --field-focus-ring: rgba(255, 255, 255, .55);
+  --edu-muted: var(--sidebar-muted);
+}
+
+.sidebar-search__clear {
+  position: absolute;
+  inset-inline-end: .35rem;
+  display: grid;
+  place-items: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--sidebar-muted);
+  cursor: pointer;
+  font-size: .65rem;
+
+  &:hover,
+  &:focus-visible {
+    background: rgba(255, 255, 255, .14);
+    color: var(--sidebar-text);
+  }
+}
+
+.nav-match {
+  background: transparent;
+  color: var(--sidebar-text);
+  font-weight: 700;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+  padding: 0;
+}
+
+.nav-empty {
+  margin: 1rem;
+  font-size: .8rem;
+  color: var(--sidebar-muted);
+  text-align: center;
+}
+
+// Area switcher: one compact dropdown above the menu
+.sidebar-areas {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  margin: 0 1rem .75rem;
+}
+
+.sidebar-areas__icon {
+  position: absolute;
+  inset-inline-start: .75rem;
+  z-index: 1;
+  color: var(--sidebar-muted);
+  font-size: .8rem;
+  pointer-events: none;
+}
+
+.sidebar-areas__select {
+  width: 100%;
+  min-width: 0;
+  font-weight: 600;
+  --hq-ss-min-height: 2.25rem;
+  --hq-ss-border-width: 1px;
+  --hq-ss-border: rgba(255, 255, 255, .14);
+  --hq-ss-bg: rgba(255, 255, 255, .06);
+  --hq-ss-color: var(--sidebar-text);
+  --hq-ss-radius: .625rem;
+  --hq-ss-font-size: .8rem;
+  --hq-ss-padding: .45rem 1.9rem .45rem 2.1rem;
+  --field-border: rgba(255, 255, 255, .14);
+  --field-placeholder: var(--sidebar-muted);
+  --field-focus-ring: rgba(255, 255, 255, .75);
+}
+
+:host-context([dir='rtl']) .sidebar-areas__select {
+  --hq-ss-padding: .45rem 2.1rem .45rem 1.9rem;
+}
+
+// Starred and recently opened pages
+.nav-quick {
+  padding: 0 0 .25rem;
+  margin-bottom: .35rem;
+}
+
+.nav-quick__title {
+  margin: 0;
+  padding: .6rem 1rem .25rem;
+  font-size: .6rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--sidebar-muted);
+}
+
+.nav-quick__link {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  padding: .4rem 1rem;
+  color: var(--sidebar-muted);
+  text-decoration: none;
+  font-size: .8rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  .bi { font-size: .85rem; flex-shrink: 0; }
+  &:hover, &.active { background: rgba(255,255,255,.08); color: var(--sidebar-text); }
+  &:focus-visible { outline: 2px solid rgba(255,255,255,.75); outline-offset: -3px; }
+}
+
+// Star on a menu line: visible on hover, focus or when starred
+.nav-star {
+  margin-inline-start: auto;
+  border: 0;
+  background: transparent;
+  color: var(--sidebar-muted);
+  padding: 0 .1rem;
+  line-height: 1;
+  opacity: 0;
+  cursor: pointer;
+
+  .bi { font-size: .8rem; min-width: 0; }
+  &.is-starred { opacity: 1; color: #f5b301; }
+  &:disabled { cursor: not-allowed; }
+  &:focus-visible { opacity: 1; outline: 2px solid rgba(255,255,255,.75); }
+}
+
+.nav-item:hover .nav-star,
+.nav-item:focus-within .nav-star { opacity: 1; }
+
+/* Placeholder lines while the organization's application subscriptions load (no flash of every application). */
+.nav-skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 0.75rem 1rem;
+
+  &__line {
+    height: 0.9rem;
+    border-radius: 0.4rem;
+    background: currentColor;
+    opacity: 0.12;
+    animation: nav-skeleton-pulse 1.2s ease-in-out infinite;
+
+    &:nth-child(2) { width: 80%; }
+    &:nth-child(3) { width: 60%; }
+  }
+}
+
+@keyframes nav-skeleton-pulse {
+  50% { opacity: 0.25; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-skeleton__line { animation: none; }
+}

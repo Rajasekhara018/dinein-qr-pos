@@ -1,0 +1,10 @@
+// The glyph is a mask over the current text colour, so the logo takes whatever colour the surrounding badge sets for the theme.
+:host {
+  display: inline-block;
+  flex: none;
+  width: 1.5em;
+  height: 1.5em;
+  background-color: currentColor;
+  -webkit-mask: var(--app-area-logo) center / contain no-repeat;
+  mask: var(--app-area-logo) center / contain no-repeat;
+}

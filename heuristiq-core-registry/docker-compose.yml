@@ -1,0 +1,37 @@
+version: "3.9"
+
+# Shared across every other service's docker-compose.yml (ApiGateway, NMS, ...) so containers
+# started from separate compose files can still resolve each other by name (Compose otherwise
+# scopes a network to the project/file it's defined in). Create it once before bringing up any
+# service: `docker network create railcab-net`.
+networks:
+  railcab-net:
+    external: true
+
+services:
+
+  # ── Service Registry (Eureka Server) ──────────────────────────────────────────
+  service-registry:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: realboom-service-registry
+    restart: unless-stopped
+    ports:
+      - "9100:9100"
+    environment:
+      # This node's region/zone identity — see application.yml for the multi-region model.
+      REGISTRY_REGION: ${REGISTRY_REGION:-default}
+      REGISTRY_ZONE: ${REGISTRY_ZONE:-region1}
+      REGISTRY_HOSTNAME: ${REGISTRY_HOSTNAME:-service-registry}
+      # Set both to enable peer replication with sibling registries in other regions.
+      REGISTRY_PEER_AWARE: ${REGISTRY_PEER_AWARE:-false}
+      REGISTRY_PEER_URLS: ${REGISTRY_PEER_URLS:-http://localhost:9100/eureka/}
+    networks:
+      - railcab-net
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:9100/actuator/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 30s

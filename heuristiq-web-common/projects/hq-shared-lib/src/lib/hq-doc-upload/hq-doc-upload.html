@@ -1,0 +1,89 @@
+<!-- Opens the file chooser for the "Change" button (the drop area below opens its own). -->
+<hq-file-drop #picker appearance="none" [inputId]="inputId" [accept]="accept" [validate]="false" (picked)="onFilesPicked($event)"></hq-file-drop>
+
+@if (preview === 'none') {
+  <div class="hq-doc">
+    @if (empty && disabled) {
+      <span class="hq-doc__hint">{{ texts.noDocument() }}</span>
+    } @else if (empty) {
+      <hq-file-drop
+        [label]="label" [hints]="hints" [accept]="accept" [maxSizeMB]="maxSizeMB" [isRequired]="isRequired"
+        [compact]="compact" [loading]="loading" [disabled]="disabled" [validate]="false" [chooseId]="inputId + 'Btn'"
+        (picked)="onFilesPicked($event)">
+      </hq-file-drop>
+    } @else {
+      <div class="hq-doc__file" [class.hq-doc__file--busy]="loading">
+        <button type="button" class="hq-doc__chip" [class.hq-doc__chip--static]="!canOpen" (click)="open()" [matTooltip]="value?.originalFileName ?? ''">
+          <span class="hq-doc__file-icon" aria-hidden="true"><mat-icon>description</mat-icon></span>
+          <span class="hq-doc__meta">
+            @if (label) {
+              <span class="hq-doc__label">{{ label }}</span>
+            }
+            <span class="hq-doc__name">{{ value?.originalFileName }}</span>
+            <span class="hq-doc__size">{{ formatSize(value?.sizeBytes) }}</span>
+          </span>
+        </button>
+        <span class="hq-doc__actions">
+          @if (loading) {
+            <mat-spinner diameter="22" class="hq-doc__spinner"></mat-spinner>
+          }
+          <!-- View is offered on read-only forms too: looking at the file is all a viewer may do there (when it can be read back). -->
+          @if (canOpen) {
+            <button type="button" hqButton="primary" appearance="text" size="sm" class="hq-doc__view" [disabled]="loading" (click)="open()">
+              <i class="bi bi-eye" aria-hidden="true"></i>{{ texts.view() }}
+            </button>
+          }
+          @if (!disabled) {
+            <button type="button" hqButton="primary" appearance="outline" size="sm" class="hq-doc__change" [disabled]="loading" (click)="pickFile()">
+              <i class="bi bi-arrow-left-right" aria-hidden="true"></i>{{ texts.change() }}
+            </button>
+          }
+          @if (!disabled && removable) {
+            <button type="button" hqButton="warn" appearance="text" iconOnly class="hq-doc__remove" [attr.aria-label]="texts.removeDocument()"
+                    [matTooltip]="texts.remove()" [disabled]="loading" (click)="remove()">
+              <i class="bi bi-trash" aria-hidden="true"></i>
+            </button>
+          }
+        </span>
+      </div>
+    }
+  </div>
+} @else {
+  <div class="hq-img" [class.hq-img--circle]="preview === 'circle'" [class.hq-img--square]="preview === 'square'">
+    <div class="hq-img__frame" (click)="empty ? pickFile() : open()">
+      @if (previewUrl) {
+        <img [src]="previewUrl" [alt]="label" />
+      } @else {
+        <mat-icon class="hq-img__placeholder">{{ preview === 'circle' ? 'account_circle' : 'image' }}</mat-icon>
+      }
+      @if (loading) {
+        <mat-spinner diameter="28" class="hq-img__spinner"></mat-spinner>
+      }
+    </div>
+    @if (isEdit && !disabled) {
+      <button type="button" mat-mini-fab color="primary" class="hq-img__edit" [attr.aria-label]="texts.editImage()"
+              [matMenuTriggerFor]="editMenu" [disabled]="loading">
+        <mat-icon>edit</mat-icon>
+      </button>
+      <mat-menu #editMenu="matMenu">
+        @if (!empty && canOpen) {
+          <button type="button" mat-menu-item class="hq-img__view" (click)="open()">
+            <mat-icon>visibility</mat-icon><span>{{ texts.view() }}</span>
+          </button>
+        }
+        <button type="button" mat-menu-item (click)="pickFile()">
+          <mat-icon>upload</mat-icon><span>{{ empty ? texts.upload() : texts.change() }}</span>
+        </button>
+        @if (!empty && removable) {
+          <button type="button" mat-menu-item (click)="remove()">
+            <mat-icon>delete</mat-icon><span>{{ texts.remove() }}</span>
+          </button>
+        }
+      </mat-menu>
+    }
+  </div>
+}
+
+@if (errorMessage) {
+  <div class="hq-doc__error" role="alert"><mat-icon aria-hidden="true">error_outline</mat-icon><span>{{ errorMessage }}</span></div>
+}

@@ -1,0 +1,44 @@
+<hq-page-header
+  [kicker]="'nav.sections.accessManagement' | translate"
+  [title]="'nav.items.myFloat' | translate"
+  [subtitle]="'walletFloat.my.subtitle' | translate">
+</hq-page-header>
+
+<div class="table-surface">
+  <div class="table-surface__body">
+    <hq-loading-state *ngIf="isLoading" [label]="'walletFloat.my.loading' | translate"></hq-loading-state>
+    <hq-error-state *ngIf="hasError" [title]="'walletFloat.my.errorMessage' | translate" (retry)="load()"></hq-error-state>
+
+    <ng-container *ngIf="summary as s">
+      <p class="franchise-state franchise-state--error" role="alert" *ngIf="s.belowAlert">
+        {{ 'walletFloat.lowBalance' | translate: { threshold: (s.alertThreshold | hqMoney) } }}
+      </p>
+      <p class="franchise-hint" *ngIf="!s.accountId">{{ 'walletFloat.noFloatYet' | translate }}</p>
+
+      <div class="franchise-grid">
+        <article class="franchise-card"><header class="franchise-card__head"><strong>{{ 'walletFloat.balance' | translate }}</strong></header>
+          <p class="float-amount">{{ s.balance | hqMoney }}</p></article>
+        <article class="franchise-card"><header class="franchise-card__head"><strong>{{ 'walletFloat.creditLimit' | translate }}</strong></header>
+          <p class="float-amount">{{ s.creditLimit | hqMoney }}</p></article>
+        <article class="franchise-card"><header class="franchise-card__head"><strong>{{ 'walletFloat.available' | translate }}</strong></header>
+          <p class="float-amount">{{ s.available | hqMoney }}</p></article>
+        <article class="franchise-card"><header class="franchise-card__head"><strong>{{ 'walletFloat.creditUsed' | translate }}</strong></header>
+          <p class="float-amount">{{ s.creditUsed | hqMoney }}</p></article>
+      </div>
+
+      <p>
+        <span class="franchise-status">{{ statusLabel(s.status) }}</span>
+        <span class="franchise-hint" *ngIf="s.alertThreshold !== null"> {{ 'walletFloat.alertAt' | translate: { threshold: (s.alertThreshold | hqMoney) } }}</span>
+        <span class="franchise-hint" *ngIf="s.alertThreshold === null"> {{ 'walletFloat.noAlert' | translate }}</span>
+      </p>
+      <p class="franchise-hint" *ngIf="s.status !== 'ACTIVE'">{{ 'walletFloat.notActiveHint' | translate }}</p>
+
+      <div class="franchise-actions">
+        <ng-container *hqHasPrivilege="privileges.selfStatement">
+          <a hqButton="secondary" routerLink="/access-management/my-statement" [queryParams]="{ account: 'FLOAT' }">{{ 'walletFloat.my.statementLink' | translate }}</a>
+        </ng-container>
+        <button hqButton="secondary" type="button" [disabled]="isLoading" (click)="load()">{{ 'walletFloat.refresh' | translate }}</button>
+      </div>
+    </ng-container>
+  </div>
+</div>

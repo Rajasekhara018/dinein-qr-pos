@@ -1,0 +1,56 @@
+pipeline {
+    agent any
+
+    // Angular 21 needs Node >= 20.19 -- run on an agent with that (the Dockerfile builds on node:20).
+    environment {
+        IMAGE_TAG = "rider-web"
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        // Same flow as tou-frontend/tou-web-bank: build the shared library, pack it, and copy the
+        // .tgz in -- Rider_Web's package.json depends on "hq-shared-lib": "file:hq-shared-lib-0.0.1.tgz",
+        // which is not committed (see .gitignore).
+        stage('Build Shared Library') {
+            steps {
+                dir('Rider-angular-common') {
+                    sh '''
+                        npm config set legacy-peer-deps true
+                        npm install
+                        npx ng build
+                        cd dist/hq-shared-lib
+                        rm -f hq-shared-lib-*.tgz
+                        npm pack
+                        cp hq-shared-lib-*.tgz ../../../Rider_Web/
+                    '''
+                }
+            }
+        }
+
+        stage('Build Main App') {
+            steps {
+                dir('Rider_Web') {
+                    sh '''
+                        npm config set legacy-peer-deps true
+                        npm install hq-shared-lib-0.0.1.tgz
+                        npx ng build --configuration production
+                    '''
+                }
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                dir('Rider_Web') {
+                    // The Dockerfile copies hq-shared-lib-*.tgz into the image before npm install.
+                    sh 'docker build -t ${IMAGE_TAG}:${BUILD_NUMBER} .'
+                }
+            }
+        }
+    }
+}

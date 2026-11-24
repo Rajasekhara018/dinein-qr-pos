@@ -1,0 +1,260 @@
+{
+  "_about": "Which privileges (privilege.json) belong to which application of the Applications hub, and how they group into features. An application takes the privileges its `sources` match (first application in this list wins); inside an application a privilege goes to the feature with the LONGEST matching name prefix. Text for each feature lives in i18n: home.apps.features.<app>.<feature>.title and .desc. After editing run `npm run gen:app-features` in Rider_Web.",
+  "apps": [
+    {
+      "key": "support",
+      "sources": [{ "codePrefix": "SHARED", "service": "admin", "nameStarts": ["ADMIN_SUPPORT", "HELPDESK"] }],
+      "features": [
+        { "key": "tickets", "prefixes": ["ADMIN_SUPPORT", "HELPDESK_TICKET"] },
+        { "key": "reviews", "prefixes": ["ADMIN_SUPPORT_REVIEW"] },
+        { "key": "sla", "prefixes": ["ADMIN_SUPPORT_TICKET_SLA"] }
+      ]
+    },
+    {
+      "key": "communications",
+      "sources": [
+        { "codePrefix": "SHARED", "service": "nms" },
+        { "codePrefix": "SHARED", "service": "admin", "nameStarts": ["ADMIN_NOTIFICATION", "ADMIN_IN_APP_NOTIFICATION", "ADMIN_WEBHOOK_NOTIFICATIONS"] }
+      ],
+      "features": [
+        { "key": "send", "prefixes": ["NMS", "NMS_NOTIFY_SEND", "NMS_BROADCAST", "ADMIN_NOTIFICATION", "ADMIN_WEBHOOK_NOTIFICATIONS"] },
+        { "key": "templates", "prefixes": ["NMS_TEMPLATE", "ADMIN_NOTIFICATION_TEMPLATE"] },
+        { "key": "events", "prefixes": ["NMS_EVENT", "NMS_SEARCH"] },
+        { "key": "inApp", "prefixes": ["NMS_IN_APP", "ADMIN_IN_APP_NOTIFICATION"] },
+        { "key": "devices", "prefixes": ["NMS_DEVICE"] },
+        { "key": "logs", "prefixes": ["NMS_LOG", "NMS_MESSAGE"] }
+      ]
+    },
+    {
+      "key": "documents",
+      "sources": [
+        { "codePrefix": "SHARED", "service": "dms" },
+        { "codePrefix": "SHARED", "service": "admin", "nameStarts": ["ADMIN_DOCUMENT_PROXY"] }
+      ],
+      "features": [
+        { "key": "files", "prefixes": ["DMS", "ADMIN_DOCUMENT_PROXY"] },
+        { "key": "types", "prefixes": ["DMS_DOCUMENT_TYPE"] },
+        { "key": "lifecycle", "prefixes": ["DMS_DOCUMENT_LIFECYCLE", "DMS_DOCUMENT_LEGAL_HOLD"] },
+        { "key": "search", "prefixes": ["DMS_DOCUMENT_SEARCH", "DMS_SEARCH"] }
+      ]
+    },
+    {
+      "key": "payments",
+      "sources": [{ "codePrefix": "SHARED", "service": "payment" }],
+      "features": [
+        { "key": "gateway", "prefixes": ["PAYMENT"] },
+        { "key": "sessions", "prefixes": ["PAYMENT_CREATE_SESSION", "PAYMENT_CHECK_STATUS"] },
+        { "key": "refunds", "prefixes": ["PAYMENT_REFUND"] }
+      ]
+    },
+    {
+      "key": "reports",
+      "sources": [
+        { "codePrefix": "SHARED", "service": "rider-reports" },
+        { "codePrefix": "SHARED", "service": "search" },
+        { "codePrefix": "SHARED", "service": "rider-audit" },
+        { "codePrefix": "SHARED", "service": "admin", "nameStarts": ["AUDIT_LOG", "ADMIN_AUDIT_ACCESS"] }
+      ],
+      "features": [
+        { "key": "dashboard", "prefixes": ["REPORTS_DASHBOARD"] },
+        { "key": "templates", "prefixes": ["REPORTS_TEMPLATE", "REPORTS_HTML_TEMPLATE"] },
+        { "key": "schedules", "prefixes": ["REPORTS_CONFIG"] },
+        { "key": "generated", "prefixes": ["REPORTS_GENERATED"] },
+        { "key": "customFields", "prefixes": ["REPORTS_CUSTOM_FIELD", "REPORTS_FIELD_KEY"] },
+        { "key": "system", "prefixes": ["REPORTS_SYSTEM_CONFIG"] },
+        { "key": "merchants", "prefixes": ["REPORTS_MERCHANT"] },
+        { "key": "uploads", "prefixes": ["REPORTS_FILE_UPLOAD"] },
+        { "key": "reportLog", "prefixes": ["REPORTS_AUDIT_LOG"] },
+        { "key": "search", "prefixes": ["SEARCH", "REPORTS_SEARCH_REINDEX"] },
+        { "key": "auditTrail", "prefixes": ["AUDIT_EVENT", "AUDIT_LOG", "ADMIN_AUDIT_ACCESS"] }
+      ]
+    },
+    {
+      "key": "developer",
+      "sources": [
+        { "codePrefix": "SHARED", "service": "rider-config" },
+        { "codePrefix": "SHARED", "service": "rider-workflow" },
+        { "codePrefix": "SHARED", "service": "admin", "nameStarts": ["ADMIN_SETTINGS", "ADMIN_WORKFLOW_CALLBACK"] }
+      ],
+      "features": [
+        { "key": "settings", "prefixes": ["CONFIG_SETTING", "CONFIG_SEARCH_REINDEX", "ADMIN_SETTINGS"] },
+        { "key": "cities", "prefixes": ["CONFIG_CITY", "CONFIG_SERVICEABILITY"] },
+        { "key": "vehicleTypes", "prefixes": ["CONFIG_VEHICLE_TYPE"] },
+        { "key": "appContent", "prefixes": ["CONFIG_BANNER", "CONFIG_FAQ", "CONFIG_APP_VERSION"] },
+        { "key": "workspace", "prefixes": ["WORKSPACE_"] },
+        { "key": "qaRuns", "prefixes": ["CONFIG_QA_RUN", "CONFIG_QA_TEST_SET", "CONFIG_QA_EXECUTION", "CONFIG_QA_FAILURE", "CONFIG_QA_EXECUTIVE", "CONFIG_QA_OVERVIEW", "CONFIG_QA_FILTER", "CONFIG_COVERAGE"] },
+        { "key": "qaCases", "prefixes": ["CONFIG_QA_TEST_CASE", "CONFIG_QA_STUDIO_CASE", "CONFIG_QA_DOCUMENT"] },
+        { "key": "qaEndpoints", "prefixes": ["CONFIG_QA_ENDPOINT"] },
+        { "key": "workflowDefinitions", "prefixes": ["WORKFLOW_DEFINITION"] },
+        { "key": "workflowTasks", "prefixes": ["WORKFLOW_TASK", "WORKFLOW_ATTACHMENT", "WORKFLOW_INSTANCE", "WORKFLOW_HEALTH", "WORKFLOW_REPORT", "ADMIN_WORKFLOW_CALLBACK"] },
+        { "key": "changeRequests", "prefixes": ["WORKFLOW_CHANGE_REQUEST", "WORKFLOW_DEFINITION_PROPOSAL", "WORKFLOW_DEFINITION_PROPOSE"] }
+      ]
+    },
+    {
+      "key": "access",
+      "sources": [
+        { "codePrefix": "SHARED", "service": "uam" },
+        { "codePrefix": "SHARED", "service": "platform" },
+        { "codePrefix": "SHARED", "service": "admin" }
+      ],
+      "features": [
+        { "key": "users", "prefixes": ["USER", "UAM_USERS", "UAM_SEARCH", "ADMIN_USER", "ADMIN_PLATFORM_USER", "ADMIN_READ"] },
+        { "key": "userSecurity", "prefixes": ["USER_SESSION", "USER_DEVICE", "USER_MFA", "USER_LOGIN_SECURITY", "USER_CREDENTIAL", "PASSWORD_HISTORY", "REFRESH_TOKEN", "ADMIN_AUTH"] },
+        { "key": "roles", "prefixes": ["ROLE", "PERMISSION", "UAM_ROLES"] },
+        { "key": "organizations", "prefixes": ["ORGANIZATION"] },
+        { "key": "members", "prefixes": ["ORGANIZATION_MEMBER"] },
+        { "key": "orgBuilder", "prefixes": ["ORG_DRAFT", "ORG_UNIT", "ORG_LADDER", "ORG_POSITION", "ORG_ROLE_RULE", "ORG_LOGIN", "ORG_EMPLOYEE"] },
+        { "key": "import", "prefixes": ["ORG_IMPORT", "ORG_DEPARTMENT_IMPORT", "ORG_LADDER_IMPORT", "ORG_ROLE_RULE_IMPORT"] },
+        { "key": "applications", "prefixes": ["APPLICATION"] },
+        { "key": "appAccess", "prefixes": ["APPLICATION_ACCESS"] },
+        { "key": "subscriptions", "prefixes": ["ORGANIZATION_APPLICATION"] },
+        { "key": "readiness", "prefixes": ["APPLICATION_READINESS", "APPLICATION_GO_LIVE", "APPLICATION_OWNER"] },
+        { "key": "clients", "prefixes": ["CLIENT"] },
+        { "key": "security", "prefixes": ["SECURITY_POLICY"] },
+        { "key": "templates", "prefixes": ["NOTIFICATION_TEMPLATE"] },
+        { "key": "elevated", "prefixes": ["PLATFORM_ELEVATED_ACCESS"] }
+      ]
+    },
+    {
+      "key": "admin",
+      "sources": [{ "codePrefix": "RIDE" }],
+      "features": [
+        { "key": "dashboard", "prefixes": ["ADMIN_DASHBOARD", "ADMIN_ANALYTICS"] },
+        { "key": "rides", "prefixes": ["RIDE", "ADMIN_RIDE", "RIDE_ADMIN", "RIDER_RIDE"] },
+        { "key": "safety", "prefixes": ["RIDE_SOS"] },
+        { "key": "communication", "prefixes": ["RIDE_CALL", "RIDE_CHAT"] },
+        { "key": "dispatch", "prefixes": ["RIDER_DISPATCH", "DISPATCH_"] },
+        { "key": "drivers", "prefixes": ["ADMIN_DRIVERS", "ADMIN_DRIVER"] },
+        { "key": "driverOnboarding", "prefixes": ["ONBOARDING_", "RIDER_ONBOARDING", "DRIVER_ONBOARDING", "FRANCHISE_DRIVER_ONBOARDING", "ADMIN_DRIVER_ONBOARDING"] },
+        { "key": "vendors", "prefixes": ["ADMIN_VENDOR"] },
+        { "key": "vehicles", "prefixes": ["ADMIN_VEHICLE"] },
+        { "key": "customers", "prefixes": ["CUSTOMER_ADMIN", "RIDER_CUSTOMER"] },
+        { "key": "corporate", "prefixes": ["RIDER_CUSTOMER_CORPORATE"] },
+        { "key": "ratings", "prefixes": ["RIDER_CUSTOMER_RATING", "RIDER_CUSTOMER_DRIVER_RATING", "RIDER_CUSTOMER_CUSTOMER_RATING"] },
+        { "key": "customerSupport", "prefixes": ["RIDER_CUSTOMER_SUPPORT"] },
+        { "key": "offers", "prefixes": ["RIDER_CUSTOMER_OFFER"] },
+        { "key": "fares", "prefixes": ["ADMIN_FARE", "ADMIN_SURGE", "RIDER_PRICING", "PRICING_"] },
+        { "key": "maps", "prefixes": ["RIDER_LOCATION", "LOCATION_"] },
+        { "key": "ridePayments", "prefixes": ["RIDER_PAYMENT", "ADMIN_PAYMENT", "ADMIN_WEBHOOK_RAZORPAY", "RIDE_PAYMENT_RESULT"] },
+        { "key": "finance", "prefixes": ["ADMIN_FINANCE", "ADMIN_GST", "ADMIN_INVOICE", "ADMIN_DISPUTE", "RIDE_DISPUTE", "RIDER_CUSTOMER_INVOICE", "ADMIN_SUPPORT_REFUND"] },
+        { "key": "earnings", "prefixes": ["DRIVER_EARNINGS", "DRIVER_INCENTIVE", "DRIVER_PAYOUT", "RIDER_PAYMENT_DRIVER", "ADMIN_DRIVER_EARNINGS", "ADMIN_VENDOR_EARNINGS", "ADMIN_PAYOUT"] }
+      ]
+    },
+    {
+      "key": "train",
+      "sources": [{ "codePrefix": "TRAIN" }],
+      "features": [
+        { "key": "dashboard", "prefixes": ["TRAIN_ADMIN_DASHBOARD"] },
+        { "key": "bookings", "prefixes": ["TRAIN_ADMIN_BOOKING", "TRAIN_BOOKING_LIST", "TRAIN_BOOKING_DETAIL", "TRAIN_ADMIN_TICKET", "TRAIN_TICKET", "TRAIN_ADMIN_VIKALP"] },
+        { "key": "book", "prefixes": ["TRAIN_BOOKING"] },
+        { "key": "cancellations", "prefixes": ["TRAIN_BOOKING_CANCEL", "TRAIN_ADMIN_BOOKING_CANCEL"] },
+        { "key": "tdr", "prefixes": ["TRAIN_BOOKING_TDR", "TRAIN_ADMIN_TDR", "TRAIN_ADMIN_REPORT_TDR", "TRAIN_ADMIN_BOOKING_TDR"] },
+        { "key": "refunds", "prefixes": ["TRAIN_BOOKING_REFUND", "TRAIN_ADMIN_REFUND"] },
+        { "key": "reconciliation", "prefixes": ["TRAIN_ADMIN_RECONCILIATION"] },
+        { "key": "irctc", "prefixes": ["IRCTC", "TRAIN_IRCTC", "TRAIN_ADMIN_IRCTC"] },
+        { "key": "travellers", "prefixes": ["TRAIN_TRAVEL_USER", "TRAIN_ADMIN_TRAVEL_USER"] },
+        { "key": "pnr", "prefixes": ["TRAIN_SEARCH_PNR", "TRAIN_ADMIN_PNR"] },
+        { "key": "commissions", "prefixes": ["TRAIN_ADMIN_COMMISSION"] },
+        { "key": "reports", "prefixes": ["TRAIN_ADMIN_REPORT"] },
+        { "key": "alerts", "prefixes": ["TRAIN_ADMIN_ALERTS"] }
+      ]
+    },
+    {
+      "key": "matrimony",
+      "sources": [{ "codePrefix": "MATRIMONY" }],
+      "features": [
+        { "key": "profiles", "prefixes": ["MATRIMONY_PROFILE", "MATRIMONY_MATCH_DIGEST"] },
+        { "key": "rmAssignment", "prefixes": ["MATRIMONY_RM_ASSIGNMENT", "MATRIMONY_PROFILE_RM"] },
+        { "key": "photos", "prefixes": ["MATRIMONY_PHOTO"] },
+        { "key": "moderation", "prefixes": ["MATRIMONY_REPORT", "MATRIMONY_BLOCK"] },
+        { "key": "stories", "prefixes": ["MATRIMONY_SUCCESS_STORY", "MATRIMONY_FRANCHISE_PROPOSAL_SUCCESS_STORY"] },
+        { "key": "activations", "prefixes": ["MATRIMONY_CUSTOMER_"] },
+        { "key": "plans", "prefixes": ["MATRIMONY_SUBSCRIPTION", "MATRIMONY_CREDIT_PACK", "MATRIMONY_WALLET_REPLAY"] },
+        { "key": "agents", "prefixes": ["MATRIMONY_AGENT"] },
+        { "key": "agentCustomers", "prefixes": ["MATRIMONY_AGENT_CUSTOMER"] },
+        { "key": "consent", "prefixes": ["MATRIMONY_AGENT_CUSTOMER_CONSENT"] },
+        { "key": "agentRatings", "prefixes": ["MATRIMONY_AGENT_RATING", "MATRIMONY_FRANCHISE_AGENT_RATING"] },
+        { "key": "agentFees", "prefixes": ["MATRIMONY_AGENT_ONBOARDING_FEE", "MATRIMONY_AGENT_REFERRAL", "MATRIMONY_AGENT_CUSTOMER_FEE"] },
+        { "key": "franchiseTools", "prefixes": ["MATRIMONY_FRANCHISE_"] },
+        { "key": "complaints", "prefixes": ["MATRIMONY_COMPLAINT", "MATRIMONY_FRANCHISE_COMPLAINT"] },
+        { "key": "analytics", "prefixes": ["MATRIMONY_ANALYTICS", "MATRIMONY_FRANCHISE_FUNNEL"] },
+        { "key": "settings", "prefixes": ["MATRIMONY_SETTINGS", "MATRIMONY_SELF_REGISTRATION", "MATRIMONY_SECURITY_POLICY"] },
+        { "key": "options", "prefixes": ["MATRIMONY_CONFIG_OPTION"] }
+      ]
+    },
+    {
+      "key": "wallet",
+      "sources": [{ "codePrefix": "WALLET" }],
+      "features": [
+        { "key": "myWallet", "prefixes": ["WALLET_SELF"] },
+        { "key": "statements", "prefixes": ["WALLET_SELF_STATEMENT", "WALLET_ADMIN_STATEMENT", "WALLET_ADMIN_USER_STATEMENT", "WALLET_AGENT_CUSTOMER_STATEMENT"] },
+        { "key": "team", "prefixes": ["WALLET_SELF_TEAM", "WALLET_ADMIN_TEAM_MOVEMENT"] },
+        { "key": "agent", "prefixes": ["WALLET_AGENT"] },
+        { "key": "agentCustomers", "prefixes": ["WALLET_AGENT_CUSTOMER", "WALLET_AGENT_LOAD"] },
+        { "key": "agentPayouts", "prefixes": ["WALLET_AGENT_PAYOUT", "WALLET_FRANCHISE_PAYOUT", "WALLET_PAYOUT"] },
+        { "key": "cash", "prefixes": ["WALLET_AGENT_CASH", "WALLET_ADMIN_CASH", "WALLET_OFFLINE"] },
+        { "key": "overview", "prefixes": ["WALLET_ADMIN_OVERVIEW", "WALLET_ADMIN_TREND", "WALLET_ADMIN_REPORT"] },
+        { "key": "accounts", "prefixes": ["WALLET_ADMIN_ACCOUNT", "WALLET_ADMIN_USER_WALLET", "WALLET_ADMIN_PERSON_NAME", "WALLET_ADMIN_DEPARTMENT_HEAD", "WALLET_ADMIN_AGENT_LINK"] },
+        { "key": "journals", "prefixes": ["WALLET_ADMIN_JOURNAL", "WALLET_ADMIN_ADJUSTMENT", "WALLET_ADMIN_GRANT"] },
+        { "key": "floats", "prefixes": ["WALLET_ADMIN_AGENT_FLOAT", "WALLET_ADMIN_AGENT_CREDIT", "WALLET_PARTNER_FLOAT", "WALLET_ADMIN_PARTNER_FLOAT"] },
+        { "key": "approvals", "prefixes": ["WALLET_ADMIN_APPROVAL"] },
+        { "key": "treasury", "prefixes": ["WALLET_ADMIN_TREASURY", "WALLET_ADMIN_PERIOD_CLOSE"] },
+        { "key": "reconciliation", "prefixes": ["WALLET_ADMIN_RECONCILIATION", "WALLET_ADMIN_DISPUTE"] },
+        { "key": "alerts", "prefixes": ["WALLET_ADMIN_ALERT"] },
+        { "key": "apps", "prefixes": ["WALLET_ADMIN_APP"] }
+      ]
+    },
+    {
+      "key": "food",
+      "sources": [{ "codePrefix": "FOOD" }],
+      "features": [
+        { "key": "restaurants", "prefixes": ["FOOD_RESTAURANT"] },
+        { "key": "menu", "prefixes": ["FOOD_CATEGORY", "FOOD_FOOD"] },
+        { "key": "customers", "prefixes": ["FOOD_CUSTOMER", "FOOD_REVIEW"] },
+        { "key": "staff", "prefixes": ["FOOD_ADMIN_USER"] },
+        { "key": "orders", "prefixes": ["FOOD_ORDER"] },
+        { "key": "payments", "prefixes": ["FOOD_PAYMENT", "FOOD_REFUND"] },
+        { "key": "offers", "prefixes": ["FOOD_COUPON", "FOOD_OFFER"] },
+        { "key": "delivery", "prefixes": ["FOOD_DELIVERY_PARTNER"] },
+        { "key": "support", "prefixes": ["FOOD_SUPPORT_TICKET"] },
+        { "key": "settings", "prefixes": ["FOOD_NOTIFICATION", "FOOD_SETTING"] }
+      ]
+    },
+    {
+      "key": "franchise",
+      "sources": [{ "codePrefix": "FRANCHISE" }],
+      "features": [
+        { "key": "franchises", "prefixes": ["FRANCHISE"] },
+        { "key": "mine", "prefixes": ["FRANCHISE_MINE"] },
+        { "key": "applications", "prefixes": ["FRANCHISE_APPLICATION"] },
+        { "key": "demand", "prefixes": ["FRANCHISE_DEMAND"] },
+        { "key": "locations", "prefixes": ["LOCATION", "FRANCHISE_PLACE_OPTION"] },
+        { "key": "plans", "prefixes": ["FRANCHISE_PLAN", "FRANCHISE_PACKAGE_TEMPLATE"] },
+        { "key": "members", "prefixes": ["FRANCHISE_MEMBER", "FRANCHISE_ADMIN_MEMBER"] },
+        { "key": "agents", "prefixes": ["FRANCHISE_AGENT", "FRANCHISE_ADMIN_AGENT"] },
+        { "key": "agentDeals", "prefixes": ["FRANCHISE_AGENT_DEAL"] },
+        { "key": "agentKyc", "prefixes": ["FRANCHISE_AGENT_KYC", "FRANCHISE_MINE_AGENT_KYC"] },
+        { "key": "kyc", "prefixes": ["FRANCHISE_KYC", "FRANCHISE_MINE_KYC", "FRANCHISE_BANK_ACCOUNT", "FRANCHISE_MINE_BANK", "FRANCHISE_LEGAL_PROFILE", "FRANCHISE_MINE_LEGAL"] },
+        { "key": "onboarding", "prefixes": ["FRANCHISE_ONBOARDING", "FRANCHISE_MINE_ONBOARDING", "FRANCHISE_AGREEMENT", "FRANCHISE_ACTIVATION", "FRANCHISE_SETUP_CHECKLIST"] },
+        { "key": "fees", "prefixes": ["FRANCHISE_FEE_SCHEDULE"] },
+        { "key": "commissions", "prefixes": ["COMMISSION_PLAN", "COMMISSION_STATEMENT"] },
+        { "key": "referrals", "prefixes": ["REFERRAL_PLAN"] },
+        { "key": "payoutRules", "prefixes": ["PAYOUT_RULE", "FRANCHISE_RULE_RESOLVE", "FRANCHISE_PLAN_RESOLVE"] },
+        { "key": "payouts", "prefixes": ["PAYOUT_REQUEST", "PAYOUT_APPROVE"] },
+        { "key": "ledger", "prefixes": ["LEDGER_ENTRY"] },
+        { "key": "sales", "prefixes": ["FRANCHISE_SALE"] },
+        { "key": "drivers", "prefixes": ["FRANCHISE_DRIVER", "FRANCHISE_ADMIN_DRIVER", "DRIVER_SUBSCRIPTION"] },
+        { "key": "events", "prefixes": ["EVENT_TYPE"] }
+      ]
+    },
+    {
+      "key": "ims",
+      "sources": [{ "codePrefix": "IMS" }],
+      "features": [
+        { "key": "items", "prefixes": ["IMS_ITEM"] },
+        { "key": "sites", "prefixes": ["IMS_SITE", "IMS_LOCATION"] },
+        { "key": "legalEntities", "prefixes": ["IMS_LEGAL_ENTITY"] }
+      ]
+    }
+  ]
+}

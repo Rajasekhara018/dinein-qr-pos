@@ -1,0 +1,9 @@
+.qa-filter {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-inline-size: 9rem;
+
+  &__label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--qa-muted); }
+  &--search { flex: 1 1 14rem; }
+}

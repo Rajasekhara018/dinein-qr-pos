@@ -1,0 +1,9 @@
+<div class="stat-cards" [class.stat-cards--fill]="fill" [class.stat-cards--flush]="flush" *ngIf="stats.length">
+  <div class="stat-card" *ngFor="let stat of stats">
+    <div class="stat-icon" [ngClass]="'stat-icon--' + stat.tone"><i class="bi" [ngClass]="stat.icon"></i></div>
+    <div class="stat-body">
+      <p class="stat-label">{{ stat.label }}</p>
+      <p class="stat-value">{{ stat.value }}</p>
+    </div>
+  </div>
+</div>

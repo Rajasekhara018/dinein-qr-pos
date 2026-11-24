@@ -1,0 +1,53 @@
+<app-qa-header [title]="'qaDashboard.failures.title' | translate" [subtitle]="'qaDashboard.failures.subtitle' | translate"
+               [workspace]="workspace" [loading]="isLoading" (workspaceChange)="setWorkspace($event)" (refresh)="reload()">
+</app-qa-header>
+
+<ng-container *hqHasPrivilege="privileges.failureRead">
+  <app-qa-filter-bar [facets]="facets" [filters]="filters" [showRange]="true" (filtersChange)="onFiltersChange($event)"></app-qa-filter-bar>
+
+  <hq-error-state *ngIf="hasError" [title]="'qaDashboard.loadFailed' | translate" (retry)="reload()"></hq-error-state>
+  <hq-loading-state *ngIf="isLoading && !loaded && !hasError" [label]="'qaDashboard.loading' | translate"></hq-loading-state>
+  <hq-empty-state *ngIf="!isLoading && !hasError && isEmpty" [title]="'qaDashboard.failures.empty' | translate"></hq-empty-state>
+
+  <ng-container *ngIf="loaded && !isEmpty">
+    <div class="qa-tiles">
+      <div class="qa-tile qa-tile--fail">
+        <div class="qa-tile__label">{{ 'qaDashboard.failures.totalFailed' | translate }}</div>
+        <div class="qa-tile__value qa-total-failed">{{ failures.totalFailed }}</div>
+      </div>
+    </div>
+
+    <hq-dashboard-grid cols="2">
+      <hq-chart-card [title]="'qaDashboard.failures.byCategory' | translate" [empty]="categoryItems.length === 0"
+                      [emptyText]="'qaDashboard.charts.empty' | translate" [tableColumns]="categoryColumns" [tableRows]="categoryItems">
+        <hq-bar-list [items]="categoryItems" sort="desc" [ariaLabel]="'qaDashboard.failures.byCategory' | translate"></hq-bar-list>
+      </hq-chart-card>
+      <hq-chart-card [title]="'qaDashboard.failures.byModule' | translate" [empty]="moduleItems.length === 0"
+                      [emptyText]="'qaDashboard.charts.empty' | translate" [tableColumns]="moduleColumns" [tableRows]="moduleItems">
+        <hq-bar-list [items]="moduleItems" sort="desc" [ariaLabel]="'qaDashboard.failures.byModule' | translate"></hq-bar-list>
+      </hq-chart-card>
+    </hq-dashboard-grid>
+
+    <hq-card padding="md" [title]="'qaDashboard.failures.topFailing' | translate"><hq-empty-state *ngIf="failures.topFailing.length === 0" [title]="'qaDashboard.charts.empty' | translate"></hq-empty-state>
+      <div class="qa-table-wrap" *ngIf="failures.topFailing.length > 0">
+        <hq-common-table class="qa-table qa-top-failing" [columns]="topFailingColumns" [rows]="failures.topFailing" [showActionsColumn]="false">
+          <ng-template hqCell="tcId" let-row><span class="qa-mono">{{ row.tcId || '—' }}</span></ng-template>
+          <ng-template hqCell="name" let-row><span class="qa-name">{{ row.name }}</span><br /><span class="qa-mono">{{ row.testKey }}</span></ng-template>
+          <ng-template hqCell="category" let-row>{{ row.failureCategory ? categoryLabel(row.failureCategory) : '—' }}</ng-template>
+          <ng-template hqCell="message" let-row><span class="qa-mono">{{ message(row) }}</span></ng-template>
+          <ng-template hqCell="date" let-row>{{ row.lastRunAt ? (row.lastRunAt | hqDate:'medium') : '—' }}</ng-template>
+        </hq-common-table>
+      </div>
+    </hq-card>
+
+    <hq-card class="qa-flaky" padding="md" [title]="'qaDashboard.failures.flaky' | translate" [subtitle]="'qaDashboard.failures.flakySubtitle' | translate">
+      <hq-empty-state *ngIf="failures.flaky.length === 0" [title]="'qaDashboard.failures.noFlaky' | translate"></hq-empty-state>
+      <ul class="qa-flaky__list" *ngIf="failures.flaky.length > 0">
+        <li *ngFor="let f of failures.flaky">
+          <span class="qa-mono">{{ f.tcId || f.testKey }}</span> {{ f.name }}
+          <span class="qa-muted">{{ 'qaDashboard.failures.passFail' | translate: { passed: f.passCount, failed: f.failCount } }}</span>
+        </li>
+      </ul>
+    </hq-card>
+  </ng-container>
+</ng-container>

@@ -1,0 +1,25 @@
+:host { display: inline-block; vertical-align: middle; }
+
+.hq-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0.25rem 0.7rem;
+  border: 1px solid var(--_border);
+  border-radius: 9999px;
+  background: var(--_bg);
+  color: var(--_fg);
+  font-family: var(--hq-font);
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1.1;
+  white-space: nowrap;
+
+  &--sm { padding: 0.15rem 0.5rem; font-size: 0.68rem; }
+
+  &--success { --_bg: var(--hq-tone-success-bg); --_fg: var(--hq-tone-success-fg); --_border: var(--hq-tone-success-border); }
+  &--warning { --_bg: var(--hq-tone-warning-bg); --_fg: var(--hq-tone-warning-fg); --_border: var(--hq-tone-warning-border); }
+  &--danger { --_bg: var(--hq-tone-danger-bg); --_fg: var(--hq-tone-danger-fg); --_border: var(--hq-tone-danger-border); }
+  &--info { --_bg: var(--hq-tone-info-bg); --_fg: var(--hq-tone-info-fg); --_border: var(--hq-tone-info-border); }
+  &--neutral { --_bg: var(--hq-tone-neutral-bg); --_fg: var(--hq-tone-neutral-fg); --_border: var(--hq-tone-neutral-border); }
+}

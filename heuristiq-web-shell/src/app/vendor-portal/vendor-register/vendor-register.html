@@ -1,0 +1,320 @@
+<main class="vp-page">
+  <section class="vp-shell" [attr.aria-label]="'vendorPortal.register.ariaLabel' | translate">
+
+    <!-- ── Left story panel ── -->
+    <div class="vp-story">
+      <div class="story-badge">{{ 'vendorPortal.register.story.badge' | translate }}</div>
+
+      <h1>{{ 'vendorPortal.register.story.headline' | translate: { appName: branding.appName } }}</h1>
+
+      <p class="story-copy">
+        {{ 'vendorPortal.register.story.copy' | translate }}
+      </p>
+
+      <div class="benefit-list">
+        <div class="benefit-row">
+          <span>01</span>
+          <p>{{ 'vendorPortal.register.story.benefits.fleetManagement' | translate }}</p>
+        </div>
+        <div class="benefit-row">
+          <span>02</span>
+          <p>{{ 'vendorPortal.register.story.benefits.settlements' | translate }}</p>
+        </div>
+        <div class="benefit-row">
+          <span>03</span>
+          <p>{{ 'vendorPortal.register.story.benefits.priorityAccess' | translate }}</p>
+        </div>
+      </div>
+
+      <div class="story-stats">
+        <div>
+          <strong>500+</strong>
+          <span>{{ 'vendorPortal.register.story.stats.activeVendors' | translate }}</span>
+        </div>
+        <div>
+          <strong>₹2Cr+</strong>
+          <span>{{ 'vendorPortal.register.story.stats.monthlyPayouts' | translate }}</span>
+        </div>
+        <div>
+          <strong>24/7</strong>
+          <span>{{ 'vendorPortal.register.story.stats.operatorSupport' | translate }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Right form panel ── -->
+    <aside class="vp-form-panel" [attr.aria-label]="'vendorPortal.register.formPanelAriaLabel' | translate">
+      <div class="vp-card">
+
+        <!-- Brand -->
+        <div class="vp-brand">
+          <div class="vp-logo-box">
+            <img [src]="branding.logoImagePath" [alt]="branding.appName + ' logo'" class="vp-logo" />
+          </div>
+          <div>
+            <h2>{{ 'vendorPortal.register.brandTitle' | translate: { appName: branding.appName } }}</h2>
+            <p>{{ 'vendorPortal.register.partnerRegistration' | translate }}</p>
+          </div>
+        </div>
+
+        <!-- Step tracker -->
+        <div class="vp-stepper">
+          <div class="vp-stepper-track">
+            <div class="vp-stepper-line-bg"></div>
+            <div class="vp-stepper-line-active" [style.width.%]="progressPercent"></div>
+          </div>
+          <div class="vp-stepper-steps">
+            <div
+              *ngFor="let step of steps; let i = index"
+              class="vp-step"
+              [class.active]="isStepActive(i)"
+              [class.completed]="isStepCompleted(i)"
+            >
+              <div class="vp-step-circle">
+                <i *ngIf="isStepCompleted(i)" class="bi bi-check-lg"></i>
+                <i *ngIf="!isStepCompleted(i)" [class]="'bi ' + step.icon"></i>
+              </div>
+              <span class="vp-step-label">{{ step.title }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── STEP 0: Business Information ── -->
+        <div *ngIf="currentStep === 0" class="vp-step-panel">
+          <div class="vp-step-header">
+            <div class="vp-step-icon-box">
+              <i class="bi bi-building"></i>
+            </div>
+            <div>
+              <h3 class="vp-step-title">{{ 'vendorPortal.register.steps.business' | translate }}</h3>
+              <p class="vp-step-desc">{{ 'vendorPortal.register.business.desc' | translate }}</p>
+            </div>
+          </div>
+          <form [formGroup]="businessForm" autocomplete="off">
+            <hq-form-grid cols="2" gap="sm">
+              <hq-field
+                type="text"
+                class="vp-input"
+                formControlName="business_name"
+                required
+                [label]="'vendorPortal.register.business.name.label' | translate"
+                [placeholder]="'vendorPortal.register.business.name.placeholder' | translate"
+                [invalid]="!!fieldErrorKey(businessForm, 'business_name')"
+                [error]="fieldErrorKey(businessForm, 'business_name') ? (fieldErrorKey(businessForm, 'business_name')! | translate) : null"></hq-field>
+              <hq-field
+                type="text"
+                class="vp-input"
+                formControlName="owner_name"
+                required
+                [label]="'vendorPortal.register.business.ownerName.label' | translate"
+                [placeholder]="'vendorPortal.register.business.ownerName.placeholder' | translate"
+                [invalid]="!!fieldErrorKey(businessForm, 'owner_name')"
+                [error]="fieldErrorKey(businessForm, 'owner_name') ? (fieldErrorKey(businessForm, 'owner_name')! | translate) : null"></hq-field>
+              <hq-field
+                type="email"
+                class="vp-input"
+                formControlName="email"
+                required
+                [label]="'vendorPortal.register.business.email.label' | translate"
+                placeholder="contact@sharmatravels.com"
+                [invalid]="!!fieldErrorKey(businessForm, 'email')"
+                [error]="fieldErrorKey(businessForm, 'email') ? (fieldErrorKey(businessForm, 'email')! | translate) : null"></hq-field>
+              <hq-phone-number-input formControlName="phone" [label]="'shared.phoneNumberInput.label' | translate" [isRequired]="true"></hq-phone-number-input>
+              <hq-field
+                type="text"
+                class="vp-input hq-span-full"
+                formControlName="city"
+                required
+                [label]="'vendorPortal.register.business.city.label' | translate"
+                [placeholder]="'vendorPortal.register.business.city.placeholder' | translate"
+                [invalid]="!!fieldErrorKey(businessForm, 'city')"
+                [error]="fieldErrorKey(businessForm, 'city') ? (fieldErrorKey(businessForm, 'city')! | translate) : null"></hq-field>
+            </hq-form-grid>
+          </form>
+        </div>
+
+        <!-- ── STEP 1: Tax Information ── -->
+        <div *ngIf="currentStep === 1" class="vp-step-panel">
+          <div class="vp-step-header">
+            <div class="vp-step-icon-box">
+              <i class="bi bi-file-text"></i>
+            </div>
+            <div>
+              <h3 class="vp-step-title">{{ 'vendorPortal.register.steps.tax' | translate }}</h3>
+              <p class="vp-step-desc">{{ 'vendorPortal.register.tax.desc' | translate }}</p>
+            </div>
+          </div>
+          <form [formGroup]="taxForm" autocomplete="off">
+            <hq-form-grid cols="2" gap="sm">
+              <hq-field
+                type="text"
+                class="vp-input"
+                formControlName="gst_number"
+                required
+                [label]="'vendorPortal.register.tax.gst.label' | translate"
+                [placeholder]="'vendorPortal.register.tax.gst.placeholder' | translate"
+                [maxLength]="15"
+                textTransform="uppercase"
+                [hint]="'vendorPortal.register.tax.gst.example' | translate"
+                [showCounter]="false"
+                [invalid]="!!fieldErrorKey(taxForm, 'gst_number')"
+                [error]="fieldErrorKey(taxForm, 'gst_number') ? (fieldErrorKey(taxForm, 'gst_number')! | translate) : null"></hq-field>
+              <hq-field
+                type="text"
+                class="vp-input"
+                formControlName="pan_number"
+                required
+                [label]="'vendorPortal.register.tax.pan.label' | translate"
+                [placeholder]="'vendorPortal.register.tax.pan.placeholder' | translate"
+                [maxLength]="10"
+                textTransform="uppercase"
+                [showCounter]="false"
+                [invalid]="!!fieldErrorKey(taxForm, 'pan_number')"
+                [error]="fieldErrorKey(taxForm, 'pan_number') ? (fieldErrorKey(taxForm, 'pan_number')! | translate) : null"></hq-field>
+            </hq-form-grid>
+          </form>
+        </div>
+
+        <!-- ── STEP 2: Fleet Information ── -->
+        <div *ngIf="currentStep === 2" class="vp-step-panel">
+          <div class="vp-step-header">
+            <div class="vp-step-icon-box">
+              <i class="bi bi-truck"></i>
+            </div>
+            <div>
+              <h3 class="vp-step-title">{{ 'vendorPortal.register.steps.fleet' | translate }}</h3>
+              <p class="vp-step-desc">{{ 'vendorPortal.register.fleet.desc' | translate }}</p>
+            </div>
+          </div>
+          <form [formGroup]="fleetForm" autocomplete="off">
+            <div class="vp-fleet-card">
+              <label class="vp-label">{{ 'vendorPortal.register.fleet.expectedSize' | translate }}</label>
+              <div class="vp-range-row">
+                <span class="vp-range-label">10</span>
+                <input
+                  type="range"
+                  class="vp-range"
+                  formControlName="expected_fleet_size"
+                  min="10"
+                  max="40"
+                />
+                <span class="vp-range-label">40</span>
+              </div>
+              <div class="vp-fleet-badge-wrap">
+                <div class="vp-fleet-badge">
+                  <span class="vp-fleet-number">{{ fleetSize }}</span>
+                  <span class="vp-fleet-unit">{{ 'vendorPortal.register.fleet.vehicles' | translate }}</span>
+                </div>
+              </div>
+              <p class="field-hint" style="text-align:center;margin-top:0.5rem">{{ 'vendorPortal.register.fleet.rangeHint' | translate }}</p>
+            </div>
+
+            <hq-form-field class="vp-vehicle-types" required [label]="'vendorPortal.register.fleet.vehicleTypes.label' | translate">
+              <div class="vp-chip-group">
+                <button
+                  *ngFor="let type of vehicleTypes"
+                  type="button"
+                  class="vp-chip"
+                  [class.selected]="isVehicleSelected(type)"
+                  (click)="toggleVehicleType(type)"
+                >
+                  {{ type }}
+                </button>
+              </div>
+            </hq-form-field>
+          </form>
+        </div>
+
+        <!-- ── STEP 3: Bank Details ── -->
+        <div *ngIf="currentStep === 3" class="vp-step-panel">
+          <div class="vp-step-header">
+            <div class="vp-step-icon-box">
+              <i class="bi bi-credit-card"></i>
+            </div>
+            <div>
+              <h3 class="vp-step-title">{{ 'vendorPortal.register.steps.bank' | translate }}</h3>
+              <p class="vp-step-desc">{{ 'vendorPortal.register.bank.desc' | translate }}</p>
+            </div>
+          </div>
+          <form [formGroup]="bankForm" autocomplete="off">
+            <hq-form-grid cols="2" gap="sm">
+              <hq-field
+                type="text"
+                class="vp-input"
+                formControlName="account_number"
+                required
+                [label]="'vendorPortal.register.bank.accountNumber.label' | translate"
+                [placeholder]="'vendorPortal.register.bank.accountNumber.placeholder' | translate"
+                [invalid]="!!fieldErrorKey(bankForm, 'account_number')"
+                [error]="fieldErrorKey(bankForm, 'account_number') ? (fieldErrorKey(bankForm, 'account_number')! | translate) : null"></hq-field>
+              <hq-field
+                type="text"
+                class="vp-input"
+                formControlName="ifsc"
+                required
+                [label]="'vendorPortal.register.bank.ifsc.label' | translate"
+                [placeholder]="'vendorPortal.register.bank.ifsc.placeholder' | translate"
+                [maxLength]="11"
+                textTransform="uppercase"
+                [showCounter]="false"
+                [invalid]="!!fieldErrorKey(bankForm, 'ifsc')"
+                [error]="fieldErrorKey(bankForm, 'ifsc') ? (fieldErrorKey(bankForm, 'ifsc')! | translate) : null"></hq-field>
+              <hq-field
+                type="text"
+                class="vp-input hq-span-full"
+                formControlName="account_name"
+                required
+                [label]="'vendorPortal.register.bank.accountName.label' | translate"
+                [placeholder]="'vendorPortal.register.bank.accountName.placeholder' | translate"
+                [invalid]="!!fieldErrorKey(bankForm, 'account_name')"
+                [error]="fieldErrorKey(bankForm, 'account_name') ? (fieldErrorKey(bankForm, 'account_name')! | translate) : null"></hq-field>
+            </hq-form-grid>
+          </form>
+        </div>
+
+        <div *ngIf="submitError" class="vp-submit-error" role="alert">
+          <i class="bi bi-exclamation-triangle"></i>
+          <span>{{ submitError }}</span>
+        </div>
+
+        <!-- Navigation -->
+        <div class="vp-actions">
+          <button
+            type="button"
+            class="vp-btn-back"
+            (click)="prevStep()"
+            [class.invisible]="currentStep === 0"
+          >
+            <i class="bi bi-chevron-left"></i> {{ 'vendorPortal.register.actions.back' | translate }}
+          </button>
+
+          <button
+            *ngIf="currentStep < steps.length - 1"
+            type="button"
+            class="vp-btn-next"
+            (click)="nextStep()"
+          >
+            {{ 'vendorPortal.register.actions.next' | translate }} <i class="bi bi-chevron-right"></i>
+          </button>
+
+          <button
+            *ngIf="currentStep === steps.length - 1"
+            type="button"
+            class="vp-btn-submit"
+            [disabled]="submitting"
+            (click)="onSubmit()"
+          >
+            <hq-spinner size="sm" *ngIf="submitting"></hq-spinner>
+            {{ (submitting ? 'vendorPortal.register.actions.submitting' : 'vendorPortal.register.actions.submit') | translate }}
+            <i class="bi bi-check-circle-fill" *ngIf="!submitting"></i>
+          </button>
+        </div>
+
+        <p class="vp-signin-link">{{ 'vendorPortal.register.alreadyRegistered' | translate }} <a routerLink="/auth/login">{{ 'vendorPortal.register.signIn' | translate }}</a></p>
+
+      </div>
+    </aside>
+  </section>
+
+  <span class="powered-by">{{ branding.poweredBy }}</span>
+</main>

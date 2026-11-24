@@ -1,0 +1,292 @@
+// ── Variables ──────────────────────────────────────────────────────────────
+@use "sass:color";
+
+$primary: var(--hq-primary);
+$accent:  #FF6600;
+$radius:  12px;
+
+// ── Page wrapper ───────────────────────────────────────────────────────────
+.vd-page {
+  min-height: 100vh;
+  background: #f8fafc;
+  padding: 3rem 1rem;
+  font-family: 'Poppins', sans-serif;
+
+  &--center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+  }
+}
+
+// ── Brand logo ─────────────────────────────────────────────────────────────
+.vd-brand-logo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: $primary;
+  color: #fff;
+  font-size: 1.8rem;
+}
+
+// ── Page title / subtitle ──────────────────────────────────────────────────
+.vd-page-title {
+  font-size: 1.9rem;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 0.35rem;
+}
+
+.vd-page-subtitle {
+  color: #6b7280;
+  font-size: 0.95rem;
+}
+
+// ── Progress card ──────────────────────────────────────────────────────────
+.vd-progress-card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: $radius;
+  padding: 1.25rem 1.5rem;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+}
+
+.vd-progress-error {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-top: 0.75rem;
+  color: #b91c1c;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.vd-progress-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.vd-progress-count {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: $primary;
+}
+
+// ── Document list ──────────────────────────────────────────────────────────
+.vd-doc-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.vd-doc-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: #fff;
+  border: 1.5px solid #e5e7eb;
+  border-radius: $radius;
+  padding: 1rem 1.25rem;
+  transition: border-color 0.2s, background 0.2s;
+
+  &:hover:not(.uploaded) {
+    border-color: color-mix(in srgb, var(--hq-primary) 70%, #fff);
+  }
+
+  &.uploaded {
+    border-color: #86efac;
+    background: rgba(34,197,94,0.04);
+  }
+
+  &.missing {
+    border-color: #fca5a5;
+    background: #fff7f7;
+  }
+}
+
+// ── Doc icon ───────────────────────────────────────────────────────────────
+.vd-doc-icon {
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f3f4f6;
+  color: #9ca3af;
+  font-size: 1.25rem;
+
+  &.uploaded {
+    background: #dcfce7;
+    color: #16a34a;
+  }
+}
+
+// ── Doc info ───────────────────────────────────────────────────────────────
+.vd-doc-info {
+  flex: 1;
+  min-width: 0;
+
+  .vd-doc-name {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #1f2937;
+  }
+
+  .vd-doc-file-name {
+    font-size: 0.8rem;
+    color: #16a34a;
+    margin-top: 3px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .vd-doc-hint {
+    font-size: 0.78rem;
+    color: #9ca3af;
+    margin-top: 3px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .vd-doc-error {
+    margin-top: 4px;
+    color: #b91c1c;
+    font-size: 0.76rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+}
+
+// ── Doc action ─────────────────────────────────────────────────────────────
+.vd-doc-action {
+  flex-shrink: 0;
+}
+
+.vd-btn-upload {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.45rem 1rem;
+  border: 1.5px solid #d1d5db;
+  border-radius: 8px;
+  background: #fff;
+  color: #374151;
+  font-size: 0.82rem;
+  font-weight: 600;
+  font-family: 'Poppins', sans-serif;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+
+  &:hover {
+    border-color: $primary;
+    background: rgba(30,58,95,0.04);
+    color: $primary;
+  }
+
+  &.disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+    pointer-events: none;
+  }
+}
+
+.vd-btn-remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  color: #9ca3af;
+  font-size: 0.9rem;
+  transition: background 0.2s, color 0.2s;
+
+  &:hover {
+    background: #fee2e2;
+    color: #dc2626;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+    background: transparent;
+    color: #9ca3af;
+  }
+}
+
+// ── Submit bar ─────────────────────────────────────────────────────────────
+.vd-submit-bar {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 1.25rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+// ── Success card ───────────────────────────────────────────────────────────
+.vd-success-card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: $radius + 4px;
+  padding: 3rem 2.5rem;
+  max-width: 460px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  animation: vd-zoom-in 0.3s ease;
+}
+
+@keyframes vd-zoom-in {
+  from { opacity: 0; transform: scale(0.92); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+.vd-success-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: #dcfce7;
+  margin: 0 auto 1.5rem;
+
+  i {
+    font-size: 2.5rem;
+    color: #16a34a;
+  }
+}
+
+.vd-success-title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 0.75rem;
+}
+
+.vd-success-body {
+  color: #4b5563;
+  font-size: 0.9rem;
+  line-height: 1.65;
+  margin-bottom: 0.5rem;
+}
+
+.vd-success-note {
+  color: #9ca3af;
+  font-size: 0.82rem;
+  margin: 0;
+}

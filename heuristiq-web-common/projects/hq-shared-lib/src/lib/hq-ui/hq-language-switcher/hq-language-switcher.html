@@ -1,0 +1,33 @@
+<div class="lang-switcher">
+  <button
+    class="lang-switcher-btn"
+    type="button"
+    (click)="toggleMenu(); $event.stopPropagation()"
+    [attr.aria-expanded]="menuOpen"
+    aria-haspopup="listbox"
+    [attr.aria-label]="texts.change()"
+    [title]="texts.change()"
+  >
+    <i class="bi bi-translate"></i>
+    <span class="lang-switcher-label" [attr.lang]="language.current.code">{{ language.current.nativeName }}</span>
+    <i class="bi bi-chevron-down lang-switcher-chevron" [class.rotated]="menuOpen"></i>
+  </button>
+
+  <div class="lang-switcher-dropdown" *ngIf="menuOpen" role="listbox" [attr.aria-label]="texts.label()">
+    <div class="lang-switcher-title">{{ texts.label() }}</div>
+    <button
+      *ngFor="let lang of language.languages"
+      class="lang-switcher-item"
+      type="button"
+      role="option"
+      [attr.aria-selected]="lang.code === language.currentLanguage"
+      [attr.lang]="lang.code"
+      [attr.dir]="lang.dir"
+      [class.active]="lang.code === language.currentLanguage"
+      (click)="selectLanguage(lang.code)"
+    >
+      <span>{{ lang.nativeName }}</span>
+      <i class="bi bi-check2" *ngIf="lang.code === language.currentLanguage"></i>
+    </button>
+  </div>
+</div>

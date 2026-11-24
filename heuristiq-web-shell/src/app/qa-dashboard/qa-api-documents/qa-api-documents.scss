@@ -1,0 +1,55 @@
+.qa-docs {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: minmax(14rem, 18rem) 1fr;
+  align-items: start;
+
+  @media (max-width: 800px) { grid-template-columns: 1fr; }
+
+  &__modules h3 { margin: 0 0 0.5rem; font-size: 1rem; }
+  &__main { display: grid; gap: 1rem; min-inline-size: 0; }
+  &__head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.5rem; h2 { margin: 0; } }
+  &__bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.5rem; margin-block-end: 0.5rem; h3 { margin: 0; font-size: 1rem; } }
+}
+
+.qa-module-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.25rem; max-block-size: 70vh; overflow: auto; }
+
+.qa-module-item {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.1rem 0.5rem;
+  inline-size: 100%;
+  padding: 0.45rem 0.6rem;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: inherit;
+  text-align: start;
+  cursor: pointer;
+
+  &:hover, &:focus-visible { background: var(--qa-surface); outline: 2px solid var(--button-accent-end, #0b6e4f); outline-offset: -2px; }
+  &--active { border-color: var(--button-accent-end, #0b6e4f); background: var(--qa-surface); font-weight: 700; }
+  &__name { font-weight: 600; overflow-wrap: anywhere; }
+  &__count { color: var(--qa-muted); font-variant-numeric: tabular-nums; font-size: 0.8rem; text-align: end; }
+  &__doc { grid-column: 1 / -1; justify-self: start; }
+}
+
+.qa-pick { text-align: start; }
+.qa-hint { margin: 0.15rem 0 0; font-size: 0.8rem; color: var(--qa-muted); }
+.qa-doc-counter { margin-inline-start: 0.75rem; font-variant-numeric: tabular-nums; }
+
+.qa-editor {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr 1fr;
+
+  @media (max-width: 1100px) { grid-template-columns: 1fr; }
+}
+.qa-doc-markdown { inline-size: 100%; resize: vertical; white-space: pre; overflow: auto; }
+
+hq-field.rf-qa-doc-markdown {
+  inline-size: 100%;
+}
+.qa-preview { min-inline-size: 0; h4 { margin: 0 0 0.4rem; font-size: 0.85rem; color: var(--qa-muted); } }
+
+.qa-markdown { overflow-wrap: anywhere; max-inline-size: 100%; overflow-x: auto; }

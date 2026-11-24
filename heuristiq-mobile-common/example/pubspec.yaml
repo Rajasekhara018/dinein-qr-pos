@@ -1,0 +1,17 @@
+name: hq_flutter_common_example
+description: Shows every component of hq_flutter_common.
+publish_to: none
+version: 0.1.0
+
+environment:
+  sdk: ^3.5.0
+  flutter: ">=3.24.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  hq_flutter_common:
+    path: ..
+
+dev_dependencies:
+  flutter_lints: ^4.0.0

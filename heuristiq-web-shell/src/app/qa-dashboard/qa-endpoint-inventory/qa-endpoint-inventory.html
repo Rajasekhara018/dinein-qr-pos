@@ -1,0 +1,143 @@
+<app-qa-header [title]="'qaDashboard.endpointInventory.title' | translate" [subtitle]="'qaDashboard.endpointInventory.subtitle' | translate"
+               [workspace]="workspace" [loading]="isLoading" (workspaceChange)="setWorkspace($event)" (refresh)="reload()">
+</app-qa-header>
+
+<ng-container *hqHasPrivilege="privileges.endpointList">
+  <section class="qa-card qa-ui-empty" *ngIf="!isApiWorkspace">
+    <hq-empty-state [title]="'qaDashboard.endpointInventory.apiOnly' | translate"></hq-empty-state>
+    <button hqButton="secondary" type="button" class="qa-switch-api" (click)="setWorkspace('API')">{{ 'qaDashboard.endpointInventory.switchToApi' | translate }}</button>
+  </section>
+
+  <ng-container *ngIf="isApiWorkspace">
+    <hq-error-state *ngIf="hasError" [title]="'qaDashboard.loadFailed' | translate" (retry)="reload()"></hq-error-state>
+    <hq-loading-state *ngIf="isLoading && !result && !hasError" [label]="'qaDashboard.loading' | translate"></hq-loading-state>
+
+    <ng-container *ngIf="result && coverage as cov">
+      <section class="qa-card qa-banner">
+        <div class="qa-banner__main">
+          <h3>{{ 'qaDashboard.endpointInventory.coverageTitle' | translate }}</h3>
+          <p class="qa-banner__pct">{{ 'qaDashboard.endpointInventory.coveragePct' | translate: { percent: pct(cov.coveragePct) } }}</p>
+          <hq-progress [value]="progress" [max]="100" tone="success" format="percent"
+                        [label]="'qaDashboard.endpointInventory.progressLabel' | translate: { tested: cov.tested, documented: cov.documented }"></hq-progress>
+          <p class="qa-card__sub qa-banner__progress">{{ 'qaDashboard.endpointInventory.progressLabel' | translate: { tested: cov.tested, documented: cov.documented } }}</p>
+        </div>
+        <dl class="qa-banner__facts">
+          <div><dt>{{ 'qaDashboard.endpointInventory.untested' | translate }}</dt><dd class="qa-banner__untested">{{ cov.untested }}</dd></div>
+          <div><dt>{{ 'qaDashboard.endpointInventory.undocumentedTested' | translate }}</dt><dd class="qa-banner__undocumented">{{ cov.undocumentedTested }}</dd></div>
+          <div><dt>{{ 'qaDashboard.endpointInventory.lastSynced' | translate }}</dt>
+            <dd class="qa-banner__synced">{{ cov.lastSyncedAt ? (cov.lastSyncedAt | hqDate:'medium') : ('qaDashboard.endpointInventory.neverSynced' | translate) }}</dd></div>
+        </dl>
+      </section>
+
+      <div class="qa-tiles">
+        <div class="qa-tile qa-tile--total"><div class="qa-tile__label">{{ 'qaDashboard.endpointInventory.totalEndpoints' | translate }}</div><div class="qa-tile__value">{{ cov.totalEndpoints }}</div></div>
+        <div class="qa-tile"><div class="qa-tile__label">{{ 'qaDashboard.endpointInventory.modulesCovered' | translate }}</div><div class="qa-tile__value">{{ cov.modulesCovered }}</div></div>
+        <div class="qa-tile"><div class="qa-tile__label">{{ 'qaDashboard.endpointInventory.subModulesCovered' | translate }}</div><div class="qa-tile__value">{{ cov.subModulesCovered }}</div></div>
+        <div class="qa-tile"><div class="qa-tile__label">{{ 'qaDashboard.endpointInventory.mappedScenarios' | translate }}</div><div class="qa-tile__value">{{ cov.mappedScenarios }}</div></div>
+      </div>
+
+      <hq-filter-bar collapsible class="qa-no-print">
+        <label class="qa-filter qa-filter--search">
+          <span class="qa-visually-hidden">{{ 'qaDashboard.endpointInventory.search' | translate }}</span>
+          <hq-field
+                 type="search"
+                 class="qa-search"
+                 [ngModel]="searchText"
+                 (ngModelChange)="onSearchInput($event)"
+                 [placeholder]="'qaDashboard.endpointInventory.search' | translate"
+                 [ariaLabel]="'qaDashboard.endpointInventory.search' | translate"></hq-field>
+        </label>
+        <hq-form-field class="qa-filter" [label]="'qaDashboard.filters.module' | translate"><hq-searchable-select
+            class="qa-module"
+            [ngModel]="query.module"
+            (ngModelChange)="onModuleChange($event)"
+            [allowOther]="false"
+            [placeholder]="'qaDashboard.filters.all' | translate">
+            <hq-ss-option *ngFor="let m of options?.modules ?? []" [value]="m.module" [label]="m.module"></hq-ss-option>
+          </hq-searchable-select></hq-form-field>
+        <hq-form-field class="qa-filter" [label]="'qaDashboard.filters.subModule' | translate"><hq-searchable-select
+            class="qa-sub-module"
+            [ngModel]="query.subModule"
+            (ngModelChange)="update({ subModule: $event })"
+            [disabled]="!query.module"
+            [allowOther]="false"
+            [placeholder]="'qaDashboard.filters.all' | translate">
+            <hq-ss-option *ngFor="let s of subModules" [value]="s" [label]="s"></hq-ss-option>
+          </hq-searchable-select></hq-form-field>
+        <hq-form-field class="qa-filter" [label]="'qaDashboard.endpointInventory.method' | translate"><hq-searchable-select
+            class="qa-method-filter"
+            [ngModel]="query.method"
+            (ngModelChange)="update({ method: $event })"
+            [allowOther]="false"
+            [placeholder]="'qaDashboard.filters.all' | translate">
+            <hq-ss-option *ngFor="let m of options?.methods ?? []" [value]="m" [label]="m"></hq-ss-option>
+          </hq-searchable-select></hq-form-field>
+        <hq-tabs class="qa-quick" appearance="pills" size="sm" [value]="query.quick" (valueChange)="setQuick($any($event))"
+                  [ariaLabel]="'qaDashboard.endpointInventory.quick.label' | translate">
+          <hq-tab *ngFor="let f of quickFilters" [value]="f.value" [attr.data-quick]="f.value || 'all'" [label]="f.labelKey | translate"></hq-tab>
+        </hq-tabs>
+        <div hqFilterActions>
+          <button hqButton="secondary" type="button" class="qa-clear" *ngIf="isFiltered" (click)="clear()">{{ 'qaDashboard.filters.clear' | translate }}</button>
+        </div>
+      </hq-filter-bar>
+
+      <div class="qa-toolbar qa-no-print">
+        <span class="qa-count">{{ 'qaDashboard.endpointInventory.recordCount' | translate: { count: result.totalElements } }}</span>
+        <span class="qa-actions">
+          <ng-container *hqHasPrivilege="privileges.endpointExport">
+            <button hqButton="secondary" type="button" class="qa-export-csv" (click)="export()">
+              <i class="bi bi-download"></i> {{ 'qaDashboard.endpointInventory.exportCsv' | translate }}
+            </button>
+          </ng-container>
+          <hq-form-field class="qa-filter qa-filter--inline" [label]="'qaDashboard.endpointInventory.pageSize' | translate"><hq-searchable-select class="qa-page-size" [ngModel]="pageSize" (ngModelChange)="onPageSizeChange($event)" [allowOther]="false">
+              <hq-ss-option *ngFor="let s of pageSizes" [value]="s" [label]="s"></hq-ss-option>
+            </hq-searchable-select></hq-form-field>
+        </span>
+      </div>
+
+      <hq-empty-state *ngIf="!isLoading && result.items.length === 0" [title]="(isCatalogEmpty ? 'qaDashboard.endpointInventory.emptyCatalog' : 'qaDashboard.endpointInventory.emptyFiltered') | translate"></hq-empty-state>
+
+      <div class="table-surface" *ngIf="result.items.length > 0">
+        <div class="table-surface__body">
+          <div class="qa-table-wrap">
+            <hq-common-table class="qa-table qa-endpoints" [columns]="columns" [rows]="result.items" [rowClass]="rowClassOf"
+                              [actionsLabel]="'qaDashboard.columns.actions' | translate">
+              <ng-template hqCell="method" let-row><span class="qa-method" [ngClass]="methodClass(row.method)">{{ row.method }}</span></ng-template>
+              <ng-template hqCell="path" let-row>
+                <span class="qa-mono qa-endpoint-path">{{ row.path }}</span>
+                <hq-status-badge tone="warning" class="qa-undocumented" *ngIf="!row.documented">{{ 'qaDashboard.endpointInventory.undocumented' | translate }}</hq-status-badge>
+              </ng-template>
+              <ng-template hqCell="subModule" let-row><span class="qa-mono">{{ row.subModule || '—' }}</span></ng-template>
+              <ng-template hqCell="hits" let-row>
+                <span class="qa-hits" *ngIf="row.hitCount > 0">{{ (row.hitCount === 1 ? 'qaDashboard.endpointInventory.executionOne' : 'qaDashboard.endpointInventory.executionOther') | translate: { count: row.hitCount } }}</span>
+                <hq-status-badge tone="neutral" class="qa-not-tested" *ngIf="row.hitCount === 0">{{ 'qaDashboard.endpointInventory.notTested' | translate }}</hq-status-badge>
+              </ng-template>
+              <ng-template hqCell="mapped" let-row>
+                <span class="qa-chips" *ngIf="chips(row) as c">
+                  <span class="qa-chip qa-mono" *ngFor="let key of c.visible" [attr.title]="key">{{ key }}</span>
+                  <span class="qa-chip qa-chip--more" *ngIf="c.extra > 0">{{ 'qaDashboard.endpointInventory.moreScenarios' | translate: { count: c.extra } }}</span>
+                </span>
+              </ng-template>
+              <ng-template #rowActions let-row>
+                <ng-container *hqHasPrivilege="privileges.endpointRead">
+                  <button hqButton="secondary" type="button" class="qa-details" (click)="openDetails(row)" [attr.aria-label]="'qaDashboard.endpointInventory.details' | translate">
+                    <i class="bi bi-info-circle"></i>
+                  </button>
+                </ng-container>
+              </ng-template>
+            </hq-common-table>
+          </div>
+          <div class="qa-pager qa-no-print" *ngIf="result.totalPages > 1">
+            <button hqButton="secondary" type="button" class="qa-prev" (click)="previousPage()" [disabled]="result.page === 0 || isLoading">
+              <i class="bi bi-chevron-left"></i> {{ 'qaDashboard.previous' | translate }}
+            </button>
+            <span>{{ 'shared.listPage.pageOf' | translate: { page: result.page + 1, total: result.totalPages } }}</span>
+            <button hqButton="secondary" type="button" class="qa-next" (click)="nextPage()" [disabled]="result.page + 1 >= result.totalPages || isLoading">
+              {{ 'qaDashboard.next' | translate }} <i class="bi bi-chevron-right"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </ng-container>
+</ng-container>

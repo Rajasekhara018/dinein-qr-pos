@@ -1,0 +1,59 @@
+plugins {
+    id 'java-library'
+    id 'jacoco'
+}
+
+group = 'com.heuristiq'
+version = '1.0.0'
+
+java { toolchain { languageVersion = JavaLanguageVersion.of(21) } }
+
+repositories { mavenCentral() }
+
+// Lives inside the Rider_ResilientClient build on purpose: every service already has that folder next to it in
+// CI (settings.gradle includeBuild('../Rider_ResilientClient')), so the config client needs no extra checkout.
+// Services still depend on it as its own artifact: implementation 'com.heuristiq:realboom-config-client'.
+// Boot-agnostic like the resilient client: WebFlux, SLF4J and Jackson are compileOnly because every consumer
+// service already has them.
+dependencies {
+    api project(':')
+    compileOnly 'org.springframework:spring-webflux:6.1.14'
+    compileOnly 'org.slf4j:slf4j-api:2.0.16'
+    compileOnly 'com.fasterxml.jackson.core:jackson-databind:2.17.2'
+
+    testImplementation 'org.springframework:spring-webflux:6.1.14'
+    testImplementation 'com.fasterxml.jackson.core:jackson-databind:2.17.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.11.3'
+    testImplementation 'org.assertj:assertj-core:3.26.3'
+    testCompileOnly 'org.slf4j:slf4j-api:2.0.16'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.11.3'
+    // MDC is a no-op under slf4j-simple, so the per-organization (MDC tenant) tests need a real backend.
+    testRuntimeOnly 'ch.qos.logback:logback-classic:1.5.12'
+}
+
+test { useJUnitPlatform() }
+
+// Code coverage (JaCoCo), same entry point as the root build: ./gradlew coverage
+// HTML report: config-client/build/reports/jacoco/test/html/index.html
+jacoco { toolVersion = '0.8.13' }
+
+tasks.named('jacocoTestReport') {
+    mustRunAfter tasks.named('test')
+    reports {
+        xml.required = true
+        html.required = true
+        csv.required = false
+    }
+}
+
+tasks.named('test') {
+    if (project.hasProperty('coverage') || gradle.startParameter.taskNames.any { it == 'coverage' || it.endsWith(':coverage') }) {
+        finalizedBy tasks.named('jacocoTestReport')
+    }
+}
+
+tasks.register('coverage') {
+    group = 'verification'
+    description = 'Runs the tests and writes the JaCoCo coverage report (HTML + XML).'
+    dependsOn tasks.named('test')
+}

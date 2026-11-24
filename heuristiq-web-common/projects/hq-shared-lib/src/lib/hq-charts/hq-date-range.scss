@@ -1,0 +1,40 @@
+:host {
+  display: block;
+  min-width: 0;
+}
+
+.hq-range {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.5rem 0.75rem;
+}
+
+.hq-range__presets {
+  max-inline-size: 100%;
+  overflow-x: auto;
+}
+
+.hq-range__custom {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.hq-range__date {
+  inline-size: 10.5rem;
+}
+
+.hq-range--sm .hq-range__date {
+  inline-size: 9rem;
+}
+
+@media (max-width: 575.98px) {
+  .hq-range__custom,
+  .hq-range__date {
+    inline-size: 100%;
+  }
+  .hq-range__custom {
+    flex-direction: column;
+  }
+}

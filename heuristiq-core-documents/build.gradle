@@ -1,0 +1,152 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.3.5'
+    id 'io.spring.dependency-management' version '1.1.6'
+    id 'jacoco'
+}
+
+group = 'com.railcab'
+version = '0.0.1'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    runtimeOnly 'org.postgresql:postgresql'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    // Powers SearchIndexAspect (@Aspect/@AfterReturning) -- reindexes any SearchIndexable entity
+    // right after its persistence port's save(..). Boot 3.3.5 (unlike the Boot 4 line other
+    // services are on) still ships the full spring-boot-starter-aop starter.
+    implementation 'org.springframework.boot:spring-boot-starter-aop'
+    // Publishes search-index events onto the shared Redis Stream 2026_RailCab_SearchAPI consumes
+    // (see search.SearchEventPublisher) -- not used for caching in this service.
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    // WebClient.Builder auto-configuration for the outbound Metadefender scan call. Boot 3.3.5
+    // (unlike the Boot 4 line other services are on) needs the full webflux starter to get
+    // WebClient.Builder wired -- the Boot-4-only "spring-boot-starter-webclient" lean starter
+    // isn't in this line's dependency management.
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    // Magic-byte content detection so a renamed/spoofed file can't just declare its way past
+    // the extension/content-type allowlist.
+    implementation 'org.apache.tika:tika-core:2.9.2'
+    // In-process read cache for the document-type rule lookup (see docs/CACHING.md); version from the Boot BOM.
+    implementation 'com.github.ben-manes.caffeine:caffeine'
+    implementation 'io.micrometer:micrometer-registry-prometheus'
+    // Distributed tracing -- Boot 3.3.5 needs the classic bridge+exporter combo (the lean
+    // "spring-boot-starter-opentelemetry" starter other, Boot-4-line, services use doesn't exist
+    // in this Boot line's dependency management).
+    implementation 'io.micrometer:micrometer-tracing-bridge-otel'
+    implementation 'io.opentelemetry:opentelemetry-exporter-otlp'
+    // Circuit breaker/retry around the outbound Metadefender scan call. Boot 3.3.5 needs the
+    // "spring-boot3" resilience4j artifact, not the "spring-boot4" one other services use.
+    implementation 'io.github.resilience4j:resilience4j-spring-boot3:2.2.0'
+    // API docs -- matches NMS's existing springdoc setup, /swagger-ui.html + /v3/api-docs.
+    // Pinned to 2.6.0, NOT the 3.0.1 the Boot-4-line services use: springdoc 3.0.0+ requires
+    // Spring Boot 4.0+/Framework 7, which this Boot-3.3.5 service (see the plugin version above
+    // and its own comments) deliberately isn't on -- 3.0.1 here pulled in Framework-7-only
+    // classes (e.g. ApplicationServletEnvironment's new package) that don't exist in this
+    // service's actual Boot 3.3.5 core jars, throwing NoClassDefFoundError at startup.
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0'
+    // Service discovery -- registers with realboom-service-registry (Eureka). This service is on
+    // Boot 3.3.5, so it uses the Boot-3-line Spring Cloud train (2023.0.x) instead of the
+    // 2025.1.0 BOM the Boot-4-line services use -- no CompatibilityVerifier override needed here,
+    // this combination is officially supported as-is.
+    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+    // Secrets management -- pulls download-token-secret from the local dev Vault instance
+    // (docker-compose.vault.yml); see docs/design/Platform/SecretsManagement.md.
+    implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
+    // Shared ResilientCaller + correlation-id propagation (composite build, see settings.gradle) for the
+    // DMS -> Rider_WorkflowService change-request submit.
+    implementation 'com.heuristiq:realboom-resilient-client'
+    // Verifies the service-identity JWT (role SERVICE) Rider_WorkflowService sends on the apply callback.
+    implementation 'io.jsonwebtoken:jjwt-api:0.12.6'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.6'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.6'
+    implementation platform('software.amazon.awssdk:bom:2.25.60')
+    implementation 'software.amazon.awssdk:s3'
+    implementation 'com.azure:azure-storage-blob:12.27.0'
+    implementation 'com.google.cloud:google-cloud-storage:2.40.1'
+    compileOnly 'org.projectlombok:lombok:1.18.30'
+    annotationProcessor 'org.projectlombok:lombok:1.18.30'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    // A real MongoDB for the application-context test (the default provider is Mongo), so it needs no database on the build machine.
+    testImplementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo.spring3x:4.24.0'
+    testImplementation 'org.springframework.security:spring-security-test'
+}
+
+dependencyManagement {
+    imports {
+        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2023.0.3'
+    }
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+tasks.named('jar') { enabled = false }
+tasks.named('javadoc') {
+    source = sourceSets.main.allJava
+    classpath = sourceSets.main.compileClasspath
+    options.encoding = 'UTF-8'
+    options.charSet = 'UTF-8'
+    options.docEncoding = 'UTF-8'
+    options.memberLevel = JavadocMemberLevel.PRIVATE
+    failOnError = false
+}
+tasks.withType(JavaCompile).configureEach { options.compilerArgs += '-parameters' }
+
+// Ships the javadoc inside the boot jar as static content, served publicly at
+// /javadoc/index.html (through the gateway: /api/<service>/javadoc/).
+tasks.named('bootJar') {
+    from(tasks.named('javadoc')) {
+        into 'BOOT-INF/classes/static/javadoc'
+    }
+}
+
+// ── Code coverage (JaCoCo) ───────────────────────────────────────────────────────────────────────
+// Run:  ./gradlew test jacocoTestReport      HTML report: build/reports/jacoco/test/html/index.html
+//       (XML for CI/Sonar: build/reports/jacoco/test/jacocoTestReport.xml)
+// Coverage is produced only when jacocoTestReport is asked for, so a plain `./gradlew test` is not slowed down.
+jacoco {
+    toolVersion = '0.8.13' // first line of releases with full Java 21+ support on current JDKs
+}
+
+tasks.named('jacocoTestReport') {
+    // mustRunAfter, not dependsOn: as a finalizer of `test` it must still run when a test fails
+    mustRunAfter tasks.named('test')
+    reports {
+        xml.required = true
+        html.required = true
+        csv.required = false
+    }
+}
+
+// With -Pcoverage the report is written even when a test fails (known failures would otherwise stop `jacocoTestReport`).
+// Without it a plain `./gradlew test` stays as fast as before.
+tasks.named('test') {
+    if (project.hasProperty('coverage') || gradle.startParameter.taskNames.any { it == 'coverage' || it.endsWith(':coverage') }) {
+        finalizedBy tasks.named('jacocoTestReport')
+    }
+}
+
+// One-word entry point: ./gradlew coverage  (runs the tests, then writes build/reports/jacoco/test/html/index.html even if a test fails)
+tasks.register('coverage') {
+    group = 'verification'
+    description = 'Runs the tests and writes the JaCoCo coverage report (HTML + XML).'
+    // jacocoTestReport is attached to `test` as a finalizer (see above), so it also runs when a test fails
+    dependsOn tasks.named('test')
+}

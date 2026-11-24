@@ -1,0 +1,85 @@
+// Primary font: Inter (body, UI and headings) through --hq-font; Outfit stays as the fallback.
+$font-family-primary: 'Outfit';
+$font-family-heading: 'Poppins';
+
+// Font sizes
+$font-sizes: (
+    'font-xs': 10px,
+    'font-sm': 12px,
+    'font-md': 14px,
+    'font-lg': 16px,
+    'font-xl': 20px,
+    'font-2xl': 24px,
+    'font-3xl': 32px,
+    'font-4xl': 36px,
+    'font-5xl': 40px,
+    'font-6xl': 48px,
+    'font-7xl': 64px,
+    'font-8xl': 96px,
+    'font-9xl': 128px
+);
+
+// Font weights
+$font-weights: (
+    'weight-light':    300,
+    'weight-regular':  400,
+    'weight-medium':   500,
+    'weight-semibold': 600,
+    'weight-bold':     700
+);
+
+// Background colors (BEST RIDE-tuned)
+$background-colors: (
+    'bg-primary':    #0B6E4F,
+    'bg-secondary':  #6c757d,
+    'bg-success':    #28a745,
+    'bg-danger':     #dc3545,
+    'bg-warning':    #ffc107,
+    'bg-info':       #17a2b8,
+    'bg-light':      #f8f9fa,
+    'bg-dark':       #343a40,
+    'bg-muted':      #6c757d,
+    'bg-white':      #ffffff,
+    'bg-blue':       #0B6E4F,
+    'bg-orange':     #D4A017,
+    'bg-transparent': transparent,
+);
+
+// Font color utilities
+$font-colors: (
+    'text-primary':   #0B6E4F,
+    'text-secondary': #6c757d,
+    'text-green':     #28a745,
+    'text-danger':    #dc3545,
+    'text-warning':   #b45309,
+    'text-info':      #17a2b8,
+    'text-light':     #f8f9fa,
+    'text-dark':      #1b2a4a,
+    'text-muted':     #5a6a7e,
+    'text-white':     #ffffff,
+    'text-orange':    #D4A017,
+    'text-ink':       #1b2a4a,
+);
+
+// Generate font-size utility classes
+@each $name, $size in $font-sizes {
+    .#{$name} {
+        font-size: $size;
+        font-family: var(--hq-font);
+    }
+}
+
+// Generate font-color utility classes
+@each $name, $color in $font-colors {
+    .#{$name} { color: $color; }
+}
+
+// Generate font-weight utility classes
+@each $name, $weight in $font-weights {
+    .#{$name} { font-weight: $weight; }
+}
+
+// Generate background-color utility classes
+@each $name, $color in $background-colors {
+    .#{$name} { background-color: $color; }
+}

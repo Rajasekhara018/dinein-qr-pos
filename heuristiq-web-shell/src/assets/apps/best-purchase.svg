@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Best Purchase">
+  <!-- Best Purchase glyph: a shopping bag with a check mark cut out. One colour on transparent: the app paints it in the theme
+       colour through a CSS mask; the handle is a lower opacity. -->
+  <path fill="none" stroke="#000" stroke-opacity=".55" stroke-width="9" stroke-linecap="round" d="M46 42V34a18 18 0 0 1 36 0v8" />
+  <path fill="#000" fill-rule="evenodd"
+    d="M26 42h76l-6 64a8 8 0 0 1-8 7H40a8 8 0 0 1-8-7zm21 36l-6 6 15 15 30-30-6-6-24 24z" />
+</svg>

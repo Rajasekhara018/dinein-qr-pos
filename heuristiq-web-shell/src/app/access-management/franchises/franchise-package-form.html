@@ -1,0 +1,117 @@
+<div class="ffp">
+  <div class="ffp__header">
+    <button type="button" class="ffp__back" [title]="'shared.adminCrud.backToList' | translate" (click)="cancel()">
+      <i class="bi bi-arrow-left-short"></i>
+    </button>
+    <div class="ffp__heading">
+      <h1>{{ titleKey | translate }}</h1>
+      <nav class="ffp__crumbs">
+        <span>{{ 'nav.sections.accessManagement' | translate }}</span>
+        <i class="bi bi-chevron-right"></i>
+        <a (click)="cancel()">{{ 'nav.items.franchisePackages' | translate }}</a>
+        <i class="bi bi-chevron-right"></i>
+        <span class="ffp__crumbs-current">{{ titleKey | translate }}</span>
+      </nav>
+    </div>
+    <span class="ffp__dirty" *ngIf="hasPendingChanges()">{{ 'shared.adminCrud.unsavedChanges' | translate }}</span>
+  </div>
+
+  <section class="table-surface">
+    <div class="table-surface__header">
+      <div class="table-heading">
+        <span class="table-kicker">{{ 'shared.adminCrud.details' | translate: { entity: ('accessManagement.franchisePackages.entity' | translate) } }}</span>
+      </div>
+    </div>
+
+    <div class="table-surface__body">
+      <p class="ffp__muted" *ngIf="isLoading">{{ 'accessManagement.franchisePackages.loading' | translate }}</p>
+      <hq-error-state *ngIf="loadFailed" [title]="'accessManagement.franchisePackages.messages.loadFailed' | translate"></hq-error-state>
+
+      <form *ngIf="!isLoading && !loadFailed" (ngSubmit)="save()" autocomplete="off">
+        <hq-form-grid cols="2" gap="lg">
+        <hq-field type="text" inputId="pkg-name" [maxLength]="120" [(ngModel)]="form.name" name="pkgName" [showCounter]="false" [label]="'accessManagement.franchisePackages.name' | translate" required></hq-field>
+
+        <hq-form-field for="pkg-app" [label]="'accessManagement.franchises.application' | translate" required>
+          <hq-searchable-select
+            [(ngModel)]="form.applicationCode"
+            (ngModelChange)="onApplicationChange()"
+            name="pkgApplication"
+            inputId="pkg-app"
+            [allowOther]="false"
+            [placeholder]="'accessManagement.franchises.chooseApplication' | translate">
+            <hq-ss-option *ngFor="let application of applications" [value]="application.code" [label]="application.name || application.code"></hq-ss-option>
+          </hq-searchable-select>
+        </hq-form-field>
+
+        <hq-form-field for="pkg-place-type" [label]="'accessManagement.franchisePackages.placeType' | translate" [hint]="((form.placeType ? 'accessManagement.franchisePackages.placeTypeSetHint' : 'accessManagement.franchisePackages.placeTypeHint') | translate)">
+          <hq-searchable-select
+            [(ngModel)]="form.placeType"
+            name="pkgPlaceType"
+            inputId="pkg-place-type"
+            [allowOther]="false"
+            [placeholder]="'accessManagement.franchisePackages.placeTypeAny' | translate">
+            <hq-ss-option value="" [label]="'accessManagement.franchisePackages.placeTypeAny' | translate"></hq-ss-option>
+            <hq-ss-option *ngFor="let type of placeTypes" [value]="type" [label]="placeTypeLabel(type)"></hq-ss-option>
+          </hq-searchable-select>
+        </hq-form-field>
+
+        <hq-field type="text" inputId="pkg-description" [maxLength]="500" [(ngModel)]="form.description" name="pkgDescription" [showCounter]="false" class="hq-span-full" [label]="'accessManagement.franchisePackages.description' | translate"></hq-field>
+
+        <h2 class="ffp__section hq-span-full">{{ 'accessManagement.franchisePackages.plans.title' | translate }}</h2>
+        <p class="ffp__hint hq-span-full">{{ 'accessManagement.franchisePackages.plans.intro' | translate }}</p>
+
+        <div class="ffp__field" *ngFor="let kind of planKinds">
+          <label [for]="'pkg-plan-' + kind">{{ planLabelKeys[kind] | translate }}</label>
+          <hq-searchable-select
+            [ngModel]="planCode(kind)"
+            (ngModelChange)="pickPlan(kind, $event)"
+            [name]="'pkgPlan-' + kind"
+            [inputId]="'pkg-plan-' + kind"
+            [allowOther]="false"
+            [disabled]="!canList(kind)"
+            [loading]="pickers[kind].loading"
+            [loadFailed]="pickers[kind].loadFailed"
+            [blockedHint]="form.applicationCode ? null : ('accessManagement.franchises.regionChooseApplication' | translate)"
+            [showUnavailableNotice]="false"
+            [placeholder]="followRulesKey | translate">
+            <hq-ss-option value="" [label]="followRulesKey | translate"></hq-ss-option>
+            <hq-ss-option *ngFor="let option of pickers[kind].options" [value]="option.code" [label]="option.name"></hq-ss-option>
+          </hq-searchable-select>
+          <p class="ffp__hint ffp__plan-summary" *ngIf="planSummaryText(kind) as summary">{{ summary }}</p>
+          <!-- No plan picked: the application's plans in force today, which a franchise opened from this package follows. -->
+          <div class="ffp__applies" *ngIf="!planCode(kind) && form.applicationCode && appliedRules[kind] as rules" [attr.data-testid]="'applied-rules-' + kind">
+            <span class="ffp__applies-title">{{ 'accessManagement.franchisePackages.plans.appliesNow' | translate }}</span>
+            <ul *ngIf="rules.length">
+              <li *ngFor="let rule of rules">
+                <strong>{{ rule.eventType || ('accessManagement.franchisePackages.plans.everyEvent' | translate) }}<ng-container *ngIf="rule.placeType"> · {{ rule.placeType }}</ng-container></strong>
+                <span>{{ rule.summary }}</span>
+              </li>
+            </ul>
+            <p class="ffp__hint" *ngIf="!rules.length">{{ 'accessManagement.franchisePackages.plans.noRules' | translate }}</p>
+          </div>
+          <p class="ffp__hint" [class.ffp__plan-no-access]="!canList(kind)">{{ (canList(kind) ? planHintKeys[kind] : noAccessKey) | translate }}</p>
+        </div>
+
+        <p class="ffp__hint hq-span-full ffp__plan-screens">
+          {{ 'accessManagement.franchisePackages.plans.whereMade' | translate }}
+          <ng-container *ngFor="let kind of planKinds">
+            <a *hqHasPrivilege="planListPrivileges[kind]" class="ffp__plan-link" [routerLink]="planScreenPaths[kind]">{{ planScreenLabelKeys[kind] | translate }}</a>
+          </ng-container>
+        </p>
+
+        <div class="ffp__field">
+          <label>{{ 'accessManagement.franchisePackages.status' | translate }}</label>
+          <hq-checkbox class="ffp__check" [(ngModel)]="form.active" name="pkgActive">{{ 'accessManagement.franchisePackages.active' | translate }}</hq-checkbox>
+        </div>
+
+        <hq-form-actions align="start" class="hq-span-full">
+          <ng-container *hqHasPrivilege="editingId ? privileges.update : privileges.create">
+            <button hqButton="accent" type="submit" [disabled]="saving">{{ 'accessManagement.franchises.save' | translate }}</button>
+          </ng-container>
+          <button hqButton="secondary" type="button" [disabled]="saving" (click)="cancel()">{{ 'accessManagement.franchises.cancel' | translate }}</button>
+        </hq-form-actions>
+        </hq-form-grid>
+      </form>
+    </div>
+  </section>
+</div>

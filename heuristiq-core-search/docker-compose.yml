@@ -1,0 +1,75 @@
+version: "3.9"
+
+services:
+
+  # ── Elasticsearch ─────────────────────────────────────────────────────────────
+  elasticsearch:
+    # Pinned to match co.elastic.clients:elasticsearch-java:9.4.2 (transitively pulled by
+    # spring-boot-starter-data-elasticsearch under Boot 4.1.0) -- server 8.x under client 9.x
+    # returns 400 "Expecting a response body, but none was sent" on the indices.exists HEAD check.
+    image: docker.elastic.co/elasticsearch/elasticsearch:9.4.2
+    container_name: railcab-elasticsearch
+    restart: unless-stopped
+    environment:
+      discovery.type: single-node
+      xpack.security.enabled: "false"
+      ES_JAVA_OPTS: "-Xms512m -Xmx512m"
+    ports:
+      - "9200:9200"
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:9200/_cluster/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  # ── Redis ────────────────────────────────────────────────────────────────────
+  # This is a standalone-local-dev convenience instance only. In a full multi-service run, do NOT
+  # start this -- point SEARCH_REDIS_HOST/SEARCH_REDIS_PORT (in this service AND in BookingsAPI/
+  # AdminAPI/UAM) at whichever single Redis instance is already running, since the search index
+  # stream is a shared bus across all four services, not a per-service cache.
+  redis:
+    image: redis:7.2-alpine
+    container_name: railcab-search-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── Search API ────────────────────────────────────────────────────────────────
+  search-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: railcab-search-api
+    restart: unless-stopped
+    ports:
+      - "9116:9116"
+      - "9117:9117"
+    environment:
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+      SEARCH_REDIS_HOST: redis
+      SEARCH_REDIS_PORT: 6379
+      EUREKA_URL: ${EUREKA_URL:-http://host.docker.internal:9100/eureka/}
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:9117/actuator/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+volumes:
+  elasticsearch_data:
+  redis_data:

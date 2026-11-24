@@ -1,0 +1,144 @@
+<div class="hub">
+  <header class="hub__hero">
+    <div class="hub__intro">
+      <span class="hub__badge"><i class="bi bi-grid-1x2-fill" aria-hidden="true"></i>{{ 'home.hero.badge' | translate }}</span>
+      <h1 class="hub__title">{{ 'home.title' | translate: { appName: branding.appName, name: userName } }}</h1>
+      <p class="hub__subtitle">{{ 'home.subtitle' | translate }}</p>
+    </div>
+
+    <dl class="hub__stats" [attr.aria-label]="'home.stats.label' | translate">
+      <div class="hub__stat">
+        <dt>{{ 'home.stats.available' | translate }}</dt>
+        <dd data-testid="stat-available">{{ stats.available }}<small> / {{ stats.apps }}</small></dd>
+      </div>
+      <div class="hub__stat">
+        <dt>{{ 'home.stats.screens' | translate }}</dt>
+        <dd data-testid="stat-screens">{{ stats.screens }}</dd>
+      </div>
+      <div class="hub__stat">
+        <dt>{{ 'home.stats.locked' | translate }}</dt>
+        <dd data-testid="stat-locked">{{ stats.locked }}</dd>
+      </div>
+    </dl>
+  </header>
+
+  <hq-screen-help screen="home"></hq-screen-help>
+
+  <!-- Applications -->
+  <section class="hub-section" aria-labelledby="hub-apps-title">
+    <div class="hub-section__head">
+      <div>
+        <h2 class="hub-section__title" id="hub-apps-title">{{ 'home.apps.title' | translate }}</h2>
+        <p class="hub-section__sub">{{ 'home.apps.subtitle' | translate }}</p>
+      </div>
+      <div class="hub-tools">
+        <hq-field class="hub-search" type="search" icon="bi bi-search" [(ngModel)]="query" [showLabel]="false"
+                   [ariaLabel]="'home.apps.search' | translate" [placeholder]="'home.apps.search' | translate"></hq-field>
+        <hq-tabs class="hub-filters" appearance="pills" size="sm" [value]="filter" (valueChange)="setFilter($any($event))" [ariaLabel]="'home.apps.filterLabel' | translate">
+          <hq-tab *ngFor="let f of filters" [value]="f" [label]="'home.apps.filter.' + f | translate"></hq-tab>
+        </hq-tabs>
+      </div>
+    </div>
+
+    <div class="hub-grid" *ngIf="loadStatus === 'loading'" role="status" [attr.aria-label]="'home.apps.loading' | translate" data-testid="apps-loading">
+      <hq-skeleton variant="card" [lines]="2" *ngFor="let n of [1, 2, 3]" aria-hidden="true"></hq-skeleton>
+    </div>
+
+    <hq-error-state *ngIf="loadStatus === 'failed'" data-testid="apps-error" [title]="'home.apps.loadFailed' | translate" (retry)="loadApplications(true)"></hq-error-state>
+
+    <ng-container *ngIf="loadStatus === 'ready'">
+      <section *ngFor="let kind of kinds" class="hub-group" [attr.data-kind]="kind">
+        <ng-container *ngIf="appsOf(kind) as list">
+          <div class="hub-group__head" *ngIf="list.length > 0">
+            <h3 class="hub-group__title">{{ 'home.apps.kind.' + kind + '.title' | translate }}</h3>
+            <p class="hub-group__sub">{{ 'home.apps.kind.' + kind + '.subtitle' | translate }}</p>
+          </div>
+          <div class="hub-grid" *ngIf="list.length > 0">
+            <article *ngFor="let app of list; trackBy: trackByKey" class="app-card" [class.app-card--locked]="!app.enabled" [attr.data-app]="app.key">
+              <header class="app-card__head">
+                <span class="app-card__badge" aria-hidden="true">
+                  <app-area-logo *ngIf="app.logo; else hubGlyph" [src]="app.logo"></app-area-logo>
+                  <ng-template #hubGlyph><i class="bi" [ngClass]="app.icon"></i></ng-template>
+                </span>
+                <div class="app-card__heading">
+                  <h4 class="app-card__title">{{ app.labelKey | translate }}</h4>
+                  <span class="app-card__count" *ngIf="app.enabled">{{ 'home.apps.pages' | translate: { count: app.pages.length, total: app.totalPages } }}</span>
+                  <span class="app-card__count app-card__count--locked" *ngIf="!app.enabled"><i class="bi bi-lock" aria-hidden="true"></i>{{ 'home.apps.locked' | translate }}</span>
+                </div>
+              </header>
+
+              <p class="app-card__tagline">{{ app.taglineKey | translate }}</p>
+
+              <ul class="app-card__features" [attr.id]="'features-' + app.key" [attr.aria-label]="'home.apps.featuresLabel' | translate">
+                <li *ngFor="let feature of shownFeaturesOf(app)" class="feature" [attr.data-feature]="feature.key">
+                  <i class="bi bi-check2-circle feature__icon" aria-hidden="true"></i>
+                  <div>
+                    <strong class="feature__title">{{ 'home.apps.features.' + app.key + '.' + feature.key + '.title' | translate }}</strong>
+                    <span class="feature__desc">{{ 'home.apps.features.' + app.key + '.' + feature.key + '.desc' | translate }}</span>
+                  </div>
+                </li>
+              </ul>
+              <button *ngIf="hiddenFeatureCount(app) > 0" type="button" class="app-card__more" [attr.aria-expanded]="isExpanded(app)"
+                      [attr.aria-controls]="'features-' + app.key" (click)="toggleFeatures(app)">
+                {{ (isExpanded(app) ? 'home.apps.showFewer' : 'home.apps.showAll') | translate: { count: featuresOf(app).length } }}
+              </button>
+
+              <ul class="app-card__chips" *ngIf="app.enabled" [attr.aria-label]="'home.apps.screens' | translate">
+                <li *ngFor="let page of app.preview">
+                  <a [routerLink]="page.path" class="chip"><i class="bi" [ngClass]="page.icon" aria-hidden="true"></i>{{ page.label | translate }}</a>
+                </li>
+                <li *ngIf="app.more > 0"><span class="chip chip--more">{{ 'home.apps.more' | translate: { count: app.more } }}</span></li>
+              </ul>
+              <p class="app-card__help" *ngIf="!app.enabled">{{ 'home.apps.lockedHelp' | translate }}</p>
+
+              <footer class="app-card__foot">
+                <a *ngIf="app.openPath" class="app-card__open" [routerLink]="app.openPath">
+                  {{ 'home.apps.open' | translate }}<i class="bi bi-arrow-right flip-rtl" aria-hidden="true"></i>
+                </a>
+              </footer>
+            </article>
+          </div>
+        </ng-container>
+      </section>
+
+      <hq-empty-state *ngIf="visibleApps.length === 0" icon="bi-search" [title]="'home.apps.none' | translate">
+        <button hqButton="primary" appearance="text" size="sm" type="button" (click)="clearSearch()">{{ 'home.apps.reset' | translate }}</button>
+      </hq-empty-state>
+    </ng-container>
+  </section>
+
+  <!-- Platform capabilities shared by every application -->
+  <section class="hub-section" aria-labelledby="hub-platform-title">
+    <div class="hub-section__head">
+      <div>
+        <h2 class="hub-section__title" id="hub-platform-title">{{ 'home.platform.title' | translate }}</h2>
+        <p class="hub-section__sub">{{ 'home.platform.subtitle' | translate }}</p>
+      </div>
+    </div>
+
+    <ul class="cap-grid">
+      <li *ngFor="let cap of capabilities; trackBy: trackByKey" class="cap" [class.cap--open]="cap.open" [attr.data-capability]="cap.key">
+        <span class="cap__icon" aria-hidden="true"><i class="bi" [ngClass]="cap.icon"></i></span>
+        <div class="cap__text">
+          <h3 class="cap__title">{{ 'home.platform.' + cap.key + '.title' | translate }}</h3>
+          <p class="cap__desc">{{ 'home.platform.' + cap.key + '.desc' | translate }}</p>
+        </div>
+        <a *ngIf="cap.open" class="cap__go" [routerLink]="cap.path" [attr.aria-label]="'home.platform.' + cap.key + '.title' | translate">
+          <i class="bi bi-arrow-right flip-rtl" aria-hidden="true"></i>
+        </a>
+      </li>
+    </ul>
+  </section>
+
+  <!-- Delivery check after a deployment -->
+  <section class="hub-check" aria-labelledby="hub-check-title">
+    <div>
+      <h2 class="hub-check__title" id="hub-check-title">{{ 'home.check.title' | translate }}</h2>
+      <p class="hub-check__sub">{{ 'home.check.subtitle' | translate }}</p>
+    </div>
+    <button type="button" class="hub-check__btn" [disabled]="sendingTestNotification" (click)="sendTestNotification()">
+      <i class="bi bi-bell" aria-hidden="true"></i>
+      {{ (sendingTestNotification ? 'home.placeholder.sending' : 'home.placeholder.sendTestNotification') | translate }}
+    </button>
+  </section>
+</div>

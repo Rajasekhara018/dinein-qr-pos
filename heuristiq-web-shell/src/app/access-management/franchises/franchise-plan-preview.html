@@ -1,0 +1,28 @@
+<div class="plan-preview" data-testid="plan-preview">
+  <p class="plan-preview__muted" *ngIf="loading">{{ i18n + '.loading' | translate }}</p>
+  <dl class="plan-preview__terms" *ngIf="feeText || agentLimit !== null">
+    <div *ngIf="feeText"><dt>{{ i18n + '.fee' | translate }}</dt><dd>{{ feeText }}</dd></div>
+    <div *ngIf="agentLimit !== null"><dt>{{ i18n + '.agents' | translate }}</dt><dd>{{ agentLimit }}</dd></div>
+  </dl>
+  <ng-container *ngIf="!loading && preview">
+    <section class="plan-preview__kind" *ngFor="let kind of kinds" [attr.data-testid]="'plan-preview-' + kind">
+      <h4 class="plan-preview__title">{{ i18n + '.kinds.' + kind | translate }}</h4>
+      <ng-container *ngIf="sectionOf(kind) as result; else noAccess">
+        <p class="plan-preview__muted" *ngIf="result === 'failed'">{{ i18n + '.failed' | translate }}</p>
+        <ng-container *ngIf="asSection(result) as section">
+          <p class="plan-preview__source">
+            {{ (section.source === 'plan' ? i18n + '.fromPlan' : i18n + '.fromRules') | translate: { name: section.planName } }}
+          </p>
+          <ul class="plan-preview__lines" *ngIf="section.lines.length; else noLines">
+            <li *ngFor="let line of section.lines">
+              <strong>{{ line.eventType || (i18n + '.everyEvent' | translate) }}<ng-container *ngIf="line.placeType"> · {{ line.placeType }}</ng-container></strong>
+              <span>{{ line.summary || (i18n + '.noTerms' | translate) }}</span>
+            </li>
+          </ul>
+          <ng-template #noLines><p class="plan-preview__muted">{{ i18n + '.none' | translate }}</p></ng-template>
+        </ng-container>
+      </ng-container>
+      <ng-template #noAccess><p class="plan-preview__muted">{{ i18n + '.noAccess' | translate }}</p></ng-template>
+    </section>
+  </ng-container>
+</div>

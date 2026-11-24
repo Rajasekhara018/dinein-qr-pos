@@ -1,0 +1,72 @@
+:host { display: block; }
+
+.hq-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  min-height: 180px;
+  padding: 2rem 1rem;
+  text-align: center;
+  font-family: var(--hq-font);
+  color: var(--edu-muted, #5a6a7e);
+  background: color-mix(in srgb, var(--workspace-panel, #fff) 92%, transparent);
+  border: 1px dashed var(--theme-soft-border, rgba(11, 110, 79, 0.08));
+  border-radius: 12px;
+
+  strong {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: var(--edu-ink, #1b2a4a);
+  }
+
+  // Icon tile (rounded square), brand-tinted.
+  > i {
+    display: grid;
+    place-items: center;
+    inline-size: 52px;
+    block-size: 52px;
+    margin-block-end: 0.35rem;
+    border-radius: 14px;
+    background: var(--theme-highlight-soft, rgba(11, 110, 79, 0.07));
+    color: var(--hq-primary, #0B6E4F);
+    font-size: 1.25rem;
+  }
+
+  &--loading {
+    flex-direction: row;
+    gap: 0.6rem;
+    min-height: 0;
+    padding: 1.5rem 1rem;
+    border-style: solid;
+    border-color: transparent;
+    background: transparent;
+  }
+
+  &--error > i {
+    background: var(--hq-tone-danger-bg);
+    color: var(--hq-tone-danger-fg);
+  }
+}
+
+.hq-state__body {
+  max-width: 32rem;
+  margin-block-end: 0.4rem;
+  font-size: 0.85rem;
+}
+
+.hq-state__spinner {
+  inline-size: 1rem;
+  block-size: 1rem;
+  border: 2px solid color-mix(in srgb, var(--hq-primary, #0B6E4F) 25%, transparent);
+  border-block-start-color: var(--hq-primary, #0B6E4F);
+  border-radius: 50%;
+  animation: hq-state-spin 0.75s linear infinite;
+}
+
+@keyframes hq-state-spin { to { transform: rotate(360deg); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .hq-state__spinner { animation-duration: 2s; }
+}

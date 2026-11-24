@@ -1,0 +1,125 @@
+<div class="setup">
+  <header class="setup__header">
+    <button type="button" class="setup__back" [title]="'shared.adminCrud.backToList' | translate" [attr.aria-label]="'shared.adminCrud.backToList' | translate" (click)="back()">
+      <i class="bi bi-arrow-left-short" aria-hidden="true"></i>
+    </button>
+    <div class="setup__heading">
+      <div class="setup__title-row">
+        <h1>{{ titleKey | translate }}</h1>
+        <span class="setup__chip setup__chip--org" *ngIf="franchiseCode" data-testid="setup-franchise-code"><i class="bi bi-shop" aria-hidden="true"></i>{{ franchiseCode }}</span>
+        <span class="setup__chip setup__chip--status" *ngIf="franchiseStatus">{{ franchiseStatusLabel }}</span>
+        <hq-status-badge *ngIf="onboardingStatus" [tone]="onboardingTone(onboardingStatus)" data-testid="setup-onboarding-status">
+          {{ 'franchiseOnboarding.status.' + onboardingStatus | translate }}
+        </hq-status-badge>
+        <span class="setup__chip setup__chip--dirty" *ngIf="hasPendingChanges()">{{ 'shared.adminCrud.unsavedChanges' | translate }}</span>
+      </div>
+      <nav class="setup__crumbs">
+        <span>{{ 'nav.sections.accessManagement' | translate }}</span>
+        <i class="bi bi-chevron-right" aria-hidden="true"></i>
+        <a (click)="back()">{{ listKey | translate }}</a>
+        <i class="bi bi-chevron-right" aria-hidden="true"></i>
+        <span class="setup__crumbs-current">{{ titleKey | translate }}</span>
+      </nav>
+    </div>
+  </header>
+
+  <hq-empty-state *ngIf="!hasSteps" [title]="i18n + '.noAccess' | translate"></hq-empty-state>
+
+  <div class="setup__layout" *ngIf="hasSteps">
+    <!-- The step rail: a vertical list on a wide screen, a compact bar with a "go to step" list on a narrow one. -->
+    <nav class="setup__steps setup__rail" [attr.aria-label]="i18n + '.stepsAria' | translate">
+      <div class="setup__rail-head">
+        <span class="setup__count">{{ shared + '.stepOf' | translate: { current: currentNumber, total: steps.length } }}</span>
+        <hq-progress class="setup__progress" size="sm" [value]="percent" [max]="100" [showValue]="false"
+                      [label]="shared + '.progress' | translate: { percent: percent }"></hq-progress>
+      </div>
+
+      <div class="setup__compact">
+        <p class="setup__compact-title" *ngIf="currentStep as cur">
+          <i class="bi" [ngClass]="cur.icon" aria-hidden="true"></i>
+          <span>{{ cur.labelKey | translate }}</span>
+        </p>
+        <hq-form-field class="setup__sr" for="franchise-setup-jump" [label]="shared + '.jumpTo' | translate"><hq-searchable-select class="setup__jump" inputId="franchise-setup-jump" data-testid="setup-jump" [allowOther]="false"
+                               [ngModel]="current" (ngModelChange)="go($event)" [ariaLabel]="shared + '.jumpTo' | translate">
+          <hq-ss-option *ngFor="let step of steps" [value]="step.id" [label]="numberOf(step) + '. ' + (step.labelKey | translate)"></hq-ss-option>
+        </hq-searchable-select></hq-form-field>
+      </div>
+
+      <ol class="setup__list">
+        <li class="setup__item" *ngFor="let step of steps; let last = last" [class.is-last]="last" [class.is-done]="statusOf(step) === 'done'"
+            [class.is-current]="step.id === current">
+          <button type="button" class="setup__step" [class.is-current]="step.id === current" [class.is-done]="statusOf(step) === 'done'"
+                  [class.is-unsaved]="statusOf(step) === 'unsaved'" [attr.aria-current]="step.id === current ? 'step' : null"
+                  [class.is-locked]="isLocked(step.id)" [disabled]="isLocked(step.id)"
+                  [attr.data-testid]="'setup-step-' + step.id" (click)="go(step.id)">
+            <span class="setup__num" aria-hidden="true">
+              <i class="bi bi-check-lg" *ngIf="statusOf(step) === 'done'; else stepNumber"></i>
+              <ng-template #stepNumber>{{ numberOf(step) }}</ng-template>
+            </span>
+            <span class="setup__text">
+              <span class="setup__label">{{ step.labelKey | translate }}</span>
+              <span class="setup__summary">{{ step.summaryKey | translate }}</span>
+            </span>
+            <span class="setup__dot" *ngIf="statusOf(step) === 'unsaved'" aria-hidden="true"></span>
+            <span class="setup__sr">{{ statusLabel(step) }}</span>
+          </button>
+        </li>
+      </ol>
+
+      <p class="setup__note"><i class="bi bi-cloud-check" aria-hidden="true"></i><span>{{ shared + '.railNote' | translate }}</span></p>
+    </nav>
+
+    <section class="setup__card" aria-labelledby="franchise-setup-step-heading">
+      <header class="setup__panel-head" *ngIf="currentStep as cur">
+        <h2 id="franchise-setup-step-heading" class="setup__step-title">{{ cur.labelKey | translate }}</h2>
+        <p class="setup__step-desc">{{ cur.summaryKey | translate }}</p>
+      </header>
+
+      <!-- Every step that was opened stays in place (hidden when another is showing), so nothing typed in it is lost. -->
+      <div class="setup__body">
+        <!-- What this step is for, what each part means and an example; it can be folded away. -->
+        <app-form-guide class="setup__guide" *ngIf="stepGuide as g" [guide]="g" [collapsible]="true" [storageKey]="guideStorageKey"></app-form-guide>
+        <div class="setup__panel" [hidden]="current !== 'details'" *ngIf="isOpened('details')">
+          <app-franchise-form #detailsStep [embedded]="true" (franchiseLoaded)="onFranchise($event)"></app-franchise-form>
+        </div>
+        <div class="setup__panel" [hidden]="current !== 'legal'" *ngIf="isOpened('legal')">
+          <app-legal-profile-page #legalStep [embedded]="true" [ownerIdInput]="franchiseId"
+                                  (profileLoaded)="onLegal($event)" (profileSaved)="onLegalSaved($event)"></app-legal-profile-page>
+        </div>
+        <!-- One onboarding page for the KYC, bank account, agreement and activation steps, read as soon as the screen opens. -->
+        <div class="setup__panel" [hidden]="!onboardingSection" *ngIf="hasOnboarding">
+          <app-franchise-onboarding-page #onboardingStep [embedded]="true" [section]="onboardingSection"
+                                         (onboardingChanged)="onOnboarding($event)"></app-franchise-onboarding-page>
+        </div>
+      </div>
+
+      <!-- Shared navigation at the bottom of the current step card. Each step keeps its own Save inside its form. -->
+      <footer class="setup__footer">
+        <div class="setup__footer-inner">
+          <button hqButton="secondary" appearance="text" type="button" class="setup__cancel" data-testid="setup-cancel" (click)="back()">
+            <i class="bi bi-x-lg" aria-hidden="true"></i> {{ 'shared.adminCrud.cancel' | translate }}
+          </button>
+          <p class="setup__reason" id="franchise-setup-reason" aria-live="polite" [class.is-empty]="!hint">
+            <ng-container *ngIf="hint">
+              <i class="bi bi-info-circle" aria-hidden="true"></i><span>{{ hint }}</span>
+            </ng-container>
+          </p>
+          <div class="setup__nav">
+            <button hqButton="secondary" type="button" data-testid="setup-previous" [disabled]="!previous" (click)="go(previous)">
+              <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ shared + '.previous' | translate }}
+            </button>
+            <button hqButton="accent" type="button" data-testid="setup-next" *ngIf="next; else finishButton" aria-describedby="franchise-setup-reason"
+                    [disabled]="isLocked(next)" (click)="go(next)">
+              {{ shared + '.next' | translate }} <i class="bi bi-arrow-right" aria-hidden="true"></i>
+            </button>
+            <ng-template #finishButton>
+              <button hqButton="accent" type="button" data-testid="setup-finish" aria-describedby="franchise-setup-reason" (click)="finish()">
+                <i class="bi bi-check-lg" aria-hidden="true"></i> {{ shared + '.finish' | translate }}
+              </button>
+            </ng-template>
+          </div>
+        </div>
+      </footer>
+    </section>
+  </div>
+</div>

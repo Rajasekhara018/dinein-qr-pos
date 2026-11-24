@@ -1,0 +1,12 @@
+<hq-page-header
+  [kicker]="'nav.items.applications' | translate"
+  [title]="code"
+  [subtitle]="texts.pageSubtitle | translate"
+  [showBack]="true"
+  [backLabel]="texts.pageBack | translate"
+  (backClick)="back()">
+</hq-page-header>
+
+<app-go-live-steps [code]="code"></app-go-live-steps>
+
+<app-governance-panel [code]="code"></app-governance-panel>

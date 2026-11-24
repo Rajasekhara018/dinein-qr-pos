@@ -1,0 +1,86 @@
+// Tone colours of the status UI (chips, icons, bars). Text on its tinted background keeps >= 4.5:1 in the light and
+// dark themes (dark mode = html[data-theme-mode='dark'], set by hq-shared-lib's theme service).
+
+@mixin tokens {
+  --rd-good-fg: #166534;
+  --rd-good-bg: rgba(22, 163, 74, .12);
+  --rd-good-line: rgba(22, 163, 74, .4);
+  --rd-warning-fg: #92400e;
+  --rd-warning-bg: rgba(245, 158, 11, .15);
+  --rd-warning-line: rgba(217, 119, 6, .45);
+  --rd-bad-fg: #991b1b;
+  --rd-bad-bg: rgba(220, 38, 38, .1);
+  --rd-bad-line: rgba(220, 38, 38, .4);
+  --rd-neutral-fg: #475569;
+  --rd-neutral-bg: rgba(100, 116, 139, .12);
+  --rd-neutral-line: rgba(100, 116, 139, .35);
+  --rd-track: rgba(100, 116, 139, .18);
+}
+
+@mixin dark-tokens {
+  --rd-good-fg: #86efac;
+  --rd-good-bg: rgba(34, 197, 94, .16);
+  --rd-warning-fg: #fcd34d;
+  --rd-warning-bg: rgba(245, 158, 11, .18);
+  --rd-bad-fg: #fca5a5;
+  --rd-bad-bg: rgba(248, 113, 113, .16);
+  --rd-neutral-fg: #cbd5e1;
+  --rd-neutral-bg: rgba(148, 163, 184, .16);
+  --rd-track: rgba(148, 163, 184, .22);
+}
+
+/** `.rd-tone--good` etc.: colour, tint and border of one tone. */
+@mixin tone-classes {
+  @each $tone in good, warning, bad, neutral {
+    .rd-tone--#{$tone} {
+      color: var(--rd-#{$tone}-fg);
+      background: var(--rd-#{$tone}-bg);
+      border-color: var(--rd-#{$tone}-line);
+    }
+  }
+}
+
+/** Host setup: tokens for both themes plus the tone classes. */
+@mixin host {
+  :host {
+    @include tokens;
+  }
+
+  :host-context(html[data-theme-mode='dark']) {
+    @include dark-tokens;
+  }
+
+  @include tone-classes;
+}
+
+/** A pill-shaped status chip. */
+@mixin chip {
+  display: inline-flex;
+  align-items: center;
+  gap: .3rem;
+  max-width: 100%;
+  padding: .15rem .6rem;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font-size: .75rem;
+  font-weight: 600;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+/** A thin progress bar; the fill width is set inline. Logical properties keep it right for RTL. */
+@mixin bar {
+  position: relative;
+  height: .45rem;
+  border-radius: 999px;
+  background: var(--rd-track);
+  overflow: hidden;
+
+  > span {
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 0;
+    border-radius: inherit;
+    transition: width .3s ease;
+  }
+}

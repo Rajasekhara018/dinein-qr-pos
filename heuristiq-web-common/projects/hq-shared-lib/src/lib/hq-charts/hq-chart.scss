@@ -1,0 +1,22 @@
+:host {
+  display: block;
+  min-width: 0;
+}
+
+.hq-chart {
+  width: 100%;
+  position: relative;
+}
+
+.hq-chart__empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: inherit;
+  color: var(--edu-muted, #5a6a7e);
+  font-size: 0.875rem;
+  text-align: center;
+  border: 1px dashed var(--workspace-border, rgba(0, 0, 0, 0.12));
+  border-radius: 12px;
+  padding: 1rem;
+}

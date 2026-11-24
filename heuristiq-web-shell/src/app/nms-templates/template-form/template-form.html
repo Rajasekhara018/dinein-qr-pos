@@ -1,0 +1,262 @@
+<div class="tf-page">
+
+  <!-- ── Page Header ──────────────────────────────────────────────────────── -->
+  <div class="tf-page-header">
+    <div class="d-flex align-items-center gap-2">
+      <button type="button" class="tf-back-btn" (click)="cancel()" [title]="'shared.adminCrud.backToList' | translate">
+        <i class="bi bi-arrow-left-short"></i>
+      </button>
+      <div>
+        <h1 class="tf-title">{{ (isEdit ? 'nmsTemplates.form.editTitle' : 'nmsTemplates.form.newTitle') | translate }}</h1>
+        <nav class="tf-breadcrumb">
+          <span (click)="cancel()" class="tf-bc-link">{{ 'pageMeta.nmsTemplates.title' | translate }}</span>
+          <i class="bi bi-chevron-right tf-bc-sep"></i>
+          <span (click)="cancel()" class="tf-bc-link">{{ form.channel || ('nmsTemplates.list.all' | translate) }}</span>
+          <i class="bi bi-chevron-right tf-bc-sep"></i>
+          <span class="tf-bc-active">{{ (isEdit ? 'nmsTemplates.form.editBreadcrumb' : 'nmsTemplates.form.newBreadcrumb') | translate }}</span>
+        </nav>
+      </div>
+    </div>
+    <div class="d-flex gap-2 align-items-center">
+      <hq-status-badge tone="warning" *ngIf="hasChanges">
+        <i class="bi bi-dot"></i> {{ 'shared.adminCrud.unsavedChanges' | translate }}
+      </hq-status-badge>
+      <button hqButton="secondary" appearance="outline" size="sm" class="px-3" (click)="cancel()" type="button">{{ 'shared.adminCrud.cancel' | translate }}</button>
+      <ng-container *hqHasPrivilege="isEdit ? ['NMS_TEMPLATE_UPDATE', 'NMS_MANAGE'] : ['NMS_TEMPLATE_CREATE', 'NMS_MANAGE']">
+        <button [loading]="saving" hqButton="primary" size="sm" class="px-4" (click)="save()" [disabled]="saving || !hasChanges" type="button">
+          <i *ngIf="!saving" class="bi bi-check-lg me-1"></i>
+          {{ (isEdit ? 'shared.adminCrud.update' : 'shared.adminCrud.save') | translate }}
+        </button>
+      </ng-container>
+    </div>
+  </div>
+
+  <!-- ── Loading ──────────────────────────────────────────────────────────── -->
+  <hq-loading-state *ngIf="loading" [label]="'nmsTemplates.form.loading' | translate"></hq-loading-state>
+
+  <!-- ── Form Layout ──────────────────────────────────────────────────────── -->
+  <form #templateForm="ngForm" class="tf-layout" *ngIf="!loading">
+
+    <!-- ── Left: main card ─────────────────────────────────────────────── -->
+    <div class="tf-main">
+      <hq-card icon="bi-file-earmark-text" padding="lg" [title]="'nmsTemplates.form.templateDetails' | translate">
+          <hq-form-grid cols="2" gap="lg">
+
+            <!-- Template Name -->
+            <hq-field
+                     type="text"
+                     class="tf-input"
+                     [(ngModel)]="form.name"
+                     name="name"
+                     [required]="true"
+                     [maxLength]="100"
+                     [placeholder]="'nmsTemplates.form.fields.name.placeholder' | translate"
+                     [invalid]="submitted && !form.name.trim()"
+                     [showCounter]="false" [label]="'nmsTemplates.form.fields.name.label' | translate" [error]="(submitted && !form.name.trim()) ? ('nmsTemplates.form.fields.name.required' | translate) : null"></hq-field>
+
+            <!-- Channel -->
+            <hq-form-field [label]="'nmsTemplates.list.columns.channel' | translate" required [error]="(!!(submitted && !form.channel)) ? ('nmsTemplates.form.fields.channel.required' | translate) : null">
+              <hq-searchable-select
+                class="tf-input"
+                [(ngModel)]="form.channel"
+                name="channel"
+                required
+                [hasError]="!!(submitted && !form.channel)"
+                [allowOther]="false"
+                [placeholder]="'nmsTemplates.form.fields.channel.placeholder' | translate">
+                <hq-ss-option *ngFor="let ch of channels" [value]="ch.value" [label]="ch.label | translate"></hq-ss-option>
+              </hq-searchable-select>
+            </hq-form-field>
+
+            <!-- Event -->
+            <hq-form-field [label]="'nmsTemplates.list.columns.event' | translate" required [error]="(!!(submitted && !form.event)) ? ('nmsTemplates.form.fields.event.required' | translate) : null">
+              <hq-searchable-select
+                class="tf-input"
+                [ngModel]="form.event"
+                name="event"
+                required
+                (ngModelChange)="onEventChange($event)"
+                [hasError]="!!(submitted && !form.event)"
+                [allowOther]="false"
+                [placeholder]="'nmsTemplates.form.fields.event.placeholder' | translate">
+                <hq-ss-option *ngFor="let ev of (events$ | async)" [value]="ev.value" [label]="ev.label"></hq-ss-option>
+              </hq-searchable-select>
+            </hq-form-field>
+
+            <!-- External Template ID -->
+            <hq-field
+                     type="text"
+                     class="tf-input"
+                     [(ngModel)]="form.externalTemplateId"
+                     name="externalTemplateId"
+                     [label]="('nmsTemplates.form.fields.externalId.label' | translate) + ' (' + ('shared.optional' | translate) + ')'"
+                     [hint]="'nmsTemplates.form.fields.externalId.hint' | translate"
+                     [placeholder]="'nmsTemplates.form.fields.externalId.placeholder' | translate"></hq-field>
+
+            <!-- Subject / title -->
+            <hq-field
+                     type="text"
+                     class="tf-input"
+                     [(ngModel)]="form.subject"
+                     name="subject"
+                     [required]="subjectRequired"
+                     [placeholder]="'nmsTemplates.form.fields.subject.placeholder' | translate"
+                     [invalid]="submitted && subjectRequired && !form.subject.trim()" *ngIf="showSubject" [label]="'nmsTemplates.form.fields.subject.label' | translate" [error]="(submitted && subjectRequired && !form.subject.trim()) ? ('nmsTemplates.form.fields.subject.required' | translate) : null"></hq-field>
+
+            <!-- Whose template: every organization's, or only the one the user is working in -->
+            <div class="hq-span-full" *ngIf="organizationId">
+              <div class="tf-toggle-wrap">
+                <hq-slide-toggle [(ngModel)]="form.organizationOnly" name="organizationOnly" [disabled]="isEdit">{{ 'nmsTemplates.form.fields.organizationOnly.label' | translate: { organization: organizationName } }}</hq-slide-toggle>
+              </div>
+              <small class="text-muted">{{ 'nmsTemplates.form.fields.organizationOnly.hint' | translate }}</small>
+            </div>
+
+            <!-- Active toggle -->
+            <div class="hq-span-full">
+              <div class="tf-toggle-wrap">
+                <hq-slide-toggle [(ngModel)]="form.active" name="active">{{ 'nmsTemplates.form.fields.templateActive' | translate }}</hq-slide-toggle>
+                <hq-status-badge [tone]="form.active ? 'success' : 'neutral'">
+                  {{ (form.active ? 'nmsTemplates.form.enabled' : 'nmsTemplates.form.disabled') | translate }}
+                </hq-status-badge>
+              </div>
+            </div>
+
+            <!-- Body: rich text, raw HTML, or rendered preview -->
+            <div class="hq-span-full">
+              <div class="tf-body-head">
+                <label class="tf-label mb-0">{{ 'nmsTemplates.form.fields.body.label' | translate }} <span class="text-danger">*</span></label>
+                <hq-tabs class="tf-mode-switch" appearance="segmented" size="sm" [value]="bodyMode" (valueChange)="setBodyMode($any($event))"
+                          [ariaLabel]="'nmsTemplates.form.fields.body.label' | translate">
+                  <hq-tab value="visual" icon="bi-fonts" [disabled]="advancedHtml" [label]="'nmsTemplates.form.editor.visual' | translate"
+                           [title]="advancedHtml ? ('nmsTemplates.form.editor.advancedHtmlNotice' | translate) : ''"></hq-tab>
+                  <hq-tab value="html" icon="bi-code-slash" [label]="'nmsTemplates.form.editor.html' | translate"></hq-tab>
+                  <hq-tab value="preview" icon="bi-eye" [label]="'nmsTemplates.form.editor.preview' | translate"></hq-tab>
+                </hq-tabs>
+              </div>
+
+              <hq-alert class="tf-notice" tone="info" dense *ngIf="advancedHtml && bodyMode !== 'preview'">{{ 'nmsTemplates.form.editor.advancedHtmlNotice' | translate }}</hq-alert>
+
+              <div class="editor-wrapper" *ngIf="bodyMode === 'visual'" [class.editor-wrapper--invalid]="submitted && !form.body.trim()">
+                <quill-editor
+                  [(ngModel)]="form.body"
+                  name="body"
+                  theme="snow"
+                  [modules]="quillConfig"
+                  format="html"
+                  [placeholder]="'nmsTemplates.form.fields.body.placeholder' | translate"
+                ></quill-editor>
+              </div>
+
+              <div class="tf-html-split" *ngIf="bodyMode === 'html'">
+                <hq-field
+                          type="textarea"
+                          name="bodyHtml"
+                          [spellcheck]="false"
+                          [(ngModel)]="form.body"
+                          [rows]="18"
+                          [invalid]="submitted && !form.body.trim()"
+                          [placeholder]="'nmsTemplates.form.editor.htmlPlaceholder' | translate"></hq-field>
+                <div class="tf-live" *ngIf="form.body.trim()">
+                  <div class="tf-live-title"><i class="bi bi-eye me-1"></i>{{ 'nmsTemplates.form.preview.live' | translate }}</div>
+                  <iframe *ngIf="htmlPreview" class="tf-frame" sandbox="" [srcdoc]="previewDocument"
+                          [title]="'nmsTemplates.form.preview.frameTitle' | translate"></iframe>
+                  <pre *ngIf="!htmlPreview" class="tf-text-preview">{{ previewText }}</pre>
+                </div>
+              </div>
+
+              <div class="tf-preview" *ngIf="bodyMode === 'preview'">
+                <p class="tf-field-error m-0" *ngIf="!form.body.trim()">{{ 'nmsTemplates.form.preview.empty' | translate }}</p>
+                <ng-container *ngIf="form.body.trim()">
+                  <div class="tf-preview-bar">
+                    <div class="tf-preview-subject" *ngIf="showSubject && form.subject">
+                      <span class="tf-preview-subject-label">{{ 'nmsTemplates.form.preview.subject' | translate }}</span>
+                      {{ previewSubject }}
+                    </div>
+                    <hq-tabs class="tf-mode-switch" *ngIf="htmlPreview" appearance="segmented" size="sm" [value]="previewDevice"
+                              (valueChange)="previewDevice = $any($event)" [ariaLabel]="'nmsTemplates.form.editor.preview' | translate">
+                      <hq-tab value="desktop" icon="bi-display" [label]="'nmsTemplates.form.preview.desktop' | translate"></hq-tab>
+                      <hq-tab value="mobile" icon="bi-phone" [label]="'nmsTemplates.form.preview.mobile' | translate"></hq-tab>
+                    </hq-tabs>
+                  </div>
+                  <div class="tf-preview-stage">
+                    <iframe *ngIf="htmlPreview" class="tf-frame tf-frame--tall" sandbox="" [srcdoc]="previewDocument"
+                            [style.width]="previewWidth" [title]="'nmsTemplates.form.preview.frameTitle' | translate"></iframe>
+                    <pre *ngIf="!htmlPreview" class="tf-text-preview tf-text-preview--bubble">{{ previewText }}</pre>
+                  </div>
+                </ng-container>
+              </div>
+
+              <div class="tf-field-error" *ngIf="submitted && !form.body.trim()">
+                <i class="bi bi-exclamation-circle me-1"></i>{{ 'nmsTemplates.form.fields.body.required' | translate }}
+              </div>
+            </div>
+
+            <!-- Send a [TEST] copy to a real inbox / phone before users get it -->
+            <div class="hq-span-full" *ngIf="canSendTest">
+              <ng-container *hqHasPrivilege="'NMS_TEMPLATE_TEST_SEND'">
+                <div class="tf-test-box">
+                  <div class="tf-test-title"><i class="bi bi-send-check me-1"></i>{{ 'nmsTemplates.form.test.title' | translate }}</div>
+                  <p class="tf-test-hint">{{ 'nmsTemplates.form.test.hint' | translate }}</p>
+                  <div class="tf-test-row">
+                    <hq-field
+                           class="tf-input"
+                           name="testRecipient"
+                           [(ngModel)]="testRecipient"
+                           [ngModelOptions]="{standalone: true}"
+                           [maxLength]="254"
+                           [type]="form.channel === 'EMAIL' ? 'email' : 'tel'"
+                           [placeholder]="testRecipientLabelKey | translate"
+                           [showCounter]="false"></hq-field>
+                    <button [loading]="testSending" hqButton="primary" appearance="outline" type="button" class="px-4" (click)="sendTest()" [disabled]="testSending">
+                      <i *ngIf="!testSending" class="bi bi-send me-1"></i>{{ 'nmsTemplates.form.test.send' | translate }}
+                    </button>
+                  </div>
+                </div>
+              </ng-container>
+            </div>
+
+          </hq-form-grid>
+      </hq-card>
+    </div>
+
+    <!-- ── Right: attributes sidebar ───────────────────────────────────── -->
+    <div class="tf-sidebar">
+      <hq-card icon="bi-braces" padding="md" [title]="'nmsTemplates.events.attributes' | translate"
+                [subtitle]="'nmsTemplates.form.clickToCopy' | translate">
+          <p *ngIf="!form.event" class="tf-attr-hint">
+            <i class="bi bi-info-circle me-1"></i>{{ 'nmsTemplates.form.selectEventHint' | translate }}
+          </p>
+          <p *ngIf="form.event && attributes.length === 0" class="tf-attr-hint">
+            {{ 'nmsTemplates.form.noAttributesForEvent' | translate }}
+          </p>
+          <div class="tf-attr-chips" *ngIf="attributes.length > 0">
+            <button *ngFor="let attr of attributes"
+                    type="button"
+                    class="tf-attr-chip"
+                    (click)="copyAttribute(attr)"
+                    [title]="'nmsTemplates.form.clickToCopyAttr' | translate: { attr: attr }">
+              {{ attr }}
+            </button>
+          </div>
+      </hq-card>
+
+      <hq-card class="mt-3" *ngIf="placeholderNames.length > 0" icon="bi-sliders" padding="md"
+                [title]="'nmsTemplates.form.preview.sampleValues' | translate" [subtitle]="'nmsTemplates.form.preview.sampleHint' | translate">
+          <div class="tf-sample-row" *ngFor="let name of placeholderNames">
+            <label class="tf-sample-label" [for]="'sample-' + name">{{ name }}</label>
+            <hq-field
+                   type="text"
+                   [inputId]="'sample-' + name"
+                   [ngModel]="sampleFor(name)"
+                   (ngModelChange)="setSample(name, $event)"
+                   [ngModelOptions]="{standalone: true}"></hq-field>
+          </div>
+          <button hqButton="primary" appearance="text" size="sm" type="button" class="p-0 mt-2" (click)="resetSamples()">
+            {{ 'nmsTemplates.form.preview.resetSamples' | translate }}
+          </button>
+      </hq-card>
+    </div>
+
+  </form>
+</div>
+

@@ -1,0 +1,65 @@
+<div class="glb" role="dialog" aria-modal="true" [attr.aria-label]="texts.blockedTitle | translate">
+  <div class="glb__header">
+    <i class="bi bi-sign-stop-fill glb__icon" aria-hidden="true"></i>
+    <div>
+      <h2 class="glb__title">{{ texts.blockedTitle | translate }}</h2>
+      <p class="glb__code">{{ code }}</p>
+    </div>
+  </div>
+
+  <div class="glb__body" *ngIf="!overriding">
+    <p class="glb__intro">{{ texts.goLiveRefused | translate }}</p>
+    <p class="glb__intro glb__intro--muted">{{ texts.blockedIntro | translate }}</p>
+
+    <ul class="glb__list">
+      <li class="glb__item" *ngFor="let blocker of blockers; trackBy: trackBlocker">
+        <span class="glb__status">{{ blocker.statusKey | translate }}</span>
+        <span class="glb__text">{{ blocker.textKey | translate: blocker.params }}</span>
+        <button hqButton="secondary" type="button" class="glb__fix" *ngIf="blocker.fix as link; else noFix" (click)="fix(link)">
+          <i class="bi bi-wrench-adjustable" aria-hidden="true"></i> {{ texts.blockedFix | translate }}
+        </button>
+        <ng-template #noFix><span class="glb__nofix">{{ texts.blockedNoFix | translate }}</span></ng-template>
+      </li>
+    </ul>
+  </div>
+
+  <div class="glb__body" *ngIf="overriding">
+    <hq-alert tone="warning" dense class="glb__warning">{{ texts.overrideWarning | translate }}</hq-alert>
+    <hq-field
+      type="textarea"
+      class="rf-glb__reason"
+      inputId="glb-reason"
+      [rows]="4"
+      [(ngModel)]="reason"
+      name="reason"
+      [maxLength]="reasonMax"
+      [disabled]="busy"
+      [invalid]="!!(reasonLength > 0 && !reasonValid)"
+      ariaDescribedBy="glb-reason-hint"
+      [showCounter]="false" [label]="texts.overrideReasonLabel | translate"></hq-field>
+    <p id="glb-reason-hint" class="glb__hint" [class.glb__hint--bad]="reasonLength > 0 && !reasonValid">
+      {{ texts.overrideReasonHint | translate: { min: reasonMin, max: reasonMax } }}
+      <span class="glb__counter">{{ texts.overrideCounter | translate: { count: reasonLength, max: reasonMax } }}</span>
+    </p>
+    <hq-alert tone="danger" dense *ngIf="errorText">{{ errorText }}</hq-alert>
+  </div>
+
+  <div class="glb__footer">
+    <ng-container *ngIf="!overriding">
+      <ng-container *hqHasPrivilege="overridePrivilege">
+        <button hqButton="secondary" type="button" class="danger" (click)="startOverride()">
+          <i class="bi bi-shield-exclamation" aria-hidden="true"></i> {{ texts.overrideAction | translate }}
+        </button>
+      </ng-container>
+      <button hqButton="accent" type="button" (click)="close()">{{ texts.blockedClose | translate }}</button>
+    </ng-container>
+    <ng-container *ngIf="overriding">
+      <button hqButton="secondary" type="button" [disabled]="busy" (click)="backToList()">{{ texts.overrideBack | translate }}</button>
+      <ng-container *hqHasPrivilege="overridePrivilege">
+        <button hqButton="accent" type="button" [disabled]="!reasonValid || busy" [attr.aria-busy]="busy" (click)="confirmOverride()">
+          {{ (busy ? texts.overriding : texts.overrideConfirm) | translate }}
+        </button>
+      </ng-container>
+    </ng-container>
+  </div>
+</div>

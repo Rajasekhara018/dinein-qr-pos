@@ -1,0 +1,26 @@
+plugins {
+    id 'java-library'
+}
+
+group = 'com.heuristiq'
+version = '1.0.0'
+
+java { toolchain { languageVersion = JavaLanguageVersion.of(21) } }
+
+repositories { mavenCentral() }
+
+// Boot-agnostic like the resilient client: jakarta.validation is compileOnly because every consumer that uses the
+// @ValidPhone constraint already has it; libphonenumber is the only runtime dependency.
+dependencies {
+    api 'com.googlecode.libphonenumber:libphonenumber:8.13.50'
+    compileOnly 'jakarta.validation:jakarta.validation-api:3.0.2'
+
+    testImplementation 'jakarta.validation:jakarta.validation-api:3.0.2'
+    testImplementation 'org.hibernate.validator:hibernate-validator:8.0.1.Final'
+    testImplementation 'org.glassfish.expressly:expressly:5.0.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.11.3'
+    testImplementation 'org.assertj:assertj-core:3.26.3'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.11.3'
+}
+
+test { useJUnitPlatform() }

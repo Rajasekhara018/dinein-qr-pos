@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BestRide Javadoc</title>
+  <style>
+    :root { color-scheme: light dark; --bg: #f7f8fa; --card: #ffffff; --text: #1d2330; --muted: #5d6677; --line: #e1e5ec; --accent: #1f8a4c; }
+    @media (prefers-color-scheme: dark) {
+      :root { --bg: #14171c; --card: #1c2027; --text: #e6e9ef; --muted: #9aa3b2; --line: #2c323c; --accent: #4cc27d; }
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+    main { max-width: 960px; margin: 0 auto; padding: 32px 16px 48px; }
+    h1 { margin: 0 0 4px; font-size: 26px; }
+    p.lead { margin: 0 0 24px; color: var(--muted); }
+    h2 { margin: 28px 0 10px; font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+    ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 10px; }
+    a.card { display: block; padding: 12px 14px; background: var(--card); border: 1px solid var(--line); border-radius: 8px; color: inherit; text-decoration: none; }
+    a.card:hover { border-color: var(--accent); }
+    a.card strong { display: block; color: var(--accent); }
+    a.card span { font-size: 13px; color: var(--muted); font-family: ui-monospace, SFMono-Regular, Consolas, monospace; }
+  </style>
+</head>
+<body>
+<main>
+  <h1>BestRide Javadoc</h1>
+  <p class="lead">Source documentation for every backend service, served through the API gateway.</p>
+
+  <h2>Platform</h2>
+  <ul>
+    <li><a class="card" href="/javadoc/gateway/index.html"><strong>API Gateway</strong><span>/javadoc/gateway/</span></a></li>
+    <li><a class="card" href="/api/registry/javadoc/"><strong>Service Registry</strong><span>/api/registry/javadoc/</span></a></li>
+    <li><a class="card" href="/api/uam/javadoc/"><strong>UAM</strong><span>/api/uam/javadoc/</span></a></li>
+    <li><a class="card" href="/api/admin/javadoc/"><strong>Admin API</strong><span>/api/admin/javadoc/</span></a></li>
+    <li><a class="card" href="/api/dms/javadoc/"><strong>DMS</strong><span>/api/dms/javadoc/</span></a></li>
+    <li><a class="card" href="/api/nms/javadoc/"><strong>NMS</strong><span>/api/nms/javadoc/</span></a></li>
+    <li><a class="card" href="/api/search/javadoc/"><strong>Search API</strong><span>/api/search/javadoc/</span></a></li>
+    <li><a class="card" href="/api/bookings/javadoc/"><strong>Bookings API</strong><span>/api/bookings/javadoc/</span></a></li>
+  </ul>
+
+  <h2>Rider services</h2>
+  <ul>
+    <li><a class="card" href="/api/rider/pricing/javadoc/"><strong>Pricing</strong><span>/api/rider/pricing/javadoc/</span></a></li>
+    <li><a class="card" href="/api/rider/location/javadoc/"><strong>Location</strong><span>/api/rider/location/javadoc/</span></a></li>
+    <li><a class="card" href="/api/rider/dispatch/javadoc/"><strong>Dispatch</strong><span>/api/rider/dispatch/javadoc/</span></a></li>
+    <li><a class="card" href="/api/rider/ride/javadoc/"><strong>Ride</strong><span>/api/rider/ride/javadoc/</span></a></li>
+    <li><a class="card" href="/api/rider/payment/javadoc/"><strong>Payment</strong><span>/api/rider/payment/javadoc/</span></a></li>
+    <li><a class="card" href="/api/rider/customer/javadoc/"><strong>Customer</strong><span>/api/rider/customer/javadoc/</span></a></li>
+    <li><a class="card" href="/api/rider/workflow/javadoc/"><strong>Workflow</strong><span>/api/rider/workflow/javadoc/</span></a></li>
+    <li><a class="card" href="/api/rider/onboarding/javadoc/"><strong>Onboarding</strong><span>/api/rider/onboarding/javadoc/</span></a></li>
+    <li><a class="card" href="/api/rider/driver-earnings/javadoc/"><strong>Driver Earnings</strong><span>/api/rider/driver-earnings/javadoc/</span></a></li>
+    <li><a class="card" href="/api/rider/wallet/javadoc/"><strong>Wallet</strong><span>/api/rider/wallet/javadoc/</span></a></li>
+  </ul>
+</main>
+</body>
+</html>

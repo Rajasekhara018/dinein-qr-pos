@@ -1,0 +1,278 @@
+.make-payment-page {
+    display: grid;
+    gap: 1.5rem;
+}
+
+.page-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1.35fr) minmax(260px, 0.8fr);
+    gap: 1.25rem;
+    padding: 1.75rem;
+    border-radius: 30px;
+    background: linear-gradient(135deg, var(--theme-hero-start) 0%, var(--theme-hero-mid) 48%, var(--theme-hero-end) 100%);
+    color: #f8fafc;
+    box-shadow: var(--theme-soft-shadow);
+}
+
+.eyebrow,
+.section-kicker {
+    display: inline-flex;
+    width: fit-content;
+    padding: 0.35rem 0.75rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.12);
+    color: #fde68a;
+    font-size: 0.74rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 700;
+}
+
+.page-hero h1 {
+    margin: 0.9rem 0 0.75rem;
+    font-size: clamp(2rem, 4vw, 3.1rem);
+    line-height: 1.05;
+    letter-spacing: -0.04em;
+}
+
+.page-hero p {
+    margin: 0;
+    max-width: 44rem;
+    color: rgba(248, 250, 252, 0.84);
+    line-height: 1.7;
+}
+
+.hero-summary {
+    display: grid;
+    gap: 1rem;
+}
+
+.summary-card,
+.panel {
+    border-radius: 24px;
+    border: 1px solid var(--theme-soft-border);
+    background: var(--workspace-panel);
+    box-shadow: var(--theme-soft-shadow);
+}
+
+.summary-card {
+    padding: 1.2rem;
+    background: rgba(255, 255, 255, 0.16);
+    border-color: rgba(255, 255, 255, 0.14);
+}
+
+.summary-card span {
+    display: block;
+    color: rgba(248, 250, 252, 0.72);
+    font-size: 0.82rem;
+}
+
+.summary-card strong {
+    display: block;
+    margin: 0.35rem 0;
+    font-size: 1.5rem;
+}
+
+.summary-card p {
+    color: rgba(248, 250, 252, 0.78);
+}
+
+.content-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(300px, 0.85fr);
+    gap: 1.25rem;
+    align-items: start;
+}
+
+.panel {
+    padding: 1.4rem;
+}
+
+.checklist-panel {
+    grid-column: 1 / -1;
+}
+
+.panel-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    align-items: end;
+    margin-bottom: 1rem;
+}
+
+.panel-head h2 {
+    margin: 0.35rem 0 0;
+    color: var(--edu-ink);
+    font-size: 1.55rem;
+}
+
+.panel-head p {
+    margin: 0;
+    color: var(--edu-muted);
+    max-width: 22rem;
+    line-height: 1.6;
+}
+.payment-form .form-control {
+    min-height: 54px;
+    border-radius: 14px;
+    border: 1px solid var(--field-border);
+    box-shadow: none;
+}
+
+.payment-form .form-control:focus {
+    border-color: var(--button-accent-start);
+    box-shadow: 0 0 0 3px var(--field-focus-ring);
+}
+.payment-form .amount-group {
+    border-radius: 14px;
+    border: 1px solid var(--field-border);
+    background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.05);
+    overflow: hidden;
+}
+
+.payment-form .amount-prefix {
+    border: 0;
+    border-right: 1px solid var(--field-border);
+    background: linear-gradient(135deg, var(--theme-highlight-soft) 0%, var(--workspace-panel) 100%);
+    color: var(--button-accent-start);
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    min-width: 84px;
+    justify-content: center;
+    transition: color 0.2s ease, background 0.2s ease;
+}
+
+.payment-form .amount-input {
+    border: 0;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.01em;
+    color: var(--edu-ink);
+}
+
+.payment-form .amount-input::placeholder {
+    color: var(--edu-muted);
+    opacity: 0.95;
+}
+
+.payment-form .amount-group .amount-input::placeholder {
+    color: var(--field-placeholder) !important;
+    opacity: 1;
+}
+
+.payment-form .amount-group .amount-prefix {
+    color: var(--button-accent-start) !important;
+    background: linear-gradient(135deg, var(--theme-highlight-soft) 0%, var(--workspace-panel) 100%) !important;
+}
+
+.payment-form .amount-input:focus {
+    box-shadow: none;
+}
+
+.payment-form .amount-group:focus-within {
+    border-color: var(--button-accent-start);
+    box-shadow: 0 0 0 3px var(--field-focus-ring), 0 12px 28px color-mix(in srgb, var(--button-accent-start) 20%, transparent);
+}
+.inline-note {
+    padding: 0.9rem 1rem;
+    border-radius: 16px;
+    background: var(--theme-highlight-soft);
+    color: var(--button-accent-start);
+    font-weight: 500;
+}
+
+.btn-primary {
+    min-height: 56px;
+    font-weight: 700;
+    padding: 10px 18px;
+    border-radius: 999px;
+    border: none;
+    background: linear-gradient(135deg, var(--button-accent-start), var(--button-accent-end));
+    text-transform: none;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, var(--theme-hero-mid), var(--button-accent-end));
+}
+.btn-outline-primary {
+    min-height: 56px;
+    border-radius: 999px;
+    border-color: var(--button-accent-start);
+    color: var(--button-accent-start);
+    font-weight: 700;
+}
+
+.btn-outline-primary:hover {
+    background: var(--theme-highlight-soft);
+    color: var(--button-accent-start);
+    border-color: var(--button-accent-start);
+}
+
+.channel-cards,
+.checklist {
+    display: grid;
+    gap: 1rem;
+}
+
+.channel-card,
+.check-item {
+    padding: 1rem 1.1rem;
+    border-radius: 20px;
+    border: 1px solid var(--theme-soft-border);
+    background: linear-gradient(180deg, var(--theme-soft-surface) 0%, var(--workspace-panel) 100%);
+}
+
+.channel-card h3 {
+    margin: 0 0 0.35rem;
+    color: var(--edu-ink);
+    font-size: 1.02rem;
+}
+
+.channel-card p,
+.check-item p {
+    margin: 0;
+    color: var(--edu-muted);
+    line-height: 1.6;
+}
+
+.check-item {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.9rem;
+    align-items: start;
+}
+
+.check-index {
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+    display: grid;
+    place-items: center;
+    background: var(--theme-highlight-soft);
+    color: var(--button-accent-start);
+    font-weight: 800;
+}
+
+@media (max-width: 992px) {
+    .page-hero,
+    .content-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .checklist-panel {
+        grid-column: auto;
+    }
+}
+
+@media (max-width: 576px) {
+    .panel-head {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .panel,
+    .summary-card {
+        padding: 1rem;
+    }
+}

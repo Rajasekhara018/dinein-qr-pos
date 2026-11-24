@@ -1,0 +1,6 @@
+<hq-chart-card [title]="title" [subtitle]="subtitle" [empty]="total === 0" [emptyText]="'qaDashboard.charts.empty' | translate"
+                [tableColumns]="columns" [tableRows]="tableRows">
+  <p class="qa-split__headline"><strong>{{ successText }}%</strong> {{ 'qaDashboard.charts.success' | translate }}</p>
+  <hq-bar-list colorMode="status" [items]="items" [showPercent]="true"
+                [ariaLabel]="'qaDashboard.charts.donutLabel' | translate: { percent: successText }"></hq-bar-list>
+</hq-chart-card>

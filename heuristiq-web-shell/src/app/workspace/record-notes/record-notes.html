@@ -1,0 +1,36 @@
+<section class="rn" [attr.aria-label]="'workspace.recordNotes.title' | translate">
+  <ng-container *hqHasPrivilege="privileges.list">
+    <form class="rn__form" *hqHasPrivilege="privileges.create" (ngSubmit)="add()">
+      <hq-field
+        type="textarea"
+        class="rn__input"
+        name="note"
+        [rows]="2"
+        [(ngModel)]="text"
+        [maxLength]="maxBody"
+        [placeholder]="'workspace.recordNotes.placeholder' | translate"
+        [ariaLabel]="'workspace.recordNotes.placeholder' | translate"
+        [showCounter]="false"></hq-field>
+      <button type="submit" class="table-create-btn" [disabled]="!canAdd">
+        <i class="bi bi-plus-lg"></i> {{ 'workspace.recordNotes.add' | translate }}
+      </button>
+    </form>
+
+    <p class="rn__state rn__state--error" role="alert" *ngIf="loadError">{{ 'workspace.messages.loadFailed' | translate }}</p>
+    <p class="rn__state" *ngIf="loading && notes.length === 0 && !loadError">{{ 'workspace.loading' | translate }}</p>
+    <p class="rn__state" *ngIf="!loading && !loadError && notes.length === 0">{{ 'workspace.recordNotes.empty' | translate }}</p>
+
+    <ul class="rn__list" *ngIf="notes.length > 0">
+      <li *ngFor="let note of notes; trackBy: trackNote" class="rn__note">
+        <p class="rn__text">{{ note.body }}</p>
+        <p class="rn__meta">
+          <span>{{ note.createdAt | hqDate:'medium' }}</span>
+          <button *ngIf="isMine(note)" type="button" class="rn__delete" (click)="remove(note)"
+            [attr.aria-label]="'workspace.recordNotes.delete' | translate" [title]="'workspace.recordNotes.delete' | translate">
+            <i class="bi bi-trash"></i>
+          </button>
+        </p>
+      </li>
+    </ul>
+  </ng-container>
+</section>

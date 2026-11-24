@@ -1,0 +1,163 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '4.1.0'
+    id 'io.spring.dependency-management' version '1.1.7'
+    id 'jacoco'
+}
+
+group = 'com.heuristiq'
+version = '0.0.1'
+
+// Full-repository builds generate from application sources; isolated builds use the committed snapshot.
+if (file('../privileges').isDirectory()) {
+    apply from: '../privileges/catalog.gradle'
+    tasks.named('processResources') { dependsOn 'generatePrivilegeCatalog' }
+    tasks.named('check') { dependsOn 'verifyPrivilegeCatalog' }
+    tasks.named('verifyPrivilegeCatalog') { mustRunAfter 'generatePrivilegeCatalog' }
+}
+
+java { toolchain { languageVersion = JavaLanguageVersion.of(21) } }
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    // WebClient for calling out to NMS / Keycloak / OIDC -- Boot 4 ships WebClient.Builder
+    // auto-configuration (and reactor-netty-http) as its own lean starter; spring-boot-starter-webflux
+    // is NOT enough on its own (it only pulls the reactive-server module) and would leave every
+    // WebClient.Builder injection unsatisfiable at startup.
+    implementation 'org.springframework.boot:spring-boot-starter-webclient'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    // Publishes search-index events onto the shared Redis Stream 2026_RailCab_SearchAPI consumes
+    // (see search.SearchEventPublisher) -- not used for caching in this service.
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    // Powers SearchIndexAspect (@Aspect/@AfterReturning) -- reindexes any SearchIndexable entity
+    // right after UamUserRepository.save(..), without touching any of its 4 calling classes.
+    // spring-boot-starter-aop was dropped in Boot 4's modularization -- depend on aspectjweaver
+    // directly (version managed by the Boot 4.1.0 BOM), same as BookingsAPI's IdempotencyAspect.
+    implementation 'org.aspectj:aspectjweaver'
+    runtimeOnly 'org.postgresql:postgresql'
+    implementation 'org.flywaydb:flyway-core'
+    implementation 'org.flywaydb:flyway-database-postgresql'
+    // Boot 4.x split its autoconfiguration into per-feature modules (see spring-boot-jdbc,
+    // spring-boot-hibernate, spring-boot-sql already pulled in above via spring-boot-starter-data-jpa) --
+    // unlike Boot 3.x, where FlywayAutoConfiguration lived inside the one monolithic
+    // spring-boot-autoconfigure jar and activated automatically off flyway-core alone,
+    // Boot 4.x moved it into this dedicated module that must be declared explicitly, or Flyway
+    // never runs (no error, no log line -- it silently never engages, leaving ddl-auto=validate to
+    // fail against a schema Flyway was never given the chance to create).
+    implementation 'org.springframework.boot:spring-boot-flyway'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'io.micrometer:micrometer-registry-prometheus'
+    // In-memory read caches (see com.heuristiq.uam.cache, docs/CACHING.md); version managed by the Boot BOM.
+    implementation 'com.github.ben-manes.caffeine:caffeine'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+    implementation 'org.keycloak:keycloak-admin-client:26.0.0'
+    // Distributed tracing, matching the platform-wide convention.
+    implementation 'org.springframework.boot:spring-boot-starter-opentelemetry'
+    // Circuit breaker/retry around outbound calls to Keycloak, a generic OIDC provider, and NMS.
+    implementation 'io.github.resilience4j:resilience4j-spring-boot4:2.4.0'
+    // Shared ResilientCaller + correlation-id propagation (composite build, see settings.gradle)
+    implementation 'com.heuristiq:realboom-resilient-client'
+    // Phone parsing/validation for any country (composite build)
+    implementation 'com.heuristiq:realboom-phone'
+    // API docs -- matches NMS's existing springdoc setup, /swagger-ui.html + /v3/api-docs.
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.1'
+    // Service discovery -- registers with realboom-service-registry (Eureka) so the ApiGateway can
+    // route by service ID instead of a hardcoded URL. Spring Cloud 2025.1.0's CompatibilityVerifier
+    // hard-fails on Boot 4.1.0 (see spring.cloud.compatibility-verifier.enabled=false below).
+    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+    // Secrets management -- pulls railcab.uam.auth.jwt-secret (and any future secret) from the
+    // local dev Vault instance (docker-compose.vault.yml) via `spring.config.import=vault://`
+    // below; see docs/design/Platform/SecretsManagement.md.
+    implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
+    implementation 'com.google.firebase:firebase-admin:9.4.1'
+    implementation 'io.jsonwebtoken:jjwt-api:0.12.6'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.6'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.6'
+    // jjwt-jackson doesn't support Jackson 3 yet; Boot 4 no longer pulls Jackson 2 in by default.
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
+    implementation 'dev.samstevens.totp:totp:1.7.1'
+    implementation 'eu.bitwalker:UserAgentUtils:1.21'
+    compileOnly 'org.projectlombok:lombok:1.18.30'
+    annotationProcessor 'org.projectlombok:lombok:1.18.30'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    // testsupport/BeanPopulator creates beans without calling constructors (ObjenesisStd).
+    testImplementation 'org.objenesis:objenesis:3.3'
+    testImplementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo.spring4x:4.24.0'
+    // Real PostgreSQL for the migration test (downloads the binaries once; no Docker needed).
+    testImplementation 'io.zonky.test:embedded-postgres:2.0.7'
+    // The default binaries cover x86-64 only. This one lets the test also run on an ARM Linux build server; elsewhere it is not used.
+    testRuntimeOnly 'io.zonky.test.postgres:embedded-postgres-binaries-linux-arm64v8:14.10.1'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testRuntimeOnly 'com.h2database:h2'
+}
+
+dependencyManagement {
+    imports {
+        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2025.1.0'
+    }
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+tasks.named('jar') { enabled = false }
+tasks.named('javadoc') {
+    source = sourceSets.main.allJava
+    classpath = sourceSets.main.compileClasspath
+    options.encoding = 'UTF-8'
+    options.charSet = 'UTF-8'
+    options.docEncoding = 'UTF-8'
+    options.memberLevel = JavadocMemberLevel.PRIVATE
+    // javadoc doesn't run Lombok, so Lombok-generated types used in signatures (e.g.
+    // UamUser.UamUserBuilder in NewUamUserBuilder) can't be resolved; without this the tool
+    // stops at that error and writes no pages at all.
+    options.addBooleanOption('-ignore-source-errors', true)
+    failOnError = false
+}
+tasks.withType(JavaCompile).configureEach { options.compilerArgs += '-parameters' }
+
+// Ships the javadoc inside the boot jar as static content, served publicly at
+// /javadoc/index.html (through the gateway: /api/<service>/javadoc/).
+tasks.named('bootJar') {
+    from(tasks.named('javadoc')) {
+        into 'BOOT-INF/classes/static/javadoc'
+    }
+}
+
+// ── Code coverage (JaCoCo) ───────────────────────────────────────────────────────────────────────
+// Run:  ./gradlew test jacocoTestReport      HTML report: build/reports/jacoco/test/html/index.html
+//       (XML for CI/Sonar: build/reports/jacoco/test/jacocoTestReport.xml)
+// Coverage is produced only when jacocoTestReport is asked for, so a plain `./gradlew test` is not slowed down.
+jacoco {
+    toolVersion = '0.8.13' // first line of releases with full Java 21+ support on current JDKs
+}
+
+tasks.named('jacocoTestReport') {
+    // mustRunAfter, not dependsOn: as a finalizer of `test` it must still run when a test fails
+    mustRunAfter tasks.named('test')
+    reports {
+        xml.required = true
+        html.required = true
+        csv.required = false
+    }
+}
+
+// With -Pcoverage the report is written even when a test fails (known failures would otherwise stop `jacocoTestReport`).
+// Without it a plain `./gradlew test` stays as fast as before.
+tasks.named('test') {
+    if (project.hasProperty('coverage') || gradle.startParameter.taskNames.any { it == 'coverage' || it.endsWith(':coverage') }) {
+        finalizedBy tasks.named('jacocoTestReport')
+    }
+}
+
+// One-word entry point: ./gradlew coverage  (runs the tests, then writes build/reports/jacoco/test/html/index.html even if a test fails)
+tasks.register('coverage') {
+    group = 'verification'
+    description = 'Runs the tests and writes the JaCoCo coverage report (HTML + XML).'
+    // jacocoTestReport is attached to `test` as a finalizer (see above), so it also runs when a test fails
+    dependsOn tasks.named('test')
+}

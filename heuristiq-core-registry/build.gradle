@@ -1,0 +1,108 @@
+plugins {
+    id 'java'
+    // Matches ApiGateway: Spring Cloud 2025.1.0's CompatibilityVerifier hard-fails on Boot 4.1.0,
+    // so this stays on 4.0.x until Spring Cloud catches up.
+    id 'org.springframework.boot' version '4.0.7'
+    id 'io.spring.dependency-management' version '1.1.7'
+    id 'jacoco'
+}
+
+group = 'com.railcab.serviceregistry'
+version = '1.0.0'
+description = 'RailCab Service Registry (Eureka Server)'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-server'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
+
+    // Observability -- matches every other backend service (ApiGateway/PaymentAPI/UAM/etc.):
+    // Prometheus metrics + OTLP tracing export. Previously this was the one service with none of
+    // this wired at all.
+    implementation 'io.micrometer:micrometer-registry-prometheus'
+    implementation 'org.springframework.boot:spring-boot-starter-opentelemetry'
+
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.security:spring-security-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+dependencyManagement {
+    imports {
+        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2025.1.0'
+    }
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+tasks.named('jar') { enabled = false }
+tasks.withType(JavaCompile).configureEach { options.compilerArgs += '-parameters' }
+
+// Full javadoc -- every type/member, down to private.
+tasks.named('javadoc') {
+    source = sourceSets.main.allJava
+    classpath = sourceSets.main.compileClasspath
+    options.encoding = 'UTF-8'
+    options.charSet = 'UTF-8'
+    options.docEncoding = 'UTF-8'
+    options.memberLevel = JavadocMemberLevel.PRIVATE
+    options.addStringOption('Xdoclint:none', '-quiet')
+    failOnError = false
+}
+
+// Ships the javadoc inside the boot jar as static content, served publicly at
+// /javadoc/index.html (through the gateway: /api/registry/javadoc/).
+tasks.named('bootJar') {
+    from(tasks.named('javadoc')) {
+        into 'BOOT-INF/classes/static/javadoc'
+    }
+}
+
+// ── Code coverage (JaCoCo) ───────────────────────────────────────────────────────────────────────
+// Run:  ./gradlew test jacocoTestReport      HTML report: build/reports/jacoco/test/html/index.html
+//       (XML for CI/Sonar: build/reports/jacoco/test/jacocoTestReport.xml)
+// Coverage is produced only when jacocoTestReport is asked for, so a plain `./gradlew test` is not slowed down.
+jacoco {
+    toolVersion = '0.8.13' // first line of releases with full Java 21+ support on current JDKs
+}
+
+tasks.named('jacocoTestReport') {
+    // mustRunAfter, not dependsOn: as a finalizer of `test` it must still run when a test fails
+    mustRunAfter tasks.named('test')
+    reports {
+        xml.required = true
+        html.required = true
+        csv.required = false
+    }
+}
+
+// With -Pcoverage the report is written even when a test fails (known failures would otherwise stop `jacocoTestReport`).
+// Without it a plain `./gradlew test` stays as fast as before.
+tasks.named('test') {
+    if (project.hasProperty('coverage') || gradle.startParameter.taskNames.any { it == 'coverage' || it.endsWith(':coverage') }) {
+        finalizedBy tasks.named('jacocoTestReport')
+    }
+}
+
+// One-word entry point: ./gradlew coverage  (runs the tests, then writes build/reports/jacoco/test/html/index.html even if a test fails)
+tasks.register('coverage') {
+    group = 'verification'
+    description = 'Runs the tests and writes the JaCoCo coverage report (HTML + XML).'
+    // jacocoTestReport is attached to `test` as a finalizer (see above), so it also runs when a test fails
+    dependsOn tasks.named('test')
+}

@@ -1,0 +1,127 @@
+<hq-page-header
+  [kicker]="'nav.sections.accessManagement' | translate"
+  [title]="'nav.items.franchiseLocations' | translate"
+  [subtitle]="'accessManagement.franchiseLocations.subtitle' | translate">
+</hq-page-header>
+
+<div class="table-surface">
+  <div class="table-surface__header">
+    <div class="table-heading">
+      <span class="table-kicker">{{ 'shared.listPage.total' | translate: { count: total } }}</span>
+    </div>
+    <ng-container *hqHasPrivilege="privileges.import">
+      <button hqButton="secondary" type="button" class="location-import-toggle" (click)="toggleImport()">
+        <i class="bi bi-file-earmark-arrow-up"></i> {{ 'accessManagement.franchiseLocations.import.open' | translate }}
+      </button>
+    </ng-container>
+    <ng-container *hqHasPrivilege="privileges.create">
+      <button type="button" class="table-create-btn" (click)="addPlace()">
+        <i class="bi bi-plus-lg"></i> {{ 'accessManagement.franchiseLocations.newButton' | translate }}
+      </button>
+    </ng-container>
+  </div>
+
+  <div class="table-surface__body">
+    <ng-container *hqHasPrivilege="privileges.import">
+      <app-location-import *ngIf="showImport" (imported)="onImported()"></app-location-import>
+    </ng-container>
+
+    <section class="franchise-filters">
+      <hq-form-field [label]="'accessManagement.franchiseLocations.country' | translate"><hq-searchable-select
+          [(ngModel)]="filters.countryCode"
+          name="filterCountry"
+          [allowOther]="false"
+          [placeholder]="'accessManagement.franchiseLocations.anyCountry' | translate">
+          <hq-ss-option *ngFor="let country of countries" [value]="country.code" [label]="country.name + ' (' + country.code + ')'"></hq-ss-option>
+        </hq-searchable-select></hq-form-field>
+      <hq-form-field [label]="'accessManagement.franchiseLocations.type' | translate"><hq-searchable-select
+          [(ngModel)]="filters.type"
+          name="filterType"
+          [allowOther]="false"
+          [placeholder]="'accessManagement.franchiseLocations.anyType' | translate">
+          <hq-ss-option *ngFor="let type of types" [value]="type" [label]="typeLabel(type)"></hq-ss-option>
+        </hq-searchable-select></hq-form-field>
+      <hq-form-field [label]="'accessManagement.franchiseLocations.level' | translate"><hq-searchable-select
+          [(ngModel)]="filters.level"
+          name="filterLevel"
+          [allowOther]="false"
+          [placeholder]="'accessManagement.franchiseLocations.anyLevel' | translate">
+          <hq-ss-option *ngFor="let level of levels" [value]="level" [label]="levelLabel(level)"></hq-ss-option>
+        </hq-searchable-select></hq-form-field>
+      <hq-form-field [label]="'accessManagement.franchiseLocations.status' | translate"><hq-searchable-select
+          [(ngModel)]="filters.active"
+          name="filterActive"
+          [allowOther]="false"
+          [placeholder]="'accessManagement.franchiseLocations.anyStatus' | translate">
+          <hq-ss-option value="true" [label]="'accessManagement.franchiseLocations.activeOnly' | translate"></hq-ss-option>
+          <hq-ss-option value="false" [label]="'accessManagement.franchiseLocations.inactiveOnly' | translate"></hq-ss-option>
+        </hq-searchable-select></hq-form-field>
+      <hq-field
+               type="search"
+               [(ngModel)]="filters.q"
+               (keyup.enter)="load()"
+               name="filterText"
+               [placeholder]="'accessManagement.franchiseLocations.searchPlaceholder' | translate" [label]="'accessManagement.franchiseLocations.search' | translate"></hq-field>
+      <div class="franchise-filters__parent" *hqHasPrivilege="privileges.children">
+        <hq-form-field *ngIf="filters.countryCode" [label]="'accessManagement.franchiseLocations.parent' | translate"><app-location-picker [countryCode]="filters.countryCode" (selected)="onParentFilter($event)"></app-location-picker></hq-form-field>
+      </div>
+      <div class="franchise-actions">
+        <button hqButton="accent" type="button" (click)="load()">{{ 'accessManagement.franchiseLocations.apply' | translate }}</button>
+        <button hqButton="secondary" type="button" (click)="clearFilters()">{{ 'shared.listPage.clear' | translate }}</button>
+      </div>
+    </section>
+
+    <p class="franchise-hint location-under" *ngIf="parent">
+      {{ 'accessManagement.franchiseLocations.under' | translate: { name: parent.name } }}
+      <button hqButton="secondary" type="button" (click)="clearParent()">{{ 'accessManagement.franchiseLocations.showAll' | translate }}</button>
+    </p>
+
+    <hq-common-table
+      [columns]="columns"
+      [rows]="items"
+      [isLoading]="isLoading"
+      [hasError]="hasError"
+      [emptyMessage]="'accessManagement.franchiseLocations.emptyMessage' | translate"
+      [errorMessage]="'accessManagement.franchiseLocations.errorMessage' | translate">
+      <ng-template hqCell="type" let-place>
+        <hq-status-badge tone="info">{{ typeLabel(place.type) }}</hq-status-badge>
+        <hq-status-badge tone="neutral">{{ levelLabel(place.level) }}</hq-status-badge>
+      </ng-template>
+      <ng-template hqCell="active" let-place>
+        <hq-status-badge [tone]="place.active ? 'success' : 'danger'">
+          {{ (place.active ? 'accessManagement.franchiseLocations.activeOnly' : 'accessManagement.franchiseLocations.inactiveOnly') | translate }}
+        </hq-status-badge>
+      </ng-template>
+      <ng-template #rowActions let-place>
+        <ng-container *hqHasPrivilege="privileges.children">
+          <button type="button" class="row-action-btn" [title]="'accessManagement.franchiseLocations.showChildren' | translate" (click)="drillInto(place)">
+            <i class="bi bi-diagram-3"></i>
+          </button>
+        </ng-container>
+        <ng-container *hqHasPrivilege="privileges.update">
+          <button type="button" class="row-action-btn" [title]="'shared.listPage.rowActions.edit' | translate" (click)="editPlace(place)">
+            <i class="bi bi-pencil"></i>
+          </button>
+        </ng-container>
+        <ng-container *hqHasPrivilege="privileges.status">
+          <button type="button" class="row-action-btn row-action-btn--toggle" (click)="toggleActive(place)"
+                  [title]="(place.active ? 'accessManagement.franchiseLocations.deactivate' : 'accessManagement.franchiseLocations.activate') | translate">
+            <i class="bi" [ngClass]="place.active ? 'bi-toggle-on' : 'bi-toggle-off'"></i>
+          </button>
+        </ng-container>
+      </ng-template>
+    </hq-common-table>
+
+    <hq-table-footer
+      [page]="page"
+      [size]="pageSize"
+      [itemCount]="items.length"
+      [hasMore]="page + 1 < totalPages"
+      [totalItems]="total"
+      [loading]="isLoading"
+      [sizeOptions]="pageSizeOptions"
+      (pageChange)="goToPage($event)"
+      (sizeChange)="onPageSizeChange($event)">
+    </hq-table-footer>
+  </div>
+</div>

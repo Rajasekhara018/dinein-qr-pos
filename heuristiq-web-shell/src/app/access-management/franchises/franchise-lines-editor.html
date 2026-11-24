@@ -1,0 +1,36 @@
+<div class="franchise-terms franchise-terms--lines" *ngFor="let line of lines; let i = index">
+  <hq-searchable-select
+    [(ngModel)]="line.party"
+    [name]="idPrefix + 'Party' + i"
+    [ariaLabel]="'accessManagement.franchisePackages.lines.party' | translate"
+    [allowOther]="false"
+    [placeholder]="'accessManagement.franchisePackages.lines.chooseParty' | translate">
+    <hq-ss-option *ngFor="let party of parties" [value]="party" [label]="partyLabel(party)"></hq-ss-option>
+  </hq-searchable-select>
+  <hq-searchable-select
+    [(ngModel)]="line.valueType"
+    [name]="idPrefix + 'Type' + i"
+    [ariaLabel]="'accessManagement.franchisePackages.lines.valueType' | translate"
+    [allowOther]="false">
+    <hq-ss-option *ngFor="let type of valueTypes" [value]="type" [label]="valueTypeLabel(type)"></hq-ss-option>
+  </hq-searchable-select>
+  <hq-field
+         type="number"
+         *ngIf="line.valueType === 'PERCENTAGE'"
+         min="0"
+         max="10000"
+         step="1"
+         [(ngModel)]="line.basisPoints"
+         [name]="idPrefix + 'Bp' + i"
+         [placeholder]="'accessManagement.franchisePackages.lines.basisPoints' | translate"
+         [title]="'accessManagement.franchisePackages.lines.basisPointsHint' | translate"></hq-field>
+  <hq-amount-input *ngIf="line.valueType === 'FIXED'" valueMode="number" [showLabel]="false" [currency]="currency"
+                    [label]="'accessManagement.franchisePackages.lines.fixedAmount' | translate" [(ngModel)]="line.fixedAmount" [name]="idPrefix + 'Fixed' + i"></hq-amount-input>
+  <hq-amount-input *ngIf="line.valueType !== 'FIXED'" valueMode="number" [showLabel]="false" [currency]="currency"
+                    [label]="'accessManagement.franchisePackages.lines.minAmount' | translate" [(ngModel)]="line.minAmount" [name]="idPrefix + 'Min' + i"></hq-amount-input>
+  <hq-amount-input *ngIf="line.valueType !== 'FIXED'" valueMode="number" [showLabel]="false" [currency]="currency"
+                    [label]="'accessManagement.franchisePackages.lines.maxAmount' | translate" [(ngModel)]="line.maxAmount" [name]="idPrefix + 'Max' + i"></hq-amount-input>
+  <hq-checkbox class="inline-check" [(ngModel)]="line.active" [name]="idPrefix + 'Active' + i">{{ 'accessManagement.franchisePackages.lines.active' | translate }}</hq-checkbox>
+  <button type="button" class="row-action-btn danger" [title]="'accessManagement.franchises.removeRow' | translate" (click)="remove(i)"><i class="bi bi-x-lg"></i></button>
+</div>
+<button hqButton="secondary" type="button" *ngIf="canAdd" (click)="add()"><i class="bi bi-plus"></i> {{ 'accessManagement.franchisePackages.lines.add' | translate }}</button>

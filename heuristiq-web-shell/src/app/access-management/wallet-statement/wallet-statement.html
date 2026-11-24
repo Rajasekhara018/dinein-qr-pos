@@ -1,0 +1,210 @@
+<hq-page-header
+  [kicker]="'nav.sections.accessManagement' | translate"
+  [title]="(isAdmin ? 'nav.items.accountStatement' : 'nav.items.myWalletStatement') | translate"
+  [subtitle]="(isAdmin ? 'walletStatement.subtitleAdmin' : 'walletStatement.subtitle') | translate">
+</hq-page-header>
+
+<div class="table-surface">
+  <div class="table-surface__body statement">
+
+    <!-- Administrator: pick the account or person. -->
+    <form class="statement-search" *ngIf="isAdmin" (ngSubmit)="search()" role="search" [attr.aria-label]="'walletStatement.search.label' | translate">
+      <hq-form-field [label]="'walletStatement.search.by' | translate"><hq-searchable-select [allowOther]="false" [(ngModel)]="searchBy" name="searchBy" [ariaLabel]="'walletStatement.search.by' | translate">
+          <hq-ss-option value="account" [label]="'walletStatement.search.byAccount' | translate"></hq-ss-option>
+          <hq-ss-option value="user" *hqHasPrivilege="privileges.userRead!" [label]="'walletStatement.search.byUser' | translate"></hq-ss-option>
+        </hq-searchable-select></hq-form-field>
+      <hq-field
+          type="search"
+          [(ngModel)]="searchTerm"
+          name="searchTerm"
+          autocomplete="off"
+          [placeholder]="(searchBy === 'user' ? 'walletStatement.search.userPlaceholder' : 'walletStatement.search.accountPlaceholder') | translate" class="statement-search__term" [label]="'walletStatement.search.term' | translate"></hq-field>
+      <button hqButton="accent" type="submit" [disabled]="!searchTerm.trim()">{{ 'walletStatement.search.button' | translate }}</button>
+    </form>
+    <hq-empty-state *ngIf="isAdmin && !hasTarget" [title]="'walletStatement.search.hint' | translate"></hq-empty-state>
+
+    <ng-container *ngIf="hasTarget">
+      <!-- Filters -->
+      <hq-filter-bar collapsible>
+        <hq-form-field *ngIf="showAccountPicker" [label]="'walletStatement.filters.account' | translate"><hq-searchable-select [(ngModel)]="account" name="account" (ngModelChange)="onAccountChange()" [allowOther]="false">
+            <hq-ss-option *ngFor="let type of ownAccounts" [value]="type" [label]="accountLabel(type)"></hq-ss-option>
+          </hq-searchable-select></hq-form-field>
+        <hq-form-field [label]="'walletStatement.filters.month' | translate"><hq-searchable-select
+            [(ngModel)]="month"
+            name="month"
+            (ngModelChange)="onMonthChange()"
+            [disabled]="view === 'year'"
+            [allowOther]="false">
+            <hq-ss-option *ngFor="let option of monthOptions" [value]="option.month" [label]="option.month"></hq-ss-option>
+          </hq-searchable-select></hq-form-field>
+        <hq-field
+            type="text"
+            [(ngModel)]="app"
+            name="app"
+            [maxLength]="40"
+            (change)="onFilterChange()"
+            [placeholder]="'walletStatement.filters.appPlaceholder' | translate"
+            [showCounter]="false" *ngIf="showAppFilter" [label]="'walletStatement.filters.app' | translate"></hq-field>
+        <div hqFilterActions>
+          <div class="statement-downloads" *hqHasPrivilege="privileges.exportFile">
+            <button hqButton="secondary" type="button" [disabled]="!canExport" (click)="download('csv')"
+              [attr.aria-label]="'walletStatement.export.csvLabel' | translate">
+              <i class="bi bi-filetype-csv" aria-hidden="true"></i> {{ (exporting === 'csv' ? 'walletStatement.export.working' : 'walletStatement.export.csv') | translate }}
+            </button>
+            <button hqButton="secondary" type="button" [disabled]="!canExport" (click)="download('pdf')"
+              [attr.aria-label]="'walletStatement.export.pdfLabel' | translate">
+              <i class="bi bi-filetype-pdf" aria-hidden="true"></i> {{ (exporting === 'pdf' ? 'walletStatement.export.working' : 'walletStatement.export.pdf') | translate }}
+            </button>
+          </div>
+        </div>
+      </hq-filter-bar>
+
+      <!-- Month / year tabs -->
+      <hq-tabs class="statement-tabs" [value]="view" (valueChange)="setView($any($event))" [ariaLabel]="'walletStatement.tabs.label' | translate">
+        <hq-tab value="month" data-testid="statement-tab-month" [label]="'walletStatement.tabs.month' | translate"></hq-tab>
+        <hq-tab *hqHasPrivilege="privileges.summary" value="year" data-testid="statement-tab-year" [label]="'walletStatement.tabs.year' | translate"></hq-tab>
+      </hq-tabs>
+
+      <div id="statement-panel" role="tabpanel">
+
+        <!-- MONTH VIEW -->
+        <ng-container *ngIf="view === 'month'">
+          <hq-loading-state *ngIf="isLoading" [label]="'walletStatement.loading' | translate"></hq-loading-state>
+          <hq-error-state *ngIf="hasError" [title]="'walletStatement.errorMessage' | translate"></hq-error-state>
+
+          <ng-container *ngIf="statement as st">
+            <hq-alert tone="danger" dense *ngIf="!st.reconciled">{{ 'walletStatement.unreconciled' | translate }}</hq-alert>
+
+            <dl class="statement-cards">
+              <div class="statement-card">
+                <dt>{{ 'walletStatement.cards.opening' | translate }}</dt>
+                <dd>{{ st.openingBalance | hqMoney: st.account.currency }}</dd>
+              </div>
+              <div class="statement-card">
+                <dt>{{ 'walletStatement.cards.credits' | translate }}</dt>
+                <dd class="amount--credit">+ {{ st.totals.credits | hqMoney: st.account.currency }}</dd>
+              </div>
+              <div class="statement-card">
+                <dt>{{ 'walletStatement.cards.debits' | translate }}</dt>
+                <dd class="amount--debit">&minus; {{ st.totals.debits | hqMoney: st.account.currency }}</dd>
+              </div>
+              <div class="statement-card">
+                <dt>{{ 'walletStatement.cards.closing' | translate }}</dt>
+                <dd>{{ st.closingBalance | hqMoney: st.account.currency }}</dd>
+              </div>
+              <div class="statement-card">
+                <dt>{{ 'walletStatement.cards.status' | translate }}</dt>
+                <dd>
+                  <hq-status-badge [tone]="st.reconciled ? 'success' : 'danger'">
+                    <i class="bi" [class.bi-check-circle-fill]="st.reconciled" [class.bi-exclamation-triangle-fill]="!st.reconciled" aria-hidden="true"></i>
+                    {{ (st.reconciled ? 'walletStatement.reconciled' : 'walletStatement.notReconciled') | translate }}
+                  </hq-status-badge>
+                </dd>
+              </div>
+            </dl>
+
+            <p class="franchise-hint" *ngIf="st.account.accountNo">
+              {{ 'walletStatement.accountLine' | translate: { account: st.account.accountNo, timezone: st.period.timezone } }}
+            </p>
+
+            <hq-empty-state *ngIf="!isLoading && st.lines.length === 0" [title]="'walletStatement.noLines' | translate"></hq-empty-state>
+
+            <hq-common-table *ngIf="st.lines.length > 0" [columns]="lineColumns" [rows]="st.lines" [isLoading]="isLoading" class="statement-table">
+              <ng-template hqCell="postedAt" let-line>{{ line.postedAt | hqDate:'medium' }}</ng-template>
+              <ng-template hqCell="description" let-line>
+                {{ line.description }}
+                <span class="statement-tag" *ngIf="isReversed(line)">{{ 'walletStatement.reversed' | translate }}</span>
+                <span class="statement-tag" *ngIf="line.reference?.reversalOfJournalId">{{ 'walletStatement.reversalOf' | translate: { id: line.reference?.reversalOfJournalId } }}</span>
+                <div class="statement-sub" *ngIf="line.franchise as fr">
+                  {{ 'walletStatement.franchise.event' | translate: { id: fr.eventId } }}
+                  <ng-container *ngIf="fr.shares.length > 0">
+                    <span class="statement-sub__share" *ngFor="let share of fr.shares">
+                      {{ 'walletStatement.franchise.share' | translate: { party: partyLabel(share.party), amount: (share.amount | hqMoney: st.account.currency) } }}
+                    </span>
+                  </ng-container>
+                </div>
+              </ng-template>
+              <ng-template hqCell="reference" let-line>
+                <span class="statement-ref" *ngIf="referenceOf(line) as ref">
+                  <span class="statement-ref__text">{{ ref }}</span>
+                  <button type="button" class="statement-copy" (click)="copyReference(ref)"
+                    [attr.aria-label]="'walletStatement.copyReference' | translate: { reference: ref }"
+                    [title]="'walletStatement.copy' | translate">
+                    <i class="bi bi-clipboard" aria-hidden="true"></i>
+                  </button>
+                </span>
+              </ng-template>
+              <ng-template hqCell="category" let-line><hq-status-badge tone="neutral">{{ categoryLabel(line.category) }}</hq-status-badge></ng-template>
+              <ng-template hqCell="credit" let-line>
+                <span class="statement-num amount--credit" *ngIf="!isDebit(line) && line.credit">
+                  <span aria-hidden="true">+ </span><span class="visually-hidden">{{ 'walletStatement.table.credit' | translate }}: </span>{{ line.credit | hqMoney: st.account.currency }}
+                </span>
+              </ng-template>
+              <ng-template hqCell="debit" let-line>
+                <span class="statement-num amount--debit" *ngIf="isDebit(line)">
+                  <span aria-hidden="true">&minus; </span><span class="visually-hidden">{{ 'walletStatement.table.debit' | translate }}: </span>{{ line.debit | hqMoney: st.account.currency }}
+                </span>
+              </ng-template>
+              <ng-template hqCell="balanceAfter" let-line><span class="statement-num">{{ line.balanceAfter | hqMoney: st.account.currency }}</span></ng-template>
+            </hq-common-table>
+
+            <hq-table-footer
+              *ngIf="st.lines.length > 0"
+              [page]="page"
+              [size]="size"
+              [itemCount]="st.lines.length"
+              [hasMore]="!isLastPage"
+              [totalItems]="st.totalLines"
+              [loading]="isLoading"
+              [sizeOptions]="pageSizes"
+              (pageChange)="goToPage($event)"
+              (sizeChange)="onPageSizeChange($event)">
+            </hq-table-footer>
+
+            <section class="statement-categories" *ngIf="st.categories.length > 0">
+              <h4>{{ 'walletStatement.categoriesTitle' | translate }}</h4>
+              <hq-common-table [columns]="categoryColumns" [rows]="st.categories">
+                <ng-template hqCell="category" let-row><hq-status-badge tone="neutral">{{ categoryLabel(row.category) }}</hq-status-badge></ng-template>
+                <ng-template hqCell="credits" let-row><span class="amount--credit">+ {{ row.credits | hqMoney: st.account.currency }}</span></ng-template>
+                <ng-template hqCell="debits" let-row><span class="amount--debit">&minus; {{ row.debits | hqMoney: st.account.currency }}</span></ng-template>
+              </hq-common-table>
+            </section>
+          </ng-container>
+        </ng-container>
+
+        <!-- YEAR VIEW -->
+        <ng-container *ngIf="view === 'year'">
+          <div class="franchise-actions">
+            <button hqButton="secondary" type="button" (click)="shiftYear(-1)" [attr.aria-label]="'walletStatement.year.previous' | translate">&lsaquo;</button>
+            <strong aria-live="polite">{{ year }}</strong>
+            <button hqButton="secondary" type="button" (click)="shiftYear(1)" [attr.aria-label]="'walletStatement.year.next' | translate">&rsaquo;</button>
+          </div>
+          <hq-loading-state *ngIf="isSummaryLoading" [label]="'walletStatement.loading' | translate"></hq-loading-state>
+          <hq-error-state *ngIf="hasSummaryError" [title]="'walletStatement.errorMessage' | translate"></hq-error-state>
+          <ng-container *ngIf="summary as ys">
+            <hq-alert tone="danger" dense *ngIf="!ys.reconciled">{{ 'walletStatement.unreconciled' | translate }}</hq-alert>
+            <div class="statement-scroll">
+              <p class="visually-hidden">{{ 'walletStatement.year.caption' | translate: { year: ys.year } }}</p>
+              <hq-common-table [columns]="yearColumns" [rows]="ys.months" [showActionsColumn]="false">
+                <ng-template hqCell="month" let-row>
+                  <button type="button" class="statement-link" (click)="openMonth(row.month)"
+                    [attr.aria-label]="'walletStatement.year.open' | translate: { month: row.month }">{{ row.month }}</button>
+                </ng-template>
+                <ng-template hqCell="openingBalance" let-row><span class="statement-num">{{ row.openingBalance | hqMoney }}</span></ng-template>
+                <ng-template hqCell="credits" let-row><span class="statement-num amount--credit">+ {{ row.credits | hqMoney }}</span></ng-template>
+                <ng-template hqCell="debits" let-row><span class="statement-num amount--debit">&minus; {{ row.debits | hqMoney }}</span></ng-template>
+                <ng-template hqCell="closingBalance" let-row><span class="statement-num">{{ row.closingBalance | hqMoney }}</span></ng-template>
+                <ng-template hqCell="count" let-row><span class="statement-num">{{ row.count }}</span></ng-template>
+              </hq-common-table>
+              <div class="statement-year-total">
+                <strong>{{ 'walletStatement.year.total' | translate }}</strong>
+                <span>{{ 'walletStatement.cards.opening' | translate }}: <span class="statement-num">{{ ys.openingBalance | hqMoney }}</span></span>
+                <span>{{ 'walletStatement.cards.closing' | translate }}: <span class="statement-num">{{ ys.closingBalance | hqMoney }}</span></span>
+              </div>
+            </div>
+          </ng-container>
+        </ng-container>
+      </div>
+    </ng-container>
+  </div>
+</div>

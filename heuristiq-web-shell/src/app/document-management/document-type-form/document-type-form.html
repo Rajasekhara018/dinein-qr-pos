@@ -1,0 +1,287 @@
+<div class="dms-page">
+
+  <div class="dms-page-header">
+    <div class="d-flex align-items-center gap-2">
+      <button type="button" class="dms-back-btn" (click)="cancel()" [title]="'shared.adminCrud.backToList' | translate">
+        <i class="bi bi-arrow-left-short"></i>
+      </button>
+      <div>
+        <h1 class="dms-title">{{ (isEdit ? 'documentManagement.editor.editTitle' : 'documentManagement.editor.newTitle') | translate }}</h1>
+        <nav class="dms-breadcrumb">
+          <span class="dms-bc-link" (click)="cancel()">{{ 'nav.sections.documentManagement' | translate }}</span>
+          <i class="bi bi-chevron-right dms-bc-sep"></i>
+          <span class="dms-bc-link" (click)="cancel()">{{ 'documentManagement.list.title' | translate }}</span>
+          <ng-container *ngIf="organizationName$ | async as orgName">
+            <i class="bi bi-chevron-right dms-bc-sep"></i>
+            <span class="dms-bc-org"><i class="bi bi-building"></i> {{ orgName }}</span>
+          </ng-container>
+        </nav>
+      </div>
+    </div>
+    <div class="d-flex gap-2 align-items-center">
+      <hq-status-badge tone="warning" *ngIf="hasChanges"><i class="bi bi-dot"></i> {{ 'shared.adminCrud.unsavedChanges' | translate }}</hq-status-badge>
+      <button hqButton="secondary" appearance="outline" size="sm" class="px-3" type="button" (click)="cancel()">{{ 'shared.adminCrud.cancel' | translate }}</button>
+      <ng-container *hqHasPrivilege="isEdit ? 'DMS_DOCUMENT_TYPE_UPDATE' : 'DMS_DOCUMENT_TYPE_CREATE'">
+        <button [loading]="saving" hqButton="primary" size="sm" class="px-4" type="button" (click)="save()" [disabled]="saving || sentForApproval || loading || loadFailed || !hasChanges">
+          <i *ngIf="!saving" class="bi bi-send-check me-1"></i>
+          {{ 'documentManagement.editor.submit' | translate }}
+        </button>
+      </ng-container>
+    </div>
+  </div>
+
+  <!-- Maker-checker explanation -->
+  <hq-alert class="dms-banner" *ngIf="!sentForApproval" tone="info" icon="bi-patch-check">{{ 'documentManagement.banner.text' | translate }}</hq-alert>
+
+  <!-- After a successful save -->
+  <div class="dms-sent" *ngIf="sentForApproval" role="status">
+    <i class="bi bi-check-circle-fill"></i>
+    <div>
+      <strong>{{ 'documentManagement.editor.sent.title' | translate }}</strong>
+      <p>{{ 'documentManagement.editor.sent.text' | translate }}</p>
+      <div class="d-flex gap-2 flex-wrap">
+        <a hqButton="primary" size="sm" [routerLink]="changeRequestsRoute">
+          <i class="bi bi-patch-check me-1"></i>{{ 'documentManagement.editor.sent.openReview' | translate }}
+        </a>
+        <a hqButton="secondary" appearance="outline" size="sm" [routerLink]="listRoute">{{ 'documentManagement.editor.sent.backToList' | translate }}</a>
+      </div>
+    </div>
+  </div>
+
+  <hq-alert *ngIf="saveErrorMessage" tone="danger" class="dms-alert">
+    {{ saveErrorMessage }}
+    <button hqButton="primary" appearance="text" size="sm" type="button" class="p-0 ms-2" *ngIf="isEdit" (click)="reload()">{{ 'documentManagement.editor.reload' | translate }}</button>
+  </hq-alert>
+
+  <hq-loading-state *ngIf="loading" [label]="'documentManagement.editor.loading' | translate"></hq-loading-state>
+
+  <hq-error-state *ngIf="loadFailed" class="dms-alert" [title]="'documentManagement.editor.messages.loadFailed' | translate" (retry)="reload()"></hq-error-state>
+
+  <form class="dms-layout" *ngIf="!loading && !loadFailed" (ngSubmit)="save()" novalidate>
+    <fieldset class="dms-main" [disabled]="sentForApproval">
+
+      <!-- Live summary -->
+      <div class="dms-summary" aria-live="polite">
+        <div class="dms-summary-label">{{ 'documentManagement.editor.summaryLabel' | translate }}</div>
+        <div class="dms-summary-text">{{ summary }}</div>
+      </div>
+
+      <hq-card icon="bi-file-earmark-check" padding="lg" [title]="'documentManagement.editor.details' | translate">
+        <hq-form-grid cols="2" gap="lg">
+
+          <hq-field
+                 type="text"
+                 class="dms-input"
+                 inputId="dtCode"
+                 name="code"
+                 autocomplete="off"
+                 required
+                 [label]="'documentManagement.editor.fields.code.label' | translate"
+                 [(ngModel)]="form.code"
+                 (ngModelChange)="onFieldChange()"
+                 [disabled]="isEdit"
+                 [maxLength]="limits.codeMax"
+                 [invalid]="submitted && errors.code"
+                 [error]="submitted && errors.code ? (errors.code | translate: { min: limits.codeMin, max: limits.codeMax }) : null"
+                 [hint]="submitted && errors.code ? '' : ((isEdit ? 'documentManagement.editor.fields.code.lockedHint' : 'documentManagement.editor.fields.code.hint') | translate)"
+                 [placeholder]="'documentManagement.editor.fields.code.placeholder' | translate"
+                 [showCounter]="false"></hq-field>
+
+          <hq-field
+                 type="text"
+                 class="dms-input"
+                 inputId="dtCategory"
+                 name="category"
+                 required
+                 [label]="'documentManagement.editor.fields.category.label' | translate"
+                 [(ngModel)]="form.category"
+                 (ngModelChange)="onFieldChange()"
+                 [maxLength]="limits.categoryMax"
+                 [invalid]="submitted && errors.category"
+                 [error]="submitted && errors.category ? (errors.category | translate) : null"
+                 [placeholder]="'documentManagement.editor.fields.category.placeholder' | translate"
+                 [showCounter]="false"></hq-field>
+
+          <hq-field
+                 type="text"
+                 class="dms-input"
+                 inputId="dtFlow"
+                 name="flow"
+                 [label]="('documentManagement.editor.fields.flow.label' | translate) + ' (' + ('shared.optional' | translate) + ')'"
+                 [(ngModel)]="form.flow"
+                 [maxLength]="limits.categoryMax"
+                 [hint]="'documentManagement.editor.fields.flow.hint' | translate"
+                 [placeholder]="'documentManagement.editor.fields.flow.placeholder' | translate"
+                 [showCounter]="false"></hq-field>
+
+          <!-- Names -->
+          <hq-form-field class="hq-span-full" [label]="'documentManagement.editor.fields.names.label' | translate" [hint]="'documentManagement.editor.fields.names.hint' | translate">
+            <hq-form-grid cols="2" gap="md">
+              <hq-field *ngFor="let lang of languages"
+                     type="text"
+                     class="dms-input"
+                     [inputId]="'dtName-' + lang"
+                     [name]="'name-' + lang"
+                     [label]="languageNames[lang]"
+                     [required]="lang === 'en'"
+                     [attr.lang]="lang"
+                     [attr.dir]="lang === 'ar' ? 'rtl' : 'ltr'"
+                     [(ngModel)]="form.names[lang]"
+                     (ngModelChange)="onFieldChange()"
+                     [maxLength]="limits.nameMax"
+                     [invalid]="lang === 'en' && submitted && errors.nameEn"
+                     [error]="lang === 'en' && submitted && errors.nameEn ? (errors.nameEn | translate) : null"
+                     [showCounter]="false"></hq-field>
+            </hq-form-grid>
+          </hq-form-field>
+
+          <!-- Formats -->
+          <hq-form-field class="hq-span-full" required [label]="'documentManagement.editor.fields.formats.label' | translate"
+                          [error]="submitted && errors.formats ? (errors.formats | translate) : null">
+            <div class="dms-formats" role="group" [attr.aria-label]="'documentManagement.editor.fields.formats.label' | translate">
+              <hq-checkbox class="dms-format" *ngFor="let f of formats" [class.dms-format--on]="isFormatSelected(f.key)" [name]="'fmt-' + f.key" [checked]="isFormatSelected(f.key)" (checkedChange)="toggleFormat(f.key, $event)"><span>{{ f.labelKey | translate }}</span>
+                <small class="dms-mono">{{ f.key }}</small></hq-checkbox>
+            </div>
+          </hq-form-field>
+
+          <hq-field
+                 type="number"
+                 class="dms-input"
+                 inputId="dtSize"
+                 name="maxFileSizeMb"
+                 inputmode="numeric"
+                 required
+                 [label]="'documentManagement.editor.fields.maxSize.label' | translate"
+                 [min]="limits.maxFileSizeMbMin"
+                 [max]="limits.maxFileSizeMbMax"
+                 step="1"
+                 [(ngModel)]="form.maxFileSizeMb"
+                 (ngModelChange)="onFieldChange()"
+                 [invalid]="submitted && errors.maxFileSizeMb"
+                 [error]="submitted && errors.maxFileSizeMb ? (errors.maxFileSizeMb | translate: { min: limits.maxFileSizeMbMin, max: limits.maxFileSizeMbMax }) : null"
+                 [hint]="submitted && errors.maxFileSizeMb ? '' : ('documentManagement.editor.fields.maxSize.hint' | translate: { min: limits.maxFileSizeMbMin, max: limits.maxFileSizeMbMax })"></hq-field>
+
+          <hq-field
+                 type="number"
+                 class="dms-input"
+                 inputId="dtExpiry"
+                 name="expiryYears"
+                 inputmode="numeric"
+                 [label]="('documentManagement.editor.fields.expiry.label' | translate) + ' (' + ('shared.optional' | translate) + ')'"
+                 [min]="limits.expiryYearsMin"
+                 [max]="limits.expiryYearsMax"
+                 step="1"
+                 [(ngModel)]="form.expiryYears"
+                 (ngModelChange)="onFieldChange()"
+                 [invalid]="submitted && errors.expiryYears"
+                 [error]="submitted && errors.expiryYears ? (errors.expiryYears | translate: { min: limits.expiryYearsMin, max: limits.expiryYearsMax }) : null"
+                 [hint]="submitted && errors.expiryYears ? '' : ('documentManagement.editor.fields.expiry.hint' | translate: { min: limits.expiryYearsMin, max: limits.expiryYearsMax })"></hq-field>
+
+          <hq-field
+                 type="number"
+                 class="dms-input"
+                 inputId="dtRetention"
+                 name="retentionDays"
+                 inputmode="numeric"
+                 [label]="('documentManagement.editor.fields.retention.label' | translate) + ' (' + ('shared.optional' | translate) + ')'"
+                 [min]="limits.retentionDaysMin"
+                 [max]="limits.retentionDaysMax"
+                 step="1"
+                 [(ngModel)]="form.retentionDays"
+                 (ngModelChange)="onFieldChange()"
+                 [invalid]="submitted && errors.retentionDays"
+                 [error]="submitted && errors.retentionDays ? (errors.retentionDays | translate: { min: limits.retentionDaysMin, max: limits.retentionDaysMax }) : null"
+                 [hint]="submitted && errors.retentionDays ? '' : ('documentManagement.editor.fields.retention.hint' | translate: { min: limits.retentionDaysMin, max: limits.retentionDaysMax })"></hq-field>
+
+          <div class="dms-toggle">
+            <hq-slide-toggle name="scanRequired" [(ngModel)]="form.scanRequired">{{ 'documentManagement.editor.fields.scan.label' | translate }}</hq-slide-toggle>
+            <small class="text-muted">{{ 'documentManagement.editor.fields.scan.hint' | translate }}</small>
+          </div>
+
+          <div class="dms-toggle">
+            <hq-slide-toggle name="verificationRequired" [(ngModel)]="form.verificationRequired" (ngModelChange)="onVerificationToggle($event)">{{ 'documentManagement.editor.fields.verification.label' | translate }}</hq-slide-toggle>
+            <small class="text-muted">{{ 'documentManagement.editor.fields.verification.hint' | translate }}</small>
+          </div>
+
+          <hq-form-field *ngIf="form.verificationRequired" for="dtVerifyMethod"
+                          [label]="'documentManagement.editor.fields.verificationMethod.label' | translate"
+                          [error]="submitted && errors.verificationMethod ? (errors.verificationMethod | translate) : null"
+                          [hint]="submitted && errors.verificationMethod ? '' : ('documentManagement.editor.fields.verificationMethod.hint' | translate)">
+            <!-- NONE means "not chosen yet": the drop-down shows its placeholder for it. -->
+            <hq-searchable-select inputId="dtVerifyMethod" name="verificationMethod" [allowOther]="false"
+                                   [ngModel]="form.verificationMethod === 'NONE' ? '' : form.verificationMethod"
+                                   (ngModelChange)="form.verificationMethod = $event || 'NONE'; onVerificationMethodChange()"
+                                   [placeholder]="'documentManagement.editor.fields.verificationMethod.choose' | translate"
+                                   [ariaLabel]="'documentManagement.editor.fields.verificationMethod.label' | translate"
+                                   [hasError]="!!(submitted && errors.verificationMethod)">
+              <hq-ss-option *ngFor="let method of verificationMethods" [value]="method" [label]="(verificationKeyPrefix + method) | translate"></hq-ss-option>
+            </hq-searchable-select>
+          </hq-form-field>
+
+          <hq-form-field *ngIf="form.verificationRequired && availableProviders.length" for="dtVerifyProvider"
+                          [label]="'documentManagement.providers.label' | translate"
+                          [hint]="'documentManagement.providers.hint' | translate"
+                          [error]="submitted && errors.verificationProvider ? (errors.verificationProvider | translate) : null">
+            <hq-searchable-select inputId="dtVerifyProvider" name="verificationProvider" [allowOther]="false"
+                                   [(ngModel)]="form.verificationProvider" (ngModelChange)="onFieldChange()"
+                                   [placeholder]="'documentManagement.providers.choose' | translate"
+                                   [ariaLabel]="'documentManagement.providers.label' | translate"
+                                   [hasError]="!!(submitted && errors.verificationProvider)">
+              <hq-ss-option *ngFor="let provider of availableProviders" [value]="provider.key" [label]="provider.label"></hq-ss-option>
+            </hq-searchable-select>
+          </hq-form-field>
+
+          <div class="dms-toggle">
+            <hq-slide-toggle name="required" [(ngModel)]="form.required">{{ 'documentManagement.editor.fields.required.label' | translate }}</hq-slide-toggle>
+            <small class="text-muted">{{ 'documentManagement.editor.fields.required.hint' | translate }}</small>
+          </div>
+
+          <div class="dms-toggle">
+            <hq-slide-toggle name="active" [(ngModel)]="form.active">{{ 'documentManagement.editor.fields.active.label' | translate }}</hq-slide-toggle>
+            <small class="text-muted">{{ 'documentManagement.editor.fields.active.hint' | translate }}</small>
+          </div>
+
+        </hq-form-grid>
+      </hq-card>
+    </fieldset>
+
+    <!-- Test a file: only for a saved type, and only for people allowed to run the check -->
+    <ng-container *ngIf="isEdit">
+      <hq-card class="dms-test" *hqHasPrivilege="'DMS_DOCUMENT_TYPE_CHECK_CREATE'" icon="bi-clipboard2-check" padding="lg" [title]="'documentManagement.test.title' | translate">
+          <p class="dms-test-intro">{{ 'documentManagement.test.intro' | translate }}</p>
+          <p class="dms-test-note"><i class="bi bi-shield-lock me-1"></i>{{ 'documentManagement.test.notStored' | translate }}</p>
+          <p class="dms-test-note" *ngIf="hasChanges"><i class="bi bi-info-circle me-1"></i>{{ 'documentManagement.test.savedRuleOnly' | translate }}</p>
+
+          <hq-file-drop inputId="dms-test-file" [disabled]="testing" (picked)="onFilesPicked($event)"></hq-file-drop>
+
+          <div class="dms-test-file" *ngIf="testFile">
+            <i class="bi bi-file-earmark"></i>
+            <span class="dms-test-file-name">{{ testFile.name }}</span>
+            <span class="text-muted">{{ 'documentManagement.test.fileSize' | translate: { size: formatSize(testFile) } }}</span>
+            <button [loading]="testing" hqButton="primary" size="sm" type="button" (click)="runTest()" [disabled]="testing">
+              {{ 'documentManagement.test.run' | translate }}
+            </button>
+            <button hqButton="secondary" appearance="outline" size="sm" type="button" (click)="clearTest()" [disabled]="testing">{{ 'documentManagement.test.clear' | translate }}</button>
+          </div>
+
+          <hq-alert tone="warning" dense class="mt-3" *ngIf="testError">{{ testError }}</hq-alert>
+
+          <div class="dms-result mt-3" *ngIf="testResult as r" [class.dms-result--ok]="r.accepted" [class.dms-result--bad]="!r.accepted" role="status">
+            <div class="dms-result-head">
+              <i class="bi" [ngClass]="r.accepted ? 'bi-check-circle-fill' : 'bi-x-circle-fill'"></i>
+              <strong>{{ (r.accepted ? 'documentManagement.test.accepted' : 'documentManagement.test.rejected') | translate }}</strong>
+            </div>
+            <ul class="dms-result-reasons" *ngIf="r.reasons.length">
+              <li *ngFor="let reason of r.reasons">{{ reason.message }}</li>
+            </ul>
+            <div class="dms-result-rule" *ngIf="r.rule as rule">
+              <div class="dms-summary-label">{{ 'documentManagement.test.ruleApplied' | translate }}</div>
+              <div>{{ 'documentManagement.test.ruleFormats' | translate: { formats: rule.allowedFormats.join(', ') } }}</div>
+              <div>{{ 'documentManagement.test.ruleExtensions' | translate: { extensions: rule.allowedExtensions.join(', ') } }}</div>
+              <div>{{ 'documentManagement.test.ruleSize' | translate: { size: rule.maxFileSizeMb } }}</div>
+            </div>
+          </div>
+      </hq-card>
+    </ng-container>
+  </form>
+</div>

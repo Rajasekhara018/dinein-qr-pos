@@ -1,0 +1,86 @@
+// Shared by the inventory page and its details dialog.
+.qa-banner {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  justify-content: space-between;
+  margin-block-end: 1rem;
+
+  &__main { flex: 1 1 22rem; }
+  &__pct { margin: 0 0 0.5rem; font-size: 2rem; font-weight: 800; font-variant-numeric: tabular-nums; }
+  &__facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    margin: 0;
+
+    dt { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--qa-muted); }
+    dd { margin: 0; font-size: 1.25rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+  }
+}
+
+.qa-toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.75rem; margin-block-end: 0.75rem; }
+.qa-count { font-weight: 600; }
+.qa-filter--inline { flex-direction: row; align-items: center; gap: 0.4rem; min-inline-size: 0; }
+.qa-ui-empty { text-align: center; }
+
+// The method name is always written in the badge, so the colour only helps.
+.qa-method {
+  display: inline-block;
+  min-inline-size: 4.2rem;
+  padding: 2px 8px;
+  border-radius: 6px;
+  border: 1px solid currentColor;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-align: center;
+
+  &--get { color: #1d4ed8; background: #dbeafe; }
+  &--post { color: #166534; background: #dcfce7; }
+  &--put { color: #92400e; background: #fef3c7; }
+  &--patch { color: #6d28d9; background: #ede9fe; }
+  &--delete { color: #991b1b; background: #fee2e2; }
+  &--other { color: var(--qa-muted); background: var(--qa-surface); }
+}
+
+.qa-endpoint-path { margin-inline-end: 0.4rem; }
+.qa-undocumented { margin-inline-start: 0.2rem; }
+
+.qa-chips { display: inline-flex; flex-wrap: wrap; gap: 0.25rem; }
+.qa-chip {
+  display: inline-block;
+  max-inline-size: 16rem;
+  padding: 1px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--qa-border);
+  background: var(--qa-surface);
+  font-size: 0.72rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  &--more { font-family: inherit; font-weight: 700; }
+}
+
+.qa-dialog {
+  padding: 1rem 1.25rem 1.25rem;
+
+  &__head { display: flex; align-items: flex-start; justify-content: space-between; gap: 0.75rem; }
+  &__title { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; margin: 0 0 0.75rem; font-size: 1.1rem; }
+  &__path { overflow-wrap: anywhere; }
+  &__sub { margin: 1rem 0 0.4rem; font-size: 1rem; }
+}
+
+.qa-facts {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.35rem 1rem;
+  margin: 0.5rem 0 0;
+
+  dt { color: var(--qa-muted); font-size: 0.8rem; font-weight: 700; }
+  dd { margin: 0; overflow-wrap: anywhere; }
+}
+
+.qa-name { font-weight: 600; }
+.qa-muted { color: var(--qa-muted); }

@@ -1,0 +1,66 @@
+<section class="table-surface om" *hqHasPrivilege="privileges.list">
+  <div class="table-surface__header">
+    <div class="table-heading">
+      <span class="table-kicker">{{ 'accessManagement.organizations.members.title' | translate }}</span>
+      <span class="om__count" *ngIf="totalElements">{{ totalElements }}</span>
+    </div>
+  </div>
+
+  <div class="table-surface__body">
+    <p class="om__hint">{{ 'accessManagement.organizations.members.hint' | translate }}</p>
+
+    <div class="om__add" *hqHasPrivilege="privileges.add">
+      <button hqButton="accent" type="button" [disabled]="busy" (click)="addPeople()">
+        <i class="bi bi-person-plus"></i> {{ 'accessManagement.organizations.members.addPeople' | translate }}
+      </button>
+    </div>
+
+    <p class="om__muted" *ngIf="isLoading">{{ 'shared.adminCrud.loading' | translate }}</p>
+    <p class="om__muted" *ngIf="!isLoading && rows.length === 0">{{ 'accessManagement.organizations.members.empty' | translate }}</p>
+
+    <hq-common-table class="om__table" *ngIf="rows.length" [columns]="columns" [rows]="rows" [rowClass]="rowClass" [actionsLabel]="' '">
+      <ng-template hqCell="member" let-row>
+        <strong>{{ nameOf(row) }}</strong>
+        <small class="om__code">{{ row.email || row.userName }}</small>
+      </ng-template>
+      <ng-template hqCell="userType" let-row>
+        <span class="om__type" *ngIf="row.userType">{{ userTypeKey(row) ? (userTypeKey(row)! | translate) : row.userType }}</span>
+        <span class="om__muted" *ngIf="!row.userType">—</span>
+      </ng-template>
+      <ng-template hqCell="status" let-row>
+        <span class="om__status om__status--{{ row.membership.status }}">
+          {{ 'accessManagement.organizations.members.statuses.' + row.membership.status | translate }}
+        </span>
+      </ng-template>
+      <ng-template hqCell="joined" let-row>{{ row.membership.joinedAt | hqDate: 'mediumDate' }}</ng-template>
+      <ng-template #rowActions let-row>
+        <span class="om__actions">
+          <ng-container *hqHasPrivilege="privileges.update">
+            <button hqButton="secondary" type="button" *ngIf="row.membership.status === 'ACTIVE'" [disabled]="busy" (click)="setStatus(row, 'SUSPENDED')">
+              {{ 'accessManagement.organizations.members.pause' | translate }}
+            </button>
+            <button hqButton="secondary" type="button" *ngIf="row.membership.status !== 'ACTIVE'" [disabled]="busy" (click)="setStatus(row, 'ACTIVE')">
+              {{ (row.membership.status === 'SUSPENDED' ? 'accessManagement.organizations.members.resume' : 'accessManagement.organizations.members.restore') | translate }}
+            </button>
+            <button hqButton="secondary" type="button" class="danger" *ngIf="row.membership.status !== 'REMOVED'" [disabled]="busy" (click)="setStatus(row, 'REMOVED')">
+              {{ 'accessManagement.organizations.members.remove' | translate }}
+            </button>
+          </ng-container>
+        </span>
+      </ng-template>
+    </hq-common-table>
+
+    <hq-table-footer
+      *ngIf="rows.length || page > 0"
+      [page]="page"
+      [size]="pageSize"
+      [itemCount]="rows.length"
+      [hasMore]="page + 1 < totalPages"
+      [totalItems]="totalElements"
+      [loading]="isLoading"
+      [sizeOptions]="pageSizeOptions"
+      (pageChange)="goTo($event)"
+      (sizeChange)="changePageSize($event)">
+    </hq-table-footer>
+  </div>
+</section>

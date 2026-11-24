@@ -1,0 +1,121 @@
+<app-qa-header [title]="'qaDashboard.studio.title' | translate" [subtitle]="'qaDashboard.studio.subtitle' | translate"
+               [workspace]="workspace" [loading]="isLoading" (workspaceChange)="setWorkspace($event)" (refresh)="reload()">
+</app-qa-header>
+
+<ng-container *hqHasPrivilege="studioPrivileges.list">
+  <section class="qa-card qa-ui-empty" *ngIf="!isApiWorkspace">
+    <hq-empty-state [title]="'qaDashboard.studio.apiOnly' | translate"></hq-empty-state>
+    <button hqButton="secondary" type="button" class="qa-switch-api" (click)="setWorkspace('API')">{{ 'qaDashboard.endpointInventory.switchToApi' | translate }}</button>
+  </section>
+
+  <ng-container *ngIf="isApiWorkspace">
+    <div class="qa-sets-bar qa-no-print">
+      <ng-container *hqHasPrivilege="studioPrivileges.create">
+        <a hqButton="accent" class="qa-new-case" [routerLink]="studioRoutes.new">
+          <i class="bi bi-plus-lg"></i> {{ 'qaDashboard.studio.newCase' | translate }}
+        </a>
+      </ng-container>
+    </div>
+
+    <hq-filter-bar collapsible class="qa-no-print">
+      <label class="qa-filter qa-filter--search">
+        <span class="qa-visually-hidden">{{ 'qaDashboard.studio.list.search' | translate }}</span>
+        <hq-field
+               type="search"
+               class="qa-search"
+               [ngModel]="searchText"
+               (ngModelChange)="onSearchInput($event)"
+               [placeholder]="'qaDashboard.studio.list.search' | translate"
+               [ariaLabel]="'qaDashboard.studio.list.search' | translate"></hq-field>
+      </label>
+      <hq-form-field class="qa-filter" [label]="'qaDashboard.filters.module' | translate"><hq-searchable-select
+          class="qa-module"
+          [ngModel]="query.module"
+          (ngModelChange)="update({ module: $event })"
+          [allowOther]="false"
+          [placeholder]="'qaDashboard.filters.all' | translate">
+          <hq-ss-option *ngFor="let m of modules" [value]="m" [label]="m"></hq-ss-option>
+        </hq-searchable-select></hq-form-field>
+      <hq-field type="text" class="qa-sub-module qa-filter" [ngModel]="subModuleText" (ngModelChange)="onSubModuleInput($event)" [label]="'qaDashboard.filters.subModule' | translate"></hq-field>
+      <hq-form-field class="qa-filter" [label]="'qaDashboard.filters.suite' | translate"><hq-searchable-select
+          class="qa-suite"
+          [ngModel]="query.suite"
+          (ngModelChange)="update({ suite: $event })"
+          [allowOther]="false"
+          [placeholder]="'qaDashboard.filters.all' | translate">
+          <hq-ss-option *ngFor="let s of suites" [value]="s" [label]="suiteLabel(s)"></hq-ss-option>
+        </hq-searchable-select></hq-form-field>
+      <hq-form-field class="qa-filter" [label]="'qaDashboard.studio.list.enabledFilter' | translate"><hq-searchable-select
+          class="qa-enabled-filter"
+          [ngModel]="query.enabled"
+          (ngModelChange)="update({ enabled: $event })"
+          [allowOther]="false"
+          [placeholder]="'qaDashboard.filters.all' | translate">
+          <hq-ss-option value="true" [label]="'qaDashboard.studio.list.enabledOnly' | translate"></hq-ss-option>
+          <hq-ss-option value="false" [label]="'qaDashboard.studio.list.disabledOnly' | translate"></hq-ss-option>
+        </hq-searchable-select></hq-form-field>
+      <div hqFilterActions>
+        <button hqButton="secondary" type="button" class="qa-clear" *ngIf="isFiltered" (click)="clear()">{{ 'qaDashboard.filters.clear' | translate }}</button>
+      </div>
+    </hq-filter-bar>
+
+    <hq-error-state *ngIf="hasError" [title]="'qaDashboard.loadFailed' | translate" (retry)="reload()"></hq-error-state>
+    <hq-loading-state *ngIf="isLoading && !result && !hasError" [label]="'qaDashboard.loading' | translate"></hq-loading-state>
+    <hq-empty-state *ngIf="!isLoading && !hasError && result && result.items.length === 0" [title]="(isFiltered ? 'qaDashboard.studio.list.emptyFiltered' : 'qaDashboard.studio.list.empty') | translate"></hq-empty-state>
+
+    <div class="table-surface" *ngIf="result && result.items.length > 0">
+      <div class="table-surface__body">
+        <div class="qa-table-wrap">
+          <hq-common-table class="qa-table qa-studio-table" [columns]="columns" [rows]="result.items" [rowClass]="rowClassOf"
+                            [actionsLabel]="'qaDashboard.columns.actions' | translate">
+            <ng-template hqCell="tcId" let-item><span class="qa-mono">{{ item.tcId }}</span></ng-template>
+            <ng-template hqCell="name" let-item><span class="qa-name">{{ item.name }}</span></ng-template>
+            <ng-template hqCell="subModule" let-item><span class="qa-mono">{{ item.subModule || '—' }}</span></ng-template>
+            <ng-template hqCell="suite" let-item>{{ suiteLabel(item.suite) }}</ng-template>
+            <ng-template hqCell="request" let-item>
+              <span class="qa-method" [ngClass]="methodClass(item.method)">{{ item.method }}</span>
+              <span class="qa-mono qa-case-path">{{ item.path }}</span>
+            </ng-template>
+            <ng-template hqCell="auth" let-item>{{ authLabel(item.auth) }}</ng-template>
+            <ng-template hqCell="enabled" let-item>
+              <ng-container *hqHasPrivilege="studioPrivileges.enable">
+                <hq-slide-toggle class="qa-switch-control" size="compact" [checked]="item.enabled" [disabled]="busyId !== null" (checkedChange)="toggleEnabled(item, $event)" [ariaLabel]="'qaDashboard.studio.list.enableCase' | translate: { name: item.name }"><span>{{ (item.enabled ? 'qaDashboard.studio.list.on' : 'qaDashboard.studio.list.off') | translate }}</span></hq-slide-toggle>
+              </ng-container>
+              <hq-status-badge [tone]="item.enabled ? 'success' : 'neutral'" class="qa-enabled-text" *ngIf="!canEnable">
+                {{ (item.enabled ? 'qaDashboard.studio.list.on' : 'qaDashboard.studio.list.off') | translate }}
+              </hq-status-badge>
+            </ng-template>
+            <ng-template hqCell="updated" let-item>{{ item.updatedAt ? (item.updatedAt | hqDate:'medium') : '—' }}</ng-template>
+            <ng-template #rowActions let-item>
+              <span class="qa-actions">
+                <ng-container *hqHasPrivilege="studioPrivileges.read">
+                  <a hqButton="secondary" class="qa-edit" [routerLink]="[studioRoutes.list, item.id]"
+                     [attr.aria-label]="(canUpdate ? 'qaDashboard.studio.list.edit' : 'qaDashboard.studio.list.view') | translate">
+                    <i class="bi" [ngClass]="canUpdate ? 'bi-pencil' : 'bi-eye'"></i>
+                  </a>
+                </ng-container>
+                <ng-container *hqHasPrivilege="studioPrivileges.create">
+                  <button hqButton="secondary" type="button" class="qa-duplicate" (click)="duplicate(item)" [disabled]="busyId !== null"
+                          [attr.aria-label]="'qaDashboard.studio.list.duplicate' | translate"><i class="bi bi-files"></i></button>
+                </ng-container>
+                <ng-container *hqHasPrivilege="studioPrivileges.delete">
+                  <button hqButton="secondary" type="button" class="qa-delete" (click)="confirmDelete(item)" [disabled]="busyId !== null"
+                          [attr.aria-label]="'qaDashboard.studio.list.delete' | translate"><i class="bi bi-trash"></i></button>
+                </ng-container>
+              </span>
+            </ng-template>
+          </hq-common-table>
+        </div>
+        <div class="qa-pager qa-no-print" *ngIf="result.totalPages > 1">
+          <button hqButton="secondary" type="button" class="qa-prev" (click)="previousPage()" [disabled]="result.page === 0 || isLoading">
+            <i class="bi bi-chevron-left"></i> {{ 'qaDashboard.previous' | translate }}
+          </button>
+          <span>{{ 'shared.listPage.pageOf' | translate: { page: result.page + 1, total: result.totalPages } }}</span>
+          <button hqButton="secondary" type="button" class="qa-next" (click)="nextPage()" [disabled]="result.page + 1 >= result.totalPages || isLoading">
+            {{ 'qaDashboard.next' | translate }} <i class="bi bi-chevron-right"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</ng-container>

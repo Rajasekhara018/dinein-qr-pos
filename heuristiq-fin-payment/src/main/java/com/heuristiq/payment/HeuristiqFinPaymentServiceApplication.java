@@ -1,0 +1,13 @@
+package com.heuristiq.paymentservice;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
+
+@SpringBootApplication
+@ConfigurationPropertiesScan
+public class HeuristiqFinPaymentServiceApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(HeuristiqFinPaymentServiceApplication.class, args);
+    }
+}

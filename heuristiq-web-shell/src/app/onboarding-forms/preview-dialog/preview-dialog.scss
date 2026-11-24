@@ -1,0 +1,75 @@
+.preview-dialog {
+  font-family: var(--hq-font);
+  display: flex;
+  flex-direction: column;
+  max-height: 82vh;
+}
+
+.dialog-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--workspace-border);
+
+  .dialog-icon {
+    color: var(--hq-link);
+    font-size: 1.15rem;
+  }
+
+  .dialog-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--edu-ink);
+  }
+
+  .dialog-subtitle {
+    font-size: 0.78rem;
+    color: var(--edu-muted);
+  }
+
+  .close-btn {
+    border: 0;
+    background: none;
+    padding: 0;
+    color: var(--edu-muted);
+    font-size: 1.1rem;
+    cursor: pointer;
+
+    &:hover {
+      color: var(--edu-ink);
+    }
+  }
+}
+
+.dialog-body {
+  padding: 1.25rem 1.5rem 1.5rem;
+  overflow-y: auto;
+}
+.step-progress .progress-bar {
+  background: linear-gradient(135deg, var(--hq-primary), var(--hq-primary-dark));
+}
+
+.step-title {
+  font-weight: 700;
+  color: var(--edu-ink);
+}
+
+.document-mock {
+  border: 1px dashed var(--workspace-border);
+  border-radius: 8px;
+  padding: 0.55rem 0.9rem;
+  color: var(--edu-muted);
+  background: var(--workspace-panel);
+}
+
+.field-helper {
+  color: var(--edu-muted);
+  font-size: 0.76rem;
+  margin-top: 0.3rem;
+}
+
+button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}

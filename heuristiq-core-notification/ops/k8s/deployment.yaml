@@ -1,0 +1,86 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: railcab-nms
+  labels:
+    app: railcab-nms
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: railcab-nms
+  template:
+    metadata:
+      labels:
+        app: railcab-nms
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/path: /actuator/prometheus
+        prometheus.io/port: "9005"
+    spec:
+      containers:
+        - name: railcab-nms
+          image: railcab-nms:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 9005
+          env:
+            - name: MONGO_URI
+              valueFrom:
+                secretKeyRef:
+                  name: railcab-nms-secrets
+                  key: mongo-uri
+            - name: KAFKA_BOOTSTRAP
+              value: kafka:9092
+            - name: NMS_INTERNAL_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: railcab-nms-secrets
+                  key: internal-api-key
+            - name: FIREBASE_ENABLED
+              value: "true"
+            - name: FIREBASE_PROJECT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: railcab-nms-secrets
+                  key: firebase-project-id
+            - name: FCM_CREDENTIALS_PATH
+              value: classpath:firebase-service-account.json
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: http
+            initialDelaySeconds: 20
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: http
+            initialDelaySeconds: 60
+            periodSeconds: 20
+            timeoutSeconds: 3
+            failureThreshold: 3
+          resources:
+            requests:
+              cpu: 250m
+              memory: 512Mi
+            limits:
+              cpu: "1"
+              memory: 1Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: railcab-nms
+  labels:
+    app: railcab-nms
+spec:
+  selector:
+    app: railcab-nms
+  ports:
+    - name: http
+      port: 9005
+      targetPort: http

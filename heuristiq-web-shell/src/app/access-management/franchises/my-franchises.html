@@ -1,0 +1,111 @@
+<hq-page-header
+  [kicker]="'nav.sections.accessManagement' | translate"
+  [title]="'nav.items.myFranchises' | translate"
+  [subtitle]="'accessManagement.franchises.mySubtitle' | translate">
+</hq-page-header>
+
+<div class="table-surface">
+  <div class="table-surface__body">
+    <hq-loading-state *ngIf="isLoading" [label]="'accessManagement.franchises.loading' | translate"></hq-loading-state>
+    <hq-error-state *ngIf="hasError" [title]="'accessManagement.franchises.errorMessage' | translate"></hq-error-state>
+    <hq-empty-state *ngIf="!isLoading && !hasError && franchises.length === 0" [title]="'accessManagement.franchises.noFranchises' | translate"></hq-empty-state>
+
+    <div class="franchise-tabs" *ngIf="franchises.length > 1">
+      <button hqButton="secondary" type="button" *ngFor="let franchise of franchises"
+              [class.active]="selected?.unitId === franchise.unitId" (click)="select(franchise)">{{ franchise.code }}</button>
+    </div>
+
+    <ng-container *ngIf="selected as franchise">
+      <article class="franchise-card">
+        <header class="mf-head">
+          <div class="mf-head__identity">
+            <span class="mf-head__icon" aria-hidden="true"><i class="bi bi-shop"></i></span>
+            <div class="mf-head__text">
+              <div class="mf-head__title">
+                <strong>{{ franchise.code }}</strong>
+                <hq-status-badge tone="warning" *ngIf="franchise.onboardingStatus === 'ONBOARDING'" data-testid="onboarding-badge">{{ 'franchiseOnboarding.status.ONBOARDING' | translate }}</hq-status-badge>
+              </div>
+              <div class="mf-head__usage" *ngIf="hasAgentApplication">
+                <span>{{ 'accessManagement.franchises.usage' | translate: { used: agentTotals.used, limit: agentTotals.limit } }}</span>
+                <hq-progress class="mf-head__meter" size="sm" [value]="usagePercent(agentTotals.used, agentTotals.limit)" [max]="100" [showValue]="false" [tone]="usagePercent(agentTotals.used, agentTotals.limit) >= 100 ? 'danger' : 'primary'" [label]="'accessManagement.franchises.usage' | translate: { used: agentTotals.used, limit: agentTotals.limit }"></hq-progress>
+              </div>
+            </div>
+          </div>
+          <div class="mf-head__actions">
+            <button hqButton="secondary" size="sm" *hqHasPrivilege="[privileges.readMyOnboarding, privileges.readMyLegalProfile]" type="button" data-testid="open-setup"
+                    (click)="openSetup(franchise)"><i class="bi bi-list-check" aria-hidden="true"></i> {{ 'accessManagement.franchises.setup.openMine' | translate }}</button>
+            <button hqButton="secondary" size="sm" *hqHasPrivilege="driverPrivileges.listDrivers" type="button" data-testid="open-drivers"
+                    (click)="openDrivers(franchise)"><i class="bi bi-person-badge" aria-hidden="true"></i> {{ 'accessManagement.franchiseDrivers.open' | translate }}</button>
+            <button hqButton="accent" size="sm" *hqHasPrivilege="driverPrivileges.onboardDriver" type="button" data-testid="onboard-driver"
+                    (click)="onboardDriver(franchise)"><i class="bi bi-person-plus" aria-hidden="true"></i> {{ 'accessManagement.franchiseDrivers.onboard' | translate }}</button>
+          </div>
+        </header>
+        <hq-common-table [columns]="placeColumns" [rows]="franchise.applications">
+          <ng-template hqCell="applicationCode" let-application>{{ appName(application.applicationCode) }}</ng-template>
+          <ng-template hqCell="agents" let-application>
+            <ng-container *ngIf="isDriverApplication(application.applicationCode); else agentCount">{{ 'accessManagement.franchiseMembers.driverUsage' | translate: { used: placesUsed(application), limit: application.agentLimit } }}</ng-container>
+            <ng-template #agentCount>{{ application.agentCount }} / {{ application.agentLimit }}</ng-template>
+          </ng-template>
+          <ng-template hqCell="placesLeft" let-application>{{ rowPlacesLeft(application) }}</ng-template>
+        </hq-common-table>
+
+        <ng-container *hqHasPrivilege="privileges.requestAgents">
+          <hq-alert tone="info" class="franchise-notice" *ngFor="let application of fullApplications">
+            <p>{{ 'accessManagement.franchises.fullNotice' | translate: { application: appName(application.applicationCode) } }}</p>
+            <button hqButton="secondary" type="button" *ngIf="requestFor !== application.applicationCode" (click)="startRequest(application)">
+              {{ 'accessManagement.franchises.requestMore' | translate }}
+            </button>
+            <div class="franchise-grid" *ngIf="requestFor === application.applicationCode">
+              <hq-field type="number" min="1" [(ngModel)]="requestAgents" name="requestAgents" [label]="'accessManagement.franchises.requestAgents' | translate"></hq-field>
+              <hq-field type="text" [maxLength]="500" [(ngModel)]="requestNote" name="requestNote" [showCounter]="false" [label]="'accessManagement.franchises.requestNote' | translate"></hq-field>
+              <div class="franchise-actions">
+                <button hqButton="accent" type="button" [disabled]="sendingRequest" (click)="sendRequest()">{{ 'accessManagement.franchises.requestSend' | translate }}</button>
+                <button hqButton="secondary" type="button" [disabled]="sendingRequest" (click)="cancelRequest()">{{ 'accessManagement.franchises.cancel' | translate }}</button>
+              </div>
+            </div>
+          </hq-alert>
+        </ng-container>
+      </article>
+
+      <section class="franchise-form" *ngIf="hasAgentApplication">
+        <h4>{{ 'accessManagement.franchises.agentsTitle' | translate }}</h4>
+        <ng-container *hqHasPrivilege="privileges.listAgents">
+        <hq-common-table [columns]="agentColumns" [rows]="agents" [emptyMessage]="'accessManagement.franchises.noAgents' | translate">
+          <ng-template hqCell="applicationCode" let-agent>{{ appName(agent.applicationCode) }}</ng-template>
+          <ng-template #rowActions let-agent>
+            <button *hqHasPrivilege="privileges.removeAgent" type="button" class="row-action-btn danger" data-testid="remove-agent"
+                    [title]="'accessManagement.franchises.removeAgent.button' | translate" (click)="removeAgent(agent)">
+              <i class="bi bi-person-dash"></i>
+            </button>
+          </ng-template>
+        </hq-common-table>
+        </ng-container>
+
+        <ng-container *hqHasPrivilege="privileges.addAgent">
+          <!-- When every place is used, the notice above says so and offers "Request more agents": no empty form here -->
+          <ng-container *ngIf="openApplications.length > 0">
+          <h5 class="mf-subtitle">{{ 'accessManagement.franchises.addAgentTitle' | translate }}</h5>
+          <div class="franchise-grid">
+            <hq-form-field [label]="'accessManagement.franchises.application' | translate"><hq-searchable-select
+                [(ngModel)]="agent.applicationCode"
+                name="agentApplication"
+                [allowOther]="false"
+                [placeholder]="'accessManagement.franchises.chooseApplication' | translate">
+                <hq-ss-option *ngFor="let application of openApplications" [value]="application.applicationCode" [label]="appName(application.applicationCode) + ' (' + placesLeft(application) + ')'"></hq-ss-option>
+              </hq-searchable-select></hq-form-field>
+            <hq-field type="text" [maxLength]="200" [(ngModel)]="agent.fullName" name="agentName" [showCounter]="false" [label]="'accessManagement.franchises.fullName' | translate"></hq-field>
+            <hq-field type="email" [maxLength]="200" [(ngModel)]="agent.email" name="agentEmail" [showCounter]="false" [label]="'accessManagement.franchises.email' | translate"></hq-field>
+            <div>
+              <hq-phone-number-input [(ngModel)]="agent.phone" name="agentPhone" #agentPhone="ngModel"
+                                      [label]="'accessManagement.franchises.phone' | translate"></hq-phone-number-input>
+            </div>
+          </div>
+          <button hqButton="accent" type="button" [disabled]="saving" (click)="addAgent(agentPhone.invalid === true)">
+            {{ 'accessManagement.franchises.addAgent' | translate }}
+          </button>
+          </ng-container>
+        </ng-container>
+      </section>
+    </ng-container>
+  </div>
+</div>

@@ -1,0 +1,47 @@
+<div class="lp">
+  <header class="lp__head">
+    <div class="lp__heading">
+      <h2 mat-dialog-title class="lp__title">{{ current?.doc?.originalFileName || ('documentManagement.lifecycle.preview.title' | translate) }}</h2>
+      <p class="lp__meta" *ngIf="current">
+        <span *ngIf="current.current" class="lp__badge">{{ 'documentManagement.lifecycle.preview.thisDocument' | translate }}</span>
+        {{ 'documentManagement.lifecycle.preview.versionOf' | translate: { n: data.versions.length - index, total: data.versions.length } }}
+        · {{ when(current.doc.createdAt) }} · {{ size(current.doc.sizeBytes) }}
+        <ng-container *ngIf="current.doc.scanStatus">· {{ current.doc.scanStatus }}</ng-container>
+      </p>
+    </div>
+    <button type="button" class="lp__icon-btn" data-testid="preview-download" [title]="'documentManagement.lifecycle.preview.download' | translate"
+            [attr.aria-label]="'documentManagement.lifecycle.preview.download' | translate" (click)="download()"><i class="bi bi-download"></i></button>
+    <button type="button" class="lp__icon-btn" [title]="'documentManagement.lifecycle.preview.close' | translate"
+            [attr.aria-label]="'documentManagement.lifecycle.preview.close' | translate" (click)="close()"><i class="bi bi-x-lg"></i></button>
+  </header>
+
+  <div class="lp__stage">
+    <button type="button" class="lp__nav lp__nav--prev" data-testid="preview-prev" [disabled]="index === 0" (click)="previous()"
+            [attr.aria-label]="'documentManagement.lifecycle.preview.previous' | translate"><i class="bi bi-chevron-left"></i></button>
+
+    <div class="lp__view" *ngIf="current">
+      <p class="lp__state" *ngIf="loading" role="status">{{ 'documentManagement.lifecycle.loading' | translate }}</p>
+      <hq-error-state *ngIf="failed" [title]="'documentManagement.lifecycle.preview.failed' | translate"></hq-error-state>
+      <img *ngIf="kind === 'image' && urls[current.doc.id] && !failed" class="lp__image" [src]="urls[current.doc.id]" [alt]="current.doc.originalFileName" />
+      <iframe *ngIf="kind === 'pdf' && pdfUrl && !failed" class="lp__pdf" [src]="pdfUrl" [title]="current.doc.originalFileName"></iframe>
+      <div class="lp__other" *ngIf="kind === 'other'">
+        <i class="bi bi-file-earmark"></i>
+        <p>{{ 'documentManagement.lifecycle.preview.noPreview' | translate }}</p>
+        <button hqButton="primary" appearance="outline" size="sm" type="button" (click)="download()">{{ 'documentManagement.lifecycle.preview.download' | translate }}</button>
+      </div>
+    </div>
+
+    <button type="button" class="lp__nav lp__nav--next" data-testid="preview-next" [disabled]="index >= data.versions.length - 1" (click)="next()"
+            [attr.aria-label]="'documentManagement.lifecycle.preview.next' | translate"><i class="bi bi-chevron-right"></i></button>
+  </div>
+
+  <div class="lp__strip" *ngIf="data.versions.length > 1" role="list">
+    <button type="button" class="lp__thumb" role="listitem" *ngFor="let v of data.versions; let i = index; trackBy: trackVersion"
+            [class.lp__thumb--active]="i === index" [class.lp__thumb--current]="v.current" (click)="show(i)"
+            [title]="v.doc.originalFileName + ' · ' + when(v.doc.createdAt)" data-testid="preview-thumb">
+      <img *ngIf="kindOf(v) === 'image' && urls[v.doc.id]; else icon" [src]="urls[v.doc.id]" [alt]="v.doc.originalFileName" />
+      <ng-template #icon><i class="bi" [class.bi-file-earmark-pdf]="kindOf(v) === 'pdf'" [class.bi-file-earmark]="kindOf(v) !== 'pdf'"></i></ng-template>
+      <span class="lp__thumb-date">{{ when(v.doc.createdAt) }}</span>
+    </button>
+  </div>
+</div>

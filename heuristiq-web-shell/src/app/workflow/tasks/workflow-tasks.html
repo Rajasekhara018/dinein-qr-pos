@@ -1,0 +1,111 @@
+<hq-file-drop #attachPicker appearance="none" [validate]="false" (picked)="onAttachmentChosen($event)"></hq-file-drop>
+<div class="table-surface">
+  <div class="table-surface__header">
+    <div class="table-heading">
+      <span class="table-kicker">{{ 'shared.listPage.total' | translate: { count: total } }}</span>
+    </div>
+    <button type="button" class="table-create-btn" (click)="load()" [disabled]="isLoading">
+      <i class="bi bi-arrow-clockwise"></i> {{ 'workflow.refresh' | translate }}
+    </button>
+  </div>
+
+  <div class="table-surface__body">
+    <hq-filter-bar collapsible>
+      <hq-searchable-select
+        class="wf-view"
+        [(ngModel)]="view"
+        (ngModelChange)="applyFilters()"
+        [ariaLabel]="'workflow.tasks.view' | translate"
+        [allowOther]="false">
+        <hq-ss-option *ngFor="let v of views" [value]="v" [label]="viewKeyPrefix + v | translate"></hq-ss-option>
+      </hq-searchable-select>
+      <hq-field type="search" class="wf-search" [placeholder]="'workflow.tasks.search' | translate" [(ngModel)]="q" (keyup.enter)="applyFilters()"></hq-field>
+      <hq-field type="text" [placeholder]="'workflow.tasks.stepFilter' | translate" [(ngModel)]="step" (keyup.enter)="applyFilters()"></hq-field>
+      <hq-field type="date" class="wf-date" [(ngModel)]="createdFrom" [max]="createdTo || null" (ngModelChange)="applyFilters()" [ariaLabel]="'workflow.tasks.createdFrom' | translate" [title]="'workflow.tasks.createdFrom' | translate"></hq-field>
+      <hq-field type="date" class="wf-date" [(ngModel)]="createdTo" [min]="createdFrom || null" (ngModelChange)="applyFilters()" [ariaLabel]="'workflow.tasks.createdTo' | translate" [title]="'workflow.tasks.createdTo' | translate"></hq-field>
+      <hq-field type="text" [placeholder]="'workflow.tasks.processKey' | translate" [(ngModel)]="processKey" (keyup.enter)="applyFilters()"></hq-field>
+      <hq-field type="text" [placeholder]="'workflow.tasks.subjectType' | translate" [(ngModel)]="subjectType" (keyup.enter)="applyFilters()"></hq-field>
+      <div hqFilterActions>
+        <button hqButton="accent" type="button" (click)="applyFilters()"><i class="bi bi-funnel"></i> {{ 'shared.listPage.filter' | translate }}</button>
+        <button hqButton="secondary" type="button" (click)="clearFilters()">{{ 'shared.listPage.clear' | translate }}</button>
+      </div>
+    </hq-filter-bar>
+
+    <hq-loading-state *ngIf="isLoading && tasks.length === 0" [label]="'workflow.loading' | translate"></hq-loading-state>
+    <hq-error-state *ngIf="hasError" [title]="'workflow.tasks.loadFailed' | translate" (retry)="load()"></hq-error-state>
+    <hq-empty-state *ngIf="!isLoading && !hasError && tasks.length === 0" [title]="'workflow.tasks.empty' | translate"></hq-empty-state>
+
+    <div class="wf-table-wrap" *ngIf="tasks.length > 0">
+      <hq-common-table [columns]="columns" [rows]="tasks" [actionsLabel]="' '">
+        <ng-template hqCell="step" let-task>
+          {{ task.taskName || task.taskKey || task.taskId }}
+          <div class="wf-sub wf-mono">{{ task.taskId }}</div>
+        </ng-template>
+        <ng-template hqCell="assignee" let-task>
+          <ng-container *ngIf="task.assignee; else offered">
+            <hq-status-badge tone="info" *ngIf="isMine(task); else other">{{ 'workflow.tasks.you' | translate }}</hq-status-badge>
+            <ng-template #other><span class="wf-mono">{{ task.assignee }}</span></ng-template>
+          </ng-container>
+          <ng-template #offered>
+            <hq-status-badge tone="neutral">{{ 'workflow.tasks.unassigned' | translate }}</hq-status-badge>
+            <div class="wf-sub" *ngIf="task.candidateUsers?.length">{{ 'workflow.tasks.offeredUsers' | translate: { names: offeredUsers(task) } }}</div>
+            <div class="wf-sub" *ngIf="offeredRoles(task)">{{ 'workflow.tasks.offeredRoles' | translate: { names: offeredRoles(task) } }}</div>
+            <div class="wf-sub" *ngIf="offeredDepartments(task)">{{ 'workflow.tasks.offeredDepartments' | translate: { names: offeredDepartments(task) } }}</div>
+            <div class="wf-sub" *ngIf="!task.candidateUsers?.length && !task.candidateGroups?.length">{{ 'workflow.tasks.openToAll' | translate }}</div>
+          </ng-template>
+        </ng-template>
+        <ng-template hqCell="process" let-task>{{ task.processKey }}</ng-template>
+        <ng-template hqCell="subject" let-task>{{ subjectOf(task) }}</ng-template>
+        <ng-template hqCell="instance" let-task><span class="wf-mono">{{ task.processInstanceId }}</span></ng-template>
+        <ng-template hqCell="created" let-task>{{ task.createdAt ? (task.createdAt | hqDate:'medium') : '—' }}</ng-template>
+        <ng-template hqCell="due" let-task>
+          <ng-container *ngIf="task.dueDate; else noSla">
+            {{ task.dueDate | hqDate:'medium' }}
+            <hq-status-badge tone="danger" *ngIf="task.overdue">{{ 'workflow.tasks.overdue' | translate }}</hq-status-badge>
+          </ng-container>
+          <ng-template #noSla><span class="wf-sub">{{ 'workflow.tasks.noSla' | translate }}</span></ng-template>
+        </ng-template>
+        <ng-template #rowActions let-task>
+          <span class="wf-actions">
+            <ng-container *hqHasPrivilege="'WORKFLOW_TASK_REASSIGN'">
+              <button type="button" class="row-action-btn" *ngIf="canReassign(task)" [title]="'workflow.tasks.reassign' | translate"
+                      [disabled]="claimingId === task.taskId" (click)="openReassign(task)">
+                <i class="bi bi-person-up"></i>
+              </button>
+            </ng-container>
+            <ng-container *hqHasPrivilege="'WORKFLOW_TASK_RELEASE'">
+              <button type="button" class="row-action-btn" *ngIf="canRelease(task)" [title]="'workflow.tasks.release' | translate"
+                      [disabled]="claimingId === task.taskId" (click)="release(task)">
+                <i class="bi bi-box-arrow-left"></i>
+              </button>
+            </ng-container>
+            <ng-container *hqHasPrivilege="'WORKFLOW_TASK_ATTACHMENT_CREATE'">
+              <button type="button" class="row-action-btn" [title]="'workflow.tasks.attach' | translate"
+                      [disabled]="claimingId === task.taskId" (click)="pickAttachment(task, attachPicker)">
+                <i class="bi bi-paperclip"></i>
+              </button>
+            </ng-container>
+            <ng-container *hqHasPrivilege="'WORKFLOW_TASK_COMMENT_CREATE'">
+              <button type="button" class="row-action-btn" [title]="'workflow.tasks.addComment' | translate" (click)="openComment(task)">
+                <i class="bi bi-chat-left-text"></i>
+              </button>
+            </ng-container>
+            <button type="button" class="row-action-btn" [title]="'workflow.tasks.viewInstance' | translate" (click)="viewInstance(task)">
+              <i class="bi bi-eye"></i>
+            </button>
+            <ng-container *hqHasPrivilege="'WORKFLOW_TASK_CLAIM'">
+              <button hqButton="secondary" size="sm" type="button" *ngIf="!task.assignee" (click)="claim(task)" [disabled]="claimingId === task.taskId">
+                <i class="bi bi-person-check"></i> {{ 'workflow.tasks.claim' | translate }}
+              </button>
+            </ng-container>
+            <ng-container *hqHasPrivilege="'WORKFLOW_TASK_COMPLETE'">
+              <button hqButton="accent" size="sm" type="button" (click)="openComplete(task)" [disabled]="completingId === task.taskId">
+                <i class="bi bi-check2-circle"></i> {{ 'workflow.tasks.complete' | translate }}
+              </button>
+            </ng-container>
+          </span>
+        </ng-template>
+      </hq-common-table>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,44 @@
+# Compiled output (anchored: an unanchored out/ also ignored the hexagonal adapter/out source packages)
+/build/
+/out/
+/target/
+
+# Gradle
+.gradle/
+.gradle-*/
+gradle-app.setting
+!gradle-wrapper.jar
+!gradle-wrapper.properties
+
+# IDE
+.idea/
+*.iml
+*.iws
+.classpath
+.project
+.settings/
+.vscode/
+*.code-workspace
+
+# Logs
+logs/
+*.log
+
+# Environment secrets
+.env
+.env.local
+.env.production
+*.env
+
+# Firebase credentials
+firebase-service-account.json
+*-service-account.json
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Spring Boot
+spring-shell.log
+# Compiled binaries
+/bin/

@@ -1,0 +1,77 @@
+<hq-filter-bar collapsible class="qa-no-print">
+  <label class="qa-filter qa-filter--search" *ngIf="showSearch">
+    <span class="qa-visually-hidden">{{ 'qaDashboard.filters.search' | translate }}</span>
+    <hq-field
+           type="search"
+           class="qa-search"
+           [ngModel]="searchText"
+           (ngModelChange)="onSearchInput($event)"
+           [placeholder]="'qaDashboard.filters.search' | translate"
+           [ariaLabel]="'qaDashboard.filters.search' | translate"></hq-field>
+  </label>
+
+  <hq-form-field class="qa-filter" *ngIf="showModule" [label]="'qaDashboard.filters.module' | translate"><hq-searchable-select
+      class="qa-module"
+      [ngModel]="filters.module"
+      (ngModelChange)="onModuleChange($event)"
+      [allowOther]="false"
+      [placeholder]="'qaDashboard.filters.all' | translate">
+      <hq-ss-option *ngFor="let m of facets?.modules ?? []" [value]="m.module" [label]="m.module"></hq-ss-option>
+    </hq-searchable-select></hq-form-field>
+
+  <hq-form-field class="qa-filter" *ngIf="showModule" [label]="'qaDashboard.filters.subModule' | translate"><hq-searchable-select
+      class="qa-sub-module"
+      [ngModel]="filters.subModule"
+      (ngModelChange)="update({ subModule: $event })"
+      [disabled]="!filters.module"
+      [allowOther]="false"
+      [placeholder]="'qaDashboard.filters.all' | translate">
+      <hq-ss-option *ngFor="let s of subModules" [value]="s" [label]="s"></hq-ss-option>
+    </hq-searchable-select></hq-form-field>
+
+  <hq-form-field class="qa-filter" *ngIf="showStatus" [label]="'qaDashboard.filters.status' | translate"><hq-searchable-select
+      class="qa-status"
+      [ngModel]="filters.status"
+      (ngModelChange)="update({ status: $event })"
+      [allowOther]="false"
+      [placeholder]="'qaDashboard.filters.all' | translate">
+      <hq-ss-option *ngFor="let s of statuses" [value]="s" [label]="statusLabel(s)"></hq-ss-option>
+    </hq-searchable-select></hq-form-field>
+
+  <hq-form-field class="qa-filter" *ngIf="showSuite" [label]="'qaDashboard.filters.suite' | translate"><hq-searchable-select
+      class="qa-suite"
+      [ngModel]="filters.suite"
+      (ngModelChange)="update({ suite: $event })"
+      [allowOther]="false"
+      [placeholder]="'qaDashboard.filters.all' | translate">
+      <hq-ss-option *ngFor="let s of suites" [value]="s" [label]="suiteLabel(s)"></hq-ss-option>
+    </hq-searchable-select></hq-form-field>
+
+  <hq-form-field class="qa-filter" *ngIf="showEnvironment" [label]="'qaDashboard.filters.environment' | translate"><hq-searchable-select
+      class="qa-environment"
+      [ngModel]="filters.environment"
+      (ngModelChange)="update({ environment: $event })"
+      [allowOther]="false"
+      [placeholder]="'qaDashboard.filters.all' | translate">
+      <hq-ss-option *ngFor="let e of facets?.environments ?? []" [value]="e" [label]="environmentLabel(e)"></hq-ss-option>
+    </hq-searchable-select></hq-form-field>
+
+  <hq-form-field class="qa-filter" *ngIf="showRelease" [label]="'qaDashboard.filters.release' | translate"><hq-searchable-select
+      class="qa-release"
+      [ngModel]="filters.release"
+      (ngModelChange)="update({ release: $event })"
+      [allowOther]="false"
+      [placeholder]="'qaDashboard.filters.all' | translate">
+      <hq-ss-option *ngFor="let r of facets?.releases ?? []" [value]="r" [label]="r"></hq-ss-option>
+    </hq-searchable-select></hq-form-field>
+
+  <hq-form-field class="qa-filter qa-range" *ngIf="showRange" [label]="'qaDashboard.filters.period' | translate">
+    <hq-date-range size="sm" [value]="range" (valueChange)="onRange($event)"></hq-date-range>
+  </hq-form-field>
+
+  <div hqFilterActions>
+    <button hqButton="secondary" type="button" class="qa-clear" *ngIf="isFiltered" (click)="clear()">
+      {{ 'qaDashboard.filters.clear' | translate }}
+    </button>
+  </div>
+</hq-filter-bar>

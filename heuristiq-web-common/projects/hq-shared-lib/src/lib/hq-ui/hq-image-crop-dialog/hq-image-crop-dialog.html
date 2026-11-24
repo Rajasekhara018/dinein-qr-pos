@@ -1,0 +1,38 @@
+<div class="crop-dialog">
+  <div class="crop-dialog__header">
+    <div class="crop-dialog__heading">
+      <span class="crop-dialog__eyebrow">{{ texts.eyebrow() }}</span>
+      <h3 class="crop-dialog__title">{{ texts.title() }}</h3>
+      <p class="crop-dialog__subtitle">{{ texts.subtitle() }}</p>
+    </div>
+    <button type="button" class="crop-dialog__close" [attr.aria-label]="texts.close()" (click)="onCancel()">
+      <i class="bi bi-x-lg"></i>
+    </button>
+  </div>
+
+  <div class="crop-dialog__body">
+    <div class="crop-dialog__editor">
+      <ng-container #cropperHost></ng-container>
+    </div>
+
+    <aside class="crop-dialog__preview-card">
+      <span class="crop-dialog__preview-label">{{ texts.preview() }}</span>
+      <div class="crop-dialog__preview-avatar">
+        <img *ngIf="croppedImage; else previewFallback" [src]="croppedImage" [alt]="texts.previewAlt()" />
+        <ng-template #previewFallback>
+          <i class="bi bi-image"></i>
+        </ng-template>
+      </div>
+      <p class="crop-dialog__preview-note">{{ texts.previewNote() }}</p>
+      <div class="crop-dialog__tips">
+        <span><i class="bi bi-arrows-move"></i> {{ texts.tipDrag() }}</span>
+        <span><i class="bi bi-bounding-box-circles"></i> {{ texts.tipCenter() }}</span>
+      </div>
+    </aside>
+  </div>
+
+  <div class="crop-dialog__actions">
+    <button type="button" class="btn btn-light crop-btn crop-btn--cancel" (click)="onCancel()">{{ texts.cancel() }}</button>
+    <button type="button" class="btn crop-btn crop-btn--save" [disabled]="!finalImage" (click)="onSave()">{{ texts.useImage() }}</button>
+  </div>
+</div>

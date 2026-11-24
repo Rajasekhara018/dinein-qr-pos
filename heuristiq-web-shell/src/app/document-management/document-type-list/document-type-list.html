@@ -1,0 +1,160 @@
+<hq-page-header
+  [kicker]="'nav.sections.documentManagement' | translate"
+  [title]="'documentManagement.list.title' | translate"
+  [subtitle]="
+    (organizationName$ | async)
+      ? ('documentManagement.list.subtitleOrg'
+        | translate: { organization: (organizationName$ | async) })
+      : ('documentManagement.list.subtitle' | translate)
+  "
+  [loading]="isLoading"
+  [loadingLabel]="'shared.pageHeader.loading' | translate"
+>
+</hq-page-header>
+
+<nav class="document-tabs" aria-label="{{ 'nav.sections.documentManagement' | translate }}">
+  <a class="is-current" routerLink="../document-types" aria-current="page"
+    ><i class="bi bi-files" aria-hidden="true"></i
+    >{{ 'integrationDirectory.documentTypes' | translate }}</a
+  >
+  <a routerLink="../integration-directory"
+    ><i class="bi bi-plug" aria-hidden="true"></i>{{ 'integrationDirectory.title' | translate }}</a
+  >
+</nav>
+<div class="dms-approval-note">
+  <i class="bi bi-patch-check"></i>
+  <span>{{ 'documentManagement.banner.text' | translate }}</span>
+</div>
+
+<div class="table-surface">
+  <div class="table-surface__header">
+    <div class="table-heading">
+      <span class="table-kicker">{{
+        'shared.listPage.total' | translate: { count: totalElements }
+      }}</span>
+    </div>
+    <ng-container *hqHasPrivilege="'DMS_DOCUMENT_TYPE_CREATE'">
+      <button type="button" class="table-create-btn" (click)="create()">
+        <i class="bi bi-plus-lg"></i> {{ 'documentManagement.list.newButton' | translate }}
+      </button>
+    </ng-container>
+  </div>
+
+  <div class="table-surface__body">
+    <hq-filter-bar collapsible>
+      <hq-field
+        type="text"
+        [maxLength]="60"
+        [placeholder]="'documentManagement.list.filters.category' | translate"
+        [(ngModel)]="filters.category"
+        (keyup.enter)="applyFilters()"
+        [showCounter]="false"
+      ></hq-field>
+      <hq-field
+        type="text"
+        [maxLength]="60"
+        [placeholder]="'documentManagement.list.filters.flow' | translate"
+        [(ngModel)]="filters.flow"
+        (keyup.enter)="applyFilters()"
+        [showCounter]="false"
+      ></hq-field>
+      <hq-searchable-select
+        [(ngModel)]="filters.active"
+        [allowOther]="false"
+        [placeholder]="'shared.listPage.anyStatus' | translate"
+      >
+        <hq-ss-option
+          value="true"
+          [label]="'documentManagement.list.active' | translate"
+        ></hq-ss-option>
+        <hq-ss-option
+          value="false"
+          [label]="'documentManagement.list.inactive' | translate"
+        ></hq-ss-option>
+      </hq-searchable-select>
+      <div hqFilterActions>
+        <button hqButton="accent" type="button" (click)="applyFilters()">
+          <i class="bi bi-funnel"></i> {{ 'shared.listPage.filter' | translate }}
+        </button>
+        <button hqButton="secondary" type="button" (click)="clearFilters()">
+          {{ 'shared.listPage.clear' | translate }}
+        </button>
+      </div>
+    </hq-filter-bar>
+
+    <hq-common-table
+      [columns]="visibleColumns"
+      [rows]="rows"
+      [isLoading]="isLoading"
+      [hasError]="hasError"
+      [emptyMessage]="
+        hasActiveFilters
+          ? ('documentManagement.list.noneMatching' | translate)
+          : ('documentManagement.list.empty' | translate)
+      "
+      [errorMessage]="'documentManagement.list.messages.loadFailed' | translate"
+    >
+      <ng-template hqCell="names" let-row>
+        <div class="document-name">
+          <span class="document-icon"
+            ><i class="bi bi-file-earmark-text" aria-hidden="true"></i
+          ></span>
+          <div>
+            <strong>{{ cellText('names', row) }}</strong
+            ><code>{{ row.code }}</code>
+          </div>
+        </div>
+      </ng-template>
+      <ng-template hqCell="category" let-row>
+        <span class="document-category">{{ row.category }}</span
+        ><small class="cell-detail">{{ row.flow || '?' }}</small>
+      </ng-template>
+      <ng-template hqCell="summary" let-row>
+        <span>{{ cellText('summary', row) }}</span
+        ><small class="cell-detail">{{ cellText('required', row) }}</small>
+      </ng-template>
+      <ng-template hqCell="verificationMethod" let-row>
+        <span>{{ cellText('verificationMethod', row) }}</span>
+        <span
+          *ngIf="row.verificationRequired"
+          class="provider-badge"
+          [class.needs-setup]="
+            !row.verificationProvider && row.verificationMethod !== 'MANUAL_REVIEW'
+          "
+        >
+          {{ cellText('verificationProvider', row) }}
+        </span>
+      </ng-template>
+      <ng-template hqCell="active" let-row>
+        <span class="document-status" [class.is-inactive]="!row.active"
+          ><span aria-hidden="true"></span>{{ cellText('active', row) }}</span
+        >
+      </ng-template>
+      <ng-template #rowActions let-row>
+        <ng-container *hqHasPrivilege="'DMS_DOCUMENT_TYPE_UPDATE'">
+          <button
+            type="button"
+            class="row-action-btn"
+            [title]="'shared.listPage.rowActions.edit' | translate"
+            (click)="edit(row)"
+          >
+            <i class="bi bi-pencil"></i>
+          </button>
+        </ng-container>
+      </ng-template>
+    </hq-common-table>
+
+    <hq-table-footer
+      [page]="page"
+      [size]="pageSize"
+      [itemCount]="rows.length"
+      [hasMore]="page + 1 < totalPages"
+      [totalItems]="totalElements"
+      [loading]="isLoading"
+      [sizeOptions]="pageSizeOptions"
+      (pageChange)="goToPage($event)"
+      (sizeChange)="onPageSizeChange($event)"
+    >
+    </hq-table-footer>
+  </div>
+</div>

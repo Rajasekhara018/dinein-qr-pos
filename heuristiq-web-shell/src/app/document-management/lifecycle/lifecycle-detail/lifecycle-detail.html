@@ -1,0 +1,107 @@
+<div class="lc-page">
+  <div class="lc-head">
+    <button type="button" class="lc-back" (click)="back()" [title]="'documentManagement.lifecycle.detail.back' | translate" [attr.aria-label]="'documentManagement.lifecycle.detail.back' | translate">
+      <i class="bi bi-arrow-left-short"></i>
+    </button>
+    <div>
+      <h1 class="lc-title">{{ detail?.originalFileName || ('documentManagement.lifecycle.detail.title' | translate) }}</h1>
+      <div class="lc-muted lc-mono">{{ documentId }}</div>
+    </div>
+    <div class="ms-auto d-flex gap-2 flex-wrap" *ngIf="detail">
+      <hq-status-badge [tone]="tone(detail.deleted ? 'DELETED' : detail.status)">{{ statusLabel(detail.deleted ? 'DELETED' : detail.status) || '—' }}</hq-status-badge>
+      <hq-status-badge [tone]="tone(detail.scanStatus)" *ngIf="detail.scanStatus">{{ statusLabel(detail.scanStatus) }}</hq-status-badge>
+      <hq-status-badge tone="warning" *ngIf="detail.legalHold"><i class="bi bi-lock-fill"></i> {{ 'documentManagement.lifecycle.legalHold' | translate }}</hq-status-badge>
+    </div>
+  </div>
+
+  <hq-loading-state *ngIf="loading" [label]="'documentManagement.lifecycle.loading' | translate"></hq-loading-state>
+  <hq-error-state *ngIf="loadFailed" [title]="'documentManagement.lifecycle.detail.loadFailed' | translate" (retry)="load()"></hq-error-state>
+
+  <div class="lc-grid" *ngIf="detail">
+    <div class="lc-facts">
+      <!-- The file itself and its other versions (uploads of the same owner and category); opened in the preview dialog -->
+      <hq-card *ngIf="canPreview && versions.length" data-testid="lifecycle-versions" icon="bi-images" padding="md" variant="outlined"
+                [title]="'documentManagement.lifecycle.preview.cardTitle' | translate"
+                [subtitle]="versions.length > 1 ? ('documentManagement.lifecycle.preview.count' | translate: { count: versions.length }) : ''">
+        <div class="lc-versions">
+          <button type="button" class="lc-version" *ngFor="let v of versions; let i = index" [class.lc-version--current]="v.current"
+                  (click)="openPreview(i)" data-testid="lifecycle-version" [title]="v.doc.originalFileName">
+            <img *ngIf="kindOf(v) === 'image' && thumbs[v.doc.id]; else versionIcon" [src]="thumbs[v.doc.id]" [alt]="v.doc.originalFileName" />
+            <ng-template #versionIcon><i class="bi" [class.bi-file-earmark-pdf]="kindOf(v) === 'pdf'" [class.bi-file-earmark]="kindOf(v) !== 'pdf'"></i></ng-template>
+            <span class="lc-version-label">{{ v.current ? ('documentManagement.lifecycle.preview.thisDocument' | translate) : day(v.doc.createdAt) }}</span>
+          </button>
+        </div>
+        <p class="lc-muted mb-0" *ngIf="versionsLoading" role="status">{{ 'documentManagement.lifecycle.loading' | translate }}</p>
+        <button hqButton="primary" appearance="outline" size="sm" type="button" class="mt-2" data-testid="open-preview" (click)="openPreview(0)">
+          <i class="bi bi-eye"></i> {{ 'documentManagement.lifecycle.preview.open' | translate }}
+        </button>
+      </hq-card>
+
+      <hq-card *ngFor="let group of groups" [icon]="group.icon" padding="md" variant="outlined" [title]="group.titleKey | translate">
+        <hq-key-value-list [items]="group.rows"></hq-key-value-list>
+      </hq-card>
+    </div>
+
+    <!-- Timeline: read from the central audit trail, so it needs the audit privilege; without it a note is shown -->
+    <ng-container *ngIf="canReadAudit; else noAuditNote">
+      <hq-card class="lc-timeline-card" icon="bi-clock-history" padding="md" variant="outlined" [title]="'documentManagement.lifecycle.timeline.title' | translate">
+        <p class="lc-note" *ngIf="eventsForbidden" role="status"><i class="bi bi-lock"></i> {{ 'documentManagement.lifecycle.timeline.noAccess' | translate }}</p>
+        <hq-loading-state *ngIf="eventsLoading && !events.length" [label]="'documentManagement.lifecycle.loading' | translate"></hq-loading-state>
+        <hq-alert tone="warning" dense *ngIf="eventsFailed">
+          {{ 'documentManagement.lifecycle.timeline.loadFailed' | translate }}
+          <button hqButton="primary" appearance="text" size="sm" type="button" class="p-0 ms-2" (click)="loadEvents(!events.length)">{{ 'documentManagement.lifecycle.retry' | translate }}</button>
+        </hq-alert>
+        <hq-empty-state *ngIf="!eventsLoading && !eventsFailed && !eventsForbidden && !events.length" [title]="'documentManagement.lifecycle.timeline.empty' | translate"></hq-empty-state>
+
+        <ol class="lc-timeline" *ngIf="events.length">
+          <li class="lc-event" *ngFor="let ev of events" [ngClass]="'lc-event--' + visual(ev.action).tone">
+            <span class="lc-event-dot" aria-hidden="true"><i class="bi" [ngClass]="visual(ev.action).icon"></i></span>
+            <div class="lc-event-body">
+              <div class="lc-event-head">
+                <strong>{{ actionLabel(ev.action) }}</strong>
+                <hq-status-badge [tone]="tone(ev.status)" *ngIf="ev.status">{{ statusLabel(ev.status) }}</hq-status-badge>
+                <span class="lc-muted ms-auto" [title]="absolute(ev.occurredAt)">
+                  {{ relative(ev.occurredAt) || absolute(ev.occurredAt) }}
+                  <ng-container *ngIf="relative(ev.occurredAt)"> · {{ absolute(ev.occurredAt) }}</ng-container>
+                </span>
+              </div>
+              <div *ngIf="ev.reasonCode" class="lc-event-reason">
+                {{ reasonLabel(ev.reasonCode) }}
+                <span class="lc-muted lc-mono" *ngIf="reasonLabel(ev.reasonCode) !== ev.reasonCode">({{ ev.reasonCode }})</span>
+              </div>
+              <div *ngIf="ev.scanVerdict" class="lc-muted">{{ 'documentManagement.lifecycle.timeline.scanVerdict' | translate: { verdict: statusLabel(ev.scanVerdict) } }}</div>
+              <div class="lc-event-meta">
+                <span *ngIf="ev.actorId || ev.actorRole">
+                  <i class="bi bi-person"></i>
+                  <span class="lc-mono">{{ ev.actorId || '—' }}</span><span *ngIf="ev.actorRole"> ({{ ev.actorRole }})</span>
+                </span>
+                <span *ngIf="ev.storageProvider"><i class="bi bi-hdd-network"></i> {{ ev.storageProvider }}</span>
+                <span *ngIf="ev.sizeBytes != null"><i class="bi bi-file-earmark"></i> {{ size(ev.sizeBytes) }}</span>
+                <span *ngIf="ev.durationMs != null"><i class="bi bi-stopwatch"></i> {{ 'documentManagement.lifecycle.timeline.duration' | translate: { ms: ev.durationMs } }}</span>
+                <span *ngIf="ev.correlationId">
+                  <i class="bi bi-diagram-2"></i>
+                  <span class="lc-mono">{{ ev.correlationId }}</span>
+                  <button type="button" class="lc-copy" (click)="copy(ev.correlationId)"
+                          [title]="'documentManagement.lifecycle.copy' | translate" [attr.aria-label]="'documentManagement.lifecycle.copy' | translate">
+                    <i class="bi bi-clipboard"></i>
+                  </button>
+                </span>
+              </div>
+            </div>
+          </li>
+        </ol>
+
+        <div class="text-center mt-3" *ngIf="moreEvents">
+          <button [loading]="eventsLoading" hqButton="primary" appearance="outline" size="sm" type="button" (click)="loadEvents(false)" [disabled]="eventsLoading">
+            {{ 'documentManagement.lifecycle.timeline.loadMore' | translate }}
+          </button>
+        </div>
+      </hq-card>
+    </ng-container>
+    <ng-template #noAuditNote>
+      <hq-card class="lc-timeline-card" icon="bi-clock-history" padding="md" variant="outlined" [title]="'documentManagement.lifecycle.timeline.title' | translate">
+        <p class="lc-note" role="status"><i class="bi bi-lock"></i> {{ 'documentManagement.lifecycle.timeline.noAccess' | translate }}</p>
+      </hq-card>
+    </ng-template>
+  </div>
+</div>

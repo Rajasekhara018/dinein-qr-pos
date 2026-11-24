@@ -1,0 +1,244 @@
+<div class="ffp" [class.ffp--embedded]="embedded">
+  <div class="ffp__header" *ngIf="!embedded">
+    <button type="button" class="ffp__back" [title]="'shared.adminCrud.backToList' | translate" (click)="back()">
+      <i class="bi bi-arrow-left-short"></i>
+    </button>
+    <div class="ffp__heading">
+      <h1>{{ 'franchiseOnboarding.title' | translate }}<ng-container *ngIf="data"> &middot; {{ data.code }}</ng-container></h1>
+      <nav class="ffp__crumbs">
+        <span>{{ 'nav.sections.accessManagement' | translate }}</span>
+        <i class="bi bi-chevron-right"></i>
+        <a (click)="back()">{{ config.listKey | translate }}</a>
+        <i class="bi bi-chevron-right"></i>
+        <span class="ffp__crumbs-current">{{ 'franchiseOnboarding.title' | translate }}</span>
+      </nav>
+    </div>
+    <hq-status-badge [tone]="tone(data.onboardingStatus)" *ngIf="data" data-testid="onboarding-status">
+      {{ 'franchiseOnboarding.status.' + data.onboardingStatus | translate }}
+    </hq-status-badge>
+  </div>
+
+  <p class="ffp__muted" *ngIf="isLoading">{{ 'franchiseOnboarding.messages.loading' | translate }}</p>
+  <hq-error-state *ngIf="loadFailed" [title]="'franchiseOnboarding.messages.loadFailed' | translate" (retry)="load()"></hq-error-state>
+
+  <ng-container *ngIf="data && !isLoading">
+    <!-- Checklist and activation -->
+    <section class="table-surface" *ngIf="shows('activation')">
+      <div class="table-surface__header">
+        <div class="table-heading">
+          <span class="table-kicker">{{ 'franchiseOnboarding.checklist.title' | translate }}</span>
+          <p class="ffp__hint">{{ (data.onboardingStatus === 'ONBOARDED' ? 'franchiseOnboarding.checklist.activeHint' : 'franchiseOnboarding.checklist.hint') | translate }}</p>
+        </div>
+      </div>
+      <div class="table-surface__body">
+        <ol class="ob-checklist">
+          <li *ngFor="let item of checklistItems" class="ob-checklist__item" [attr.data-testid]="'check-' + item">
+            <span class="ob-checklist__name">{{ 'franchiseOnboarding.checklist.' + item | translate }}</span>
+            <hq-status-badge [tone]="tone(data.checklist[item])">{{ 'franchiseOnboarding.state.' + data.checklist[item] | translate }}</hq-status-badge>
+            <a *ngIf="item === 'legalProfile'" class="ob-link" [routerLink]="legalProfileLink">{{ 'franchiseOnboarding.checklist.openLegal' | translate }}</a>
+          </li>
+        </ol>
+        <p class="ffp__hint" *ngIf="data.activatedAt">{{ 'franchiseOnboarding.activatedOn' | translate: { date: (data.activatedAt | date: 'mediumDate') } }}</p>
+        <hq-form-actions align="start" class="hq-span-full" *ngIf="can.activate && data.onboardingStatus === 'ONBOARDING'">
+          <button hqButton="accent" type="button" data-testid="activate" [disabled]="busy || !data.canActivate" (click)="activate()">
+            <i class="bi bi-rocket-takeoff"></i> {{ 'franchiseOnboarding.activate.button' | translate }}
+          </button>
+          <span class="ffp__hint" *ngIf="!data.canActivate">{{ 'franchiseOnboarding.activate.blocked' | translate }}</span>
+        </hq-form-actions>
+      </div>
+    </section>
+
+    <!-- KYC documents -->
+    <section class="table-surface" *ngIf="shows('kyc')">
+      <div class="table-surface__header">
+        <div class="table-heading">
+          <span class="table-kicker">{{ 'franchiseOnboarding.kyc.title' | translate }}</span>
+          <p class="ffp__hint">{{ 'franchiseOnboarding.kyc.hint' | translate }}</p>
+        </div>
+      </div>
+      <div class="table-surface__body">
+        <p class="ffp__muted" *ngIf="!data.kycDocuments.length">{{ 'franchiseOnboarding.kyc.none' | translate }}</p>
+        <div class="ob-docs" *ngIf="data.kycDocuments.length">
+          <div class="ob-doc" *ngFor="let doc of data.kycDocuments" data-testid="kyc-document">
+            <div class="ob-doc__main">
+              <strong>{{ 'franchiseOnboarding.documentTypes.' + doc.type | translate }}</strong>
+              <span class="ffp__hint" *ngIf="doc.number">{{ doc.number }}</span>
+              <a class="ob-link" (click)="viewFile(doc.dmsDocumentId, doc.fileName)"><i class="bi bi-file-earmark"></i> {{ doc.fileName }}</a>
+              <span class="ffp__error" *ngIf="doc.status === 'REJECTED' && doc.rejectReason">{{ doc.rejectReason }}</span>
+            </div>
+            <hq-status-badge [tone]="tone(doc.status)">{{ 'franchiseOnboarding.state.' + doc.status | translate }}</hq-status-badge>
+            <div class="ob-doc__actions">
+              <ng-container *ngIf="can.reviewDocument && doc.status !== 'VERIFIED'">
+                <button hqButton="secondary" type="button" data-testid="verify-document" [disabled]="busy" (click)="reviewDocument(doc, 'VERIFY')">{{ 'franchiseOnboarding.review.verify' | translate }}</button>
+              </ng-container>
+              <ng-container *ngIf="can.reviewDocument && doc.status !== 'REJECTED'">
+                <button hqButton="secondary" type="button" data-testid="reject-document" [disabled]="busy" (click)="reviewDocument(doc, 'REJECT')">{{ 'franchiseOnboarding.review.reject' | translate }}</button>
+              </ng-container>
+              <button *ngIf="can.withdrawDocument && doc.status !== 'VERIFIED'" type="button" class="row-action-btn danger" data-testid="withdraw-document"
+                      [title]="'franchiseOnboarding.withdraw.confirm' | translate" [disabled]="busy" (click)="withdraw(doc)"><i class="bi bi-trash"></i></button>
+            </div>
+          </div>
+        </div>
+
+        <div class="ob-add" *ngIf="can.addDocument">
+          <h3 class="ob-subtitle">{{ 'franchiseOnboarding.kyc.add' | translate }}</h3>
+          <hq-form-grid cols="2" gap="lg" *ngIf="documentIssues as issues">
+            <hq-form-field for="doc-type" [label]="'franchiseOnboarding.kyc.type' | translate">
+              <hq-searchable-select inputId="doc-type" [allowOther]="false" [(ngModel)]="documentForm.type" name="docType"
+                                     [ariaLabel]="'franchiseOnboarding.kyc.type' | translate">
+                <hq-ss-option *ngFor="let type of documentTypes" [value]="type" [label]="'franchiseOnboarding.documentTypes.' + type | translate"></hq-ss-option>
+              </hq-searchable-select>
+            </hq-form-field>
+            <hq-field type="text" inputId="doc-number" [maxLength]="limits.documentNumber" [(ngModel)]="documentForm.number" name="docNumber" [showCounter]="false"
+                         [hint]="'franchiseOnboarding.validation.numberHint' | translate" [error]="message(issues['number'])" [label]="'franchiseOnboarding.kyc.number' | translate"></hq-field>
+            <div class="ffp__field hq-span-full">
+              <hq-doc-upload [accept]="uploadAccept" [maxSizeMB]="uploadMaxSizeMB" [hints]="'franchiseOnboarding.upload.hints' | translate"
+                              [label]="'franchiseOnboarding.kyc.file' | translate" [category]="dmsCategory" [documentType]="kycDocumentType" [ownerId]="franchiseId"
+                              inputId="kyc-file" [value]="documentForm.file" (uploaded)="onDocumentUploaded($event)" (removed)="onDocumentRemoved()"></hq-doc-upload>
+              <small class="ffp__error" role="alert" data-testid="doc-file-error" *ngIf="issues['file'] as issue">{{ message(issue) }}</small>
+            </div>
+          </hq-form-grid>
+          <hq-form-actions align="start" class="hq-span-full">
+            <button hqButton="accent" type="button" data-testid="add-document" [disabled]="busy || !documentForm.file" (click)="addDocument()">
+              {{ 'franchiseOnboarding.kyc.submit' | translate }}
+            </button>
+          </hq-form-actions>
+        </div>
+      </div>
+    </section>
+
+    <!-- Payout bank account -->
+    <section class="table-surface" *ngIf="shows('bank')">
+      <div class="table-surface__header">
+        <div class="table-heading">
+          <span class="table-kicker">{{ 'franchiseOnboarding.bank.title' | translate }}</span>
+          <p class="ffp__hint">{{ 'franchiseOnboarding.bank.hint' | translate }}</p>
+        </div>
+        <hq-status-badge [tone]="tone(data.bankAccount.status)" *ngIf="data.bankAccount">{{ 'franchiseOnboarding.state.' + data.bankAccount.status | translate }}</hq-status-badge>
+      </div>
+      <div class="table-surface__body">
+        <ng-container *ngIf="data.bankAccount as bank">
+          <dl class="ob-facts" *ngIf="!bankEditing">
+            <div><dt>{{ 'franchiseOnboarding.bank.holderName' | translate }}</dt><dd>{{ bank.holderName }}</dd></div>
+            <div><dt>{{ 'franchiseOnboarding.bank.bankName' | translate }}</dt><dd>{{ bank.bankName || '—' }}</dd></div>
+            <div><dt>{{ 'franchiseOnboarding.bank.country' | translate }}</dt><dd>{{ bank.country }} · {{ bank.currency }}</dd></div>
+            <div *ngIf="bank.iban"><dt>{{ 'franchiseOnboarding.bank.iban' | translate }}</dt><dd>{{ bank.iban }}</dd></div>
+            <div *ngIf="bank.accountNumber"><dt>{{ 'franchiseOnboarding.bank.accountNumber' | translate }}</dt><dd>{{ bank.accountNumber }}</dd></div>
+            <div *ngIf="bank.routingCode"><dt>{{ 'franchiseOnboarding.bank.routing.' + (bank.routingType || 'SWIFT') | translate }}</dt><dd>{{ bank.routingCode }}</dd></div>
+            <div><dt>{{ 'franchiseOnboarding.bank.proof' | translate }}</dt>
+              <dd><a class="ob-link" (click)="viewFile(bank.proofDmsDocumentId, bank.proofFileName)"><i class="bi bi-file-earmark"></i> {{ bank.proofFileName }}</a></dd></div>
+          </dl>
+          <p class="ffp__error" *ngIf="bank.status === 'REJECTED' && bank.rejectReason">{{ bank.rejectReason }}</p>
+          <hq-form-actions align="start" class="hq-span-full" *ngIf="!bankEditing">
+            <button hqButton="secondary" *ngIf="can.reviewBank && bank.status !== 'VERIFIED'" type="button" data-testid="verify-bank" [disabled]="busy" (click)="reviewBank('VERIFY')">{{ 'franchiseOnboarding.review.verify' | translate }}</button>
+            <button hqButton="secondary" *ngIf="can.reviewBank && bank.status !== 'REJECTED'" type="button" data-testid="reject-bank" [disabled]="busy" (click)="reviewBank('REJECT')">{{ 'franchiseOnboarding.review.reject' | translate }}</button>
+            <button hqButton="secondary" *ngIf="can.saveBank" type="button" data-testid="edit-bank" (click)="editBank()"><i class="bi bi-pencil"></i> {{ 'franchiseOnboarding.edit' | translate }}</button>
+          </hq-form-actions>
+        </ng-container>
+        <p class="ffp__muted" *ngIf="!data.bankAccount && !can.saveBank">{{ 'franchiseOnboarding.bank.none' | translate }}</p>
+
+        <ng-container *ngIf="bankEditing && can.saveBank">
+          <p class="ffp__hint" *ngIf="data.bankAccount">{{ 'franchiseOnboarding.bank.resubmitHint' | translate }}</p>
+          <hq-form-grid cols="2" gap="lg" *ngIf="bankIssues as issues">
+            <hq-field type="text" inputId="bank-holder" [maxLength]="limits.holderName" [(ngModel)]="bankForm.holderName" name="holderName" [showCounter]="false"
+                         [error]="message(issues['holderName'])" [label]="'franchiseOnboarding.bank.holderName' | translate" required></hq-field>
+            <hq-field type="text" inputId="bank-name" [maxLength]="limits.bankName" [(ngModel)]="bankForm.bankName" name="bankName" [showCounter]="false"
+                         [error]="message(issues['bankName'])" [label]="'franchiseOnboarding.bank.bankName' | translate"></hq-field>
+            <hq-form-field for="bank-country" [label]="'franchiseOnboarding.bank.country' | translate" required [error]="issues['country'] ? (message((issues['country']))) : null">
+              <hq-searchable-select inputId="bank-country" [items]="countries" [allowOther]="false" [(ngModel)]="bankForm.country" name="bankCountry"
+                                     [placeholder]="'shared.adminCrud.select' | translate"></hq-searchable-select>
+            </hq-form-field>
+            <hq-form-field for="bank-currency" [label]="'franchiseOnboarding.bank.currency' | translate" required [error]="issues['currency'] ? (message((issues['currency']))) : null">
+              <hq-searchable-select inputId="bank-currency" [items]="currencies" [allowOther]="false" [(ngModel)]="bankForm.currency" name="bankCurrency"
+                                     [placeholder]="'shared.adminCrud.select' | translate"></hq-searchable-select>
+            </hq-form-field>
+            <hq-field type="text" inputId="bank-iban" [maxLength]="bankInputMax" [(ngModel)]="bankForm.iban" name="iban" [showCounter]="false" textTransform="uppercase"
+                         [hint]="(ibanOnly ? 'franchiseOnboarding.validation.ibanHint' : 'franchiseOnboarding.validation.ibanOptionalHint') | translate"
+                         [error]="message(issues['iban'])" *ngIf="ibanOffered" [label]="'franchiseOnboarding.bank.iban' | translate" [required]="ibanOnly"></hq-field>
+            <ng-container *ngIf="!ibanOnly">
+              <hq-field type="text" inputId="bank-account" [maxLength]="bankInputMax" autocomplete="off" [(ngModel)]="bankForm.accountNumber" name="accountNumber" [showCounter]="false"
+                           [hint]="'franchiseOnboarding.validation.accountNumberHint' | translate" [error]="message(issues['accountNumber'])" [label]="'franchiseOnboarding.bank.accountNumber' | translate" [required]="accountNumberRequired"></hq-field>
+              <hq-field type="text" inputId="bank-routing" [maxLength]="routingInputMax" [(ngModel)]="bankForm.routingCode" name="routingCode" [showCounter]="false" textTransform="uppercase"
+                           [hint]="'franchiseOnboarding.validation.routing.' + routingType + '.hint' | translate" [error]="message(issues['routingCode'])" [label]="'franchiseOnboarding.bank.routing.' + routingType | translate" [required]="routingRequired"></hq-field>
+            </ng-container>
+            <div class="ffp__field hq-span-full">
+              <hq-doc-upload [accept]="uploadAccept" [maxSizeMB]="uploadMaxSizeMB" [hints]="'franchiseOnboarding.upload.hints' | translate"
+                              [label]="'franchiseOnboarding.bank.proof' | translate"
+                              [category]="dmsCategory" [documentType]="bankProofDocumentType" [ownerId]="franchiseId" inputId="bank-proof" (uploaded)="onBankProofUploaded($event)"></hq-doc-upload>
+              <span class="ffp__hint">{{ 'franchiseOnboarding.bank.proofHint' | translate }}</span>
+              <span class="ffp__hint" *ngIf="bankForm.proofFileName">{{ 'franchiseOnboarding.attached' | translate: { name: bankForm.proofFileName } }}</span>
+              <small class="ffp__error" role="alert" data-testid="bank-proof-error" *ngIf="issues['proofDmsDocumentId'] as issue">{{ message(issue) }}</small>
+            </div>
+          </hq-form-grid>
+          <hq-form-actions align="start" class="hq-span-full">
+            <button hqButton="accent" type="button" data-testid="save-bank" [disabled]="busy" (click)="saveBank()">{{ 'franchiseOnboarding.bank.save' | translate }}</button>
+            <button hqButton="secondary" *ngIf="data.bankAccount" type="button" (click)="cancelBank()">{{ 'franchiseOnboarding.cancel' | translate }}</button>
+          </hq-form-actions>
+        </ng-container>
+      </div>
+    </section>
+
+    <!-- Agreement -->
+    <section class="table-surface" *ngIf="shows('agreement')">
+      <div class="table-surface__header">
+        <div class="table-heading">
+          <span class="table-kicker">{{ 'franchiseOnboarding.agreement.title' | translate }}</span>
+          <p class="ffp__hint">{{ 'franchiseOnboarding.agreement.hint' | translate }}</p>
+        </div>
+      </div>
+      <div class="table-surface__body">
+        <ng-container *ngIf="data.agreement as agreement">
+          <dl class="ob-facts" *ngIf="!agreementEditing">
+            <div><dt>{{ 'franchiseOnboarding.agreement.number' | translate }}</dt><dd>{{ agreement.agreementNumber }}</dd></div>
+            <div><dt>{{ 'franchiseOnboarding.agreement.signedOn' | translate }}</dt><dd>{{ agreement.signedOn | date: 'mediumDate' }}</dd></div>
+            <div><dt>{{ 'franchiseOnboarding.agreement.term' | translate }}</dt>
+              <dd>{{ agreement.startsOn | date: 'mediumDate' }} – {{ agreement.endsOn ? (agreement.endsOn | date: 'mediumDate') : ('franchiseOnboarding.agreement.openEnded' | translate) }}</dd></div>
+            <div><dt>{{ 'franchiseOnboarding.agreement.renewal' | translate }}</dt><dd>{{ 'franchiseOnboarding.renewals.' + agreement.renewal | translate }}</dd></div>
+            <div><dt>{{ 'franchiseOnboarding.agreement.exclusive' | translate }}</dt><dd>{{ (agreement.exclusiveTerritory ? 'franchiseOnboarding.yes' : 'franchiseOnboarding.no') | translate }}</dd></div>
+            <div *ngIf="agreement.securityDeposit"><dt>{{ 'franchiseOnboarding.agreement.deposit' | translate }}</dt><dd>{{ agreement.securityDeposit | hqMoney }}</dd></div>
+            <div><dt>{{ 'franchiseOnboarding.agreement.signedCopy' | translate }}</dt>
+              <dd><a class="ob-link" (click)="viewFile(agreement.signedCopyDmsDocumentId, agreement.signedCopyFileName)"><i class="bi bi-file-earmark"></i> {{ agreement.signedCopyFileName }}</a></dd></div>
+          </dl>
+          <hq-form-actions align="start" class="hq-span-full" *ngIf="!agreementEditing && can.saveAgreement">
+            <button hqButton="secondary" type="button" data-testid="edit-agreement" (click)="editAgreement()"><i class="bi bi-pencil"></i> {{ 'franchiseOnboarding.edit' | translate }}</button>
+          </hq-form-actions>
+        </ng-container>
+        <p class="ffp__muted" *ngIf="!data.agreement && !can.saveAgreement">{{ 'franchiseOnboarding.agreement.none' | translate }}</p>
+
+        <ng-container *ngIf="agreementEditing && can.saveAgreement">
+          <hq-form-grid cols="2" gap="lg" *ngIf="agreementIssues as issues">
+            <hq-field type="text" inputId="ag-number" [maxLength]="limits.agreementNumber" [(ngModel)]="agreementForm.agreementNumber" name="agreementNumber" [showCounter]="false"
+                         [hint]="'franchiseOnboarding.validation.numberHint' | translate" [error]="message(issues['agreementNumber'])" [label]="'franchiseOnboarding.agreement.number' | translate" required></hq-field>
+            <hq-field type="date" inputId="ag-signed" [(ngModel)]="agreementForm.signedOn" name="signedOn" [error]="message(issues['signedOn'])" [label]="'franchiseOnboarding.agreement.signedOn' | translate" required></hq-field>
+            <hq-field type="date" inputId="ag-start" [(ngModel)]="agreementForm.startsOn" name="startsOn" [error]="message(issues['startsOn'])" [label]="'franchiseOnboarding.agreement.startsOn' | translate" required></hq-field>
+            <hq-field type="date" inputId="ag-end" [(ngModel)]="agreementForm.endsOn" name="endsOn"
+                         [hint]="'franchiseOnboarding.validation.endsOnHint' | translate" [error]="message(issues['endsOn'])" [label]="'franchiseOnboarding.agreement.endsOn' | translate"></hq-field>
+            <hq-form-field for="ag-renewal" [label]="'franchiseOnboarding.agreement.renewal' | translate" required>
+              <hq-searchable-select inputId="ag-renewal" [allowOther]="false" [(ngModel)]="agreementForm.renewal" name="renewal"
+                                     [ariaLabel]="'franchiseOnboarding.agreement.renewal' | translate">
+                <hq-ss-option *ngFor="let renewal of renewals" [value]="renewal" [label]="'franchiseOnboarding.renewals.' + renewal | translate"></hq-ss-option>
+              </hq-searchable-select>
+            </hq-form-field>
+            <div class="ffp__field">
+              <hq-amount-input [label]="'franchiseOnboarding.agreement.deposit' | translate" inputId="ag-deposit"
+                                [(ngModel)]="agreementForm.securityDeposit" name="securityDeposit"></hq-amount-input>
+              <small class="ffp__error" role="alert" data-testid="ag-deposit-error" *ngIf="issues['securityDeposit'] as issue">{{ message(issue) }}</small>
+            </div>
+            <hq-checkbox class="ffp__check hq-span-full" [(ngModel)]="agreementForm.exclusiveTerritory" name="exclusiveTerritory">{{ 'franchiseOnboarding.agreement.exclusiveLabel' | translate }}</hq-checkbox>
+            <div class="ffp__field hq-span-full">
+              <hq-doc-upload [accept]="uploadAccept" [maxSizeMB]="uploadMaxSizeMB" [hints]="'franchiseOnboarding.upload.hints' | translate"
+                              [label]="'franchiseOnboarding.agreement.signedCopy' | translate" [category]="dmsCategory" [documentType]="agreementDocumentType" [ownerId]="franchiseId"
+                              inputId="agreement-copy" (uploaded)="onSignedCopyUploaded($event)"></hq-doc-upload>
+              <span class="ffp__hint" *ngIf="agreementForm.signedCopyFileName">{{ 'franchiseOnboarding.attached' | translate: { name: agreementForm.signedCopyFileName } }}</span>
+              <small class="ffp__error" role="alert" data-testid="ag-copy-error" *ngIf="issues['signedCopyDmsDocumentId'] as issue">{{ message(issue) }}</small>
+            </div>
+          </hq-form-grid>
+          <hq-form-actions align="start" class="hq-span-full">
+            <button hqButton="accent" type="button" data-testid="save-agreement" [disabled]="busy" (click)="saveAgreement()">{{ 'franchiseOnboarding.agreement.save' | translate }}</button>
+            <button hqButton="secondary" *ngIf="data.agreement" type="button" (click)="cancelAgreement()">{{ 'franchiseOnboarding.cancel' | translate }}</button>
+          </hq-form-actions>
+        </ng-container>
+      </div>
+    </section>
+  </ng-container>
+</div>

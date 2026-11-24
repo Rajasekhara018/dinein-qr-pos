@@ -1,0 +1,41 @@
+<div class="bg-wrap" *ngIf="layout; else empty">
+  <svg class="bg-svg" [attr.viewBox]="'0 0 ' + layout.width + ' ' + layout.height"
+       [attr.width]="layout.width" [attr.height]="layout.height" role="img">
+    <defs>
+      <marker id="bg-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M0,0 L10,5 L0,10 z" class="bg-arrow-head"></path>
+      </marker>
+    </defs>
+
+    <g *ngFor="let e of layout.edges">
+      <path [attr.d]="e.path" class="bg-edge" marker-end="url(#bg-arrow)"></path>
+      <text *ngIf="e.label" [attr.x]="e.labelX" [attr.y]="e.labelY" class="bg-edge-label" text-anchor="middle">{{ e.label }}</text>
+    </g>
+
+    <g *ngFor="let n of layout.nodes" [ngSwitch]="n.shape">
+      <title>{{ n.name }} ({{ n.type }})</title>
+
+      <ng-container *ngSwitchCase="'event'">
+        <circle [attr.cx]="n.x + n.width / 2" [attr.cy]="n.y + n.height / 2" [attr.r]="n.width / 2" class="bg-event"></circle>
+      </ng-container>
+      <ng-container *ngSwitchCase="'endEvent'">
+        <circle [attr.cx]="n.x + n.width / 2" [attr.cy]="n.y + n.height / 2" [attr.r]="n.width / 2" class="bg-end"></circle>
+      </ng-container>
+      <ng-container *ngSwitchCase="'gateway'">
+        <polygon [attr.points]="diamond(n.x, n.y, n.width, n.height)" class="bg-gateway"></polygon>
+        <text [attr.x]="n.x + n.width / 2" [attr.y]="n.y + n.height / 2 + 7" class="bg-gateway-mark" text-anchor="middle">{{ gatewayMark(n.type) }}</text>
+      </ng-container>
+      <ng-container *ngSwitchDefault>
+        <rect [attr.x]="n.x" [attr.y]="n.y" [attr.width]="n.width" [attr.height]="n.height" rx="10" class="bg-task"></rect>
+        <text class="bg-task-label" text-anchor="middle">
+          <tspan *ngFor="let line of n.lines; let i = index" [attr.x]="n.x + n.width / 2"
+                 [attr.y]="n.y + n.height / 2 + (i - (n.lines.length - 1) / 2) * 15 + 4">{{ line }}</tspan>
+        </text>
+      </ng-container>
+
+      <!-- Events and gateways carry their name underneath; tasks carry it inside. -->
+      <text *ngIf="n.shape !== 'task'" [attr.x]="n.x + n.width / 2" [attr.y]="n.y + n.height + 15" class="bg-caption" text-anchor="middle">{{ n.name }}</text>
+    </g>
+  </svg>
+</div>
+<ng-template #empty><p class="bg-empty">—</p></ng-template>

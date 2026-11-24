@@ -1,0 +1,38 @@
+<form class="add-agent" (ngSubmit)="submit()" autocomplete="off">
+  <h2 class="add-agent__title" [id]="titleId">
+    {{ (data.franchiseCode ? 'accessManagement.franchiseMembers.addAgentDialog.title' : 'accessManagement.franchises.addAgentTitle') | translate: { code: data.franchiseCode } }}
+  </h2>
+  <p class="add-agent__hint">{{ 'accessManagement.franchiseMembers.addAgentDialog.hint' | translate }}</p>
+
+  <p class="add-agent__full" role="status" data-testid="add-agent-full" *ngIf="openApplications.length === 0">
+    <i class="bi bi-exclamation-circle" aria-hidden="true"></i>
+    {{ 'accessManagement.franchiseMembers.addAgentDialog.limitReached' | translate }}
+  </p>
+
+  <hq-form-grid cols="2" gap="md" *ngIf="openApplications.length > 0">
+    <hq-form-field class="add-agent__field hq-span-full" for="add-agent-application" [label]="'accessManagement.franchises.application' | translate" required>
+      <hq-searchable-select
+        [(ngModel)]="agent.applicationCode"
+        name="agentApplication"
+        inputId="add-agent-application"
+        [allowOther]="false"
+        [placeholder]="'accessManagement.franchises.chooseApplication' | translate">
+        <hq-ss-option *ngFor="let application of openApplications" [value]="application.applicationCode"
+                       [label]="appName(application.applicationCode) + ' (' + ('accessManagement.franchises.placesLeft' | translate) + ': ' + placesLeft(application) + ')'"></hq-ss-option>
+      </hq-searchable-select>
+    </hq-form-field>
+    <hq-field type="text" inputId="add-agent-name" [maxLength]="200" [(ngModel)]="agent.fullName" name="agentName" [showCounter]="false" class="add-agent__field" [label]="'accessManagement.franchises.fullName' | translate" required></hq-field>
+    <hq-field type="email" inputId="add-agent-email" [maxLength]="200" [(ngModel)]="agent.email" name="agentEmail" [showCounter]="false" class="add-agent__field" [label]="'accessManagement.franchises.email' | translate" required></hq-field>
+    <div class="add-agent__field hq-span-full">
+      <hq-phone-number-input [(ngModel)]="agent.phone" name="agentPhone" #agentPhone="ngModel"
+                              [label]="'accessManagement.franchises.phone' | translate"></hq-phone-number-input>
+    </div>
+  </hq-form-grid>
+
+  <hq-form-actions align="end">
+    <button hqButton="secondary" type="button" [disabled]="saving" (click)="cancel()">{{ 'accessManagement.franchises.cancel' | translate }}</button>
+    <button hqButton="accent" type="submit" data-testid="add-agent-submit" [disabled]="saving || openApplications.length === 0">
+      {{ 'accessManagement.franchises.addAgent' | translate }}
+    </button>
+  </hq-form-actions>
+</form>
