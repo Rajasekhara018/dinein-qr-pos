@@ -10,7 +10,7 @@
   },
   "newProjectRoot": "projects",
   "projects": {
-    "dinein": {
+    "heuristiq-web-dinein": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -110,13 +110,13 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "dinein:build:production"
+              "buildTarget": "heuristiq-web-dinein:build:production"
             },
             "development": {
-              "buildTarget": "dinein:build:development"
+              "buildTarget": "heuristiq-web-dinein:build:development"
             },
             "uat": {
-              "buildTarget": "dinein:build:development",
+              "buildTarget": "heuristiq-web-dinein:build:development",
               "proxyConfig": "proxy.uat.conf.mjs"
             }
           },

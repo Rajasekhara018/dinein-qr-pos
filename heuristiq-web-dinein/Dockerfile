@@ -19,7 +19,7 @@
 
 # COPY nginx/default.conf /etc/nginx/conf.d/default.conf
 
-# COPY --from=build /app/dist/dinein/browser /usr/share/nginx/html
+# COPY --from=build /app/dist/heuristiq-web-dinein/browser /usr/share/nginx/html
 
 # EXPOSE 80
 
@@ -46,7 +46,7 @@ RUN npm run build -- --configuration ${APP_PROFILE}
 FROM nginx:1.27-alpine
 
 COPY nginx/default.conf /etc/nginx/conf.d/default.conf
-COPY --from=build /app/dist/dinein/browser /usr/share/nginx/html
+COPY --from=build /app/dist/heuristiq-web-dinein/browser /usr/share/nginx/html
 
 EXPOSE 80
 
