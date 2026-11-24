@@ -1,16 +1,16 @@
-package com.heuristiq.paymentservice.payment.gateway.payu;
+package com.heuristiq.payment.payment.gateway.payu;
 
-import com.heuristiq.paymentservice.payment.gateway.GatewayClientConstants;
+import com.heuristiq.payment.payment.gateway.GatewayClientConstants;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.heuristiq.paymentservice.config.PayuGatewayProperties;
-import com.heuristiq.paymentservice.payment.gateway.dto.GatewayRefundResult;
-import com.heuristiq.paymentservice.payment.gateway.model.PaymentGatewayType;
-import com.heuristiq.paymentservice.payment.gateway.port.RefundGatewayClient;
-import com.heuristiq.paymentservice.payment.gateway.util.Sha512Hasher;
-import com.heuristiq.paymentservice.payment.model.Payment;
-import com.heuristiq.paymentservice.shared.exception.PaymentServiceException;
-import com.heuristiq.paymentservice.shared.exception.RefundOutcomeUnknownException;
+import com.heuristiq.payment.config.PayuGatewayProperties;
+import com.heuristiq.payment.payment.gateway.dto.GatewayRefundResult;
+import com.heuristiq.payment.payment.gateway.model.PaymentGatewayType;
+import com.heuristiq.payment.payment.gateway.port.RefundGatewayClient;
+import com.heuristiq.payment.payment.gateway.util.Sha512Hasher;
+import com.heuristiq.payment.payment.model.Payment;
+import com.heuristiq.payment.shared.exception.PaymentServiceException;
+import com.heuristiq.payment.shared.exception.RefundOutcomeUnknownException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;

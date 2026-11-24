@@ -1,4 +1,4 @@
-package com.heuristiq.paymentservice.wallet.client;
+package com.heuristiq.payment.wallet.client;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -6,7 +6,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import com.heuristiq.resilient.DownstreamUnavailableException;
-import com.heuristiq.paymentservice.wallet.port.WalletCreditRejectedException;
+import com.heuristiq.payment.wallet.port.WalletCreditRejectedException;
 
 import java.io.IOException;
 

@@ -1,4 +1,4 @@
-package com.heuristiq.paymentservice.shared.exception;
+package com.heuristiq.payment.shared.exception;
 
 /**
  * The gateway refund call ended without a definite answer (timeout, connection failure, gateway 5xx),

@@ -1,9 +1,9 @@
-package com.heuristiq.paymentservice.gatewayaudit.publish;
+package com.heuristiq.payment.gatewayaudit.publish;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.heuristiq.resilient.Idempotency;
 import com.heuristiq.resilient.ResilientCaller;
-import com.heuristiq.paymentservice.gatewayaudit.GatewayAuditConstants;
+import com.heuristiq.payment.gatewayaudit.GatewayAuditConstants;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 

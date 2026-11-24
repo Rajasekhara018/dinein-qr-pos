@@ -1,6 +1,6 @@
-package com.heuristiq.paymentservice.splitfare.repository;
+package com.heuristiq.payment.splitfare.repository;
 
-import com.heuristiq.paymentservice.splitfare.model.SplitFareRequest;
+import com.heuristiq.payment.splitfare.model.SplitFareRequest;
 
 import java.util.Optional;
 

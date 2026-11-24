@@ -1,4 +1,4 @@
-package com.heuristiq.paymentservice.config;
+package com.heuristiq.payment.config;
 
 import net.javacrumbs.shedlock.core.LockProvider;
 import net.javacrumbs.shedlock.provider.jdbctemplate.JdbcTemplateLockProvider;

@@ -1,4 +1,4 @@
-package com.heuristiq.paymentservice.config;
+package com.heuristiq.payment.config;
 
 import com.heuristiq.resilient.ResilienceProfile;
 import lombok.Getter;

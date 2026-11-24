@@ -1,4 +1,4 @@
-package com.heuristiq.paymentservice.wallet.repository;
+package com.heuristiq.payment.wallet.repository;
 
 /** Persistence port for the per-customer wallet lock row ({@code wallet_accounts}). */
 public interface WalletAccountRepository {

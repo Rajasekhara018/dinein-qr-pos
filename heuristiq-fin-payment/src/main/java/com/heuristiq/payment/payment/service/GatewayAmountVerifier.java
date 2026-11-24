@@ -1,7 +1,7 @@
-package com.heuristiq.paymentservice.payment.service;
+package com.heuristiq.payment.payment.service;
 
-import com.heuristiq.paymentservice.config.MoneyProperties;
-import com.heuristiq.paymentservice.payment.model.Payment;
+import com.heuristiq.payment.config.MoneyProperties;
+import com.heuristiq.payment.payment.model.Payment;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 

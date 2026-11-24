@@ -1,4 +1,4 @@
-package com.heuristiq.paymentservice.driver.repository;
+package com.heuristiq.payment.driver.repository;
 
 /**
  * Database-agnostic persistence port for {@code driver_safety_deposits}. Implementations

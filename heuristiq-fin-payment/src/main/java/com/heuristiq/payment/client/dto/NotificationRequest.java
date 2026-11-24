@@ -1,4 +1,4 @@
-package com.heuristiq.paymentservice.client.dto;
+package com.heuristiq.payment.client.dto;
 
 import java.util.List;
 import java.util.Map;

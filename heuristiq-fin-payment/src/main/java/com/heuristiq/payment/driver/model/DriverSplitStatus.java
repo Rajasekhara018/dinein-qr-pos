@@ -1,4 +1,4 @@
-package com.heuristiq.paymentservice.driver.model;
+package com.heuristiq.payment.driver.model;
 
 /**
  * Whether a driver payment record carries the ride's own fare split (decided once by the central commission plan and served by

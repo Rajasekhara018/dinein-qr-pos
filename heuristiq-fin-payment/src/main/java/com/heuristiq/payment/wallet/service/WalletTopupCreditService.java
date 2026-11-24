@@ -1,13 +1,13 @@
-package com.heuristiq.paymentservice.wallet.service;
+package com.heuristiq.payment.wallet.service;
 
-import com.heuristiq.paymentservice.shared.money.Money;
+import com.heuristiq.payment.shared.money.Money;
 import com.heuristiq.resilient.DownstreamUnavailableException;
-import com.heuristiq.paymentservice.config.WalletServiceProperties;
-import com.heuristiq.paymentservice.wallet.model.WalletTopupSession;
-import com.heuristiq.paymentservice.wallet.model.WalletTopupStatus;
-import com.heuristiq.paymentservice.wallet.port.WalletCreditClient;
-import com.heuristiq.paymentservice.wallet.port.WalletCreditCommand;
-import com.heuristiq.paymentservice.wallet.port.WalletCreditRejectedException;
+import com.heuristiq.payment.config.WalletServiceProperties;
+import com.heuristiq.payment.wallet.model.WalletTopupSession;
+import com.heuristiq.payment.wallet.model.WalletTopupStatus;
+import com.heuristiq.payment.wallet.port.WalletCreditClient;
+import com.heuristiq.payment.wallet.port.WalletCreditCommand;
+import com.heuristiq.payment.wallet.port.WalletCreditRejectedException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
@@ -21,7 +21,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import static com.heuristiq.paymentservice.wallet.service.WalletConstants.*;
+import static com.heuristiq.payment.wallet.service.WalletConstants.*;
 
 /**
  * Books the credit of a gateway-verified top-up in Rider_WalletService, the owner of every balance and ledger entry.
@@ -38,7 +38,7 @@ import static com.heuristiq.paymentservice.wallet.service.WalletConstants.*;
 @RequiredArgsConstructor
 public class WalletTopupCreditService {
 
-    private final com.heuristiq.paymentservice.wallet.repository.WalletTopupSessionRepository sessions;
+    private final com.heuristiq.payment.wallet.repository.WalletTopupSessionRepository sessions;
     private final WalletCreditClient walletCreditClient;
     private final WalletServiceProperties properties;
     private final Clock clock;

@@ -1,9 +1,9 @@
-package com.heuristiq.paymentservice.payment.controller;
+package com.heuristiq.payment.payment.controller;
 
-import com.heuristiq.paymentservice.payment.PaymentConstants;
-import com.heuristiq.paymentservice.payment.dto.DirectCollectionRequest;
-import com.heuristiq.paymentservice.payment.service.DirectCollectionService;
-import com.heuristiq.paymentservice.shared.dto.ResponseObject;
+import com.heuristiq.payment.payment.PaymentConstants;
+import com.heuristiq.payment.payment.dto.DirectCollectionRequest;
+import com.heuristiq.payment.payment.service.DirectCollectionService;
+import com.heuristiq.payment.shared.dto.ResponseObject;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;

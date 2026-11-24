@@ -1,7 +1,7 @@
-package com.heuristiq.paymentservice.payment.lifecycle;
+package com.heuristiq.payment.payment.lifecycle;
 
-import com.heuristiq.paymentservice.payment.PaymentConstants;
-import com.heuristiq.paymentservice.payment.model.Payment;
+import com.heuristiq.payment.payment.PaymentConstants;
+import com.heuristiq.payment.payment.model.Payment;
 import jakarta.persistence.PostPersist;
 import jakarta.persistence.PostUpdate;
 import lombok.extern.slf4j.Slf4j;

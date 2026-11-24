@@ -1,7 +1,7 @@
-package com.heuristiq.paymentservice.payment.gateway.resolver;
+package com.heuristiq.payment.payment.gateway.resolver;
 
-import com.heuristiq.paymentservice.config.PaymentGatewayRoutingProperties;
-import com.heuristiq.paymentservice.payment.gateway.model.PaymentGatewayType;
+import com.heuristiq.payment.config.PaymentGatewayRoutingProperties;
+import com.heuristiq.payment.payment.gateway.model.PaymentGatewayType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

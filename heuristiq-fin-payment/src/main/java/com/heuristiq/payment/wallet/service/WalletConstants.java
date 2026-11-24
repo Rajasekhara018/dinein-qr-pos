@@ -1,4 +1,4 @@
-package com.heuristiq.paymentservice.wallet.service;
+package com.heuristiq.payment.wallet.service;
 
 /** Vocabulary of the legacy {@code wallet_transactions} refund ledger, and of the top-up credit via the wallet. */
 public final class WalletConstants {

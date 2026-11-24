@@ -1,13 +1,13 @@
-package com.heuristiq.paymentservice.payment.gateway.payu;
+package com.heuristiq.payment.payment.gateway.payu;
 
-import com.heuristiq.paymentservice.shared.PaymentCommonConstants;
-import com.heuristiq.paymentservice.config.PayuGatewayProperties;
-import com.heuristiq.paymentservice.payment.gateway.dto.GatewaySessionResult;
-import com.heuristiq.paymentservice.payment.gateway.model.PaymentGatewayType;
-import com.heuristiq.paymentservice.payment.gateway.port.CreateSessionGatewayClient;
-import com.heuristiq.paymentservice.payment.gateway.util.Sha512Hasher;
-import com.heuristiq.paymentservice.payment.model.Payment;
-import com.heuristiq.paymentservice.shared.exception.PaymentServiceException;
+import com.heuristiq.payment.shared.PaymentCommonConstants;
+import com.heuristiq.payment.config.PayuGatewayProperties;
+import com.heuristiq.payment.payment.gateway.dto.GatewaySessionResult;
+import com.heuristiq.payment.payment.gateway.model.PaymentGatewayType;
+import com.heuristiq.payment.payment.gateway.port.CreateSessionGatewayClient;
+import com.heuristiq.payment.payment.gateway.util.Sha512Hasher;
+import com.heuristiq.payment.payment.model.Payment;
+import com.heuristiq.payment.shared.exception.PaymentServiceException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;

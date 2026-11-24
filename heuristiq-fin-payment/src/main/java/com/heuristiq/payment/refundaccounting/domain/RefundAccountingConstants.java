@@ -1,4 +1,4 @@
-package com.heuristiq.paymentservice.refundaccounting.domain;
+package com.heuristiq.payment.refundaccounting.domain;
 
 public final class RefundAccountingConstants {
     public static final long INITIAL_RETRY_SECONDS = 30;

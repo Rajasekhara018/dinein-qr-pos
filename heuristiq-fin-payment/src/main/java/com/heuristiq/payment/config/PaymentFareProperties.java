@@ -1,6 +1,6 @@
-package com.heuristiq.paymentservice.config;
+package com.heuristiq.payment.config;
 
-import com.heuristiq.paymentservice.payment.PaymentConstants;
+import com.heuristiq.payment.payment.PaymentConstants;
 import java.math.BigDecimal;
 import lombok.Getter;
 import lombok.Setter;

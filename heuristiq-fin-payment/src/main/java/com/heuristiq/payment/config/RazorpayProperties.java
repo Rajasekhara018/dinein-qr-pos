@@ -1,4 +1,4 @@
-package com.heuristiq.paymentservice.config;
+package com.heuristiq.payment.config;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -1,34 +1,34 @@
-package com.heuristiq.paymentservice.payment.service;
+package com.heuristiq.payment.payment.service;
 
-import com.heuristiq.paymentservice.shared.money.MoneyRequests;
-import com.heuristiq.paymentservice.shared.money.Money;
-import com.heuristiq.paymentservice.config.MoneyProperties;
-import com.heuristiq.paymentservice.payment.PaymentConstants;
-import com.heuristiq.paymentservice.payment.dto.PaymentResponse;
-import com.heuristiq.paymentservice.payment.dto.RefundRequest;
-import com.heuristiq.paymentservice.payment.gateway.dto.GatewayRefundResult;
-import com.heuristiq.paymentservice.payment.gateway.model.PaymentGatewayType;
-import com.heuristiq.paymentservice.payment.gateway.port.RefundGatewayClient;
-import com.heuristiq.paymentservice.payment.gateway.resolver.PaymentGatewayClientResolver;
-import com.heuristiq.paymentservice.payment.gateway.resolver.PaymentGatewayRouter;
-import com.heuristiq.paymentservice.payment.model.Payment;
-import com.heuristiq.paymentservice.payment.model.PaymentMethod;
-import com.heuristiq.paymentservice.payment.model.PaymentRefund;
-import com.heuristiq.paymentservice.payment.model.PaymentStateMachine;
-import com.heuristiq.paymentservice.payment.model.PaymentStatus;
-import com.heuristiq.paymentservice.payment.model.RefundDestination;
-import com.heuristiq.paymentservice.payment.model.RefundStatus;
-import com.heuristiq.paymentservice.payment.repository.PaymentRefundRepository;
-import com.heuristiq.paymentservice.payment.repository.PaymentRepository;
-import com.heuristiq.paymentservice.shared.exception.ConflictException;
-import com.heuristiq.paymentservice.shared.exception.NotFoundException;
-import com.heuristiq.paymentservice.shared.exception.PaymentServiceException;
-import com.heuristiq.paymentservice.shared.exception.RefundOutcomeUnknownException;
-import com.heuristiq.paymentservice.shared.money.AmountCurrency;
-import com.heuristiq.paymentservice.wallet.port.WalletCreditRejectedException;
-import com.heuristiq.paymentservice.wallet.port.WalletRefundCreditClient;
-import com.heuristiq.paymentservice.wallet.port.WalletRefundCreditCommand;
-import com.heuristiq.paymentservice.wallet.service.WalletService;
+import com.heuristiq.payment.shared.money.MoneyRequests;
+import com.heuristiq.payment.shared.money.Money;
+import com.heuristiq.payment.config.MoneyProperties;
+import com.heuristiq.payment.payment.PaymentConstants;
+import com.heuristiq.payment.payment.dto.PaymentResponse;
+import com.heuristiq.payment.payment.dto.RefundRequest;
+import com.heuristiq.payment.payment.gateway.dto.GatewayRefundResult;
+import com.heuristiq.payment.payment.gateway.model.PaymentGatewayType;
+import com.heuristiq.payment.payment.gateway.port.RefundGatewayClient;
+import com.heuristiq.payment.payment.gateway.resolver.PaymentGatewayClientResolver;
+import com.heuristiq.payment.payment.gateway.resolver.PaymentGatewayRouter;
+import com.heuristiq.payment.payment.model.Payment;
+import com.heuristiq.payment.payment.model.PaymentMethod;
+import com.heuristiq.payment.payment.model.PaymentRefund;
+import com.heuristiq.payment.payment.model.PaymentStateMachine;
+import com.heuristiq.payment.payment.model.PaymentStatus;
+import com.heuristiq.payment.payment.model.RefundDestination;
+import com.heuristiq.payment.payment.model.RefundStatus;
+import com.heuristiq.payment.payment.repository.PaymentRefundRepository;
+import com.heuristiq.payment.payment.repository.PaymentRepository;
+import com.heuristiq.payment.shared.exception.ConflictException;
+import com.heuristiq.payment.shared.exception.NotFoundException;
+import com.heuristiq.payment.shared.exception.PaymentServiceException;
+import com.heuristiq.payment.shared.exception.RefundOutcomeUnknownException;
+import com.heuristiq.payment.shared.money.AmountCurrency;
+import com.heuristiq.payment.wallet.port.WalletCreditRejectedException;
+import com.heuristiq.payment.wallet.port.WalletRefundCreditClient;
+import com.heuristiq.payment.wallet.port.WalletRefundCreditCommand;
+import com.heuristiq.payment.wallet.service.WalletService;
 import com.heuristiq.resilient.DownstreamUnavailableException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -81,7 +81,7 @@ public class PaymentRefundService {
     private final MoneyProperties moneyProperties;
 
     @org.springframework.beans.factory.annotation.Autowired
-    private com.heuristiq.paymentservice.refundaccounting.application.RefundAccountingService refundAccounting;
+    private com.heuristiq.payment.refundaccounting.application.RefundAccountingService refundAccounting;
 
     public PaymentRefundService(PaymentRepository paymentRepository,
                                 PaymentRefundRepository refundRepository,
@@ -349,8 +349,8 @@ public class PaymentRefundService {
             PaymentStateMachine.apply(payment, target);
         }
         if (refundAccounting != null) {
-            com.heuristiq.paymentservice.salesettlement.domain.SaleEventIds.of(payment.getSourceService(), payment.getSourceReference(), payment.getRideId())
-                    .ifPresent(event -> refundAccounting.record(new com.heuristiq.paymentservice.refundaccounting.domain.RefundAccounting.Posting(
+            com.heuristiq.payment.salesettlement.domain.SaleEventIds.of(payment.getSourceService(), payment.getSourceReference(), payment.getRideId())
+                    .ifPresent(event -> refundAccounting.record(new com.heuristiq.payment.refundaccounting.domain.RefundAccounting.Posting(
                             "payment-refund:" + refund.getId(), refund.getTenantId() != null ? refund.getTenantId() : payment.getTenantId(),
                             event, refund.getAmount(), paymentCurrency(payment), refund.getDestination() == RefundDestination.WALLET, 0)));
         }
@@ -402,7 +402,7 @@ public class PaymentRefundService {
 
     private static String currentActor() {
         var auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth != null && auth.getPrincipal() instanceof com.heuristiq.paymentservice.security.AuthPrincipal principal) {
+        if (auth != null && auth.getPrincipal() instanceof com.heuristiq.payment.security.AuthPrincipal principal) {
             return principal.userId();
         }
         return "system";

@@ -1,4 +1,4 @@
-package com.heuristiq.paymentservice.shared.money;
+package com.heuristiq.payment.shared.money;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import io.swagger.v3.oas.annotations.media.Schema;

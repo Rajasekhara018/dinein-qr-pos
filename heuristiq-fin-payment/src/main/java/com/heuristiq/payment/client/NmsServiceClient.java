@@ -1,8 +1,8 @@
-package com.heuristiq.paymentservice.client;
+package com.heuristiq.payment.client;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.heuristiq.paymentservice.client.dto.NotificationRequest;
-import com.heuristiq.paymentservice.events.DurableEventOutbox;
+import com.heuristiq.payment.client.dto.NotificationRequest;
+import com.heuristiq.payment.events.DurableEventOutbox;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;

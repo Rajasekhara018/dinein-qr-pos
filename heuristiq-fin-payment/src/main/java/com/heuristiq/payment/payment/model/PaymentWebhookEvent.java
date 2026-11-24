@@ -1,4 +1,4 @@
-package com.heuristiq.paymentservice.payment.model;
+package com.heuristiq.payment.payment.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

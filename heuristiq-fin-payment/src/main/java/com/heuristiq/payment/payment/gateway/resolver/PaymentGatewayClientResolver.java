@@ -1,10 +1,10 @@
-package com.heuristiq.paymentservice.payment.gateway.resolver;
+package com.heuristiq.payment.payment.gateway.resolver;
 
-import com.heuristiq.paymentservice.payment.gateway.model.PaymentGatewayType;
-import com.heuristiq.paymentservice.payment.gateway.port.CreateSessionGatewayClient;
-import com.heuristiq.paymentservice.payment.gateway.port.RefundGatewayClient;
-import com.heuristiq.paymentservice.payment.gateway.port.StatusCheckGatewayClient;
-import com.heuristiq.paymentservice.shared.exception.PaymentServiceException;
+import com.heuristiq.payment.payment.gateway.model.PaymentGatewayType;
+import com.heuristiq.payment.payment.gateway.port.CreateSessionGatewayClient;
+import com.heuristiq.payment.payment.gateway.port.RefundGatewayClient;
+import com.heuristiq.payment.payment.gateway.port.StatusCheckGatewayClient;
+import com.heuristiq.payment.shared.exception.PaymentServiceException;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

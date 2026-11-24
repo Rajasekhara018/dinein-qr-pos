@@ -1,7 +1,7 @@
-package com.heuristiq.paymentservice.payment.repository;
+package com.heuristiq.payment.payment.repository;
 
-import com.heuristiq.paymentservice.payment.model.PaymentRefund;
-import com.heuristiq.paymentservice.payment.model.RefundStatus;
+import com.heuristiq.payment.payment.model.PaymentRefund;
+import com.heuristiq.payment.payment.model.RefundStatus;
 
 import java.util.Collection;
 import java.util.List;

@@ -1,12 +1,12 @@
-package com.heuristiq.paymentservice.driver.controller;
+package com.heuristiq.payment.driver.controller;
 
-import com.heuristiq.paymentservice.driver.dto.DriverEarningsResponse;
-import com.heuristiq.paymentservice.driver.dto.DriverPayoutRequestDto;
-import com.heuristiq.paymentservice.driver.dto.DriverPayoutResponse;
-import com.heuristiq.paymentservice.driver.service.DriverEarningsService;
-import com.heuristiq.paymentservice.driver.service.DriverPayoutService;
-import com.heuristiq.paymentservice.security.OwnershipGuard;
-import com.heuristiq.paymentservice.shared.dto.ResponseObject;
+import com.heuristiq.payment.driver.dto.DriverEarningsResponse;
+import com.heuristiq.payment.driver.dto.DriverPayoutRequestDto;
+import com.heuristiq.payment.driver.dto.DriverPayoutResponse;
+import com.heuristiq.payment.driver.service.DriverEarningsService;
+import com.heuristiq.payment.driver.service.DriverPayoutService;
+import com.heuristiq.payment.security.OwnershipGuard;
+import com.heuristiq.payment.shared.dto.ResponseObject;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

@@ -1,9 +1,9 @@
-package com.heuristiq.paymentservice.client;
+package com.heuristiq.payment.client;
 
-import com.heuristiq.paymentservice.shared.money.Money;
+import com.heuristiq.payment.shared.money.Money;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.heuristiq.paymentservice.client.dto.RideDetailsResponse;
-import com.heuristiq.paymentservice.events.DurableEventOutbox;
+import com.heuristiq.payment.client.dto.RideDetailsResponse;
+import com.heuristiq.payment.events.DurableEventOutbox;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.support.TransactionSynchronization;

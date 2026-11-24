@@ -1,8 +1,8 @@
-package com.heuristiq.paymentservice.wallet.service;
+package com.heuristiq.payment.wallet.service;
 
-import com.heuristiq.paymentservice.shared.money.Money;
-import com.heuristiq.paymentservice.security.TenantAccess;
-import com.heuristiq.paymentservice.wallet.port.WalletBalanceClient;
+import com.heuristiq.payment.shared.money.Money;
+import com.heuristiq.payment.security.TenantAccess;
+import com.heuristiq.payment.wallet.port.WalletBalanceClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

@@ -1,4 +1,4 @@
-package com.heuristiq.paymentservice.gatewayaudit.model;
+package com.heuristiq.payment.gatewayaudit.model;
 
 /** What this service did with one received webhook delivery. */
 public enum WebhookOutcome {

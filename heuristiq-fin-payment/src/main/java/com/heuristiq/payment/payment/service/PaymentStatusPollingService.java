@@ -1,17 +1,17 @@
-package com.heuristiq.paymentservice.payment.service;
+package com.heuristiq.payment.payment.service;
 
-import com.heuristiq.paymentservice.payment.gateway.GatewayClientConstants;
-import com.heuristiq.paymentservice.config.PaymentPollingProperties;
-import com.heuristiq.paymentservice.payment.gateway.dto.GatewayStatusResult;
-import com.heuristiq.paymentservice.payment.gateway.model.PaymentGatewayType;
-import com.heuristiq.paymentservice.payment.gateway.port.StatusCheckGatewayClient;
-import com.heuristiq.paymentservice.payment.gateway.resolver.PaymentGatewayClientResolver;
-import com.heuristiq.paymentservice.payment.lifecycle.PaymentLifecycleContext;
-import com.heuristiq.paymentservice.payment.model.Payment;
-import com.heuristiq.paymentservice.payment.model.PaymentStateMachine;
-import com.heuristiq.paymentservice.payment.model.PaymentStatus;
-import com.heuristiq.paymentservice.payment.repository.PaymentRepository;
-import com.heuristiq.paymentservice.shared.exception.NotFoundException;
+import com.heuristiq.payment.payment.gateway.GatewayClientConstants;
+import com.heuristiq.payment.config.PaymentPollingProperties;
+import com.heuristiq.payment.payment.gateway.dto.GatewayStatusResult;
+import com.heuristiq.payment.payment.gateway.model.PaymentGatewayType;
+import com.heuristiq.payment.payment.gateway.port.StatusCheckGatewayClient;
+import com.heuristiq.payment.payment.gateway.resolver.PaymentGatewayClientResolver;
+import com.heuristiq.payment.payment.lifecycle.PaymentLifecycleContext;
+import com.heuristiq.payment.payment.model.Payment;
+import com.heuristiq.payment.payment.model.PaymentStateMachine;
+import com.heuristiq.payment.payment.model.PaymentStatus;
+import com.heuristiq.payment.payment.repository.PaymentRepository;
+import com.heuristiq.payment.shared.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -29,11 +29,11 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicIntegerArray;
 
-import static com.heuristiq.paymentservice.payment.PaymentConstants.LIFECYCLE_SOURCE_RECONCILE;
-import static com.heuristiq.paymentservice.payment.PaymentConstants.LIFECYCLE_SOURCE_STATUS_POLL;
-import static com.heuristiq.paymentservice.payment.PaymentConstants.POLLABLE_GATEWAYS;
-import static com.heuristiq.paymentservice.payment.PaymentConstants.POLLABLE_STATUSES;
-import static com.heuristiq.paymentservice.payment.PaymentConstants.POLL_KEYSET_START;
+import static com.heuristiq.payment.payment.PaymentConstants.LIFECYCLE_SOURCE_RECONCILE;
+import static com.heuristiq.payment.payment.PaymentConstants.LIFECYCLE_SOURCE_STATUS_POLL;
+import static com.heuristiq.payment.payment.PaymentConstants.POLLABLE_GATEWAYS;
+import static com.heuristiq.payment.payment.PaymentConstants.POLLABLE_STATUSES;
+import static com.heuristiq.payment.payment.PaymentConstants.POLL_KEYSET_START;
 
 /**
  * Resolves the outcome of gateway payments that are still INITIATED/AUTHORIZED.

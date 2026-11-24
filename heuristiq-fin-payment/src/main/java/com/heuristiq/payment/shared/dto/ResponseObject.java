@@ -1,4 +1,4 @@
-package com.heuristiq.paymentservice.shared.dto;
+package com.heuristiq.payment.shared.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

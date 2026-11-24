@@ -1,13 +1,13 @@
-package com.heuristiq.paymentservice.payment.controller;
+package com.heuristiq.payment.payment.controller;
 
-import com.heuristiq.paymentservice.gatewayaudit.admin.AdminGatewayCall;
-import com.heuristiq.paymentservice.gatewayaudit.admin.AdminGatewayCallService;
-import com.heuristiq.paymentservice.payment.dto.admin.AdminPayment;
-import com.heuristiq.paymentservice.payment.dto.admin.AdminPaymentPage;
-import com.heuristiq.paymentservice.payment.dto.admin.AdminPaymentSummary;
-import com.heuristiq.paymentservice.payment.dto.admin.AdminPaymentTransition;
-import com.heuristiq.paymentservice.payment.dto.admin.AdminRefundRequest;
-import com.heuristiq.paymentservice.payment.service.AdminPaymentService;
+import com.heuristiq.payment.gatewayaudit.admin.AdminGatewayCall;
+import com.heuristiq.payment.gatewayaudit.admin.AdminGatewayCallService;
+import com.heuristiq.payment.payment.dto.admin.AdminPayment;
+import com.heuristiq.payment.payment.dto.admin.AdminPaymentPage;
+import com.heuristiq.payment.payment.dto.admin.AdminPaymentSummary;
+import com.heuristiq.payment.payment.dto.admin.AdminPaymentTransition;
+import com.heuristiq.payment.payment.dto.admin.AdminRefundRequest;
+import com.heuristiq.payment.payment.service.AdminPaymentService;
 import lombok.RequiredArgsConstructor;
 import java.util.List;
 import org.springframework.web.bind.annotation.GetMapping;

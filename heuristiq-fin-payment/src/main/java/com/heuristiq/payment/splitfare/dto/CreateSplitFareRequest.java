@@ -1,4 +1,4 @@
-package com.heuristiq.paymentservice.splitfare.dto;
+package com.heuristiq.payment.splitfare.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;

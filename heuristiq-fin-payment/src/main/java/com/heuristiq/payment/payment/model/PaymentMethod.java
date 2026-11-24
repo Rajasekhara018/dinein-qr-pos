@@ -1,4 +1,4 @@
-package com.heuristiq.paymentservice.payment.model;
+package com.heuristiq.payment.payment.model;
 
 /**
  * How a payment was made. CASH and UPI_DIRECT are direct collections: the rider paid the driver in cash or to the driver's own UPI

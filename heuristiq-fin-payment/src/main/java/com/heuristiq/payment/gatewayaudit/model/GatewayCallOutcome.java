@@ -1,4 +1,4 @@
-package com.heuristiq.paymentservice.gatewayaudit.model;
+package com.heuristiq.payment.gatewayaudit.model;
 
 /** Result of one outbound gateway call. */
 public enum GatewayCallOutcome {

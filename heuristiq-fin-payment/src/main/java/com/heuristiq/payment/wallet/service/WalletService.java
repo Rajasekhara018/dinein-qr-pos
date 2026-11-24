@@ -1,6 +1,6 @@
-package com.heuristiq.paymentservice.wallet.service;
+package com.heuristiq.payment.wallet.service;
 
-import com.heuristiq.paymentservice.wallet.repository.WalletTransactionRepository;
+import com.heuristiq.payment.wallet.repository.WalletTransactionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-import static com.heuristiq.paymentservice.wallet.service.WalletConstants.MONEY_SCALE;
+import static com.heuristiq.payment.wallet.service.WalletConstants.MONEY_SCALE;
 
 /**
  * Read-only access to the legacy {@code wallet_transactions} table.

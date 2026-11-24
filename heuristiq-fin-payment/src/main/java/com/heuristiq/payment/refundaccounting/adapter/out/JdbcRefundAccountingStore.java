@@ -1,7 +1,7 @@
-package com.heuristiq.paymentservice.refundaccounting.adapter.out;
+package com.heuristiq.payment.refundaccounting.adapter.out;
 
-import com.heuristiq.paymentservice.refundaccounting.domain.RefundAccounting;
-import static com.heuristiq.paymentservice.refundaccounting.domain.RefundAccountingConstants.*;
+import com.heuristiq.payment.refundaccounting.domain.RefundAccounting;
+import static com.heuristiq.payment.refundaccounting.domain.RefundAccountingConstants.*;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.List;

@@ -1,6 +1,6 @@
-package com.heuristiq.paymentservice.security;
+package com.heuristiq.payment.security;
 
-import com.heuristiq.paymentservice.shared.PaymentCommonConstants;
+import com.heuristiq.payment.shared.PaymentCommonConstants;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

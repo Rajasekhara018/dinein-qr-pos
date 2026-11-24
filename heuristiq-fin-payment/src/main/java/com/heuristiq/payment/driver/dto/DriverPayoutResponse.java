@@ -1,7 +1,7 @@
-package com.heuristiq.paymentservice.driver.dto;
+package com.heuristiq.payment.driver.dto;
 
-import com.heuristiq.paymentservice.shared.money.Money;
-import com.heuristiq.paymentservice.driver.model.DriverPayout;
+import com.heuristiq.payment.shared.money.Money;
+import com.heuristiq.payment.driver.model.DriverPayout;
 
 import java.time.LocalDateTime;
 import java.math.BigDecimal;

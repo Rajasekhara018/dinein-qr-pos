@@ -1,8 +1,8 @@
-package com.heuristiq.paymentservice.payment.gateway.pinelabs;
+package com.heuristiq.payment.payment.gateway.pinelabs;
 
-import com.heuristiq.paymentservice.payment.gateway.GatewayClientConstants;
-import com.heuristiq.paymentservice.config.PineLabsGatewayProperties;
-import com.heuristiq.paymentservice.shared.exception.PaymentServiceException;
+import com.heuristiq.payment.payment.gateway.GatewayClientConstants;
+import com.heuristiq.payment.config.PineLabsGatewayProperties;
+import com.heuristiq.payment.shared.exception.PaymentServiceException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;

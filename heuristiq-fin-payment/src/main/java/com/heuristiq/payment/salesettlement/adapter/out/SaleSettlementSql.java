@@ -1,4 +1,4 @@
-package com.heuristiq.paymentservice.salesettlement.adapter.out;
+package com.heuristiq.payment.salesettlement.adapter.out;
 
 /** SQL of the sale settlement request store ({@code sale_settlement_requests}, V26). */
 final class SaleSettlementSql {

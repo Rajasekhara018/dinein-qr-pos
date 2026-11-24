@@ -1,6 +1,6 @@
-package com.heuristiq.paymentservice.wallet.repository;
+package com.heuristiq.payment.wallet.repository;
 
-import com.heuristiq.paymentservice.wallet.model.WalletTransaction;
+import com.heuristiq.payment.wallet.model.WalletTransaction;
 
 import java.util.List;
 import java.util.Optional;

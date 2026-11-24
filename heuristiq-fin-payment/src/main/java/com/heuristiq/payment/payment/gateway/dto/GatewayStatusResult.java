@@ -1,9 +1,9 @@
-package com.heuristiq.paymentservice.payment.gateway.dto;
+package com.heuristiq.payment.payment.gateway.dto;
 
 import java.math.BigDecimal;
 
 /**
- * Generic result of a {@link com.heuristiq.paymentservice.payment.gateway.port.StatusCheckGatewayClient}
+ * Generic result of a {@link com.heuristiq.payment.payment.gateway.port.StatusCheckGatewayClient}
  * poll. Not currently wired into any controller endpoint in this pass (see README's "scoped out"
  * section) — the port/adapters exist so a future GET /payments/{id}/status use case has real,
  * tested gateway integrations to call rather than starting from scratch.

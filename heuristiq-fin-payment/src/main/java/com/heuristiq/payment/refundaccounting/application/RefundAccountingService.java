@@ -1,7 +1,7 @@
-package com.heuristiq.paymentservice.refundaccounting.application;
+package com.heuristiq.payment.refundaccounting.application;
 
-import com.heuristiq.paymentservice.refundaccounting.domain.RefundAccounting;
-import static com.heuristiq.paymentservice.refundaccounting.domain.RefundAccountingConstants.*;
+import com.heuristiq.payment.refundaccounting.domain.RefundAccounting;
+import static com.heuristiq.payment.refundaccounting.domain.RefundAccountingConstants.*;
 import java.time.Clock;
 import org.springframework.stereotype.Service;
 import org.slf4j.Logger;

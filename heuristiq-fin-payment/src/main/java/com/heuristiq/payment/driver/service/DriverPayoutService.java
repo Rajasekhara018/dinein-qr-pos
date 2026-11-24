@@ -1,13 +1,13 @@
-package com.heuristiq.paymentservice.driver.service;
+package com.heuristiq.payment.driver.service;
 
 import java.math.BigDecimal;
-import com.heuristiq.paymentservice.shared.money.MoneyRequests;
-import com.heuristiq.paymentservice.config.MoneyProperties;
-import com.heuristiq.paymentservice.security.TenantAccess;
-import com.heuristiq.paymentservice.shared.money.AmountCurrency;
-import com.heuristiq.paymentservice.driver.dto.DriverPayoutRequestDto;
-import com.heuristiq.paymentservice.driver.model.DriverPayout;
-import com.heuristiq.paymentservice.driver.repository.DriverPayoutRepository;
+import com.heuristiq.payment.shared.money.MoneyRequests;
+import com.heuristiq.payment.config.MoneyProperties;
+import com.heuristiq.payment.security.TenantAccess;
+import com.heuristiq.payment.shared.money.AmountCurrency;
+import com.heuristiq.payment.driver.dto.DriverPayoutRequestDto;
+import com.heuristiq.payment.driver.model.DriverPayout;
+import com.heuristiq.payment.driver.repository.DriverPayoutRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

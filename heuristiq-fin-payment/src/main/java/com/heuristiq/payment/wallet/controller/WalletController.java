@@ -1,14 +1,14 @@
-package com.heuristiq.paymentservice.wallet.controller;
+package com.heuristiq.payment.wallet.controller;
 
-import com.heuristiq.paymentservice.shared.money.Money;
-import com.heuristiq.paymentservice.shared.PaymentCommonConstants;
-import com.heuristiq.paymentservice.security.OwnershipGuard;
-import com.heuristiq.paymentservice.shared.dto.ResponseObject;
-import com.heuristiq.paymentservice.shared.exception.NotFoundException;
-import com.heuristiq.paymentservice.wallet.dto.CreateWalletTopupRequest;
-import com.heuristiq.paymentservice.wallet.dto.WalletTopupResponse;
-import com.heuristiq.paymentservice.wallet.service.WalletBalanceService;
-import com.heuristiq.paymentservice.wallet.service.WalletTopupService;
+import com.heuristiq.payment.shared.money.Money;
+import com.heuristiq.payment.shared.PaymentCommonConstants;
+import com.heuristiq.payment.security.OwnershipGuard;
+import com.heuristiq.payment.shared.dto.ResponseObject;
+import com.heuristiq.payment.shared.exception.NotFoundException;
+import com.heuristiq.payment.wallet.dto.CreateWalletTopupRequest;
+import com.heuristiq.payment.wallet.dto.WalletTopupResponse;
+import com.heuristiq.payment.wallet.service.WalletBalanceService;
+import com.heuristiq.payment.wallet.service.WalletTopupService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

@@ -1,22 +1,22 @@
-package com.heuristiq.paymentservice.payment.gateway.razorpay;
+package com.heuristiq.payment.payment.gateway.razorpay;
 
 import com.razorpay.Order;
 import com.razorpay.RazorpayClient;
 import com.razorpay.RazorpayException;
-import com.heuristiq.paymentservice.config.RazorpayProperties;
-import com.heuristiq.paymentservice.payment.dto.RazorpayOrderDetails;
-import com.heuristiq.paymentservice.payment.gateway.dto.GatewaySessionResult;
-import com.heuristiq.paymentservice.payment.gateway.model.PaymentGatewayType;
-import com.heuristiq.paymentservice.payment.gateway.port.CreateSessionGatewayClient;
-import com.heuristiq.paymentservice.payment.model.Payment;
-import com.heuristiq.paymentservice.shared.exception.PaymentServiceException;
+import com.heuristiq.payment.config.RazorpayProperties;
+import com.heuristiq.payment.payment.dto.RazorpayOrderDetails;
+import com.heuristiq.payment.payment.gateway.dto.GatewaySessionResult;
+import com.heuristiq.payment.payment.gateway.model.PaymentGatewayType;
+import com.heuristiq.payment.payment.gateway.port.CreateSessionGatewayClient;
+import com.heuristiq.payment.payment.model.Payment;
+import com.heuristiq.payment.shared.exception.PaymentServiceException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;
-import com.heuristiq.paymentservice.payment.service.GatewayAmountVerifier;
+import com.heuristiq.payment.payment.service.GatewayAmountVerifier;
 
 /**
  * Razorpay order-creation adapter — brings PaymentService's previous inline

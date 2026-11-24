@@ -1,4 +1,4 @@
-package com.heuristiq.paymentservice.driver.model;
+package com.heuristiq.payment.driver.model;
 
 public enum DepositStatus {
     PENDING,

@@ -1,4 +1,4 @@
-package com.heuristiq.paymentservice.security;
+package com.heuristiq.payment.security;
 
 /** Fixed paths and names of the payment service's request authentication. */
 public final class SecurityConstants {

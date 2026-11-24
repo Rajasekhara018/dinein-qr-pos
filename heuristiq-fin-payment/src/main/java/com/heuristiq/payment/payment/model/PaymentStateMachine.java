@@ -1,4 +1,4 @@
-package com.heuristiq.paymentservice.payment.model;
+package com.heuristiq.payment.payment.model;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -8,7 +8,7 @@ import java.util.EnumSet;
 import java.util.Map;
 import java.util.Set;
 
-import static com.heuristiq.paymentservice.payment.model.PaymentStatus.*;
+import static com.heuristiq.payment.payment.model.PaymentStatus.*;
 
 /**
  * The legal status moves of a {@link Payment}. Every code path that changes a payment status (webhook,

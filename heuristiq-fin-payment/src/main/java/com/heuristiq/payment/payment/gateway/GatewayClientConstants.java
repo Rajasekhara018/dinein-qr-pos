@@ -1,4 +1,4 @@
-package com.heuristiq.paymentservice.payment.gateway;
+package com.heuristiq.payment.payment.gateway;
 
 import java.time.Duration;
 

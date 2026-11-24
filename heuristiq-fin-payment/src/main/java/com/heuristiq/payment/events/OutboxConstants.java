@@ -1,4 +1,4 @@
-package com.heuristiq.paymentservice.events;
+package com.heuristiq.payment.events;
 
 /** Fixed values of the durable event outbox: its SQL, its retry backoff and the Kafka client limits it relies on. */
 final class OutboxConstants {

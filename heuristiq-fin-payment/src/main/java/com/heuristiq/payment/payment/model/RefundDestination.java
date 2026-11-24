@@ -1,4 +1,4 @@
-package com.heuristiq.paymentservice.payment.model;
+package com.heuristiq.payment.payment.model;
 
 /** Where one refund pays out. Exactly one destination per refund. */
 public enum RefundDestination {

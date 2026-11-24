@@ -1,9 +1,9 @@
-package com.heuristiq.paymentservice.payment.lifecycle;
+package com.heuristiq.payment.payment.lifecycle;
 
-import com.heuristiq.paymentservice.payment.dto.admin.AdminPayment;
-import com.heuristiq.paymentservice.payment.dto.admin.AdminPaymentTransition;
-import com.heuristiq.paymentservice.payment.model.Payment;
-import com.heuristiq.paymentservice.payment.model.PaymentStatus;
+import com.heuristiq.payment.payment.dto.admin.AdminPayment;
+import com.heuristiq.payment.payment.dto.admin.AdminPaymentTransition;
+import com.heuristiq.payment.payment.model.Payment;
+import com.heuristiq.payment.payment.model.PaymentStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;

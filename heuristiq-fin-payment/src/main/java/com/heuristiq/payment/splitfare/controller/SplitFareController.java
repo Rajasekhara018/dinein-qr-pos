@@ -1,12 +1,12 @@
-package com.heuristiq.paymentservice.splitfare.controller;
+package com.heuristiq.payment.splitfare.controller;
 
-import com.heuristiq.paymentservice.splitfare.dto.SplitFareResponse;
-import com.heuristiq.paymentservice.security.OwnershipGuard;
-import com.heuristiq.paymentservice.shared.dto.ResponseObject;
-import com.heuristiq.paymentservice.shared.exception.NotFoundException;
-import com.heuristiq.paymentservice.splitfare.model.SplitFareRequest;
-import com.heuristiq.paymentservice.splitfare.dto.CreateSplitFareRequest;
-import com.heuristiq.paymentservice.splitfare.service.SplitFareService;
+import com.heuristiq.payment.splitfare.dto.SplitFareResponse;
+import com.heuristiq.payment.security.OwnershipGuard;
+import com.heuristiq.payment.shared.dto.ResponseObject;
+import com.heuristiq.payment.shared.exception.NotFoundException;
+import com.heuristiq.payment.splitfare.model.SplitFareRequest;
+import com.heuristiq.payment.splitfare.dto.CreateSplitFareRequest;
+import com.heuristiq.payment.splitfare.service.SplitFareService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

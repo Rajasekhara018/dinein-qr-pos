@@ -1,8 +1,8 @@
-package com.heuristiq.paymentservice.payment.gateway.port;
+package com.heuristiq.payment.payment.gateway.port;
 
-import com.heuristiq.paymentservice.payment.gateway.dto.GatewayRefundResult;
-import com.heuristiq.paymentservice.payment.gateway.model.PaymentGatewayType;
-import com.heuristiq.paymentservice.payment.model.Payment;
+import com.heuristiq.payment.payment.gateway.dto.GatewayRefundResult;
+import com.heuristiq.payment.payment.gateway.model.PaymentGatewayType;
+import com.heuristiq.payment.payment.model.Payment;
 import java.math.BigDecimal;
 
 /**

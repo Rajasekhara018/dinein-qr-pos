@@ -1,13 +1,13 @@
-package com.heuristiq.paymentservice.salesettlement.application;
+package com.heuristiq.payment.salesettlement.application;
 
-import com.heuristiq.paymentservice.salesettlement.config.SaleSettlementProperties;
-import com.heuristiq.paymentservice.salesettlement.domain.SaleEventIds;
-import com.heuristiq.paymentservice.salesettlement.domain.SaleSettlementAction;
-import com.heuristiq.paymentservice.salesettlement.domain.SaleSettlementConstants;
-import com.heuristiq.paymentservice.salesettlement.domain.SaleSettlementOutbox;
-import com.heuristiq.paymentservice.salesettlement.domain.SaleSettlementRequest;
-import com.heuristiq.paymentservice.salesettlement.domain.SaleSettlementState;
-import com.heuristiq.paymentservice.salesettlement.domain.WalletSaleSettlementPort;
+import com.heuristiq.payment.salesettlement.config.SaleSettlementProperties;
+import com.heuristiq.payment.salesettlement.domain.SaleEventIds;
+import com.heuristiq.payment.salesettlement.domain.SaleSettlementAction;
+import com.heuristiq.payment.salesettlement.domain.SaleSettlementConstants;
+import com.heuristiq.payment.salesettlement.domain.SaleSettlementOutbox;
+import com.heuristiq.payment.salesettlement.domain.SaleSettlementRequest;
+import com.heuristiq.payment.salesettlement.domain.SaleSettlementState;
+import com.heuristiq.payment.salesettlement.domain.WalletSaleSettlementPort;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;

@@ -1,4 +1,4 @@
-package com.heuristiq.paymentservice.payment.gateway.payu;
+package com.heuristiq.payment.payment.gateway.payu;
 
 /** PayU postservice command names (also part of the request hash; never change their values). */
 public final class PayuConstants {

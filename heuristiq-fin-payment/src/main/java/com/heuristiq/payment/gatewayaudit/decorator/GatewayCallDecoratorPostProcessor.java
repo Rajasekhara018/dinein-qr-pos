@@ -1,9 +1,9 @@
-package com.heuristiq.paymentservice.gatewayaudit.decorator;
+package com.heuristiq.payment.gatewayaudit.decorator;
 
-import com.heuristiq.paymentservice.gatewayaudit.GatewayCallTracer;
-import com.heuristiq.paymentservice.payment.gateway.port.CreateSessionGatewayClient;
-import com.heuristiq.paymentservice.payment.gateway.port.RefundGatewayClient;
-import com.heuristiq.paymentservice.payment.gateway.port.StatusCheckGatewayClient;
+import com.heuristiq.payment.gatewayaudit.GatewayCallTracer;
+import com.heuristiq.payment.payment.gateway.port.CreateSessionGatewayClient;
+import com.heuristiq.payment.payment.gateway.port.RefundGatewayClient;
+import com.heuristiq.payment.payment.gateway.port.StatusCheckGatewayClient;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 

@@ -1,9 +1,9 @@
-package com.heuristiq.paymentservice.payment.repository.jpa;
+package com.heuristiq.payment.payment.repository.jpa;
 
-import com.heuristiq.paymentservice.payment.gateway.model.PaymentGatewayType;
-import com.heuristiq.paymentservice.payment.model.Payment;
-import com.heuristiq.paymentservice.payment.model.PaymentStatus;
-import com.heuristiq.paymentservice.payment.repository.PaymentRepository;
+import com.heuristiq.payment.payment.gateway.model.PaymentGatewayType;
+import com.heuristiq.payment.payment.model.Payment;
+import com.heuristiq.payment.payment.model.PaymentStatus;
+import com.heuristiq.payment.payment.repository.PaymentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Repository;

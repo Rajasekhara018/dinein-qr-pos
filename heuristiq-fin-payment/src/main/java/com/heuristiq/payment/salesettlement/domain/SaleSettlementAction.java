@@ -1,4 +1,4 @@
-package com.heuristiq.paymentservice.salesettlement.domain;
+package com.heuristiq.payment.salesettlement.domain;
 
 /** What the wallet is told about a PENDING sale. */
 public enum SaleSettlementAction {

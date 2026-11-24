@@ -1,4 +1,4 @@
-package com.heuristiq.paymentservice.shared;
+package com.heuristiq.payment.shared;
 
 /** Fixed wire values shared by more than one feature of the payment service. */
 public final class PaymentCommonConstants {

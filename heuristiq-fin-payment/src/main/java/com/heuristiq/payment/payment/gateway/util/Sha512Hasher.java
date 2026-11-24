@@ -1,4 +1,4 @@
-package com.heuristiq.paymentservice.payment.gateway.util;
+package com.heuristiq.payment.payment.gateway.util;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;

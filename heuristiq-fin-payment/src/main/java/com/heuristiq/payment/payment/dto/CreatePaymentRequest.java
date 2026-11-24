@@ -1,7 +1,7 @@
-package com.heuristiq.paymentservice.payment.dto;
+package com.heuristiq.payment.payment.dto;
 
-import com.heuristiq.paymentservice.shared.money.PositiveMoney;
-import com.heuristiq.paymentservice.shared.money.Money;
+import com.heuristiq.payment.shared.money.PositiveMoney;
+import com.heuristiq.payment.shared.money.Money;
 import com.heuristiq.phone.validation.ValidPhone;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

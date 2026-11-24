@@ -1,6 +1,6 @@
-package com.heuristiq.paymentservice.driver.repository;
+package com.heuristiq.payment.driver.repository;
 
-import com.heuristiq.paymentservice.driver.model.DriverIncentive;
+import com.heuristiq.payment.driver.model.DriverIncentive;
 
 import java.time.LocalDate;
 import java.util.List;

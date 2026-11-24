@@ -1,4 +1,4 @@
-package com.heuristiq.paymentservice.gatewayaudit;
+package com.heuristiq.payment.gatewayaudit;
 
 import java.time.Instant;
 import java.util.Map;

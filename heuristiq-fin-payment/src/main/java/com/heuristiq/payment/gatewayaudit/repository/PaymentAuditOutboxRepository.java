@@ -1,6 +1,6 @@
-package com.heuristiq.paymentservice.gatewayaudit.repository;
+package com.heuristiq.payment.gatewayaudit.repository;
 
-import com.heuristiq.paymentservice.gatewayaudit.model.PaymentAuditOutboxEntry;
+import com.heuristiq.payment.gatewayaudit.model.PaymentAuditOutboxEntry;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;

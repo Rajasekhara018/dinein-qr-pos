@@ -1,6 +1,6 @@
-package com.heuristiq.paymentservice.payment.repository;
+package com.heuristiq.payment.payment.repository;
 
-import com.heuristiq.paymentservice.payment.model.PaymentWebhookEvent;
+import com.heuristiq.payment.payment.model.PaymentWebhookEvent;
 
 import java.util.Optional;
 

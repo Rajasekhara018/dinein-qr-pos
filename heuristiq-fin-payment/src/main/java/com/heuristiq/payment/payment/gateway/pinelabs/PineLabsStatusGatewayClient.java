@@ -1,15 +1,15 @@
-package com.heuristiq.paymentservice.payment.gateway.pinelabs;
+package com.heuristiq.payment.payment.gateway.pinelabs;
 
 import java.math.BigDecimal;
-import com.heuristiq.paymentservice.payment.gateway.util.GatewayAmountParser;
-import com.heuristiq.paymentservice.shared.PaymentCommonConstants;
-import com.heuristiq.paymentservice.payment.gateway.GatewayClientConstants;
-import com.heuristiq.paymentservice.config.PineLabsGatewayProperties;
-import com.heuristiq.paymentservice.payment.gateway.dto.GatewayStatusResult;
-import com.heuristiq.paymentservice.payment.gateway.model.PaymentGatewayType;
-import com.heuristiq.paymentservice.payment.gateway.port.StatusCheckGatewayClient;
-import com.heuristiq.paymentservice.payment.model.Payment;
-import com.heuristiq.paymentservice.shared.exception.PaymentServiceException;
+import com.heuristiq.payment.payment.gateway.util.GatewayAmountParser;
+import com.heuristiq.payment.shared.PaymentCommonConstants;
+import com.heuristiq.payment.payment.gateway.GatewayClientConstants;
+import com.heuristiq.payment.config.PineLabsGatewayProperties;
+import com.heuristiq.payment.payment.gateway.dto.GatewayStatusResult;
+import com.heuristiq.payment.payment.gateway.model.PaymentGatewayType;
+import com.heuristiq.payment.payment.gateway.port.StatusCheckGatewayClient;
+import com.heuristiq.payment.payment.model.Payment;
+import com.heuristiq.payment.shared.exception.PaymentServiceException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;

@@ -1,9 +1,9 @@
-package com.heuristiq.paymentservice.salesettlement.adapter.out;
+package com.heuristiq.payment.salesettlement.adapter.out;
 
-import com.heuristiq.paymentservice.salesettlement.domain.SaleSettlementAction;
-import com.heuristiq.paymentservice.salesettlement.domain.SaleSettlementOutbox;
-import com.heuristiq.paymentservice.salesettlement.domain.SaleSettlementRequest;
-import com.heuristiq.paymentservice.salesettlement.domain.SaleSettlementState;
+import com.heuristiq.payment.salesettlement.domain.SaleSettlementAction;
+import com.heuristiq.payment.salesettlement.domain.SaleSettlementOutbox;
+import com.heuristiq.payment.salesettlement.domain.SaleSettlementRequest;
+import com.heuristiq.payment.salesettlement.domain.SaleSettlementState;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 

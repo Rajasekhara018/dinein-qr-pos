@@ -1,10 +1,10 @@
-package com.heuristiq.paymentservice.gatewayaudit;
+package com.heuristiq.payment.gatewayaudit;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.heuristiq.paymentservice.gatewayaudit.model.PaymentAuditOutboxEntry;
-import com.heuristiq.paymentservice.gatewayaudit.repository.PaymentAuditOutboxRepository;
+import com.heuristiq.payment.gatewayaudit.model.PaymentAuditOutboxEntry;
+import com.heuristiq.payment.gatewayaudit.repository.PaymentAuditOutboxRepository;
 import org.springframework.stereotype.Component;
 
 import java.time.Clock;

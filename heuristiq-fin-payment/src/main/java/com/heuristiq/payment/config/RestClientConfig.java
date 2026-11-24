@@ -1,6 +1,6 @@
-package com.heuristiq.paymentservice.config;
+package com.heuristiq.payment.config;
 
-import com.heuristiq.paymentservice.shared.PaymentCommonConstants;
+import com.heuristiq.payment.shared.PaymentCommonConstants;
 import io.netty.channel.ChannelOption;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import io.netty.handler.timeout.WriteTimeoutHandler;
@@ -49,7 +49,7 @@ public class RestClientConfig {
     @Bean
     public com.heuristiq.resilient.ResilientCaller walletResilientCaller() {
         return new com.heuristiq.resilient.ResilientCaller(
-                com.heuristiq.paymentservice.wallet.client.WalletClientConstants.WALLET_SERVICE_NAME,
+                com.heuristiq.payment.wallet.client.WalletClientConstants.WALLET_SERVICE_NAME,
                 walletServiceProperties.toProfile());
     }
 
@@ -60,8 +60,8 @@ public class RestClientConfig {
                 .clientConnector(new ReactorClientHttpConnector(buildHttpClient()))
                 .baseUrl(walletServiceProperties.getBaseUrl())
                 .defaultHeader(PaymentCommonConstants.SERVICE_TOKEN_HEADER, serviceToken)
-                .defaultHeader(com.heuristiq.paymentservice.wallet.client.WalletClientConstants.SERVICE_NAME_HEADER,
-                        com.heuristiq.paymentservice.wallet.client.WalletClientConstants.SERVICE_NAME)
+                .defaultHeader(com.heuristiq.payment.wallet.client.WalletClientConstants.SERVICE_NAME_HEADER,
+                        com.heuristiq.payment.wallet.client.WalletClientConstants.SERVICE_NAME)
                 .filter(com.heuristiq.resilient.CorrelationIdPropagation.filter())
                 .filter(com.heuristiq.resilient.TenantIdPropagation.filter())
                 .build();

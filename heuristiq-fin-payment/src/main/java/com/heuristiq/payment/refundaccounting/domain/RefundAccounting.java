@@ -1,4 +1,4 @@
-package com.heuristiq.paymentservice.refundaccounting.domain;
+package com.heuristiq.payment.refundaccounting.domain;
 
 import java.math.BigDecimal;
 import java.time.Instant;

@@ -1,4 +1,4 @@
-package com.heuristiq.paymentservice.config;
+package com.heuristiq.payment.config;
 
 /** Fixed paths and names of the outbound clients built in {@link RestClientConfig}. */
 public final class RestClientConstants {

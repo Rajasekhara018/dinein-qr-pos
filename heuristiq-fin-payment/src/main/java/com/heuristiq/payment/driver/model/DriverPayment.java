@@ -1,6 +1,6 @@
-package com.heuristiq.paymentservice.driver.model;
+package com.heuristiq.payment.driver.model;
 
-import com.heuristiq.paymentservice.shared.PaymentCommonConstants;
+import com.heuristiq.payment.shared.PaymentCommonConstants;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;

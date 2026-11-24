@@ -1,4 +1,4 @@
-package com.heuristiq.paymentservice.salesettlement.adapter.out;
+package com.heuristiq.payment.salesettlement.adapter.out;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -6,11 +6,11 @@ import com.heuristiq.resilient.DownstreamUnavailableException;
 import com.heuristiq.resilient.Idempotency;
 import com.heuristiq.resilient.ResilientCaller;
 import com.heuristiq.resilient.TenantIdPropagation;
-import com.heuristiq.paymentservice.salesettlement.domain.SaleSettlementAction;
-import com.heuristiq.paymentservice.salesettlement.domain.SaleSettlementConstants;
-import com.heuristiq.paymentservice.salesettlement.domain.SaleSettlementRequest;
-import com.heuristiq.paymentservice.salesettlement.domain.WalletSaleSettlementPort;
-import com.heuristiq.paymentservice.wallet.client.WalletClientConstants;
+import com.heuristiq.payment.salesettlement.domain.SaleSettlementAction;
+import com.heuristiq.payment.salesettlement.domain.SaleSettlementConstants;
+import com.heuristiq.payment.salesettlement.domain.SaleSettlementRequest;
+import com.heuristiq.payment.salesettlement.domain.WalletSaleSettlementPort;
+import com.heuristiq.payment.wallet.client.WalletClientConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;

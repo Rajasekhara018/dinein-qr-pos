@@ -1,8 +1,8 @@
-package com.heuristiq.paymentservice.gatewayaudit.publish;
+package com.heuristiq.payment.gatewayaudit.publish;
 
-import com.heuristiq.paymentservice.gatewayaudit.GatewayAuditConstants;
-import com.heuristiq.paymentservice.gatewayaudit.model.PaymentAuditOutboxEntry;
-import com.heuristiq.paymentservice.gatewayaudit.repository.PaymentAuditOutboxRepository;
+import com.heuristiq.payment.gatewayaudit.GatewayAuditConstants;
+import com.heuristiq.payment.gatewayaudit.model.PaymentAuditOutboxEntry;
+import com.heuristiq.payment.gatewayaudit.repository.PaymentAuditOutboxRepository;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import lombok.extern.slf4j.Slf4j;

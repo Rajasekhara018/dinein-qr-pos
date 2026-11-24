@@ -1,10 +1,10 @@
-package com.heuristiq.paymentservice.payment.service;
+package com.heuristiq.payment.payment.service;
 
-import com.heuristiq.paymentservice.config.SettlementProperties;
-import com.heuristiq.paymentservice.payment.model.Payment;
-import com.heuristiq.paymentservice.payment.model.PaymentStateMachine;
-import com.heuristiq.paymentservice.payment.model.PaymentStatus;
-import com.heuristiq.paymentservice.payment.repository.PaymentRepository;
+import com.heuristiq.payment.config.SettlementProperties;
+import com.heuristiq.payment.payment.model.Payment;
+import com.heuristiq.payment.payment.model.PaymentStateMachine;
+import com.heuristiq.payment.payment.model.PaymentStatus;
+import com.heuristiq.payment.payment.repository.PaymentRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

@@ -1,4 +1,4 @@
-package com.heuristiq.paymentservice.gatewayaudit.model;
+package com.heuristiq.payment.gatewayaudit.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

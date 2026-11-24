@@ -1,8 +1,8 @@
-package com.heuristiq.paymentservice.payment.dto;
+package com.heuristiq.payment.payment.dto;
 
-import com.heuristiq.paymentservice.shared.money.Money;
-import com.heuristiq.paymentservice.payment.gateway.dto.GatewaySessionResult;
-import com.heuristiq.paymentservice.payment.model.Payment;
+import com.heuristiq.payment.shared.money.Money;
+import com.heuristiq.payment.payment.gateway.dto.GatewaySessionResult;
+import com.heuristiq.payment.payment.model.Payment;
 
 import java.time.LocalDateTime;
 import java.util.Map;

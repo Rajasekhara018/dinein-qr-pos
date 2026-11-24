@@ -1,9 +1,9 @@
-package com.heuristiq.paymentservice.gatewayaudit;
+package com.heuristiq.payment.gatewayaudit;
 
-import com.heuristiq.paymentservice.security.TenantAccess;
-import com.heuristiq.paymentservice.gatewayaudit.model.GatewayCallOutcome;
-import com.heuristiq.paymentservice.gatewayaudit.model.PaymentGatewayCall;
-import com.heuristiq.paymentservice.gatewayaudit.repository.PaymentGatewayCallRepository;
+import com.heuristiq.payment.security.TenantAccess;
+import com.heuristiq.payment.gatewayaudit.model.GatewayCallOutcome;
+import com.heuristiq.payment.gatewayaudit.model.PaymentGatewayCall;
+import com.heuristiq.payment.gatewayaudit.repository.PaymentGatewayCallRepository;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import lombok.extern.slf4j.Slf4j;

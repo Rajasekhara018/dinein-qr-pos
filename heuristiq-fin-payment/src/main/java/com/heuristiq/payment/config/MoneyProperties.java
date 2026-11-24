@@ -1,7 +1,7 @@
-package com.heuristiq.paymentservice.config;
+package com.heuristiq.payment.config;
 
-import com.heuristiq.paymentservice.shared.PaymentCommonConstants;
-import com.heuristiq.paymentservice.shared.money.MoneyDefaults;
+import com.heuristiq.payment.shared.PaymentCommonConstants;
+import com.heuristiq.payment.shared.money.MoneyDefaults;
 import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.Setter;

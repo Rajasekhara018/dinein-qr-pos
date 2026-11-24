@@ -1,34 +1,34 @@
-package com.heuristiq.paymentservice.wallet.service;
+package com.heuristiq.payment.wallet.service;
 
-import com.heuristiq.paymentservice.shared.money.MoneyRequests;
-import com.heuristiq.paymentservice.shared.PaymentCommonConstants;
-import com.heuristiq.paymentservice.payment.gateway.GatewayClientConstants;
-import com.heuristiq.paymentservice.security.TenantAccess;
-import com.heuristiq.paymentservice.config.PaymentGatewayRoutingProperties;
-import com.heuristiq.paymentservice.config.PaymentPollingProperties;
-import com.heuristiq.paymentservice.payment.gateway.dto.GatewaySessionResult;
-import com.heuristiq.paymentservice.payment.gateway.dto.GatewayStatusResult;
-import com.heuristiq.paymentservice.payment.gateway.model.PaymentGatewayType;
-import com.heuristiq.paymentservice.payment.gateway.port.CreateSessionGatewayClient;
-import com.heuristiq.paymentservice.payment.gateway.port.StatusCheckGatewayClient;
-import com.heuristiq.paymentservice.gatewayaudit.GatewayAuditConstants;
-import com.heuristiq.paymentservice.gatewayaudit.WebhookAuditRecorder;
-import com.heuristiq.paymentservice.gatewayaudit.WebhookObservation;
-import com.heuristiq.paymentservice.gatewayaudit.model.WebhookOutcome;
-import com.heuristiq.paymentservice.payment.gateway.razorpay.RazorpayWebhookSignatureVerifier;
-import com.heuristiq.paymentservice.payment.gateway.resolver.PaymentGatewayClientResolver;
-import com.heuristiq.paymentservice.payment.model.Payment;
-import com.heuristiq.paymentservice.payment.model.PaymentWebhookEvent;
-import com.heuristiq.paymentservice.payment.service.GatewayAmountVerifier;
-import com.heuristiq.paymentservice.payment.repository.PaymentWebhookEventRepository;
-import com.heuristiq.paymentservice.shared.exception.ConflictException;
-import com.heuristiq.paymentservice.shared.exception.NotFoundException;
-import com.heuristiq.paymentservice.shared.exception.PaymentServiceException;
-import com.heuristiq.paymentservice.wallet.dto.CreateWalletTopupRequest;
-import com.heuristiq.paymentservice.wallet.dto.WalletTopupResponse;
-import com.heuristiq.paymentservice.wallet.model.WalletTopupSession;
-import com.heuristiq.paymentservice.wallet.model.WalletTopupStatus;
-import com.heuristiq.paymentservice.wallet.repository.WalletTopupSessionRepository;
+import com.heuristiq.payment.shared.money.MoneyRequests;
+import com.heuristiq.payment.shared.PaymentCommonConstants;
+import com.heuristiq.payment.payment.gateway.GatewayClientConstants;
+import com.heuristiq.payment.security.TenantAccess;
+import com.heuristiq.payment.config.PaymentGatewayRoutingProperties;
+import com.heuristiq.payment.config.PaymentPollingProperties;
+import com.heuristiq.payment.payment.gateway.dto.GatewaySessionResult;
+import com.heuristiq.payment.payment.gateway.dto.GatewayStatusResult;
+import com.heuristiq.payment.payment.gateway.model.PaymentGatewayType;
+import com.heuristiq.payment.payment.gateway.port.CreateSessionGatewayClient;
+import com.heuristiq.payment.payment.gateway.port.StatusCheckGatewayClient;
+import com.heuristiq.payment.gatewayaudit.GatewayAuditConstants;
+import com.heuristiq.payment.gatewayaudit.WebhookAuditRecorder;
+import com.heuristiq.payment.gatewayaudit.WebhookObservation;
+import com.heuristiq.payment.gatewayaudit.model.WebhookOutcome;
+import com.heuristiq.payment.payment.gateway.razorpay.RazorpayWebhookSignatureVerifier;
+import com.heuristiq.payment.payment.gateway.resolver.PaymentGatewayClientResolver;
+import com.heuristiq.payment.payment.model.Payment;
+import com.heuristiq.payment.payment.model.PaymentWebhookEvent;
+import com.heuristiq.payment.payment.service.GatewayAmountVerifier;
+import com.heuristiq.payment.payment.repository.PaymentWebhookEventRepository;
+import com.heuristiq.payment.shared.exception.ConflictException;
+import com.heuristiq.payment.shared.exception.NotFoundException;
+import com.heuristiq.payment.shared.exception.PaymentServiceException;
+import com.heuristiq.payment.wallet.dto.CreateWalletTopupRequest;
+import com.heuristiq.payment.wallet.dto.WalletTopupResponse;
+import com.heuristiq.payment.wallet.model.WalletTopupSession;
+import com.heuristiq.payment.wallet.model.WalletTopupStatus;
+import com.heuristiq.payment.wallet.repository.WalletTopupSessionRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
@@ -73,8 +73,8 @@ public class WalletTopupService {
     private final WebhookAuditRecorder webhookAudit;
 
     @org.springframework.beans.factory.annotation.Autowired
-    private com.heuristiq.paymentservice.config.WalletServiceProperties walletProperties =
-            new com.heuristiq.paymentservice.config.WalletServiceProperties();
+    private com.heuristiq.payment.config.WalletServiceProperties walletProperties =
+            new com.heuristiq.payment.config.WalletServiceProperties();
 
     /**
      * Starts a top-up checkout. Not transactional on purpose: the INITIATED session is persisted first,

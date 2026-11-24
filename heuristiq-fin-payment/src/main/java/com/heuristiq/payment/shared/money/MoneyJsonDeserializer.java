@@ -1,4 +1,4 @@
-package com.heuristiq.paymentservice.shared.money;
+package com.heuristiq.payment.shared.money;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;

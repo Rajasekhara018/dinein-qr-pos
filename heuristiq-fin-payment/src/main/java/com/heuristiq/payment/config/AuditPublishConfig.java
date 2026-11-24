@@ -1,14 +1,14 @@
-package com.heuristiq.paymentservice.config;
+package com.heuristiq.payment.config;
 
 import com.heuristiq.resilient.CorrelationIdPropagation;
 import com.heuristiq.resilient.ResilientCaller;
-import com.heuristiq.paymentservice.gatewayaudit.GatewayAuditConstants;
-import com.heuristiq.paymentservice.gatewayaudit.GatewayCallTracer;
-import com.heuristiq.paymentservice.gatewayaudit.decorator.GatewayCallDecoratorPostProcessor;
-import com.heuristiq.paymentservice.gatewayaudit.publish.AuditEventSink;
-import com.heuristiq.paymentservice.gatewayaudit.publish.AuditPublishProperties;
-import com.heuristiq.paymentservice.gatewayaudit.publish.AuditResilienceProperties;
-import com.heuristiq.paymentservice.gatewayaudit.publish.ResilientAuditEventSink;
+import com.heuristiq.payment.gatewayaudit.GatewayAuditConstants;
+import com.heuristiq.payment.gatewayaudit.GatewayCallTracer;
+import com.heuristiq.payment.gatewayaudit.decorator.GatewayCallDecoratorPostProcessor;
+import com.heuristiq.payment.gatewayaudit.publish.AuditEventSink;
+import com.heuristiq.payment.gatewayaudit.publish.AuditPublishProperties;
+import com.heuristiq.payment.gatewayaudit.publish.AuditResilienceProperties;
+import com.heuristiq.payment.gatewayaudit.publish.ResilientAuditEventSink;
 import io.netty.channel.ChannelOption;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import io.netty.handler.timeout.WriteTimeoutHandler;

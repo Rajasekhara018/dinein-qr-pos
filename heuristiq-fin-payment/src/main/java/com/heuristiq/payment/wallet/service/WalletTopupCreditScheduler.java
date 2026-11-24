@@ -1,4 +1,4 @@
-package com.heuristiq.paymentservice.wallet.service;
+package com.heuristiq.payment.wallet.service;
 
 import lombok.RequiredArgsConstructor;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;

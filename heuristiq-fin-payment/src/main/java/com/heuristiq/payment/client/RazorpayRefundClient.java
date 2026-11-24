@@ -1,9 +1,9 @@
-package com.heuristiq.paymentservice.client;
+package com.heuristiq.payment.client;
 
-import com.heuristiq.paymentservice.client.dto.RazorpayRefundResult;
-import com.heuristiq.paymentservice.config.RazorpayProperties;
-import com.heuristiq.paymentservice.shared.exception.PaymentServiceException;
-import com.heuristiq.paymentservice.shared.exception.RefundOutcomeUnknownException;
+import com.heuristiq.payment.client.dto.RazorpayRefundResult;
+import com.heuristiq.payment.config.RazorpayProperties;
+import com.heuristiq.payment.shared.exception.PaymentServiceException;
+import com.heuristiq.payment.shared.exception.RefundOutcomeUnknownException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

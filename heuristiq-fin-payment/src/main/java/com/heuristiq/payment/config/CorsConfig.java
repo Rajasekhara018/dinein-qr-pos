@@ -1,4 +1,4 @@
-package com.heuristiq.paymentservice.config;
+package com.heuristiq.payment.config;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.beans.factory.annotation.Value;

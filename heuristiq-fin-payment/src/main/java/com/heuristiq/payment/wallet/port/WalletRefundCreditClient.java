@@ -1,4 +1,4 @@
-package com.heuristiq.paymentservice.wallet.port;
+package com.heuristiq.payment.wallet.port;
 
 /**
  * Outbound port to Rider_WalletService, the only owner of user balances: credits a refund whose destination is the

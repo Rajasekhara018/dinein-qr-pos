@@ -1,4 +1,4 @@
-package com.heuristiq.paymentservice.wallet.port;
+package com.heuristiq.payment.wallet.port;
 
 /**
  * The wallet answered a credit (a top-up or a refund credit) with a refusal (HTTP 4xx). Carries the wallet's contract

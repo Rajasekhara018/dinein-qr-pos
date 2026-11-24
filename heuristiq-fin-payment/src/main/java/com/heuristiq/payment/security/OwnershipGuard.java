@@ -1,4 +1,4 @@
-package com.heuristiq.paymentservice.security;
+package com.heuristiq.payment.security;
 
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;

@@ -1,6 +1,6 @@
-package com.heuristiq.paymentservice.refundaccounting.adapter.in;
+package com.heuristiq.payment.refundaccounting.adapter.in;
 
-import com.heuristiq.paymentservice.refundaccounting.application.RefundAccountingService;
+import com.heuristiq.payment.refundaccounting.application.RefundAccountingService;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
