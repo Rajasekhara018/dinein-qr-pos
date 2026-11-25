@@ -1,4 +1,4 @@
-package com.heuristiq.paymentservice.payment.dto.admin;
+package com.heuristiq.payment.payment.dto.admin;
 
 import java.time.Instant;
 

@@ -1,4 +1,4 @@
-package com.railcab.nms.search.weblist;
+package com.heuristiq.notification.search.weblist;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.bind.DefaultValue;

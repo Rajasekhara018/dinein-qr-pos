@@ -1,7 +1,7 @@
-package com.heuristiq.paymentservice.payment.repository.jpa;
+package com.heuristiq.payment.payment.repository.jpa;
 
-import com.heuristiq.paymentservice.payment.model.PaymentWebhookEvent;
-import com.heuristiq.paymentservice.payment.repository.PaymentWebhookEventRepository;
+import com.heuristiq.payment.payment.model.PaymentWebhookEvent;
+import com.heuristiq.payment.payment.repository.PaymentWebhookEventRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 

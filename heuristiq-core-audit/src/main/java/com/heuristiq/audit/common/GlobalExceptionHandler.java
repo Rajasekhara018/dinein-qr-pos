@@ -1,6 +1,6 @@
-package com.railcab.audit.common;
+package com.heuristiq.audit.common;
 
-import com.railcab.audit.domain.AuditException;
+import com.heuristiq.audit.domain.AuditException;
 import jakarta.validation.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

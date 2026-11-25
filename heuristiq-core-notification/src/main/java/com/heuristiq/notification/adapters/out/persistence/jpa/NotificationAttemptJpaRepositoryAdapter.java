@@ -1,4 +1,4 @@
-package com.railcab.nms.adapters.out.persistence.jpa;
+package com.heuristiq.notification.adapters.out.persistence.jpa;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -7,11 +7,11 @@ import java.util.Optional;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.stereotype.Repository;
 
-import com.railcab.nms.adapters.out.persistence.PaginationMapper;
-import com.railcab.nms.domain.model.NotificationAttempt;
-import com.railcab.nms.domain.repository.INotificationAttemptRepository;
-import com.railcab.nms.domain.repository.PageQuery;
-import com.railcab.nms.domain.repository.PageResult;
+import com.heuristiq.notification.adapters.out.persistence.PaginationMapper;
+import com.heuristiq.notification.domain.model.NotificationAttempt;
+import com.heuristiq.notification.domain.repository.INotificationAttemptRepository;
+import com.heuristiq.notification.domain.repository.PageQuery;
+import com.heuristiq.notification.domain.repository.PageResult;
 
 /** JPA (MySQL/Postgres) implementation of {@link INotificationAttemptRepository}. */
 @Repository

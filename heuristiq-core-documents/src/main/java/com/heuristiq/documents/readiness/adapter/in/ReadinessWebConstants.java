@@ -1,4 +1,4 @@
-package com.railcab.dms.readiness.adapter.in;
+package com.heuristiq.documents.readiness.adapter.in;
 
 /** Wire values of the internal readiness endpoint. */
 public final class ReadinessWebConstants {

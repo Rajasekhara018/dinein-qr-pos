@@ -1,11 +1,11 @@
-package com.heuristiq.paymentservice.payment.gateway.dto;
+package com.heuristiq.payment.payment.gateway.dto;
 
-import com.heuristiq.paymentservice.payment.dto.RazorpayOrderDetails;
+import com.heuristiq.payment.payment.dto.RazorpayOrderDetails;
 
 import java.util.Map;
 
 /**
- * What a {@link com.heuristiq.paymentservice.payment.gateway.port.CreateSessionGatewayClient} hands
+ * What a {@link com.heuristiq.payment.payment.gateway.port.CreateSessionGatewayClient} hands
  * back after starting a checkout session with its gateway.
  *
  * {@code razorpayOrder} is populated ONLY by the Razorpay adapter, so that

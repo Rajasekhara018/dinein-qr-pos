@@ -1,4 +1,4 @@
-package com.railcab.dms.documenttype.domain;
+package com.heuristiq.documents.documenttype.domain;
 
 import java.util.List;
 import java.util.Map;

@@ -1,4 +1,4 @@
-package com.railcab.nms.application.usecase;
+package com.heuristiq.notification.application.usecase;
 
 import java.time.Clock;
 import java.time.Instant;
@@ -9,17 +9,17 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import com.railcab.nms.application.dto.DeliveryReceipt;
-import com.railcab.nms.application.dto.VoiceCallback;
-import com.railcab.nms.application.dto.VoiceResponseEvent;
-import com.railcab.nms.application.port.in.DeliveryReceiptUseCase;
-import com.railcab.nms.application.port.in.VoiceCallbackUseCase;
-import com.railcab.nms.application.port.out.VoiceResponsePublisher;
-import com.railcab.nms.application.usecase.support.VoiceOutcomeMapper;
-import com.railcab.nms.domain.model.NotificationAttempt;
-import com.railcab.nms.domain.model.NotificationChannel;
-import com.railcab.nms.domain.model.VoiceCallOutcome;
-import com.railcab.nms.domain.repository.INotificationAttemptRepository;
+import com.heuristiq.notification.application.dto.DeliveryReceipt;
+import com.heuristiq.notification.application.dto.VoiceCallback;
+import com.heuristiq.notification.application.dto.VoiceResponseEvent;
+import com.heuristiq.notification.application.port.in.DeliveryReceiptUseCase;
+import com.heuristiq.notification.application.port.in.VoiceCallbackUseCase;
+import com.heuristiq.notification.application.port.out.VoiceResponsePublisher;
+import com.heuristiq.notification.application.usecase.support.VoiceOutcomeMapper;
+import com.heuristiq.notification.domain.model.NotificationAttempt;
+import com.heuristiq.notification.domain.model.NotificationChannel;
+import com.heuristiq.notification.domain.model.VoiceCallOutcome;
+import com.heuristiq.notification.domain.repository.INotificationAttemptRepository;
 
 import lombok.RequiredArgsConstructor;
 

@@ -1,7 +1,7 @@
-package com.heuristiq.paymentservice.splitfare.repository.jpa;
+package com.heuristiq.payment.splitfare.repository.jpa;
 
-import com.heuristiq.paymentservice.splitfare.model.SplitFareRequest;
-import com.heuristiq.paymentservice.splitfare.repository.SplitFareRequestRepository;
+import com.heuristiq.payment.splitfare.model.SplitFareRequest;
+import com.heuristiq.payment.splitfare.repository.SplitFareRequestRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 

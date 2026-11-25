@@ -1,4 +1,4 @@
-package com.heuristiq.paymentservice.wallet.port;
+package com.heuristiq.payment.wallet.port;
 
 /**
  * A wallet credit was about to be sent for a record that names no organization (a legacy row). The wallet would fall

@@ -1,9 +1,9 @@
-package com.railcab.nms.domain.model;
+package com.heuristiq.notification.domain.model;
 
 import java.time.LocalDateTime;
 
-import com.railcab.nms.domain.model.NotificationChannel;
-import com.railcab.nms.domain.model.DeliveryStatus;
+import com.heuristiq.notification.domain.model.NotificationChannel;
+import com.heuristiq.notification.domain.model.DeliveryStatus;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

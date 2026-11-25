@@ -1,4 +1,4 @@
-package com.railcab.audit.domain;
+package com.heuristiq.audit.domain;
 
 /**
  * A business-rule failure of the audit service. It carries a {@link Kind} instead of an HTTP status so the domain

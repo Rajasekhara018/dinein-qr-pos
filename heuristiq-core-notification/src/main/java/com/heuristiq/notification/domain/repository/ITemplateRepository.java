@@ -1,10 +1,10 @@
-package com.railcab.nms.domain.repository;
+package com.heuristiq.notification.domain.repository;
 
 import java.util.List;
 import java.util.Optional;
 
-import com.railcab.nms.domain.model.NotificationTemplate;
-import com.railcab.nms.domain.model.NotificationChannel;
+import com.heuristiq.notification.domain.model.NotificationTemplate;
+import com.heuristiq.notification.domain.model.NotificationChannel;
 
 public interface ITemplateRepository {
 

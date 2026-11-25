@@ -1,9 +1,9 @@
-package com.railcab.audit.application;
+package com.heuristiq.audit.application;
 
-import static com.railcab.audit.application.RetentionConstants.*;
-import com.railcab.audit.config.AuditProperties;
-import com.railcab.audit.domain.AuditEvent;
-import com.railcab.audit.domain.AuditEventType;
+import static com.heuristiq.audit.application.RetentionConstants.*;
+import com.heuristiq.audit.config.AuditProperties;
+import com.heuristiq.audit.domain.AuditEvent;
+import com.heuristiq.audit.domain.AuditEventType;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;

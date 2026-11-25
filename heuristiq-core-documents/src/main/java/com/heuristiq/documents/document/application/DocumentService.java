@@ -1,17 +1,17 @@
-package com.railcab.dms.document.application;
+package com.heuristiq.documents.document.application;
 
-import com.railcab.dms.common.DmsCommonConstants;
-import com.railcab.dms.document.audit.DocumentAuditAction;
-import com.railcab.dms.document.audit.DocumentReasonCodes;
-import com.railcab.dms.document.domain.DocumentMetadata;
-import com.railcab.dms.document.dto.DocumentDownloadUrlResponse;
-import com.railcab.dms.document.dto.DocumentResponse;
-import com.railcab.dms.document.dto.RUpload;
-import com.railcab.dms.document.persistence.DocumentMetadataStore;
-import com.railcab.dms.documenttype.domain.DocumentTypeRule;
-import com.railcab.dms.exception.DmsException;
-import com.railcab.dms.security.DmsPrincipal;
-import com.railcab.dms.security.DmsSecurityContext;
+import com.heuristiq.documents.common.DmsCommonConstants;
+import com.heuristiq.documents.document.audit.DocumentAuditAction;
+import com.heuristiq.documents.document.audit.DocumentReasonCodes;
+import com.heuristiq.documents.document.domain.DocumentMetadata;
+import com.heuristiq.documents.document.dto.DocumentDownloadUrlResponse;
+import com.heuristiq.documents.document.dto.DocumentResponse;
+import com.heuristiq.documents.document.dto.RUpload;
+import com.heuristiq.documents.document.persistence.DocumentMetadataStore;
+import com.heuristiq.documents.documenttype.domain.DocumentTypeRule;
+import com.heuristiq.documents.exception.DmsException;
+import com.heuristiq.documents.security.DmsPrincipal;
+import com.heuristiq.documents.security.DmsSecurityContext;
 import io.micrometer.core.instrument.MeterRegistry;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
@@ -39,7 +39,7 @@ public class DocumentService {
     private final MeterRegistry meterRegistry;
     private final Clock clock;
     /** Today in the expiry zone (D12); null in tests that build the service without it (the clock's UTC day is used). */
-    private final com.railcab.dms.expiry.application.DocumentExpiryService expiry;
+    private final com.heuristiq.documents.expiry.application.DocumentExpiryService expiry;
 
     public DocumentService(
             DocumentValidationService validationService,
@@ -69,7 +69,7 @@ public class DocumentService {
             DocumentMetadataStore repository,
             MeterRegistry meterRegistry,
             Clock clock,
-            com.railcab.dms.expiry.application.DocumentExpiryService expiry
+            com.heuristiq.documents.expiry.application.DocumentExpiryService expiry
     ) {
         this.expiry = expiry;
         this.validationService = validationService;

@@ -1,7 +1,7 @@
-package com.railcab.nms.adapters.in.web.readiness;
+package com.heuristiq.notification.adapters.in.web.readiness;
 
-import com.railcab.nms.application.usecase.readiness.NmsReadinessService;
-import com.railcab.nms.shared.CommonResponseObject;
+import com.heuristiq.notification.application.usecase.readiness.NmsReadinessService;
+import com.heuristiq.notification.shared.CommonResponseObject;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

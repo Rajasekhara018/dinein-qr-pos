@@ -1,4 +1,4 @@
-package com.railcab.dms.time;
+package com.heuristiq.documents.time;
 
 import java.time.Clock;
 import java.time.Instant;

@@ -1,10 +1,10 @@
-package com.heuristiq.paymentservice.gatewayaudit.admin;
+package com.heuristiq.payment.gatewayaudit.admin;
 
-import com.heuristiq.paymentservice.gatewayaudit.GatewayAuditConstants;
-import com.heuristiq.paymentservice.gatewayaudit.model.GatewayCallOperation;
-import com.heuristiq.paymentservice.gatewayaudit.repository.PaymentGatewayCallRepository;
-import com.heuristiq.paymentservice.payment.repository.PaymentRepository;
-import com.heuristiq.paymentservice.shared.exception.NotFoundException;
+import com.heuristiq.payment.gatewayaudit.GatewayAuditConstants;
+import com.heuristiq.payment.gatewayaudit.model.GatewayCallOperation;
+import com.heuristiq.payment.gatewayaudit.repository.PaymentGatewayCallRepository;
+import com.heuristiq.payment.payment.repository.PaymentRepository;
+import com.heuristiq.payment.shared.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;

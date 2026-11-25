@@ -1,4 +1,4 @@
-package com.railcab.dms.common.lock;
+package com.heuristiq.documents.common.lock;
 
 import java.time.Duration;
 

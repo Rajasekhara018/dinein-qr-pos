@@ -1,4 +1,4 @@
-package com.railcab.nms.infrastructure.config;
+package com.heuristiq.notification.infrastructure.config;
 
 /** Fixed values of {@link KafkaListenerStarter}. What may differ per environment is read from {@code nms.kafka.listener.*}. */
 public final class KafkaListenerStartConstants {

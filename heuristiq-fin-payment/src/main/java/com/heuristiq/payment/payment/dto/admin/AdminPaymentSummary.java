@@ -1,6 +1,6 @@
-package com.heuristiq.paymentservice.payment.dto.admin;
+package com.heuristiq.payment.payment.dto.admin;
 
-import com.heuristiq.paymentservice.shared.money.Money;
+import com.heuristiq.payment.shared.money.Money;
 import java.math.BigDecimal;
 import java.util.Map;
 

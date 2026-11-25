@@ -1,4 +1,4 @@
-package com.railcab.nms.adapters.in.web.callback;
+package com.heuristiq.notification.adapters.in.web.callback;
 
 import java.nio.charset.StandardCharsets;
 import java.time.Clock;
@@ -27,12 +27,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.railcab.nms.application.dto.DeliveryReceipt;
-import com.railcab.nms.application.dto.ReceiptOutcome;
-import com.railcab.nms.application.port.in.CallbackAuthenticationUseCase;
-import com.railcab.nms.application.port.in.DeliveryReceiptUseCase;
-import com.railcab.nms.domain.model.DeliveryStatus;
-import com.railcab.nms.shared.CommonResponseObject;
+import com.heuristiq.notification.application.dto.DeliveryReceipt;
+import com.heuristiq.notification.application.dto.ReceiptOutcome;
+import com.heuristiq.notification.application.port.in.CallbackAuthenticationUseCase;
+import com.heuristiq.notification.application.port.in.DeliveryReceiptUseCase;
+import com.heuristiq.notification.domain.model.DeliveryStatus;
+import com.heuristiq.notification.shared.CommonResponseObject;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

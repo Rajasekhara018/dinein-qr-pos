@@ -1,10 +1,10 @@
-package com.railcab.dms.centralaudit.postgres;
+package com.heuristiq.documents.centralaudit.postgres;
 
-import com.railcab.dms.common.DmsCommonConstants;
-import com.railcab.dms.centralaudit.AuditOutboxStore;
-import com.railcab.dms.centralaudit.CentralAuditConstants;
-import com.railcab.dms.centralaudit.OutboxEntry;
-import com.railcab.dms.centralaudit.OutboxStatus;
+import com.heuristiq.documents.common.DmsCommonConstants;
+import com.heuristiq.documents.centralaudit.AuditOutboxStore;
+import com.heuristiq.documents.centralaudit.CentralAuditConstants;
+import com.heuristiq.documents.centralaudit.OutboxEntry;
+import com.heuristiq.documents.centralaudit.OutboxStatus;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.PageRequest;

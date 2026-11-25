@@ -1,4 +1,4 @@
-package com.railcab.nms.application.security;
+package com.heuristiq.notification.application.security;
 
 import java.security.Principal;
 

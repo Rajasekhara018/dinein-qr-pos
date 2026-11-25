@@ -1,16 +1,16 @@
-package com.railcab.audit.application;
+package com.heuristiq.audit.application;
 
-import com.railcab.audit.domain.AuditException;
-import com.railcab.audit.domain.PageResult;
-import com.railcab.audit.config.AuditProperties;
-import com.railcab.audit.domain.AppChannel;
-import com.railcab.audit.domain.AuditEvent;
-import com.railcab.audit.domain.AuditEventFilter;
-import com.railcab.audit.domain.AuditEventType;
-import com.railcab.audit.domain.AuditFacets;
-import com.railcab.audit.domain.AuditOutcome;
-import com.railcab.audit.domain.AuditEventRepository;
-import com.railcab.audit.domain.TenantScope;
+import com.heuristiq.audit.domain.AuditException;
+import com.heuristiq.audit.domain.PageResult;
+import com.heuristiq.audit.config.AuditProperties;
+import com.heuristiq.audit.domain.AppChannel;
+import com.heuristiq.audit.domain.AuditEvent;
+import com.heuristiq.audit.domain.AuditEventFilter;
+import com.heuristiq.audit.domain.AuditEventType;
+import com.heuristiq.audit.domain.AuditFacets;
+import com.heuristiq.audit.domain.AuditOutcome;
+import com.heuristiq.audit.domain.AuditEventRepository;
+import com.heuristiq.audit.domain.TenantScope;
 import org.springframework.stereotype.Service;
 
 import java.time.Clock;

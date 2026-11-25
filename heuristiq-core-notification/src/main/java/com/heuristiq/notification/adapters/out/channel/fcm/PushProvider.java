@@ -1,8 +1,8 @@
-package com.railcab.nms.adapters.out.channel.fcm;
+package com.heuristiq.notification.adapters.out.channel.fcm;
 
 import java.util.Map;
 
-import com.railcab.nms.application.port.out.ProviderSendResult;
+import com.heuristiq.notification.application.port.out.ProviderSendResult;
 
 /**
  * SPI for mobile push delivery providers.

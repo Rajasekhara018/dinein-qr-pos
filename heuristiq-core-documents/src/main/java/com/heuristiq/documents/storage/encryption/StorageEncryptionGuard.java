@@ -1,8 +1,8 @@
-package com.railcab.dms.storage.encryption;
+package com.heuristiq.documents.storage.encryption;
 
-import com.railcab.dms.config.DmsProperties;
-import com.railcab.dms.exception.DmsException;
-import com.railcab.dms.storage.StorageProviderRegistry;
+import com.heuristiq.documents.config.DmsProperties;
+import com.heuristiq.documents.exception.DmsException;
+import com.heuristiq.documents.storage.StorageProviderRegistry;
 import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

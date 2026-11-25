@@ -1,6 +1,6 @@
-package com.heuristiq.paymentservice.gatewayaudit;
+package com.heuristiq.payment.gatewayaudit;
 
-import com.heuristiq.paymentservice.shared.PaymentCommonConstants;
+import com.heuristiq.payment.shared.PaymentCommonConstants;
 
 /**
  * Fixed values of the payment-gateway call log and the audit outbox. Per-environment values

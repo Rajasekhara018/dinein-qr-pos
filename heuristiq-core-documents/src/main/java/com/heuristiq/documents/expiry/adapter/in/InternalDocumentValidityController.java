@@ -1,4 +1,4 @@
-package com.railcab.dms.expiry.adapter.in;
+package com.heuristiq.documents.expiry.adapter.in;
 
 import java.util.List;
 import java.util.Map;
@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.railcab.dms.common.dto.CommonResponseObject;
-import com.railcab.dms.expiry.application.DocumentExpiryService;
+import com.heuristiq.documents.common.dto.CommonResponseObject;
+import com.heuristiq.documents.expiry.application.DocumentExpiryService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

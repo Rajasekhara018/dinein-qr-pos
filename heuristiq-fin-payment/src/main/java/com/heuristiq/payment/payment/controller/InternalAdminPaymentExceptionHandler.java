@@ -1,8 +1,8 @@
-package com.heuristiq.paymentservice.payment.controller;
+package com.heuristiq.payment.payment.controller;
 
-import com.heuristiq.paymentservice.shared.exception.ConflictException;
-import com.heuristiq.paymentservice.shared.exception.NotFoundException;
-import com.heuristiq.paymentservice.shared.exception.PaymentServiceException;
+import com.heuristiq.payment.shared.exception.ConflictException;
+import com.heuristiq.payment.shared.exception.NotFoundException;
+import com.heuristiq.payment.shared.exception.PaymentServiceException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;

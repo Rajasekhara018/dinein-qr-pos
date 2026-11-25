@@ -1,7 +1,7 @@
-package com.heuristiq.paymentservice.wallet.repository.jpa;
+package com.heuristiq.payment.wallet.repository.jpa;
 
-import com.heuristiq.paymentservice.wallet.model.WalletTransaction;
-import com.heuristiq.paymentservice.wallet.repository.WalletTransactionRepository;
+import com.heuristiq.payment.wallet.model.WalletTransaction;
+import com.heuristiq.payment.wallet.repository.WalletTransactionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 

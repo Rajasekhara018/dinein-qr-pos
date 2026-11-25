@@ -1,6 +1,6 @@
-package com.heuristiq.paymentservice.wallet.repository.jpa;
+package com.heuristiq.payment.wallet.repository.jpa;
 
-import com.heuristiq.paymentservice.wallet.repository.WalletAccountRepository;
+import com.heuristiq.payment.wallet.repository.WalletAccountRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;

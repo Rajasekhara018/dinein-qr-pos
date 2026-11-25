@@ -1,6 +1,6 @@
-package com.railcab.nms.adapters.in.web.dispatch;
+package com.heuristiq.notification.adapters.in.web.dispatch;
 
-import com.railcab.nms.adapters.in.web.WebApiConstants;
+import com.heuristiq.notification.adapters.in.web.WebApiConstants;
 
 import java.util.List;
 
@@ -12,14 +12,14 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.railcab.nms.adapters.in.OriginHeaders;
-import com.railcab.nms.application.dto.NotificationDispatchResult;
-import com.railcab.nms.application.dto.NotificationRequest;
-import com.railcab.nms.application.port.in.NotificationDispatchUseCase;
-import com.railcab.nms.shared.CommonRequestMapper;
-import com.railcab.nms.shared.CommonRequestObject;
-import com.railcab.nms.shared.CommonResponseObject;
-import com.railcab.nms.shared.RequestObjectType;
+import com.heuristiq.notification.adapters.in.OriginHeaders;
+import com.heuristiq.notification.application.dto.NotificationDispatchResult;
+import com.heuristiq.notification.application.dto.NotificationRequest;
+import com.heuristiq.notification.application.port.in.NotificationDispatchUseCase;
+import com.heuristiq.notification.shared.CommonRequestMapper;
+import com.heuristiq.notification.shared.CommonRequestObject;
+import com.heuristiq.notification.shared.CommonResponseObject;
+import com.heuristiq.notification.shared.RequestObjectType;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

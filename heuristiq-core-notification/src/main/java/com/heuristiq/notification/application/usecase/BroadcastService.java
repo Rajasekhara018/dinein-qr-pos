@@ -1,18 +1,18 @@
-package com.railcab.nms.application.usecase;
+package com.heuristiq.notification.application.usecase;
 
-import com.railcab.nms.application.security.TenantAccess;
+import com.heuristiq.notification.application.security.TenantAccess;
 import java.time.LocalDateTime;
 
 import org.springframework.stereotype.Service;
 
-import com.railcab.nms.domain.model.Broadcast;
-import com.railcab.nms.domain.model.BroadcastStatus;
-import com.railcab.nms.domain.repository.IBroadcastRepository;
-import com.railcab.nms.domain.repository.PageQuery;
-import com.railcab.nms.domain.repository.PageResult;
-import com.railcab.nms.application.dto.CreateBroadcastRequest;
-import com.railcab.nms.application.port.in.BroadcastUseCase;
-import com.railcab.nms.shared.NmsNotFoundException;
+import com.heuristiq.notification.domain.model.Broadcast;
+import com.heuristiq.notification.domain.model.BroadcastStatus;
+import com.heuristiq.notification.domain.repository.IBroadcastRepository;
+import com.heuristiq.notification.domain.repository.PageQuery;
+import com.heuristiq.notification.domain.repository.PageResult;
+import com.heuristiq.notification.application.dto.CreateBroadcastRequest;
+import com.heuristiq.notification.application.port.in.BroadcastUseCase;
+import com.heuristiq.notification.shared.NmsNotFoundException;
 
 import lombok.RequiredArgsConstructor;
 

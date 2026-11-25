@@ -1,4 +1,4 @@
-package com.railcab.nms.application.usecase;
+package com.heuristiq.notification.application.usecase;
 
 import java.time.LocalDateTime;
 
@@ -6,12 +6,12 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import com.railcab.nms.infrastructure.config.NmsProperties;
-import com.railcab.nms.domain.model.NotificationMessage;
-import com.railcab.nms.domain.model.NotificationMessageStatus;
-import com.railcab.nms.domain.repository.INotificationMessageRepository;
-import com.railcab.nms.application.dto.NotificationOrigin;
-import com.railcab.nms.application.dto.NotificationRequest;
+import com.heuristiq.notification.infrastructure.config.NmsProperties;
+import com.heuristiq.notification.domain.model.NotificationMessage;
+import com.heuristiq.notification.domain.model.NotificationMessageStatus;
+import com.heuristiq.notification.domain.repository.INotificationMessageRepository;
+import com.heuristiq.notification.application.dto.NotificationOrigin;
+import com.heuristiq.notification.application.dto.NotificationRequest;
 
 import lombok.RequiredArgsConstructor;
 

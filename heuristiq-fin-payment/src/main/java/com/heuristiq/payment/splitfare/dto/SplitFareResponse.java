@@ -1,8 +1,8 @@
-package com.heuristiq.paymentservice.splitfare.dto;
+package com.heuristiq.payment.splitfare.dto;
 
-import com.heuristiq.paymentservice.shared.money.Money;
-import com.heuristiq.paymentservice.splitfare.model.SplitFareRequest;
-import com.heuristiq.paymentservice.splitfare.model.SplitParticipant;
+import com.heuristiq.payment.shared.money.Money;
+import com.heuristiq.payment.splitfare.model.SplitFareRequest;
+import com.heuristiq.payment.splitfare.model.SplitParticipant;
 import java.time.LocalDateTime;
 import java.util.List;
 

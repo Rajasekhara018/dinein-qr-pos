@@ -1,4 +1,4 @@
-package com.railcab.nms.application.port.out;
+package com.heuristiq.notification.application.port.out;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package com.railcab.audit.domain;
+package com.heuristiq.audit.domain;
 
 /** What kind of fact an audit event records. Stored as its name; the retention class depends on it. */
 public enum AuditEventType {

@@ -1,4 +1,4 @@
-package com.heuristiq.paymentservice.payment.lifecycle;
+package com.heuristiq.payment.payment.lifecycle;
 
 /**
  * Names what is driving the status change currently being made on this thread (a webhook, the

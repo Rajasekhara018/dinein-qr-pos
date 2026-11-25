@@ -1,4 +1,4 @@
-package com.railcab.nms.infrastructure.cache;
+package com.heuristiq.notification.infrastructure.cache;
 
 import java.time.Duration;
 import java.util.Optional;

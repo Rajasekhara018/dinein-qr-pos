@@ -1,4 +1,4 @@
-package com.railcab.nms.adapters.out.persistence.mongo;
+package com.heuristiq.notification.adapters.out.persistence.mongo;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -8,8 +8,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 
-import com.railcab.nms.domain.model.BroadcastStatus;
-import com.railcab.nms.adapters.out.persistence.mongo.BroadcastDocument;
+import com.heuristiq.notification.domain.model.BroadcastStatus;
+import com.heuristiq.notification.adapters.out.persistence.mongo.BroadcastDocument;
 
 interface BroadcastMongoSpringRepository extends MongoRepository<BroadcastDocument, String> {
 

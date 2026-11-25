@@ -1,4 +1,4 @@
-package com.railcab.dms.common;
+package com.heuristiq.documents.common;
 
 /**
  * Fixed values shared by more than one DMS feature: wire values (header names, the bearer prefix, public paths), the

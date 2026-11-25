@@ -1,4 +1,4 @@
-package com.railcab.dms.time;
+package com.heuristiq.documents.time;
 
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;

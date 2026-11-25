@@ -1,15 +1,15 @@
-package com.railcab.dms.documenttype.adapter.out.cache;
+package com.heuristiq.documents.documenttype.adapter.out.cache;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.Ticker;
-import com.railcab.dms.common.cache.DmsCacheConstants;
-import com.railcab.dms.common.cache.DmsCacheProperties;
-import com.railcab.dms.documenttype.application.DocumentTypeRuleInvalidator;
-import com.railcab.dms.documenttype.domain.DefaultDocumentTypes;
-import com.railcab.dms.documenttype.application.DocumentTypeRules;
-import com.railcab.dms.documenttype.domain.DocumentTypeException;
-import com.railcab.dms.documenttype.domain.DocumentTypeRule;
+import com.heuristiq.documents.common.cache.DmsCacheConstants;
+import com.heuristiq.documents.common.cache.DmsCacheProperties;
+import com.heuristiq.documents.documenttype.application.DocumentTypeRuleInvalidator;
+import com.heuristiq.documents.documenttype.domain.DefaultDocumentTypes;
+import com.heuristiq.documents.documenttype.application.DocumentTypeRules;
+import com.heuristiq.documents.documenttype.domain.DocumentTypeException;
+import com.heuristiq.documents.documenttype.domain.DocumentTypeRule;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Timer;
 import io.micrometer.core.instrument.binder.cache.CaffeineCacheMetrics;

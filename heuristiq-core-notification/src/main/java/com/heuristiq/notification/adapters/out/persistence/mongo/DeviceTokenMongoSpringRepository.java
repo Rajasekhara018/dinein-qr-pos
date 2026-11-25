@@ -1,4 +1,4 @@
-package com.railcab.nms.adapters.out.persistence.mongo;
+package com.heuristiq.notification.adapters.out.persistence.mongo;
 
 import org.springframework.data.mongodb.repository.Query;
 import java.util.Collection;
@@ -7,7 +7,7 @@ import java.util.Optional;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 
-import com.railcab.nms.adapters.out.persistence.mongo.DeviceTokenDocument;
+import com.heuristiq.notification.adapters.out.persistence.mongo.DeviceTokenDocument;
 
 interface DeviceTokenMongoSpringRepository extends MongoRepository<DeviceTokenDocument, String> {
 

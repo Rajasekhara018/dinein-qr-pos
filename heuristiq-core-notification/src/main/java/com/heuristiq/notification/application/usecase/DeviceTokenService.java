@@ -1,11 +1,11 @@
-package com.railcab.nms.application.usecase;
+package com.heuristiq.notification.application.usecase;
 
-import com.railcab.nms.application.security.TenantAccess;
+import com.heuristiq.notification.application.security.TenantAccess;
 import org.springframework.stereotype.Service;
 
-import com.railcab.nms.application.port.in.DeviceTokenUseCase;
-import com.railcab.nms.domain.model.DeviceRegistration;
-import com.railcab.nms.domain.repository.IDeviceTokenRepository;
+import com.heuristiq.notification.application.port.in.DeviceTokenUseCase;
+import com.heuristiq.notification.domain.model.DeviceRegistration;
+import com.heuristiq.notification.domain.repository.IDeviceTokenRepository;
 
 import lombok.RequiredArgsConstructor;
 

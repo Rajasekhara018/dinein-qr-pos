@@ -1,4 +1,4 @@
-package com.railcab.nms.adapters.out.persistence.mongo;
+package com.heuristiq.notification.adapters.out.persistence.mongo;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -7,13 +7,13 @@ import java.util.Optional;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Repository;
 
-import com.railcab.nms.adapters.out.persistence.PaginationMapper;
-import com.railcab.nms.domain.model.Broadcast;
-import com.railcab.nms.domain.repository.IBroadcastRepository;
-import com.railcab.nms.domain.repository.PageQuery;
-import com.railcab.nms.domain.repository.PageResult;
-import com.railcab.nms.domain.model.BroadcastStatus;
-import com.railcab.nms.adapters.out.persistence.mongo.BroadcastDocument;
+import com.heuristiq.notification.adapters.out.persistence.PaginationMapper;
+import com.heuristiq.notification.domain.model.Broadcast;
+import com.heuristiq.notification.domain.repository.IBroadcastRepository;
+import com.heuristiq.notification.domain.repository.PageQuery;
+import com.heuristiq.notification.domain.repository.PageResult;
+import com.heuristiq.notification.domain.model.BroadcastStatus;
+import com.heuristiq.notification.adapters.out.persistence.mongo.BroadcastDocument;
 
 @Repository
 @ConditionalOnProperty(prefix = "nms.persistence", name = "type", havingValue = "mongo", matchIfMissing = true)

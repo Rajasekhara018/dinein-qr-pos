@@ -1,6 +1,6 @@
-package com.heuristiq.paymentservice.gatewayaudit.admin;
+package com.heuristiq.payment.gatewayaudit.admin;
 
-import com.heuristiq.paymentservice.gatewayaudit.model.PaymentGatewayCall;
+import com.heuristiq.payment.gatewayaudit.model.PaymentGatewayCall;
 
 import java.time.Instant;
 import java.time.ZoneOffset;

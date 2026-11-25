@@ -1,11 +1,11 @@
-package com.railcab.dms.readiness.application;
+package com.heuristiq.documents.readiness.application;
 
-import com.railcab.dms.documenttype.application.DocumentTypeQueryService;
-import com.railcab.dms.documenttype.domain.DocumentTypeRepository;
-import com.railcab.dms.readiness.application.ReadinessCheckRunner.CheckTask;
-import com.railcab.dms.readiness.domain.ReadinessCheck;
-import com.railcab.dms.readiness.domain.ReadinessReport;
-import com.railcab.dms.readiness.domain.ReadinessStatus;
+import com.heuristiq.documents.documenttype.application.DocumentTypeQueryService;
+import com.heuristiq.documents.documenttype.domain.DocumentTypeRepository;
+import com.heuristiq.documents.readiness.application.ReadinessCheckRunner.CheckTask;
+import com.heuristiq.documents.readiness.domain.ReadinessCheck;
+import com.heuristiq.documents.readiness.domain.ReadinessReport;
+import com.heuristiq.documents.readiness.domain.ReadinessStatus;
 
 import java.time.Clock;
 import java.time.Duration;

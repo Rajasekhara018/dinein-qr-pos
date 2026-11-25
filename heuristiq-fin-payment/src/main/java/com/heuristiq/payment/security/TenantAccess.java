@@ -1,4 +1,4 @@
-package com.heuristiq.paymentservice.security;
+package com.heuristiq.payment.security;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;

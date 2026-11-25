@@ -1,4 +1,4 @@
-package com.railcab.nms.time;
+package com.heuristiq.notification.time;
 
 import java.time.ZoneId;
 

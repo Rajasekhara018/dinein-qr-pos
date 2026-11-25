@@ -1,7 +1,7 @@
-package com.railcab.nms.infrastructure.config;
+package com.heuristiq.notification.infrastructure.config;
 
-import com.railcab.nms.application.usecase.readiness.NmsReadinessService;
-import com.railcab.nms.domain.repository.ITemplateRepository;
+import com.heuristiq.notification.application.usecase.readiness.NmsReadinessService;
+import com.heuristiq.notification.domain.repository.ITemplateRepository;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

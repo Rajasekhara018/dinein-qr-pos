@@ -1,18 +1,18 @@
-package com.railcab.nms.adapters.out.persistence.jpa;
+package com.heuristiq.notification.adapters.out.persistence.jpa;
 
-import com.railcab.nms.domain.repository.TenantScope;
+import com.heuristiq.notification.domain.repository.TenantScope;
 import java.time.LocalDateTime;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.stereotype.Repository;
 
-import com.railcab.nms.adapters.out.persistence.PaginationMapper;
-import com.railcab.nms.domain.model.NotificationLog;
-import com.railcab.nms.domain.repository.INotificationLogRepository;
-import com.railcab.nms.domain.repository.PageQuery;
-import com.railcab.nms.domain.repository.PageResult;
-import com.railcab.nms.domain.model.NotificationChannel;
-import com.railcab.nms.adapters.out.persistence.jpa.NotificationLogEntity;
+import com.heuristiq.notification.adapters.out.persistence.PaginationMapper;
+import com.heuristiq.notification.domain.model.NotificationLog;
+import com.heuristiq.notification.domain.repository.INotificationLogRepository;
+import com.heuristiq.notification.domain.repository.PageQuery;
+import com.heuristiq.notification.domain.repository.PageResult;
+import com.heuristiq.notification.domain.model.NotificationChannel;
+import com.heuristiq.notification.adapters.out.persistence.jpa.NotificationLogEntity;
 
 @Repository
 @ConditionalOnExpression("'${nms.persistence.type:mongo}' == 'mysql' or '${nms.persistence.type:mongo}' == 'postgres'")

@@ -1,4 +1,4 @@
-package com.railcab.serviceregistry;
+package com.heuristiq.registry;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

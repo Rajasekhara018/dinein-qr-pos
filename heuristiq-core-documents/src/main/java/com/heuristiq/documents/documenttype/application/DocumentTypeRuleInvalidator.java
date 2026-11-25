@@ -1,4 +1,4 @@
-package com.railcab.dms.documenttype.application;
+package com.heuristiq.documents.documenttype.application;
 
 /**
  * Port the document-type writer calls after a change is committed, so a cached rule is dropped at once on this

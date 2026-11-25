@@ -1,4 +1,4 @@
-package com.heuristiq.paymentservice.salesettlement.domain;
+package com.heuristiq.payment.salesettlement.domain;
 
 /**
  * Fixed values of the Payment -> Wallet sale settlement (docs/FRANCHISE_PLAN.md step 8, decision D7).

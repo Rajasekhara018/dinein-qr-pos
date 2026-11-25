@@ -1,4 +1,4 @@
-package com.railcab.dms.document.application;
+package com.heuristiq.documents.document.application;
 
 /** Paths, header and messages of the internal download-link endpoint. */
 public final class InternalLinkConstants {

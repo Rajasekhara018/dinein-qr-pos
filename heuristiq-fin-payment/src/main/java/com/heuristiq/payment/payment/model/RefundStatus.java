@@ -1,4 +1,4 @@
-package com.heuristiq.paymentservice.payment.model;
+package com.heuristiq.payment.payment.model;
 
 /** Lifecycle of one {@link PaymentRefund}. PROCESSING and COMPLETED both count against the refundable amount. */
 public enum RefundStatus {

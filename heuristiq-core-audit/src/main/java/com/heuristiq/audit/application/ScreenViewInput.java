@@ -1,4 +1,4 @@
-package com.railcab.audit.application;
+package com.heuristiq.audit.application;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 

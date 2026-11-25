@@ -1,4 +1,4 @@
-package com.railcab.nms.application.usecase.support;
+package com.heuristiq.notification.application.usecase.support;
 
 /**
  * Always-on masking for recipients that leave NMS (attempt records, audit events). Unlike the

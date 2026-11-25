@@ -1,4 +1,4 @@
-package com.railcab.nms.adapters.in.web.callback;
+package com.heuristiq.notification.adapters.in.web.callback;
 
 import java.util.List;
 import java.util.Map;
@@ -19,10 +19,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.railcab.nms.application.dto.VoiceCallback;
-import com.railcab.nms.application.port.in.CallbackAuthenticationUseCase;
-import com.railcab.nms.application.port.in.VoiceCallbackUseCase;
-import com.railcab.nms.shared.CommonResponseObject;
+import com.heuristiq.notification.application.dto.VoiceCallback;
+import com.heuristiq.notification.application.port.in.CallbackAuthenticationUseCase;
+import com.heuristiq.notification.application.port.in.VoiceCallbackUseCase;
+import com.heuristiq.notification.shared.CommonResponseObject;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

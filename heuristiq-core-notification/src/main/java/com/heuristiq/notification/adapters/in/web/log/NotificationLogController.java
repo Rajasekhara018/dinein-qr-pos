@@ -1,6 +1,6 @@
-package com.railcab.nms.adapters.in.web.log;
+package com.heuristiq.notification.adapters.in.web.log;
 
-import com.railcab.nms.adapters.in.web.WebApiConstants;
+import com.heuristiq.notification.adapters.in.web.WebApiConstants;
 
 import java.time.LocalDateTime;
 
@@ -14,10 +14,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.railcab.nms.adapters.in.web.WebPaginationSupport;
-import com.railcab.nms.application.port.in.NotificationLogUseCase;
-import com.railcab.nms.domain.model.NotificationChannel;
-import com.railcab.nms.shared.CommonResponseObject;
+import com.heuristiq.notification.adapters.in.web.WebPaginationSupport;
+import com.heuristiq.notification.application.port.in.NotificationLogUseCase;
+import com.heuristiq.notification.domain.model.NotificationChannel;
+import com.heuristiq.notification.shared.CommonResponseObject;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

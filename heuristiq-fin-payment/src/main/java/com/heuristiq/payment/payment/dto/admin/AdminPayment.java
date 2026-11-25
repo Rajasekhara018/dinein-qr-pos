@@ -1,7 +1,7 @@
-package com.heuristiq.paymentservice.payment.dto.admin;
+package com.heuristiq.payment.payment.dto.admin;
 
-import com.heuristiq.paymentservice.shared.money.Money;
-import com.heuristiq.paymentservice.payment.model.Payment;
+import com.heuristiq.payment.shared.money.Money;
+import com.heuristiq.payment.payment.model.Payment;
 
 import java.time.Instant;
 import java.time.LocalDateTime;

@@ -1,4 +1,4 @@
-package com.heuristiq.paymentservice.events;
+package com.heuristiq.payment.events;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.bind.DefaultValue;

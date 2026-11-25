@@ -1,4 +1,4 @@
-package com.railcab.nms.application.usecase;
+package com.heuristiq.notification.application.usecase;
 
 /** Fixed limits of NMS's application services (audit outbox drain and delivery-receipt handling). */
 final class NotificationUseCaseConstants {

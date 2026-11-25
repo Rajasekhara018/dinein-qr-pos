@@ -1,4 +1,4 @@
-package com.railcab.audit.domain;
+package com.heuristiq.audit.domain;
 
 import java.util.List;
 import java.util.function.Function;

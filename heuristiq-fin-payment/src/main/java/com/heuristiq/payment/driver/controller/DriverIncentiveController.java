@@ -1,9 +1,9 @@
-package com.heuristiq.paymentservice.driver.controller;
+package com.heuristiq.payment.driver.controller;
 
-import com.heuristiq.paymentservice.driver.dto.DriverIncentiveResponse;
-import com.heuristiq.paymentservice.driver.service.DriverIncentiveService;
-import com.heuristiq.paymentservice.security.OwnershipGuard;
-import com.heuristiq.paymentservice.shared.dto.ResponseObject;
+import com.heuristiq.payment.driver.dto.DriverIncentiveResponse;
+import com.heuristiq.payment.driver.service.DriverIncentiveService;
+import com.heuristiq.payment.security.OwnershipGuard;
+import com.heuristiq.payment.shared.dto.ResponseObject;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

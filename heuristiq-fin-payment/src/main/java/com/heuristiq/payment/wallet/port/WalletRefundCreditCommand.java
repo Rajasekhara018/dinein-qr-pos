@@ -1,6 +1,6 @@
-package com.heuristiq.paymentservice.wallet.port;
+package com.heuristiq.payment.wallet.port;
 
-import com.heuristiq.paymentservice.shared.money.Money;
+import com.heuristiq.payment.shared.money.Money;
 
 /**
  * One refund to credit to a customer's wallet.

@@ -1,6 +1,6 @@
-package com.railcab.nms.application.port.out;
+package com.heuristiq.notification.application.port.out;
 
-import com.railcab.nms.application.dto.VoiceResponseEvent;
+import com.heuristiq.notification.application.dto.VoiceResponseEvent;
 
 /** Publishes the answer of an automated voice call to the services waiting for it (Kafka {@code nms-voice-responses}). */
 public interface VoiceResponsePublisher {

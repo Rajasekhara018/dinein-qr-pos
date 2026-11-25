@@ -1,9 +1,9 @@
-package com.heuristiq.paymentservice.gatewayaudit;
+package com.heuristiq.payment.gatewayaudit;
 
 import com.heuristiq.resilient.CorrelationIdPropagation;
-import com.heuristiq.paymentservice.gatewayaudit.model.WebhookOutcome;
-import com.heuristiq.paymentservice.payment.model.PaymentWebhookEvent;
-import com.heuristiq.paymentservice.payment.repository.PaymentWebhookEventRepository;
+import com.heuristiq.payment.gatewayaudit.model.WebhookOutcome;
+import com.heuristiq.payment.payment.model.PaymentWebhookEvent;
+import com.heuristiq.payment.payment.repository.PaymentWebhookEventRepository;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import lombok.extern.slf4j.Slf4j;

@@ -1,4 +1,4 @@
-package com.railcab.nms.infrastructure.config;
+package com.heuristiq.notification.infrastructure.config;
 
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.common.TopicPartition;

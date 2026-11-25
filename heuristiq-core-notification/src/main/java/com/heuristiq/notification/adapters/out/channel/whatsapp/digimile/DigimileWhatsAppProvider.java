@@ -1,6 +1,6 @@
-package com.railcab.nms.adapters.out.channel.whatsapp.digimile;
+package com.heuristiq.notification.adapters.out.channel.whatsapp.digimile;
 
-import com.railcab.nms.adapters.out.channel.VendorPhoneFormat;
+import com.heuristiq.notification.adapters.out.channel.VendorPhoneFormat;
 import java.time.Duration;
 import java.util.Map;
 
@@ -11,12 +11,12 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import com.railcab.nms.infrastructure.config.NmsProperties;
-import com.railcab.nms.adapters.out.channel.whatsapp.WhatsAppProvider;
+import com.heuristiq.notification.infrastructure.config.NmsProperties;
+import com.heuristiq.notification.adapters.out.channel.whatsapp.WhatsAppProvider;
 
 import lombok.RequiredArgsConstructor;
 
-import static com.railcab.nms.application.port.out.ChannelProviderConstants.*;
+import static com.heuristiq.notification.application.port.out.ChannelProviderConstants.*;
 
 @Component("digimileWhatsAppProvider")
 @RequiredArgsConstructor

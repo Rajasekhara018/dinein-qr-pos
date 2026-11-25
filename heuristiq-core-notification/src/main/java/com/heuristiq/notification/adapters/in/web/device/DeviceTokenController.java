@@ -1,8 +1,8 @@
-package com.railcab.nms.adapters.in.web.device;
+package com.heuristiq.notification.adapters.in.web.device;
 
-import com.railcab.nms.adapters.in.web.WebApiConstants;
+import com.heuristiq.notification.adapters.in.web.WebApiConstants;
 
-import com.railcab.nms.domain.model.DeviceRegistration;
+import com.heuristiq.notification.domain.model.DeviceRegistration;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.railcab.nms.application.port.in.DeviceTokenUseCase;
-import com.railcab.nms.shared.CommonResponseObject;
+import com.heuristiq.notification.application.port.in.DeviceTokenUseCase;
+import com.heuristiq.notification.shared.CommonResponseObject;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;

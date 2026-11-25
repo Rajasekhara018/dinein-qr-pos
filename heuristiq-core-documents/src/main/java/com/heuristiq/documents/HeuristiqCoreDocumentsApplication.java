@@ -1,6 +1,6 @@
-package com.railcab.dms;
+package com.heuristiq.documents;
 
-import com.railcab.dms.config.DmsProperties;
+import com.heuristiq.documents.config.DmsProperties;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.data.jpa.JpaRepositoriesAutoConfiguration;
@@ -12,7 +12,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
  * JPA/DataSource autoconfiguration is excluded here because it is wired manually and
- * conditionally in {@link com.railcab.dms.config.PostgresPersistenceConfig} only when
+ * conditionally in {@link com.heuristiq.documents.config.PostgresPersistenceConfig} only when
  * {@code railcab.dms.persistence.provider=postgres}. Without this exclusion, Boot would try
  * to build a DataSource on startup for every deployment just because the Postgres driver is
  * on the classpath, breaking the default MongoDB-backed deployment.

@@ -1,10 +1,10 @@
-package com.railcab.audit.adapter.out.persistence.mongo;
+package com.heuristiq.audit.adapter.out.persistence.mongo;
 
-import static com.railcab.audit.adapter.out.persistence.PersistenceConstants.*;
-import com.railcab.audit.domain.AppChannel;
-import com.railcab.audit.domain.AuditEvent;
-import com.railcab.audit.domain.AuditEventType;
-import com.railcab.audit.domain.AuditOutcome;
+import static com.heuristiq.audit.adapter.out.persistence.PersistenceConstants.*;
+import com.heuristiq.audit.domain.AppChannel;
+import com.heuristiq.audit.domain.AuditEvent;
+import com.heuristiq.audit.domain.AuditEventType;
+import com.heuristiq.audit.domain.AuditOutcome;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;

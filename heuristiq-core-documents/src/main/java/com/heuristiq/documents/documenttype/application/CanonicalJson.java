@@ -1,6 +1,6 @@
-package com.railcab.dms.documenttype.application;
+package com.heuristiq.documents.documenttype.application;
 
-import com.railcab.dms.common.DmsCommonConstants;
+import com.heuristiq.documents.common.DmsCommonConstants;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;

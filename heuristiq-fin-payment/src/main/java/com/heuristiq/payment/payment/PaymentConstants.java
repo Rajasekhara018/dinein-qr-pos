@@ -1,7 +1,7 @@
-package com.heuristiq.paymentservice.payment;
+package com.heuristiq.payment.payment;
 
-import com.heuristiq.paymentservice.payment.gateway.model.PaymentGatewayType;
-import com.heuristiq.paymentservice.payment.model.PaymentStatus;
+import com.heuristiq.payment.payment.gateway.model.PaymentGatewayType;
+import com.heuristiq.payment.payment.model.PaymentStatus;
 
 import java.math.BigDecimal;
 import java.util.List;

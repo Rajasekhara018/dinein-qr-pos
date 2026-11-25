@@ -1,6 +1,6 @@
-package com.railcab.dms.centralaudit;
+package com.heuristiq.documents.centralaudit;
 
-import com.railcab.dms.common.DmsCommonConstants;
+import com.heuristiq.documents.common.DmsCommonConstants;
 import com.heuristiq.resilient.CorrelationIdPropagation;
 import com.heuristiq.resilient.ResilienceProfile;
 import com.heuristiq.resilient.ResilientCaller;

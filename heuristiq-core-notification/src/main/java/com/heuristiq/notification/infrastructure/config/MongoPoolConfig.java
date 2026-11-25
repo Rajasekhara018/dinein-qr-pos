@@ -1,4 +1,4 @@
-package com.railcab.nms.infrastructure.config;
+package com.heuristiq.notification.infrastructure.config;
 
 import com.mongodb.MongoClientSettings;
 import org.springframework.beans.factory.annotation.Value;

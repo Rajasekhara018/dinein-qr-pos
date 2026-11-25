@@ -1,16 +1,16 @@
-package com.railcab.dms.document.api;
+package com.heuristiq.documents.document.api;
 
-import com.railcab.dms.common.DmsCommonConstants;
+import com.heuristiq.documents.common.DmsCommonConstants;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.railcab.dms.common.dto.CommonRequestObject;
-import com.railcab.dms.common.dto.CommonResponseObject;
-import com.railcab.dms.document.application.DocumentService;
-import com.railcab.dms.document.dto.DocumentDownloadUrlResponse;
-import com.railcab.dms.document.dto.DocumentResponse;
-import com.railcab.dms.document.dto.DocumentUploadRequest;
-import com.railcab.dms.document.dto.LegalHoldRequest;
-import com.railcab.dms.document.dto.RUpload;
-import com.railcab.dms.exception.DmsException;
+import com.heuristiq.documents.common.dto.CommonRequestObject;
+import com.heuristiq.documents.common.dto.CommonResponseObject;
+import com.heuristiq.documents.document.application.DocumentService;
+import com.heuristiq.documents.document.dto.DocumentDownloadUrlResponse;
+import com.heuristiq.documents.document.dto.DocumentResponse;
+import com.heuristiq.documents.document.dto.DocumentUploadRequest;
+import com.heuristiq.documents.document.dto.LegalHoldRequest;
+import com.heuristiq.documents.document.dto.RUpload;
+import com.heuristiq.documents.exception.DmsException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -251,7 +251,7 @@ public class DocumentController {
     @PatchMapping("/metadata/{id}/valid-until")
     public ResponseEntity<CommonResponseObject> confirmValidUntil(
             @Parameter(description = "Document metadata id.", required = true) @PathVariable String id,
-            @jakarta.validation.Valid @RequestBody com.railcab.dms.document.dto.ValidUntilRequest request
+            @jakarta.validation.Valid @RequestBody com.heuristiq.documents.document.dto.ValidUntilRequest request
     ) {
         return ResponseEntity.ok(CommonResponseObject.success(documentService.confirmValidUntil(id, request.validUntil())));
     }

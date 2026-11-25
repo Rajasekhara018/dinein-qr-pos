@@ -1,4 +1,4 @@
-package com.heuristiq.paymentservice.salesettlement.domain;
+package com.heuristiq.payment.salesettlement.domain;
 
 import java.util.Optional;
 

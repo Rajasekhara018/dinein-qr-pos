@@ -1,11 +1,11 @@
-package com.railcab.nms.application.usecase.support;
+package com.heuristiq.notification.application.usecase.support;
 
 import java.util.List;
 import java.util.Map;
 
-import com.railcab.nms.application.dto.NotificationRequest;
-import com.railcab.nms.application.dto.UamUserSummary;
-import com.railcab.nms.domain.model.NotificationChannel;
+import com.heuristiq.notification.application.dto.NotificationRequest;
+import com.heuristiq.notification.application.dto.UamUserSummary;
+import com.heuristiq.notification.domain.model.NotificationChannel;
 
 /**
  * Fluent builder for synthesizing a {@link NotificationRequest} from a broadcast fan-out.
@@ -15,7 +15,7 @@ import com.railcab.nms.domain.model.NotificationChannel;
  * field-by-field per recipient, including channel-conditional recipient targeting
  * (only set {@code toEmail} if EMAIL is requested, only set {@code toPhone} if SMS/WHATSAPP
  * is requested, etc.). Centralizing that staged, conditional assembly here keeps
- * {@link com.railcab.nms.application.usecase.BroadcastDispatchScheduler} focused on
+ * {@link com.heuristiq.notification.application.usecase.BroadcastDispatchScheduler} focused on
  * orchestration rather than field-by-field DTO plumbing.
  */
 public final class NotificationRequestBuilder {

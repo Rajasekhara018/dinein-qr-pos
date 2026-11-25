@@ -1,4 +1,4 @@
-package com.railcab.nms.adapters.out.persistence.jpa;
+package com.heuristiq.notification.adapters.out.persistence.jpa;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import com.railcab.nms.domain.model.BroadcastStatus;
+import com.heuristiq.notification.domain.model.BroadcastStatus;
 
 interface BroadcastJpaSpringRepository extends JpaRepository<BroadcastEntity, String> {
 

@@ -1,4 +1,4 @@
-package com.heuristiq.paymentservice.salesettlement.domain;
+package com.heuristiq.payment.salesettlement.domain;
 
 /** Where a settle or cancel request stands. */
 public enum SaleSettlementState {

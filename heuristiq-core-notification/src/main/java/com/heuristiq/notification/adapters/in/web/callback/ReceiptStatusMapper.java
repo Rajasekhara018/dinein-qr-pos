@@ -1,11 +1,11 @@
-package com.railcab.nms.adapters.in.web.callback;
+package com.heuristiq.notification.adapters.in.web.callback;
 
 import java.util.Locale;
 import java.util.Optional;
 
 import org.springframework.util.StringUtils;
 
-import com.railcab.nms.domain.model.DeliveryStatus;
+import com.heuristiq.notification.domain.model.DeliveryStatus;
 
 /**
  * Translates each provider's status vocabulary to {@link DeliveryStatus}. An empty result means the

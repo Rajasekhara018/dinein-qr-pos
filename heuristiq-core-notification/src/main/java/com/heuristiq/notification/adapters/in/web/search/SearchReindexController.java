@@ -1,9 +1,9 @@
-package com.railcab.nms.adapters.in.web.search;
+package com.heuristiq.notification.adapters.in.web.search;
 
-import com.railcab.nms.adapters.in.web.WebApiConstants;
+import com.heuristiq.notification.adapters.in.web.WebApiConstants;
 
-import com.railcab.nms.search.SearchReindexUseCase;
-import com.railcab.nms.shared.CommonResponseObject;
+import com.heuristiq.notification.search.SearchReindexUseCase;
+import com.heuristiq.notification.shared.CommonResponseObject;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;

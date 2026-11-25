@@ -1,6 +1,6 @@
-package com.railcab.audit.adapter.out.lock;
+package com.heuristiq.audit.adapter.out.lock;
 
-import com.railcab.audit.domain.SchedulerLock;
+import com.heuristiq.audit.domain.SchedulerLock;
 
 /** SQL, field names and fixed values used by the {@link SchedulerLock} adapters. */
 final class SchedulerLockConstants {

@@ -1,14 +1,14 @@
-package com.heuristiq.paymentservice.wallet.client;
+package com.heuristiq.payment.wallet.client;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.heuristiq.resilient.Idempotency;
 import com.heuristiq.resilient.ResilientCaller;
 import com.heuristiq.resilient.TenantIdPropagation;
-import com.heuristiq.paymentservice.config.WalletServiceProperties;
-import com.heuristiq.paymentservice.wallet.port.WalletTenantMissingException;
-import com.heuristiq.paymentservice.wallet.port.WalletCreditClient;
-import com.heuristiq.paymentservice.wallet.port.WalletCreditCommand;
+import com.heuristiq.payment.config.WalletServiceProperties;
+import com.heuristiq.payment.wallet.port.WalletTenantMissingException;
+import com.heuristiq.payment.wallet.port.WalletCreditClient;
+import com.heuristiq.payment.wallet.port.WalletCreditCommand;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;

@@ -1,6 +1,6 @@
-package com.railcab.nms.infrastructure.cache;
+package com.heuristiq.notification.infrastructure.cache;
 
-import com.railcab.nms.domain.model.NotificationChannel;
+import com.heuristiq.notification.domain.model.NotificationChannel;
 
 /**
  * Key of the resolved-template cache. The tenant part is always explicit: {@code tenant:<id>} for an organization and

@@ -1,6 +1,6 @@
-package com.railcab.dms.scan.metadefender;
+package com.heuristiq.documents.scan.metadefender;
 
-import com.railcab.dms.config.DmsProperties;
+import com.heuristiq.documents.config.DmsProperties;
 import io.netty.channel.ChannelOption;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

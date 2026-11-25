@@ -1,6 +1,6 @@
-package com.heuristiq.paymentservice.payment.gateway.razorpay;
+package com.heuristiq.payment.payment.gateway.razorpay;
 
-import com.heuristiq.paymentservice.config.RazorpayProperties;
+import com.heuristiq.payment.config.RazorpayProperties;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;

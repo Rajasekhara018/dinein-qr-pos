@@ -1,7 +1,7 @@
-package com.railcab.audit.config.security;
+package com.heuristiq.audit.config.security;
 
-import static com.railcab.audit.config.security.SecurityConstants.*;
-import com.railcab.audit.config.AuditSecurityProperties;
+import static com.heuristiq.audit.config.security.SecurityConstants.*;
+import com.heuristiq.audit.config.AuditSecurityProperties;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;

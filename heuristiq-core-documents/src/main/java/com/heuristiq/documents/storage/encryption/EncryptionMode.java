@@ -1,4 +1,4 @@
-package com.railcab.dms.storage.encryption;
+package com.heuristiq.documents.storage.encryption;
 
 /**
  * Server-side encryption at rest requested for stored documents ({@code railcab.dms.storage.encryption.mode}).

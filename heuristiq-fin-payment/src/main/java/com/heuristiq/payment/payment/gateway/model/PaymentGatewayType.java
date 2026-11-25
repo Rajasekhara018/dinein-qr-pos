@@ -1,6 +1,6 @@
-package com.heuristiq.paymentservice.payment.gateway.model;
+package com.heuristiq.payment.payment.gateway.model;
 
-import com.heuristiq.paymentservice.shared.exception.PaymentServiceException;
+import com.heuristiq.payment.shared.exception.PaymentServiceException;
 
 import java.util.Locale;
 
@@ -9,7 +9,7 @@ import java.util.Locale;
  * (per the multi-gateway task): RAZORPAY, PAYU, TOUCAN, PINELABS. PayPal/Cashfree exist in the
  * reference project this design was ported from but were explicitly out of scope here.
  *
- * CASH is intentionally NOT a member of this enum — CASH is a {@link com.heuristiq.paymentservice.payment.model.PaymentMethod},
+ * CASH is intentionally NOT a member of this enum — CASH is a {@link com.heuristiq.payment.payment.model.PaymentMethod},
  * not a gateway; no gateway is ever involved in a cash payment. See Payment.gateway's javadoc for
  * the full method-vs-gateway relationship.
  */

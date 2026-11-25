@@ -1,4 +1,4 @@
-package com.heuristiq.paymentservice.payment.gateway.toucan;
+package com.heuristiq.payment.payment.gateway.toucan;
 
 /** Toucan API paths, relative to the configured base URL. */
 public final class ToucanConstants {

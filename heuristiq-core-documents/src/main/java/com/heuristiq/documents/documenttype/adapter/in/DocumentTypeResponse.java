@@ -1,4 +1,4 @@
-package com.railcab.dms.documenttype.adapter.in;
+package com.heuristiq.documents.documenttype.adapter.in;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 

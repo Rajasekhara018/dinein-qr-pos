@@ -1,4 +1,4 @@
-package com.railcab.nms.shared;
+package com.heuristiq.notification.shared;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

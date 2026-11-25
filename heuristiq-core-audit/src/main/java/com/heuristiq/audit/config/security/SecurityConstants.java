@@ -1,4 +1,4 @@
-package com.railcab.audit.config.security;
+package com.heuristiq.audit.config.security;
 
 /** Header names, role names and paths of the security configuration. */
 public final class SecurityConstants {

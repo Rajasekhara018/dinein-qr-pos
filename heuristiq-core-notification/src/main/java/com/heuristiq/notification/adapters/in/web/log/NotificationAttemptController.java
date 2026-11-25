@@ -1,6 +1,6 @@
-package com.railcab.nms.adapters.in.web.log;
+package com.heuristiq.notification.adapters.in.web.log;
 
-import com.railcab.nms.adapters.in.web.WebApiConstants;
+import com.heuristiq.notification.adapters.in.web.WebApiConstants;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.railcab.nms.adapters.in.web.WebPaginationSupport;
-import com.railcab.nms.application.port.in.NotificationAttemptQueryUseCase;
-import com.railcab.nms.domain.repository.PageResult;
-import com.railcab.nms.shared.CommonResponseObject;
+import com.heuristiq.notification.adapters.in.web.WebPaginationSupport;
+import com.heuristiq.notification.application.port.in.NotificationAttemptQueryUseCase;
+import com.heuristiq.notification.domain.repository.PageResult;
+import com.heuristiq.notification.shared.CommonResponseObject;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -45,7 +45,7 @@ public class NotificationAttemptController {
             @Parameter(description = "Message id (idempotency key) of the notification", example = "9b1c2e2e-1f3a-4e9b-8b3a-8f1a2c3d4e5f")
             @PathVariable String messageId,
             @PageableDefault(size = 50) Pageable pageable) {
-        PageResult<com.railcab.nms.domain.model.NotificationAttempt> result =
+        PageResult<com.heuristiq.notification.domain.model.NotificationAttempt> result =
                 attempts.findByMessageId(messageId, WebPaginationSupport.toPageQuery(pageable));
         return ResponseEntity.ok(CommonResponseObject.success(
                 WebPaginationSupport.toPage(map(result), pageable)));
@@ -61,14 +61,14 @@ public class NotificationAttemptController {
             @Parameter(description = "Correlation id shared by all notifications from one dispatch", example = "9b1c2e2e-1f3a-4e9b-8b3a-8f1a2c3d4e5f")
             @PathVariable String correlationId,
             @PageableDefault(size = 50) Pageable pageable) {
-        PageResult<com.railcab.nms.domain.model.NotificationAttempt> result =
+        PageResult<com.heuristiq.notification.domain.model.NotificationAttempt> result =
                 attempts.findByCorrelationId(correlationId, WebPaginationSupport.toPageQuery(pageable));
         return ResponseEntity.ok(CommonResponseObject.success(
                 WebPaginationSupport.toPage(map(result), pageable)));
     }
 
     private static PageResult<NotificationAttemptResponse> map(
-            PageResult<com.railcab.nms.domain.model.NotificationAttempt> page) {
+            PageResult<com.heuristiq.notification.domain.model.NotificationAttempt> page) {
         return new PageResult<>(page.content().stream().map(NotificationAttemptResponse::from).toList(),
                 page.page(), page.size(), page.totalElements());
     }

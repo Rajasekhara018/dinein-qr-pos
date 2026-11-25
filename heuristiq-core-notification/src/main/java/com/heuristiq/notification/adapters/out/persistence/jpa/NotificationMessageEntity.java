@@ -1,8 +1,8 @@
-package com.railcab.nms.adapters.out.persistence.jpa;
+package com.heuristiq.notification.adapters.out.persistence.jpa;
 
 import java.time.LocalDateTime;
 
-import com.railcab.nms.domain.model.NotificationMessageStatus;
+import com.heuristiq.notification.domain.model.NotificationMessageStatus;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

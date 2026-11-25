@@ -1,9 +1,9 @@
-package com.heuristiq.paymentservice.wallet.dto;
+package com.heuristiq.payment.wallet.dto;
 
-import com.heuristiq.paymentservice.shared.money.Money;
-import com.heuristiq.paymentservice.payment.dto.RazorpayOrderDetails;
-import com.heuristiq.paymentservice.payment.gateway.dto.GatewaySessionResult;
-import com.heuristiq.paymentservice.wallet.model.WalletTopupSession;
+import com.heuristiq.payment.shared.money.Money;
+import com.heuristiq.payment.payment.dto.RazorpayOrderDetails;
+import com.heuristiq.payment.payment.gateway.dto.GatewaySessionResult;
+import com.heuristiq.payment.wallet.model.WalletTopupSession;
 
 import java.time.LocalDateTime;
 import java.util.Map;

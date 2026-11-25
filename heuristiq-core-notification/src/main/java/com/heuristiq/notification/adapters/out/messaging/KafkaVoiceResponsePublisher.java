@@ -1,4 +1,4 @@
-package com.railcab.nms.adapters.out.messaging;
+package com.heuristiq.notification.adapters.out.messaging;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -11,9 +11,9 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.railcab.nms.application.dto.VoiceResponseEvent;
-import com.railcab.nms.application.port.out.VoiceResponsePublisher;
-import com.railcab.nms.infrastructure.config.NmsProperties;
+import com.heuristiq.notification.application.dto.VoiceResponseEvent;
+import com.heuristiq.notification.application.port.out.VoiceResponsePublisher;
+import com.heuristiq.notification.infrastructure.config.NmsProperties;
 
 import lombok.RequiredArgsConstructor;
 

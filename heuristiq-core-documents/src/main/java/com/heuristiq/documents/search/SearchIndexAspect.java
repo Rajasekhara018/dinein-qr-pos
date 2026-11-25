@@ -1,4 +1,4 @@
-package com.railcab.dms.search;
+package com.heuristiq.documents.search;
 
 import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.annotation.AfterReturning;
@@ -21,7 +21,7 @@ public class SearchIndexAspect {
     private final SearchEventPublisher searchEventPublisher;
 
     @AfterReturning(
-            pointcut = "execution(* com.railcab.dms..*Store.save(..)) || execution(* com.railcab.dms..*Repository.save(..))",
+            pointcut = "execution(* com.heuristiq.documents..*Store.save(..)) || execution(* com.heuristiq.documents..*Repository.save(..))",
             returning = "result")
     public void afterSave(Object result) {
         if (result instanceof SearchIndexable indexable) {

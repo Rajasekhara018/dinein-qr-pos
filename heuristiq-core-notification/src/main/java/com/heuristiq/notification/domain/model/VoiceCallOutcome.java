@@ -1,4 +1,4 @@
-package com.railcab.nms.domain.model;
+package com.heuristiq.notification.domain.model;
 
 /**
  * How an automated voice call ended, as published on {@code nms-voice-responses} (names fixed by the ride flow contract).

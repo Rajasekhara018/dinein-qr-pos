@@ -1,7 +1,7 @@
-package com.railcab.nms.adapters.out.persistence.mongo;
+package com.heuristiq.notification.adapters.out.persistence.mongo;
 
-import com.railcab.nms.domain.repository.TenantScope;
-import com.railcab.nms.domain.model.DeviceRegistration;
+import com.heuristiq.notification.domain.repository.TenantScope;
+import com.heuristiq.notification.domain.model.DeviceRegistration;
 
 import org.springframework.beans.factory.annotation.Value;
 import java.time.LocalDateTime;
@@ -13,8 +13,8 @@ import java.util.List;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Repository;
 
-import com.railcab.nms.domain.repository.IDeviceTokenRepository;
-import com.railcab.nms.adapters.out.persistence.mongo.DeviceTokenDocument;
+import com.heuristiq.notification.domain.repository.IDeviceTokenRepository;
+import com.heuristiq.notification.adapters.out.persistence.mongo.DeviceTokenDocument;
 
 @Repository
 @ConditionalOnProperty(prefix = "nms.persistence", name = "type", havingValue = "mongo", matchIfMissing = true)

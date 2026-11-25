@@ -1,11 +1,11 @@
-package com.heuristiq.paymentservice.payment.gateway.util;
+package com.heuristiq.payment.payment.gateway.util;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 /**
  * Reads the amount a gateway reports in its status response into an exact rupee amount. A missing or unreadable value is
- * null, which {@link com.heuristiq.paymentservice.payment.service.GatewayAmountVerifier} treats as a mismatch (fails closed).
+ * null, which {@link com.heuristiq.payment.payment.service.GatewayAmountVerifier} treats as a mismatch (fails closed).
  */
 public final class GatewayAmountParser {
 

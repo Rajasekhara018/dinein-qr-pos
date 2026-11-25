@@ -7,7 +7,7 @@ plugins {
     id 'jacoco'
 }
 
-group = 'com.railcab.serviceregistry'
+group = 'com.heuristiq.registry'
 version = '1.0.0'
 description = 'RailCab Service Registry (Eureka Server)'
 

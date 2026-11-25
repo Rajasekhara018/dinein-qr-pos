@@ -1,4 +1,4 @@
-package com.heuristiq.paymentservice.shared.exception;
+package com.heuristiq.payment.shared.exception;
 
 /** General-purpose business-rule violation — mirrors the monolith's BookingException. */
 public class PaymentServiceException extends RuntimeException {

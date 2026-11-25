@@ -1,6 +1,6 @@
-package com.railcab.nms.adapters.out.channel.sms.digimile;
+package com.heuristiq.notification.adapters.out.channel.sms.digimile;
 
-import com.railcab.nms.adapters.out.channel.VendorPhoneFormat;
+import com.heuristiq.notification.adapters.out.channel.VendorPhoneFormat;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
@@ -11,11 +11,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import com.railcab.nms.infrastructure.config.NmsProperties;
-import com.railcab.nms.adapters.out.channel.sms.SmsProvider;
-import com.railcab.nms.adapters.out.channel.ChannelAdapterConstants;
-import com.railcab.nms.application.port.out.ChannelProviderConstants;
-import com.railcab.nms.application.port.out.ProviderSendResult;
+import com.heuristiq.notification.infrastructure.config.NmsProperties;
+import com.heuristiq.notification.adapters.out.channel.sms.SmsProvider;
+import com.heuristiq.notification.adapters.out.channel.ChannelAdapterConstants;
+import com.heuristiq.notification.application.port.out.ChannelProviderConstants;
+import com.heuristiq.notification.application.port.out.ProviderSendResult;
 
 import lombok.RequiredArgsConstructor;
 

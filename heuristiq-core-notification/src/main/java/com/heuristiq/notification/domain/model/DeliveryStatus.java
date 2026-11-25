@@ -1,4 +1,4 @@
-package com.railcab.nms.domain.model;
+package com.heuristiq.notification.domain.model;
 
 /**
  * Lifecycle of one delivery attempt (and, as a summary, of the per-recipient log row).

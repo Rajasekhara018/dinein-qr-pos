@@ -1,4 +1,4 @@
-package com.heuristiq.paymentservice.wallet.model;
+package com.heuristiq.payment.wallet.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

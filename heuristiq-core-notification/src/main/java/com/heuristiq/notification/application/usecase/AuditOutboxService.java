@@ -1,4 +1,4 @@
-package com.railcab.nms.application.usecase;
+package com.heuristiq.notification.application.usecase;
 
 import java.time.Clock;
 import java.time.LocalDateTime;
@@ -12,12 +12,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import com.railcab.nms.application.port.in.AuditOutboxUseCase;
-import com.railcab.nms.application.port.out.AuditEventSink;
-import com.railcab.nms.application.usecase.support.ErrorSanitizer;
-import com.railcab.nms.domain.model.AuditOutboxEntry;
-import com.railcab.nms.domain.repository.IAuditOutboxRepository;
-import com.railcab.nms.infrastructure.config.NmsProperties;
+import com.heuristiq.notification.application.port.in.AuditOutboxUseCase;
+import com.heuristiq.notification.application.port.out.AuditEventSink;
+import com.heuristiq.notification.application.usecase.support.ErrorSanitizer;
+import com.heuristiq.notification.domain.model.AuditOutboxEntry;
+import com.heuristiq.notification.domain.repository.IAuditOutboxRepository;
+import com.heuristiq.notification.infrastructure.config.NmsProperties;
 
 /**
  * Drains the audit outbox: finds due events, leases each one so only one NMS instance sends it,

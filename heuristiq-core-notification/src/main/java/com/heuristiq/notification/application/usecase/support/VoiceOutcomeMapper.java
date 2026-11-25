@@ -1,9 +1,9 @@
-package com.railcab.nms.application.usecase.support;
+package com.heuristiq.notification.application.usecase.support;
 
 import java.util.Locale;
 import java.util.Optional;
 
-import com.railcab.nms.domain.model.VoiceCallOutcome;
+import com.heuristiq.notification.domain.model.VoiceCallOutcome;
 
 /** Reads a voice provider's status words and pressed digits into the NMS vocabulary. Pure, stateless. */
 public final class VoiceOutcomeMapper {

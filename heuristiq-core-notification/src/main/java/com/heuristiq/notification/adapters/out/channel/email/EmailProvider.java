@@ -1,6 +1,6 @@
-package com.railcab.nms.adapters.out.channel.email;
+package com.heuristiq.notification.adapters.out.channel.email;
 
-import com.railcab.nms.application.port.out.ProviderSendResult;
+import com.heuristiq.notification.application.port.out.ProviderSendResult;
 
 /**
  * SPI for email delivery providers.

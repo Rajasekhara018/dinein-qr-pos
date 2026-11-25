@@ -1,4 +1,4 @@
-package com.railcab.dms.documenttype.domain;
+package com.heuristiq.documents.documenttype.domain;
 
 /**
  * Base of the document-type failures. The web layer maps {@link Kind} to an HTTP status; the domain itself knows

@@ -1,8 +1,8 @@
-package com.heuristiq.paymentservice.driver.service;
+package com.heuristiq.payment.driver.service;
 
-import com.heuristiq.paymentservice.driver.model.DriverPayment;
-import com.heuristiq.paymentservice.driver.repository.DriverPaymentRepository;
-import com.heuristiq.paymentservice.security.TenantAccess;
+import com.heuristiq.payment.driver.model.DriverPayment;
+import com.heuristiq.payment.driver.repository.DriverPaymentRepository;
+import com.heuristiq.payment.security.TenantAccess;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

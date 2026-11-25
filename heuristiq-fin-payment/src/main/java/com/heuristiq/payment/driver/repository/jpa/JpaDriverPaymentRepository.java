@@ -1,6 +1,6 @@
-package com.heuristiq.paymentservice.driver.repository.jpa;
+package com.heuristiq.payment.driver.repository.jpa;
 
-import com.heuristiq.paymentservice.driver.model.DriverPayment;
+import com.heuristiq.payment.driver.model.DriverPayment;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDateTime;

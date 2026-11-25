@@ -1,10 +1,10 @@
-package com.railcab.dms.documenttype.adapter.in;
+package com.heuristiq.documents.documenttype.adapter.in;
 
-import com.railcab.dms.documenttype.application.DocumentTypeFileCheckService;
-import com.railcab.dms.documenttype.application.DocumentTypeSnapshots;
-import com.railcab.dms.documenttype.domain.DocumentType;
-import com.railcab.dms.documenttype.domain.DocumentTypeFields;
-import com.railcab.dms.documenttype.domain.DocumentTypeRepository;
+import com.heuristiq.documents.documenttype.application.DocumentTypeFileCheckService;
+import com.heuristiq.documents.documenttype.application.DocumentTypeSnapshots;
+import com.heuristiq.documents.documenttype.domain.DocumentType;
+import com.heuristiq.documents.documenttype.domain.DocumentTypeFields;
+import com.heuristiq.documents.documenttype.domain.DocumentTypeRepository;
 
 /** Maps between the web shapes and the application/domain types. Stateless. {@link #toResponse(DocumentType)} is public so the search projection publishes exactly the DTO the list API returns. */
 public final class DocumentTypeWebMapper {

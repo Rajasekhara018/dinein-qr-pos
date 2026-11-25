@@ -1,4 +1,4 @@
-package com.railcab.nms.adapters.out.messaging;
+package com.heuristiq.notification.adapters.out.messaging;
 
 /** Fixed values of NMS's outbound Kafka publishers. */
 public final class MessagingAdapterConstants {

@@ -1,4 +1,4 @@
-package com.railcab.audit.adapter.in.web;
+package com.heuristiq.audit.adapter.in.web;
 
 import java.util.List;
 

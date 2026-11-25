@@ -1,4 +1,4 @@
-package com.railcab.audit.common;
+package com.heuristiq.audit.common;
 
 import java.util.List;
 

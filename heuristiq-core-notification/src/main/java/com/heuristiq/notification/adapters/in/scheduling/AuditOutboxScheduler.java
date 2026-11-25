@@ -1,10 +1,10 @@
-package com.railcab.nms.adapters.in.scheduling;
+package com.heuristiq.notification.adapters.in.scheduling;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import com.railcab.nms.application.port.in.AuditOutboxUseCase;
+import com.heuristiq.notification.application.port.in.AuditOutboxUseCase;
 
 import lombok.RequiredArgsConstructor;
 

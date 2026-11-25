@@ -1,8 +1,8 @@
-package com.railcab.nms.application.port.out;
+package com.heuristiq.notification.application.port.out;
 
 import java.util.Map;
 
-import com.railcab.nms.domain.model.NotificationChannel;
+import com.heuristiq.notification.domain.model.NotificationChannel;
 
 /**
  * Shared contract for all notification channel providers.

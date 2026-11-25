@@ -1,4 +1,4 @@
-package com.railcab.audit.adapter.out.persistence;
+package com.heuristiq.audit.adapter.out.persistence;
 
 import org.springframework.data.domain.Sort;
 

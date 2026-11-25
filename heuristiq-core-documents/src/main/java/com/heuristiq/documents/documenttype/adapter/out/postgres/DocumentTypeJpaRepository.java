@@ -1,4 +1,4 @@
-package com.railcab.dms.documenttype.adapter.out.postgres;
+package com.heuristiq.documents.documenttype.adapter.out.postgres;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

@@ -1,15 +1,15 @@
-package com.heuristiq.paymentservice.payment.gateway.razorpay;
+package com.heuristiq.payment.payment.gateway.razorpay;
 
-import com.heuristiq.paymentservice.client.RazorpayRefundClient;
-import com.heuristiq.paymentservice.client.dto.RazorpayRefundResult;
-import com.heuristiq.paymentservice.payment.gateway.dto.GatewayRefundResult;
-import com.heuristiq.paymentservice.payment.gateway.model.PaymentGatewayType;
-import com.heuristiq.paymentservice.payment.gateway.port.RefundGatewayClient;
-import com.heuristiq.paymentservice.payment.model.Payment;
+import com.heuristiq.payment.client.RazorpayRefundClient;
+import com.heuristiq.payment.client.dto.RazorpayRefundResult;
+import com.heuristiq.payment.payment.gateway.dto.GatewayRefundResult;
+import com.heuristiq.payment.payment.gateway.model.PaymentGatewayType;
+import com.heuristiq.payment.payment.gateway.port.RefundGatewayClient;
+import com.heuristiq.payment.payment.model.Payment;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
-import com.heuristiq.paymentservice.payment.service.GatewayAmountVerifier;
+import com.heuristiq.payment.payment.service.GatewayAmountVerifier;
 
 /**
  * Thin adapter over the existing {@link RazorpayRefundClient} (added in the prior pass — the

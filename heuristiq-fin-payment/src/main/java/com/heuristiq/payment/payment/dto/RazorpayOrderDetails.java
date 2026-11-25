@@ -1,4 +1,4 @@
-package com.heuristiq.paymentservice.payment.dto;
+package com.heuristiq.payment.payment.dto;
 
 public record RazorpayOrderDetails(
         String orderId,

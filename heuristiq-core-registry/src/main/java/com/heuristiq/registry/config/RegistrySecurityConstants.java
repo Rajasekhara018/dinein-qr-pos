@@ -1,4 +1,4 @@
-package com.railcab.serviceregistry.config;
+package com.heuristiq.registry.config;
 
 /** Fixed request paths of the registry's security chain. */
 public final class RegistrySecurityConstants {

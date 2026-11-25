@@ -1,6 +1,6 @@
-package com.heuristiq.paymentservice.shared.money;
+package com.heuristiq.payment.shared.money;
 
-import com.heuristiq.paymentservice.shared.PaymentCommonConstants;
+import com.heuristiq.payment.shared.PaymentCommonConstants;
 import java.math.BigDecimal;
 import java.util.Locale;
 

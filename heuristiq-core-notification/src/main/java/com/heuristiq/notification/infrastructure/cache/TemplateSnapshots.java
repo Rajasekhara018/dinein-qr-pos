@@ -1,6 +1,6 @@
-package com.railcab.nms.infrastructure.cache;
+package com.heuristiq.notification.infrastructure.cache;
 
-import com.railcab.nms.domain.model.NotificationTemplate;
+import com.heuristiq.notification.domain.model.NotificationTemplate;
 
 /** Copies of templates, so a cached template is never shared with (and mutated by) a caller. */
 final class TemplateSnapshots {

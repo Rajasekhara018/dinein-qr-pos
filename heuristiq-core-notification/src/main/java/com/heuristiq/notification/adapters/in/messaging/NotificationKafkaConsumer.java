@@ -1,4 +1,4 @@
-package com.railcab.nms.adapters.in.messaging;
+package com.heuristiq.notification.adapters.in.messaging;
 
 import java.nio.charset.StandardCharsets;
 
@@ -10,11 +10,11 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import com.railcab.nms.adapters.in.OriginHeaders;
-import com.railcab.nms.application.port.in.NotificationDispatchUseCase;
-import com.railcab.nms.application.dto.NotificationRequest;
-import com.railcab.nms.shared.CommonRequestMapper;
-import com.railcab.nms.shared.CommonRequestObject;
+import com.heuristiq.notification.adapters.in.OriginHeaders;
+import com.heuristiq.notification.application.port.in.NotificationDispatchUseCase;
+import com.heuristiq.notification.application.dto.NotificationRequest;
+import com.heuristiq.notification.shared.CommonRequestMapper;
+import com.heuristiq.notification.shared.CommonRequestObject;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 

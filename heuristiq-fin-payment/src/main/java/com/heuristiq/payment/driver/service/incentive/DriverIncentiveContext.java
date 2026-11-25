@@ -1,4 +1,4 @@
-package com.heuristiq.paymentservice.driver.service.incentive;
+package com.heuristiq.payment.driver.service.incentive;
 
 import java.time.LocalDate;
 

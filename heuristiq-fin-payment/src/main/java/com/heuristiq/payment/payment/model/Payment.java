@@ -1,9 +1,9 @@
-package com.heuristiq.paymentservice.payment.model;
+package com.heuristiq.payment.payment.model;
 
-import com.heuristiq.paymentservice.shared.PaymentCommonConstants;
-import com.heuristiq.paymentservice.payment.gateway.model.PaymentGatewayType;
+import com.heuristiq.payment.shared.PaymentCommonConstants;
+import com.heuristiq.payment.payment.gateway.model.PaymentGatewayType;
 import jakarta.persistence.Column;
-import com.heuristiq.paymentservice.payment.lifecycle.PaymentLifecycleListener;
+import com.heuristiq.payment.payment.lifecycle.PaymentLifecycleListener;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
@@ -125,7 +125,7 @@ public class Payment {
 
     /**
      * Real receipt number, generated once (in {@code onPaymentCaptured}) for every captured
-     * payment regardless of method — see {@link com.heuristiq.paymentservice.payment.dto.ReceiptResponse}.
+     * payment regardless of method — see {@link com.heuristiq.payment.payment.dto.ReceiptResponse}.
      * Distinct from {@link #invoiceNumber}, which is a monolith-ported, CASH-only field kept for
      * backward compatibility.
      */

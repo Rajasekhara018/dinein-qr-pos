@@ -1,8 +1,8 @@
-package com.railcab.audit.adapter.out.persistence.jpa;
+package com.heuristiq.audit.adapter.out.persistence.jpa;
 
-import com.railcab.audit.domain.AppChannel;
-import com.railcab.audit.domain.AuditEventType;
-import com.railcab.audit.domain.AuditOutcome;
+import com.heuristiq.audit.domain.AppChannel;
+import com.heuristiq.audit.domain.AuditEventType;
+import com.heuristiq.audit.domain.AuditOutcome;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;

@@ -1,7 +1,7 @@
-package com.railcab.audit.domain;
+package com.heuristiq.audit.domain;
 
-import com.railcab.audit.adapter.out.lock.JdbcSchedulerLock;
-import com.railcab.audit.adapter.out.lock.MongoSchedulerLock;
+import com.heuristiq.audit.adapter.out.lock.JdbcSchedulerLock;
+import com.heuristiq.audit.adapter.out.lock.MongoSchedulerLock;
 
 /**
  * A named lease so a periodic job runs on ONE instance at a time when the service is scaled out. An

@@ -1,4 +1,4 @@
-package com.heuristiq.paymentservice.payment.model;
+package com.heuristiq.payment.payment.model;
 
 /** Payment state machine per HLD §17.2; legal moves are defined in {@link PaymentStateMachine}. */
 public enum PaymentStatus {

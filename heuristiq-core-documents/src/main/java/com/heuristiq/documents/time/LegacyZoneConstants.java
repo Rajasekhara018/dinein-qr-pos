@@ -1,4 +1,4 @@
-package com.railcab.dms.time;
+package com.heuristiq.documents.time;
 
 /**
  * Fixed names and defaults for the legacy time zone setting. The zone itself is configuration

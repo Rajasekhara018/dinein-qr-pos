@@ -1,4 +1,4 @@
-package com.railcab.nms.adapters.out.integration.audit;
+package com.heuristiq.notification.adapters.out.integration.audit;
 
 import java.util.List;
 
@@ -8,8 +8,8 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import com.railcab.nms.application.port.out.AuditEventSink;
-import com.railcab.nms.infrastructure.config.NmsProperties;
+import com.heuristiq.notification.application.port.out.AuditEventSink;
+import com.heuristiq.notification.infrastructure.config.NmsProperties;
 import com.heuristiq.resilient.Idempotency;
 import com.heuristiq.resilient.ResilientCaller;
 

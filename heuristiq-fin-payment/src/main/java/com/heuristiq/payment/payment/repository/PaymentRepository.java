@@ -1,8 +1,8 @@
-package com.heuristiq.paymentservice.payment.repository;
+package com.heuristiq.payment.payment.repository;
 
-import com.heuristiq.paymentservice.payment.gateway.model.PaymentGatewayType;
-import com.heuristiq.paymentservice.payment.model.Payment;
-import com.heuristiq.paymentservice.payment.model.PaymentStatus;
+import com.heuristiq.payment.payment.gateway.model.PaymentGatewayType;
+import com.heuristiq.payment.payment.model.Payment;
+import com.heuristiq.payment.payment.model.PaymentStatus;
 
 import java.time.LocalDateTime;
 import java.util.List;

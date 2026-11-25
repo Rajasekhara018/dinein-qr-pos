@@ -1,6 +1,6 @@
-package com.heuristiq.paymentservice.salesettlement.adapter.in;
+package com.heuristiq.payment.salesettlement.adapter.in;
 
-import com.heuristiq.paymentservice.salesettlement.application.SaleSettlementService;
+import com.heuristiq.payment.salesettlement.application.SaleSettlementService;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

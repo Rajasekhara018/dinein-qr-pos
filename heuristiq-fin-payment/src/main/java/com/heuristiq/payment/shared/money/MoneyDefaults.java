@@ -1,4 +1,4 @@
-package com.heuristiq.paymentservice.shared.money;
+package com.heuristiq.payment.shared.money;
 
 import java.util.Currency;
 import java.util.Locale;

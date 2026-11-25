@@ -1,4 +1,4 @@
-package com.railcab.audit.application;
+package com.heuristiq.audit.application;
 
 /**
  * The raw (string) filter parameters of the query endpoints; {@link AuditQueryService} validates and converts them.

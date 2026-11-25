@@ -1,6 +1,6 @@
-package com.railcab.nms.adapters.in.web.message;
+package com.heuristiq.notification.adapters.in.web.message;
 
-import com.railcab.nms.adapters.in.web.WebApiConstants;
+import com.heuristiq.notification.adapters.in.web.WebApiConstants;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.railcab.nms.adapters.in.web.WebPaginationSupport;
-import com.railcab.nms.application.port.in.NotificationMessageQueryUseCase;
-import com.railcab.nms.domain.model.NotificationMessageStatus;
-import com.railcab.nms.shared.CommonResponseObject;
+import com.heuristiq.notification.adapters.in.web.WebPaginationSupport;
+import com.heuristiq.notification.application.port.in.NotificationMessageQueryUseCase;
+import com.heuristiq.notification.domain.model.NotificationMessageStatus;
+import com.heuristiq.notification.shared.CommonResponseObject;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

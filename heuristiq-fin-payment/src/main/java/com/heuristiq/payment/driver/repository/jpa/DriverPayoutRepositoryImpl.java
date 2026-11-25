@@ -1,7 +1,7 @@
-package com.heuristiq.paymentservice.driver.repository.jpa;
+package com.heuristiq.payment.driver.repository.jpa;
 
-import com.heuristiq.paymentservice.driver.model.DriverPayout;
-import com.heuristiq.paymentservice.driver.repository.DriverPayoutRepository;
+import com.heuristiq.payment.driver.model.DriverPayout;
+import com.heuristiq.payment.driver.repository.DriverPayoutRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 

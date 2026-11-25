@@ -1,11 +1,11 @@
-package com.heuristiq.paymentservice.gatewayaudit.decorator;
+package com.heuristiq.payment.gatewayaudit.decorator;
 
-import com.heuristiq.paymentservice.gatewayaudit.GatewayCallTracer;
-import com.heuristiq.paymentservice.gatewayaudit.model.GatewayCallOperation;
-import com.heuristiq.paymentservice.payment.gateway.dto.GatewayStatusResult;
-import com.heuristiq.paymentservice.payment.gateway.model.PaymentGatewayType;
-import com.heuristiq.paymentservice.payment.gateway.port.StatusCheckGatewayClient;
-import com.heuristiq.paymentservice.payment.model.Payment;
+import com.heuristiq.payment.gatewayaudit.GatewayCallTracer;
+import com.heuristiq.payment.gatewayaudit.model.GatewayCallOperation;
+import com.heuristiq.payment.payment.gateway.dto.GatewayStatusResult;
+import com.heuristiq.payment.payment.gateway.model.PaymentGatewayType;
+import com.heuristiq.payment.payment.gateway.port.StatusCheckGatewayClient;
+import com.heuristiq.payment.payment.model.Payment;
 
 import java.util.function.Supplier;
 

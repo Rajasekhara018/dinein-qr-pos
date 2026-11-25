@@ -1,4 +1,4 @@
-package com.railcab.nms.application.usecase.support;
+package com.heuristiq.notification.application.usecase.support;
 
 import java.util.List;
 

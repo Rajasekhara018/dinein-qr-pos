@@ -1,4 +1,4 @@
-package com.railcab.dms.search.projection;
+package com.heuristiq.documents.search.projection;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

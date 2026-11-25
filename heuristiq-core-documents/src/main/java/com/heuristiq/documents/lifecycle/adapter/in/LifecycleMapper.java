@@ -1,7 +1,7 @@
-package com.railcab.dms.lifecycle.adapter.in;
+package com.heuristiq.documents.lifecycle.adapter.in;
 
-import com.railcab.dms.common.paging.PagedResult;
-import com.railcab.dms.document.domain.DocumentMetadata;
+import com.heuristiq.documents.common.paging.PagedResult;
+import com.heuristiq.documents.document.domain.DocumentMetadata;
 
 import java.util.function.Function;
 

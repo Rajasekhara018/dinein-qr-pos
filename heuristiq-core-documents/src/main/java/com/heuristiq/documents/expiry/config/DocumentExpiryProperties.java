@@ -1,4 +1,4 @@
-package com.railcab.dms.expiry.config;
+package com.heuristiq.documents.expiry.config;
 
 import java.time.ZoneId;
 import java.util.List;

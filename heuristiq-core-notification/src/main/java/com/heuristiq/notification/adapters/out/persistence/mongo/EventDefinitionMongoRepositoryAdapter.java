@@ -1,4 +1,4 @@
-package com.railcab.nms.adapters.out.persistence.mongo;
+package com.heuristiq.notification.adapters.out.persistence.mongo;
 
 import java.util.List;
 import java.util.Optional;
@@ -6,9 +6,9 @@ import java.util.Optional;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Repository;
 
-import com.railcab.nms.domain.model.NotificationEventDefinition;
-import com.railcab.nms.domain.repository.IEventDefinitionRepository;
-import com.railcab.nms.adapters.out.persistence.mongo.NotificationEventDefinitionDocument;
+import com.heuristiq.notification.domain.model.NotificationEventDefinition;
+import com.heuristiq.notification.domain.repository.IEventDefinitionRepository;
+import com.heuristiq.notification.adapters.out.persistence.mongo.NotificationEventDefinitionDocument;
 
 @Repository
 @ConditionalOnProperty(prefix = "nms.persistence", name = "type", havingValue = "mongo", matchIfMissing = true)

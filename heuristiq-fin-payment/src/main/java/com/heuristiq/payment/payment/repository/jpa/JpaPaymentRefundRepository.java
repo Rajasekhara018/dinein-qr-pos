@@ -1,7 +1,7 @@
-package com.heuristiq.paymentservice.payment.repository.jpa;
+package com.heuristiq.payment.payment.repository.jpa;
 
-import com.heuristiq.paymentservice.payment.model.PaymentRefund;
-import com.heuristiq.paymentservice.payment.model.RefundStatus;
+import com.heuristiq.payment.payment.model.PaymentRefund;
+import com.heuristiq.payment.payment.model.RefundStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

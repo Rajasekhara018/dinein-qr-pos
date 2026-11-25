@@ -1,4 +1,4 @@
-package com.railcab.dms.common.lock.mongo;
+package com.heuristiq.documents.common.lock.mongo;
 
 /** Fixed values of the Mongo job-lock adapter: the collection and the field names it queries and updates. */
 public final class MongoLockConstants {

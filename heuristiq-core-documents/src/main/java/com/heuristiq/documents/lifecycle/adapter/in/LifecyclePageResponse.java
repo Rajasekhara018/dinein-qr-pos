@@ -1,4 +1,4 @@
-package com.railcab.dms.lifecycle.adapter.in;
+package com.heuristiq.documents.lifecycle.adapter.in;
 
 import java.util.List;
 

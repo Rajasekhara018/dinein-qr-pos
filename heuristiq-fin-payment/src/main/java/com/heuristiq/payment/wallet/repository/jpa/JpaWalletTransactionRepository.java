@@ -1,6 +1,6 @@
-package com.heuristiq.paymentservice.wallet.repository.jpa;
+package com.heuristiq.payment.wallet.repository.jpa;
 
-import com.heuristiq.paymentservice.wallet.model.WalletTransaction;
+import com.heuristiq.payment.wallet.model.WalletTransaction;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

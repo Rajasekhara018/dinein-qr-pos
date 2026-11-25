@@ -1,6 +1,6 @@
-package com.railcab.nms.adapters.out.channel.whatsapp;
+package com.heuristiq.notification.adapters.out.channel.whatsapp;
 
-import com.railcab.nms.application.port.out.ProviderSendResult;
+import com.heuristiq.notification.application.port.out.ProviderSendResult;
 
 /**
  * SPI for WhatsApp delivery providers.

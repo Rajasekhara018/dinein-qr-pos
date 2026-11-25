@@ -1,4 +1,4 @@
-package com.railcab.nms.infrastructure.config;
+package com.heuristiq.notification.infrastructure.config;
 
 import java.io.FileInputStream;
 import java.io.InputStream;

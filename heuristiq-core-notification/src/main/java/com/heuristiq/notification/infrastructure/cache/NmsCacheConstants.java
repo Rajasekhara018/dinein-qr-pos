@@ -1,4 +1,4 @@
-package com.railcab.nms.infrastructure.cache;
+package com.heuristiq.notification.infrastructure.cache;
 
 /**
  * Fixed values of NMS's read caches: metric names and key shapes. The tunable values (TTL, size, switches) are not here;

@@ -1,4 +1,4 @@
-package com.railcab.dms.document.audit;
+package com.heuristiq.documents.document.audit;
 
 public enum DocumentAuditAction {
     UPLOAD,

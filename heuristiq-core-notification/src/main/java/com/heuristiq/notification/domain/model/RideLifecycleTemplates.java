@@ -1,9 +1,9 @@
-package com.railcab.nms.domain.model;
+package com.heuristiq.notification.domain.model;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.railcab.nms.domain.model.DefaultNotificationTemplates.Seed;
+import com.heuristiq.notification.domain.model.DefaultNotificationTemplates.Seed;
 
 /**
  * Default in-app, push and (for two events) SMS texts of the ride lifecycle: booking, driver, trip, payment, refund, promotions

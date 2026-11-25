@@ -1,4 +1,4 @@
-package com.railcab.dms.documenttype.domain;
+package com.heuristiq.documents.documenttype.domain;
 
 import java.time.Instant;
 import java.util.EnumSet;
@@ -7,21 +7,21 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import static com.railcab.dms.documenttype.domain.DocumentTypeConstants.CATEGORY_CUSTOMER_DOCUMENTS;
-import static com.railcab.dms.documenttype.domain.DocumentTypeConstants.CATEGORY_DRIVER_DOCUMENTS;
-import static com.railcab.dms.documenttype.domain.DocumentTypeConstants.CATEGORY_FRANCHISE_ONBOARDING;
-import static com.railcab.dms.documenttype.domain.DocumentTypeConstants.FLOW_CUSTOMER_ONBOARDING;
-import static com.railcab.dms.documenttype.domain.DocumentTypeConstants.FLOW_DRIVER_ONBOARDING;
-import static com.railcab.dms.documenttype.domain.DocumentTypeConstants.FLOW_FRANCHISE_ONBOARDING;
-import static com.railcab.dms.documenttype.domain.DocumentTypeConstants.PREBUILT_LARGE_FILE_SIZE_MB;
-import static com.railcab.dms.documenttype.domain.DocumentTypeConstants.PREBUILT_AGREEMENT_FILE_SIZE_MB;
-import static com.railcab.dms.documenttype.domain.DocumentTypeConstants.PREBUILT_FILE_SIZE_MB;
-import static com.railcab.dms.documenttype.domain.DocumentTypeConstants.PREBUILT_IMAGE_FORMATS;
-import static com.railcab.dms.documenttype.domain.DocumentTypeConstants.PREBUILT_DOCUMENT_FORMATS;
-import static com.railcab.dms.documenttype.domain.DocumentTypeConstants.PREBUILT_AGREEMENT_FORMATS;
-import static com.railcab.dms.documenttype.domain.DocumentTypeConstants.PREBUILT_FRANCHISE_PHOTO_FORMATS;
-import static com.railcab.dms.documenttype.domain.DocumentTypeConstants.RETENTION_AGREEMENT_DAYS;
-import static com.railcab.dms.documenttype.domain.DocumentTypeConstants.RETENTION_KYC_DAYS;
+import static com.heuristiq.documents.documenttype.domain.DocumentTypeConstants.CATEGORY_CUSTOMER_DOCUMENTS;
+import static com.heuristiq.documents.documenttype.domain.DocumentTypeConstants.CATEGORY_DRIVER_DOCUMENTS;
+import static com.heuristiq.documents.documenttype.domain.DocumentTypeConstants.CATEGORY_FRANCHISE_ONBOARDING;
+import static com.heuristiq.documents.documenttype.domain.DocumentTypeConstants.FLOW_CUSTOMER_ONBOARDING;
+import static com.heuristiq.documents.documenttype.domain.DocumentTypeConstants.FLOW_DRIVER_ONBOARDING;
+import static com.heuristiq.documents.documenttype.domain.DocumentTypeConstants.FLOW_FRANCHISE_ONBOARDING;
+import static com.heuristiq.documents.documenttype.domain.DocumentTypeConstants.PREBUILT_LARGE_FILE_SIZE_MB;
+import static com.heuristiq.documents.documenttype.domain.DocumentTypeConstants.PREBUILT_AGREEMENT_FILE_SIZE_MB;
+import static com.heuristiq.documents.documenttype.domain.DocumentTypeConstants.PREBUILT_FILE_SIZE_MB;
+import static com.heuristiq.documents.documenttype.domain.DocumentTypeConstants.PREBUILT_IMAGE_FORMATS;
+import static com.heuristiq.documents.documenttype.domain.DocumentTypeConstants.PREBUILT_DOCUMENT_FORMATS;
+import static com.heuristiq.documents.documenttype.domain.DocumentTypeConstants.PREBUILT_AGREEMENT_FORMATS;
+import static com.heuristiq.documents.documenttype.domain.DocumentTypeConstants.PREBUILT_FRANCHISE_PHOTO_FORMATS;
+import static com.heuristiq.documents.documenttype.domain.DocumentTypeConstants.RETENTION_AGREEMENT_DAYS;
+import static com.heuristiq.documents.documenttype.domain.DocumentTypeConstants.RETENTION_KYC_DAYS;
 
 /**
  * The prebuilt document types every organization gets automatically, right after its {@code DEFAULT} type (customer,

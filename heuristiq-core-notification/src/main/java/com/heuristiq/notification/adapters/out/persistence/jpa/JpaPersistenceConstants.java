@@ -1,4 +1,4 @@
-package com.railcab.nms.adapters.out.persistence.jpa;
+package com.heuristiq.notification.adapters.out.persistence.jpa;
 
 /** Fixed column sizes of the JPA persistence adapter, shared by the entity mapping and the code that fits values to it. */
 final class JpaPersistenceConstants {

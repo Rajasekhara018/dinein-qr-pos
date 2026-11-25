@@ -1,8 +1,8 @@
-package com.heuristiq.paymentservice.payment.repository.jpa;
+package com.heuristiq.payment.payment.repository.jpa;
 
-import com.heuristiq.paymentservice.payment.model.PaymentRefund;
-import com.heuristiq.paymentservice.payment.model.RefundStatus;
-import com.heuristiq.paymentservice.payment.repository.PaymentRefundRepository;
+import com.heuristiq.payment.payment.model.PaymentRefund;
+import com.heuristiq.payment.payment.model.RefundStatus;
+import com.heuristiq.payment.payment.repository.PaymentRefundRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 

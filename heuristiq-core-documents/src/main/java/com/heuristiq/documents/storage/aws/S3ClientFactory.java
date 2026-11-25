@@ -1,6 +1,6 @@
-package com.railcab.dms.storage.aws;
+package com.heuristiq.documents.storage.aws;
 
-import com.railcab.dms.config.DmsProperties;
+import com.heuristiq.documents.config.DmsProperties;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;

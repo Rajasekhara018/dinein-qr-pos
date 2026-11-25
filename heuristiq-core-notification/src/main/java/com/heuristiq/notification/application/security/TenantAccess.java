@@ -1,10 +1,10 @@
-package com.railcab.nms.application.security;
+package com.heuristiq.notification.application.security;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
 
-import com.railcab.nms.domain.repository.TenantScope;
+import com.heuristiq.notification.domain.repository.TenantScope;
 
 /**
  * Which organization's records the current caller may reach, and which organization a new record is stamped with.

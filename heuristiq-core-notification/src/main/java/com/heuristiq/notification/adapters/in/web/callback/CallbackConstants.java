@@ -1,10 +1,10 @@
-package com.railcab.nms.adapters.in.web.callback;
+package com.heuristiq.notification.adapters.in.web.callback;
 
 import java.util.List;
 import java.util.Set;
 
-import com.railcab.nms.adapters.in.web.WebApiConstants;
-import com.railcab.nms.application.port.out.ChannelProviderConstants;
+import com.heuristiq.notification.adapters.in.web.WebApiConstants;
+import com.heuristiq.notification.application.port.out.ChannelProviderConstants;
 
 /** Wire constants of the inbound provider callbacks: paths, header and parameter names, status vocabularies. */
 public final class CallbackConstants {

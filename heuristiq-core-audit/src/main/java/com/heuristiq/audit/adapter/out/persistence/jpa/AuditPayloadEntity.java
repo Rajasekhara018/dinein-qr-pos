@@ -1,6 +1,6 @@
-package com.railcab.audit.adapter.out.persistence.jpa;
+package com.heuristiq.audit.adapter.out.persistence.jpa;
 
-import com.railcab.audit.domain.AuditPayload;
+import com.heuristiq.audit.domain.AuditPayload;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;

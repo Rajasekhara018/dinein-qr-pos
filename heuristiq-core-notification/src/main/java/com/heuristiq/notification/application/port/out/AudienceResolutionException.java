@@ -1,4 +1,4 @@
-package com.railcab.nms.application.port.out;
+package com.heuristiq.notification.application.port.out;
 
 /**
  * The audience for a broadcast could not be resolved completely (identity source unavailable, an

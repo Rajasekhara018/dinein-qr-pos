@@ -1,11 +1,11 @@
-package com.railcab.nms.adapters.in.web;
+package com.heuristiq.notification.adapters.in.web;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
-import com.railcab.nms.domain.repository.PageQuery;
-import com.railcab.nms.domain.repository.PageResult;
+import com.heuristiq.notification.domain.repository.PageQuery;
+import com.heuristiq.notification.domain.repository.PageResult;
 
 /**
  * Shared conversion between Spring MVC's {@code Pageable}/{@code Page} and the domain-owned

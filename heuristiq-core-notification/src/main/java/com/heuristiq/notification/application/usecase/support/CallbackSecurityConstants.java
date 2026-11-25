@@ -1,4 +1,4 @@
-package com.railcab.nms.application.usecase.support;
+package com.heuristiq.notification.application.usecase.support;
 
 /** Algorithm names and signature formats used to verify provider callbacks. */
 final class CallbackSecurityConstants {

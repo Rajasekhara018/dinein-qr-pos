@@ -1,4 +1,4 @@
-package com.railcab.nms.adapters.out.persistence.jpa;
+package com.heuristiq.notification.adapters.out.persistence.jpa;
 
 import java.time.LocalDateTime;
 

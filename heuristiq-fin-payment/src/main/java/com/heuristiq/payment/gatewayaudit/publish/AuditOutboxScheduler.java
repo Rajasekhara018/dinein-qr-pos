@@ -1,6 +1,6 @@
-package com.heuristiq.paymentservice.gatewayaudit.publish;
+package com.heuristiq.payment.gatewayaudit.publish;
 
-import com.heuristiq.paymentservice.gatewayaudit.GatewayAuditConstants;
+import com.heuristiq.payment.gatewayaudit.GatewayAuditConstants;
 import lombok.RequiredArgsConstructor;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.springframework.scheduling.annotation.Scheduled;

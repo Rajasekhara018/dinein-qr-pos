@@ -1,4 +1,4 @@
-package com.railcab.dms.search;
+package com.heuristiq.documents.search;
 
 import java.time.Instant;
 import java.util.Map;

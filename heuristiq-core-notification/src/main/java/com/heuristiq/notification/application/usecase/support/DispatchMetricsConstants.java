@@ -1,4 +1,4 @@
-package com.railcab.nms.application.usecase.support;
+package com.heuristiq.notification.application.usecase.support;
 
 /** Micrometer metric names, tag keys and failure-reason buckets recorded for dispatch attempts. */
 final class DispatchMetricsConstants {

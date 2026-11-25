@@ -1,6 +1,6 @@
-package com.railcab.dms.document.dto;
+package com.heuristiq.documents.document.dto;
 
-import com.railcab.dms.document.application.DocumentConstants;
+import com.heuristiq.documents.document.application.DocumentConstants;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.time.Duration;

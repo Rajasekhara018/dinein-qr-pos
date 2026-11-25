@@ -1,7 +1,7 @@
-package com.railcab.dms.scan.basic;
+package com.heuristiq.documents.scan.basic;
 
-import com.railcab.dms.scan.ScanConstants;
-import com.railcab.dms.scan.ScanProvider;
+import com.heuristiq.documents.scan.ScanConstants;
+import com.heuristiq.documents.scan.ScanProvider;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 

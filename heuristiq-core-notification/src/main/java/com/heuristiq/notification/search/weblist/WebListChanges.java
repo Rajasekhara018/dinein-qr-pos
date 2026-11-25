@@ -1,9 +1,9 @@
-package com.railcab.nms.search.weblist;
+package com.heuristiq.notification.search.weblist;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.railcab.nms.adapters.in.web.WebApiConstants;
+import com.heuristiq.notification.adapters.in.web.WebApiConstants;
 
 /**
  * Which web lists a successful change made through this API affects, so they reach search right away instead of at the next

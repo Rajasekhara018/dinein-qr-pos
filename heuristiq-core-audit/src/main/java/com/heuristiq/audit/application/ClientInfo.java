@@ -1,4 +1,4 @@
-package com.railcab.audit.application;
+package com.heuristiq.audit.application;
 
 /**
  * Request metadata attached to a screen view by the service (the client cannot set these).

@@ -1,4 +1,4 @@
-package com.railcab.nms.domain.model.readiness;
+package com.heuristiq.notification.domain.model.readiness;
 
 import java.time.Instant;
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.railcab.dms.storage.encryption;
+package com.heuristiq.documents.storage.encryption;
 
 /**
  * What a storage provider can do about encryption at rest. Each {@code StorageProvider} declares one.

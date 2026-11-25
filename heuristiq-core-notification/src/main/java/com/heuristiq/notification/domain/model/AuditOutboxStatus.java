@@ -1,4 +1,4 @@
-package com.railcab.nms.domain.model;
+package com.heuristiq.notification.domain.model;
 
 /** Where an {@link AuditOutboxEntry} is in its life. */
 public enum AuditOutboxStatus {

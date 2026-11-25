@@ -1,7 +1,7 @@
-package com.railcab.dms.search.projection.config;
+package com.heuristiq.documents.search.projection.config;
 
-import com.railcab.dms.common.DmsCommonConstants;
-import com.railcab.dms.search.projection.ProjectionConstants;
+import com.heuristiq.documents.common.DmsCommonConstants;
+import com.heuristiq.documents.search.projection.ProjectionConstants;
 import com.heuristiq.resilient.CorrelationIdPropagation;
 import com.heuristiq.resilient.ResilienceProfile;
 import com.heuristiq.resilient.ResilientCaller;

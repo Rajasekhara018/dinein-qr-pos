@@ -1,4 +1,4 @@
-package com.railcab.nms.search.weblist;
+package com.heuristiq.notification.search.weblist;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,10 +17,10 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.railcab.nms.adapters.in.web.broadcast.BroadcastController;
-import com.railcab.nms.adapters.in.web.event.EventController;
-import com.railcab.nms.adapters.in.web.template.TemplateController;
-import com.railcab.nms.application.security.NmsPrincipal;
+import com.heuristiq.notification.adapters.in.web.broadcast.BroadcastController;
+import com.heuristiq.notification.adapters.in.web.event.EventController;
+import com.heuristiq.notification.adapters.in.web.template.TemplateController;
+import com.heuristiq.notification.application.security.NmsPrincipal;
 
 /**
  * The NMS lists the web screens read from search ({@code WEB_NMS_*}): one partition per organization, and its rows read through

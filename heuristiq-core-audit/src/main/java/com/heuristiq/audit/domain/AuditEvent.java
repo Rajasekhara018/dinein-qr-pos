@@ -1,4 +1,4 @@
-package com.railcab.audit.domain;
+package com.heuristiq.audit.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,7 +14,7 @@ import java.util.Map;
  * One audit event as the service stores it, independent of the database. Never carries request or
  * response bodies, tokens, OTPs or card data: {@code details} holds a bounded set of non-secret string
  * attributes only, and personal values are masked before an event gets here (see
- * {@code com.railcab.audit.application.EventSanitizer}).
+ * {@code com.heuristiq.audit.application.EventSanitizer}).
  */
 @Getter
 @Setter

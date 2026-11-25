@@ -1,4 +1,4 @@
-package com.railcab.nms.adapters.out.channel;
+package com.heuristiq.notification.adapters.out.channel;
 
 /** Wire values of the outbound channel provider adapters (vendor response codes, address prefixes). */
 public final class ChannelAdapterConstants {

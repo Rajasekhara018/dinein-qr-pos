@@ -1,9 +1,9 @@
-package com.railcab.nms.domain.model;
+package com.heuristiq.notification.domain.model;
 
 import java.util.List;
 
-import com.railcab.nms.domain.model.NotificationChannel;
-import com.railcab.nms.domain.model.NotificationEvent;
+import com.heuristiq.notification.domain.model.NotificationChannel;
+import com.heuristiq.notification.domain.model.NotificationEvent;
 
 /**
  * Predefined content for the notification events every app needs out of the box

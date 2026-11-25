@@ -1,4 +1,4 @@
-package com.railcab.dms.search;
+package com.heuristiq.documents.search;
 
 /** Fixed values of search indexing: the stream record fields and operations, the model name and re-index batch sizes. */
 public final class SearchConstants {

@@ -1,11 +1,11 @@
-package com.railcab.dms.config;
+package com.heuristiq.documents.config;
 
 import java.util.LinkedHashMap;
 
 import org.springdoc.core.customizers.GlobalOpenApiCustomizer;
 import org.springframework.stereotype.Component;
 
-import com.railcab.dms.document.dto.DocumentUploadRequest;
+import com.heuristiq.documents.document.dto.DocumentUploadRequest;
 
 import io.swagger.v3.core.converter.AnnotatedType;
 import io.swagger.v3.core.converter.ModelConverters;

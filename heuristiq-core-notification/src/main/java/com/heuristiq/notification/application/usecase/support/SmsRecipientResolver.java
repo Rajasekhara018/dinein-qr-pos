@@ -1,13 +1,13 @@
-package com.railcab.nms.application.usecase.support;
+package com.heuristiq.notification.application.usecase.support;
 
 import java.util.List;
 
 import org.springframework.stereotype.Component;
 
-import com.railcab.nms.application.dto.NotificationRequest;
-import com.railcab.nms.application.port.out.RecipientResolver;
-import com.railcab.nms.application.port.out.UserPhoneDirectory;
-import com.railcab.nms.domain.model.NotificationChannel;
+import com.heuristiq.notification.application.dto.NotificationRequest;
+import com.heuristiq.notification.application.port.out.RecipientResolver;
+import com.heuristiq.notification.application.port.out.UserPhoneDirectory;
+import com.heuristiq.notification.domain.model.NotificationChannel;
 
 /**
  * SMS goes to the request's {@code toPhone}; without one, to the numbers UAM holds for its {@code userIds}, so a service that knows

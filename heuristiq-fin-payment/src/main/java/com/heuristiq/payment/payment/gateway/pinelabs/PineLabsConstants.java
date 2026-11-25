@@ -1,4 +1,4 @@
-package com.heuristiq.paymentservice.payment.gateway.pinelabs;
+package com.heuristiq.payment.payment.gateway.pinelabs;
 
 /** Pine Labs API paths, relative to the configured base URL. */
 public final class PineLabsConstants {

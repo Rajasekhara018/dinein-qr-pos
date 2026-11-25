@@ -1,4 +1,4 @@
-package com.railcab.nms.adapters.in.web;
+package com.heuristiq.notification.adapters.in.web;
 
 /**
  * Wire constants of NMS's inbound HTTP API: the base path of every controller and of the in-app WebSocket endpoint,

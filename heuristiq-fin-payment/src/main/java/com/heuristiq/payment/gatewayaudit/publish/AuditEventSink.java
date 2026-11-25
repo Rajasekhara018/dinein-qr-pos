@@ -1,4 +1,4 @@
-package com.heuristiq.paymentservice.gatewayaudit.publish;
+package com.heuristiq.payment.gatewayaudit.publish;
 
 import java.util.List;
 

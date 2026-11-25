@@ -1,4 +1,4 @@
-package com.railcab.nms.search;
+package com.heuristiq.notification.search;
 
 import java.time.Instant;
 import java.util.Map;

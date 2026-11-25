@@ -1,4 +1,4 @@
-package com.heuristiq.paymentservice.wallet.client;
+package com.heuristiq.payment.wallet.client;
 
 /** Fixed wire values of the Payment -> Wallet credit call. */
 public final class WalletClientConstants {

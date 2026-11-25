@@ -1,12 +1,12 @@
-package com.railcab.dms.documenttype.config;
+package com.heuristiq.documents.documenttype.config;
 
-import com.railcab.dms.common.DmsCommonConstants;
-import com.railcab.dms.config.DmsProperties;
-import com.railcab.dms.documenttype.adapter.out.workflow.WorkflowClientConstants;
-import com.railcab.dms.documenttype.application.BlockedFileTypes;
-import com.railcab.dms.documenttype.application.DefaultDocumentTypeService;
-import com.railcab.dms.documenttype.domain.DocumentTypeRepository;
-import com.railcab.dms.security.InternalAuthProperties;
+import com.heuristiq.documents.common.DmsCommonConstants;
+import com.heuristiq.documents.config.DmsProperties;
+import com.heuristiq.documents.documenttype.adapter.out.workflow.WorkflowClientConstants;
+import com.heuristiq.documents.documenttype.application.BlockedFileTypes;
+import com.heuristiq.documents.documenttype.application.DefaultDocumentTypeService;
+import com.heuristiq.documents.documenttype.domain.DocumentTypeRepository;
+import com.heuristiq.documents.security.InternalAuthProperties;
 import com.heuristiq.resilient.CorrelationIdPropagation;
 import com.heuristiq.resilient.ResilienceProfile;
 import com.heuristiq.resilient.ResilientCaller;

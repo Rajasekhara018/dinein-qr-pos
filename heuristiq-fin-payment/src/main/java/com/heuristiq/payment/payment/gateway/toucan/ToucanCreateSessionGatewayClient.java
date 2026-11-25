@@ -1,13 +1,13 @@
-package com.heuristiq.paymentservice.payment.gateway.toucan;
+package com.heuristiq.payment.payment.gateway.toucan;
 
-import com.heuristiq.paymentservice.payment.gateway.GatewayClientConstants;
-import com.heuristiq.paymentservice.config.ToucanGatewayProperties;
-import com.heuristiq.paymentservice.payment.gateway.dto.GatewaySessionResult;
-import com.heuristiq.paymentservice.payment.gateway.model.PaymentGatewayType;
-import com.heuristiq.paymentservice.payment.gateway.port.CreateSessionGatewayClient;
-import com.heuristiq.paymentservice.payment.gateway.util.Sha512Hasher;
-import com.heuristiq.paymentservice.payment.model.Payment;
-import com.heuristiq.paymentservice.shared.exception.PaymentServiceException;
+import com.heuristiq.payment.payment.gateway.GatewayClientConstants;
+import com.heuristiq.payment.config.ToucanGatewayProperties;
+import com.heuristiq.payment.payment.gateway.dto.GatewaySessionResult;
+import com.heuristiq.payment.payment.gateway.model.PaymentGatewayType;
+import com.heuristiq.payment.payment.gateway.port.CreateSessionGatewayClient;
+import com.heuristiq.payment.payment.gateway.util.Sha512Hasher;
+import com.heuristiq.payment.payment.model.Payment;
+import com.heuristiq.payment.shared.exception.PaymentServiceException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;

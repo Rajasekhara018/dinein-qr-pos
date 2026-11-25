@@ -1,6 +1,6 @@
-package com.heuristiq.paymentservice.gatewayaudit;
+package com.heuristiq.payment.gatewayaudit;
 
-import com.heuristiq.paymentservice.gatewayaudit.model.WebhookOutcome;
+import com.heuristiq.payment.gatewayaudit.model.WebhookOutcome;
 
 /**
  * What the webhook handler decided about one delivery. The raw payload and the signature value are

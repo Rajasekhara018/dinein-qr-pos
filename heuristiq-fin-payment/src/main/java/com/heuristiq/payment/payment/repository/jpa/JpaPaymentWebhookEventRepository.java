@@ -1,6 +1,6 @@
-package com.heuristiq.paymentservice.payment.repository.jpa;
+package com.heuristiq.payment.payment.repository.jpa;
 
-import com.heuristiq.paymentservice.payment.model.PaymentWebhookEvent;
+import com.heuristiq.payment.payment.model.PaymentWebhookEvent;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

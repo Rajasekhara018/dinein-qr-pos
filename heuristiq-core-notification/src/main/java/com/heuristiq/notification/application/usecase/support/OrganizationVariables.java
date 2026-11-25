@@ -1,4 +1,4 @@
-package com.railcab.nms.application.usecase.support;
+package com.heuristiq.notification.application.usecase.support;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -6,8 +6,8 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import com.railcab.nms.application.dto.OrganizationProfile;
-import com.railcab.nms.application.port.out.OrganizationProfileResolver;
+import com.heuristiq.notification.application.dto.OrganizationProfile;
+import com.heuristiq.notification.application.port.out.OrganizationProfileResolver;
 
 /**
  * The variables every message gets about the organization that sends it, so one template reads right for every

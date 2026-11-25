@@ -1,4 +1,4 @@
-package com.railcab.audit.domain;
+package com.heuristiq.audit.domain;
 
 /** Client surface that produced the event ({@code WALLET_WEB} is the standalone RealBoom Wallet web app). */
 public enum AppChannel {

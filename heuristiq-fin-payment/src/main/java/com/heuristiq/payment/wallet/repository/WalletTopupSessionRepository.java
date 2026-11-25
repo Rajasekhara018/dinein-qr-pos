@@ -1,8 +1,8 @@
-package com.heuristiq.paymentservice.wallet.repository;
+package com.heuristiq.payment.wallet.repository;
 
-import com.heuristiq.paymentservice.payment.gateway.model.PaymentGatewayType;
-import com.heuristiq.paymentservice.wallet.model.WalletTopupSession;
-import com.heuristiq.paymentservice.wallet.model.WalletTopupStatus;
+import com.heuristiq.payment.payment.gateway.model.PaymentGatewayType;
+import com.heuristiq.payment.wallet.model.WalletTopupSession;
+import com.heuristiq.payment.wallet.model.WalletTopupStatus;
 
 import java.util.List;
 import java.util.Optional;

@@ -1,4 +1,4 @@
-package com.railcab.nms.application.usecase.support;
+package com.heuristiq.notification.application.usecase.support;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import com.railcab.nms.application.dto.NotificationRequest;
-import com.railcab.nms.domain.model.NotificationChannel;
+import com.heuristiq.notification.application.dto.NotificationRequest;
+import com.heuristiq.notification.domain.model.NotificationChannel;
 
 /**
  * Builds the structured data map that travels with a push (and, for VOICE, the call's metadata) from a

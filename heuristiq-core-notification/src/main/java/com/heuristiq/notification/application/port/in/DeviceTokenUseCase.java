@@ -1,6 +1,6 @@
-package com.railcab.nms.application.port.in;
+package com.heuristiq.notification.application.port.in;
 
-import com.railcab.nms.domain.model.DeviceRegistration;
+import com.heuristiq.notification.domain.model.DeviceRegistration;
 
 /** Port the web adapter depends on instead of the raw repository. */
 public interface DeviceTokenUseCase {

@@ -1,4 +1,4 @@
-package com.railcab.dms.readiness.domain;
+package com.heuristiq.documents.readiness.domain;
 
 import java.time.Instant;
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.railcab.nms.application.usecase.support;
+package com.heuristiq.notification.application.usecase.support;
 
 import java.time.Clock;
 import java.time.Instant;
@@ -12,19 +12,19 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.railcab.nms.application.dto.CommunicationAuditEvent;
-import com.railcab.nms.domain.model.AuditOutboxEntry;
-import com.railcab.nms.domain.model.AuditOutboxStatus;
-import com.railcab.nms.domain.model.DeliveryStatus;
-import com.railcab.nms.domain.model.NotificationAttempt;
-import com.railcab.nms.domain.repository.IAuditOutboxRepository;
-import com.railcab.nms.infrastructure.config.NmsProperties;
+import com.heuristiq.notification.application.dto.CommunicationAuditEvent;
+import com.heuristiq.notification.domain.model.AuditOutboxEntry;
+import com.heuristiq.notification.domain.model.AuditOutboxStatus;
+import com.heuristiq.notification.domain.model.DeliveryStatus;
+import com.heuristiq.notification.domain.model.NotificationAttempt;
+import com.heuristiq.notification.domain.repository.IAuditOutboxRepository;
+import com.heuristiq.notification.infrastructure.config.NmsProperties;
 
 import lombok.RequiredArgsConstructor;
 
 /**
  * Turns an attempt outcome or a status update into a COMMUNICATION audit event and parks it in the
- * audit outbox. Sending happens later, off the request path ({@link com.railcab.nms.application.usecase.AuditOutboxService}),
+ * audit outbox. Sending happens later, off the request path ({@link com.heuristiq.notification.application.usecase.AuditOutboxService}),
  * so this class never waits for the audit service and never throws: a failure here is logged and
  * the notification flow carries on.
  *

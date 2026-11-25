@@ -1,4 +1,4 @@
-package com.heuristiq.paymentservice.salesettlement.config;
+package com.heuristiq.payment.salesettlement.config;
 
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;

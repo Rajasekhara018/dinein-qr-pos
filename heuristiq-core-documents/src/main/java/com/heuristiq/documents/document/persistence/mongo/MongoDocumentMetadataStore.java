@@ -1,11 +1,11 @@
-package com.railcab.dms.document.persistence.mongo;
+package com.heuristiq.documents.document.persistence.mongo;
 
-import com.railcab.dms.common.DmsCommonConstants;
-import com.railcab.dms.document.domain.DocumentMetadata;
-import com.railcab.dms.document.persistence.DocumentMetadataStore;
+import com.heuristiq.documents.common.DmsCommonConstants;
+import com.heuristiq.documents.document.domain.DocumentMetadata;
+import com.heuristiq.documents.document.persistence.DocumentMetadataStore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import com.railcab.dms.common.paging.PagedResult;
-import com.railcab.dms.document.persistence.DocumentSearchCriteria;
+import com.heuristiq.documents.common.paging.PagedResult;
+import com.heuristiq.documents.document.persistence.DocumentSearchCriteria;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;

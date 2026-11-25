@@ -1,4 +1,4 @@
-package com.railcab.nms.adapters.out.persistence.mongo;
+package com.heuristiq.notification.adapters.out.persistence.mongo;
 
 import org.springframework.data.mongodb.repository.Query;
 import java.time.LocalDateTime;
@@ -8,8 +8,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
-import com.railcab.nms.domain.model.NotificationMessageStatus;
-import com.railcab.nms.adapters.out.persistence.mongo.NotificationMessageDocument;
+import com.heuristiq.notification.domain.model.NotificationMessageStatus;
+import com.heuristiq.notification.adapters.out.persistence.mongo.NotificationMessageDocument;
 
 interface NotificationMessageMongoSpringRepository extends MongoRepository<NotificationMessageDocument, String> {
 

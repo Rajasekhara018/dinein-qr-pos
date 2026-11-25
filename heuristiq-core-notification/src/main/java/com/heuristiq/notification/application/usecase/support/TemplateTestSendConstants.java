@@ -1,10 +1,10 @@
-package com.railcab.nms.application.usecase.support;
+package com.heuristiq.notification.application.usecase.support;
 
 import java.time.Duration;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import com.railcab.nms.domain.model.NotificationChannel;
+import com.heuristiq.notification.domain.model.NotificationChannel;
 
 /** Fixed values of the template "send a test" feature. */
 public final class TemplateTestSendConstants {

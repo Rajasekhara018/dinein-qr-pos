@@ -1,6 +1,6 @@
-package com.railcab.dms.documenttype.application;
+package com.heuristiq.documents.documenttype.application;
 
-import com.railcab.dms.documenttype.domain.DocumentTypeRule;
+import com.heuristiq.documents.documenttype.domain.DocumentTypeRule;
 
 /**
  * The published application interface other features (uploads) use to ask which rule a document type imposes.
@@ -14,7 +14,7 @@ public interface DocumentTypeRules {
      * @param category         the upload category; when not null it must equal the type's category
      * @param documentTypeCode the type's code (case-insensitive)
      * @return the rule
-     * @throws com.railcab.dms.documenttype.domain.DocumentTypeException (INVALID) when the type is unknown in the
+     * @throws com.heuristiq.documents.documenttype.domain.DocumentTypeException (INVALID) when the type is unknown in the
      *         organization, inactive, or belongs to another category
      */
     DocumentTypeRule resolveRule(String tenantId, String category, String documentTypeCode);

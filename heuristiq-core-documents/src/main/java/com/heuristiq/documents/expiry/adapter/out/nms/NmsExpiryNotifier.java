@@ -1,4 +1,4 @@
-package com.railcab.dms.expiry.adapter.out.nms;
+package com.heuristiq.documents.expiry.adapter.out.nms;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -13,9 +13,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.railcab.dms.document.domain.DocumentValidityConstants;
-import com.railcab.dms.expiry.application.ExpiryNotifier;
-import com.railcab.dms.expiry.config.DocumentExpiryProperties;
+import com.heuristiq.documents.document.domain.DocumentValidityConstants;
+import com.heuristiq.documents.expiry.application.ExpiryNotifier;
+import com.heuristiq.documents.expiry.config.DocumentExpiryProperties;
 import com.heuristiq.resilient.Idempotency;
 import com.heuristiq.resilient.ResilientCaller;
 

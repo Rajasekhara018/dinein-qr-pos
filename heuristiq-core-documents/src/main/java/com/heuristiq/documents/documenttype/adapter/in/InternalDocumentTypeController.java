@@ -1,7 +1,7 @@
-package com.railcab.dms.documenttype.adapter.in;
+package com.heuristiq.documents.documenttype.adapter.in;
 
-import com.railcab.dms.common.dto.CommonResponseObject;
-import com.railcab.dms.documenttype.application.DocumentTypeApplyService;
+import com.heuristiq.documents.common.dto.CommonResponseObject;
+import com.heuristiq.documents.documenttype.application.DocumentTypeApplyService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.MediaType;

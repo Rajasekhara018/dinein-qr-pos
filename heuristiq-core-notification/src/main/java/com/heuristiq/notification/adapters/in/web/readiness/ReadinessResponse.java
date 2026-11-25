@@ -1,8 +1,8 @@
-package com.railcab.nms.adapters.in.web.readiness;
+package com.heuristiq.notification.adapters.in.web.readiness;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.railcab.nms.domain.model.readiness.ReadinessCheck;
-import com.railcab.nms.domain.model.readiness.ReadinessReport;
+import com.heuristiq.notification.domain.model.readiness.ReadinessCheck;
+import com.heuristiq.notification.domain.model.readiness.ReadinessReport;
 
 import java.util.List;
 import java.util.Map;

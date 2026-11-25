@@ -1,7 +1,7 @@
-package com.heuristiq.paymentservice.splitfare.model;
+package com.heuristiq.payment.splitfare.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.heuristiq.paymentservice.shared.PaymentCommonConstants;
+import com.heuristiq.payment.shared.PaymentCommonConstants;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;

@@ -1,6 +1,6 @@
-package com.heuristiq.paymentservice.splitfare.repository.jpa;
+package com.heuristiq.payment.splitfare.repository.jpa;
 
-import com.heuristiq.paymentservice.splitfare.model.SplitFareRequest;
+import com.heuristiq.payment.splitfare.model.SplitFareRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

@@ -1,13 +1,13 @@
-package com.railcab.dms.document.application;
+package com.heuristiq.documents.document.application;
 
-import com.railcab.dms.common.DmsCommonConstants;
-import com.railcab.dms.config.DmsProperties;
-import com.railcab.dms.document.audit.DocumentReasonCodes;
-import com.railcab.dms.documenttype.application.DocumentTypeRules;
-import com.railcab.dms.documenttype.domain.DocumentTypeException;
-import com.railcab.dms.documenttype.domain.DocumentTypeRule;
-import com.railcab.dms.exception.DmsException;
-import com.railcab.dms.security.DmsSecurityContext;
+import com.heuristiq.documents.common.DmsCommonConstants;
+import com.heuristiq.documents.config.DmsProperties;
+import com.heuristiq.documents.document.audit.DocumentReasonCodes;
+import com.heuristiq.documents.documenttype.application.DocumentTypeRules;
+import com.heuristiq.documents.documenttype.domain.DocumentTypeException;
+import com.heuristiq.documents.documenttype.domain.DocumentTypeRule;
+import com.heuristiq.documents.exception.DmsException;
+import com.heuristiq.documents.security.DmsSecurityContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;

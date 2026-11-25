@@ -1,4 +1,4 @@
-package com.railcab.audit.common;
+package com.heuristiq.audit.common;
 
 /** Fixed texts and codes of the shared {@link CommonResponseObject} envelope and the error handler. */
 public final class CommonConstants {

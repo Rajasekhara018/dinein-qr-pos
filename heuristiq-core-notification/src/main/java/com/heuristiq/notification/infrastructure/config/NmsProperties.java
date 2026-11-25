@@ -1,11 +1,11 @@
-package com.railcab.nms.infrastructure.config;
+package com.heuristiq.notification.infrastructure.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
 import org.springframework.validation.annotation.Validated;
 
-import com.railcab.nms.infrastructure.cache.NmsCacheConstants;
+import com.heuristiq.notification.infrastructure.cache.NmsCacheConstants;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;

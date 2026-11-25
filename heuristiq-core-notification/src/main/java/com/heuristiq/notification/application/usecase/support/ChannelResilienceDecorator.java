@@ -1,4 +1,4 @@
-package com.railcab.nms.application.usecase.support;
+package com.heuristiq.notification.application.usecase.support;
 
 import java.time.Clock;
 import java.time.LocalDateTime;
@@ -10,10 +10,10 @@ import java.util.function.Supplier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.railcab.nms.application.dto.ChannelSendOutcome;
-import com.railcab.nms.application.dto.ChannelSendOutcome.AttemptResult;
-import com.railcab.nms.application.port.out.ProviderSendResult;
-import com.railcab.nms.domain.model.NotificationChannel;
+import com.heuristiq.notification.application.dto.ChannelSendOutcome;
+import com.heuristiq.notification.application.dto.ChannelSendOutcome.AttemptResult;
+import com.heuristiq.notification.application.port.out.ProviderSendResult;
+import com.heuristiq.notification.domain.model.NotificationChannel;
 
 import io.github.resilience4j.bulkhead.Bulkhead;
 import io.github.resilience4j.bulkhead.BulkheadFullException;
@@ -25,7 +25,7 @@ import io.github.resilience4j.retry.Retry;
 import io.github.resilience4j.retry.RetryRegistry;
 
 /**
- * Wraps a per-channel {@link com.railcab.nms.application.port.out.ChannelProvider#send} call with
+ * Wraps a per-channel {@link com.heuristiq.notification.application.port.out.ChannelProvider#send} call with
  * Resilience4j Bulkhead + CircuitBreaker + Retry, replacing the hand-rolled
  * {@code ConcurrentHashMap} circuit breaker and raw {@code Semaphore} rate limiter that used to
  * live inline in {@code NotificationDispatchService}. {@code send} returning {@code false} is

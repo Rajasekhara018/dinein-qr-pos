@@ -1,7 +1,7 @@
-package com.heuristiq.paymentservice.security;
+package com.heuristiq.payment.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.heuristiq.paymentservice.shared.dto.ResponseObject;
+import com.heuristiq.payment.shared.dto.ResponseObject;
 import org.springframework.context.annotation.Bean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;

@@ -1,6 +1,6 @@
-package com.heuristiq.paymentservice.shared.exception;
+package com.heuristiq.payment.shared.exception;
 
-import com.heuristiq.paymentservice.shared.dto.ResponseObject;
+import com.heuristiq.payment.shared.dto.ResponseObject;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

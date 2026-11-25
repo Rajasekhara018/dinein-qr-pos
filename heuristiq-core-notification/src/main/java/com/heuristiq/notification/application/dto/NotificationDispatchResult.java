@@ -1,6 +1,6 @@
-package com.railcab.nms.application.dto;
+package com.heuristiq.notification.application.dto;
 
-import com.railcab.nms.domain.model.NotificationChannel;
+import com.heuristiq.notification.domain.model.NotificationChannel;
 
 public record NotificationDispatchResult(
         NotificationChannel channel,

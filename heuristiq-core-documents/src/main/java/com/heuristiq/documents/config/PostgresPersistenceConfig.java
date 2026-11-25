@@ -1,6 +1,6 @@
-package com.railcab.dms.config;
+package com.heuristiq.documents.config;
 
-import com.railcab.dms.common.DmsCommonConstants;
+import com.heuristiq.documents.common.DmsCommonConstants;
 import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
@@ -27,10 +27,10 @@ import java.util.Map;
 @EnableTransactionManagement
 @ConditionalOnProperty(prefix = DmsCommonConstants.PERSISTENCE_PROPERTY_PREFIX, name = DmsCommonConstants.PERSISTENCE_PROVIDER_PROPERTY, havingValue = DmsCommonConstants.PERSISTENCE_POSTGRES)
 @EnableJpaRepositories(basePackages = {
-        "com.railcab.dms.document.persistence.postgres",
-        "com.railcab.dms.document.audit.postgres",
-        "com.railcab.dms.documenttype.adapter.out.postgres",
-        "com.railcab.dms.centralaudit.postgres"
+        "com.heuristiq.documents.document.persistence.postgres",
+        "com.heuristiq.documents.document.audit.postgres",
+        "com.heuristiq.documents.documenttype.adapter.out.postgres",
+        "com.heuristiq.documents.centralaudit.postgres"
 })
 public class PostgresPersistenceConfig {
 
@@ -56,10 +56,10 @@ public class PostgresPersistenceConfig {
         LocalContainerEntityManagerFactoryBean factory = new LocalContainerEntityManagerFactoryBean();
         factory.setDataSource(dataSource);
         factory.setPackagesToScan(
-                "com.railcab.dms.document.persistence.postgres",
-                "com.railcab.dms.document.audit.postgres",
-                "com.railcab.dms.documenttype.adapter.out.postgres",
-                "com.railcab.dms.centralaudit.postgres"
+                "com.heuristiq.documents.document.persistence.postgres",
+                "com.heuristiq.documents.document.audit.postgres",
+                "com.heuristiq.documents.documenttype.adapter.out.postgres",
+                "com.heuristiq.documents.centralaudit.postgres"
         );
         JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         factory.setJpaVendorAdapter(vendorAdapter);

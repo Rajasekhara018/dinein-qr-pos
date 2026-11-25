@@ -1,8 +1,8 @@
-package com.heuristiq.paymentservice.gatewayaudit;
+package com.heuristiq.payment.gatewayaudit;
 
-import com.heuristiq.paymentservice.gatewayaudit.model.GatewayCallOperation;
-import com.heuristiq.paymentservice.gatewayaudit.model.GatewayCallOutcome;
-import com.heuristiq.paymentservice.payment.gateway.model.PaymentGatewayType;
+import com.heuristiq.payment.gatewayaudit.model.GatewayCallOperation;
+import com.heuristiq.payment.gatewayaudit.model.GatewayCallOutcome;
+import com.heuristiq.payment.payment.gateway.model.PaymentGatewayType;
 import com.heuristiq.resilient.CorrelationIdPropagation;
 import org.slf4j.MDC;
 import org.springframework.stereotype.Component;

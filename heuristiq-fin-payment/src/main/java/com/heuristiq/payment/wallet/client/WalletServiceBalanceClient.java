@@ -1,13 +1,13 @@
-package com.heuristiq.paymentservice.wallet.client;
+package com.heuristiq.payment.wallet.client;
 
-import com.heuristiq.paymentservice.shared.money.MoneyDefaults;
-import com.heuristiq.paymentservice.shared.money.Money;
+import com.heuristiq.payment.shared.money.MoneyDefaults;
+import com.heuristiq.payment.shared.money.Money;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.heuristiq.resilient.DownstreamUnavailableException;
 import com.heuristiq.resilient.Idempotency;
 import com.heuristiq.resilient.ResilientCaller;
 import com.heuristiq.resilient.TenantIdPropagation;
-import com.heuristiq.paymentservice.wallet.port.WalletBalanceClient;
+import com.heuristiq.payment.wallet.port.WalletBalanceClient;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;

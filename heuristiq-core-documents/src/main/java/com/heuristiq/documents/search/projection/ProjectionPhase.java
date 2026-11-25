@@ -1,4 +1,4 @@
-package com.railcab.dms.search.projection;
+package com.heuristiq.documents.search.projection;
 
 /** The steps of one source generation, as Rider_SearchAPI's projection ingress names them. */
 public enum ProjectionPhase {

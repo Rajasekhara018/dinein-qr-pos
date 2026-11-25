@@ -1,5 +1,5 @@
-package com.heuristiq.paymentservice.payment.gateway.dto;
+package com.heuristiq.payment.payment.gateway.dto;
 
-/** Generic result of a {@link com.heuristiq.paymentservice.payment.gateway.port.RefundGatewayClient} refund call. */
+/** Generic result of a {@link com.heuristiq.payment.payment.gateway.port.RefundGatewayClient} refund call. */
 public record GatewayRefundResult(String refundId, String status) {
 }

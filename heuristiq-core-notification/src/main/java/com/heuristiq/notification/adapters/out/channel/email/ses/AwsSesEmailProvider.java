@@ -1,13 +1,13 @@
-package com.railcab.nms.adapters.out.channel.email.ses;
+package com.heuristiq.notification.adapters.out.channel.email.ses;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import com.railcab.nms.infrastructure.config.NmsProperties;
-import com.railcab.nms.adapters.out.channel.email.EmailProvider;
-import com.railcab.nms.application.port.out.ProviderSendResult;
+import com.heuristiq.notification.infrastructure.config.NmsProperties;
+import com.heuristiq.notification.adapters.out.channel.email.EmailProvider;
+import com.heuristiq.notification.application.port.out.ProviderSendResult;
 
 import jakarta.annotation.PreDestroy;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +24,7 @@ import software.amazon.awssdk.services.sesv2.model.SendEmailRequest;
 import software.amazon.awssdk.services.sesv2.model.SendEmailResponse;
 import software.amazon.awssdk.services.sesv2.model.SesV2Exception;
 
-import static com.railcab.nms.application.port.out.ChannelProviderConstants.*;
+import static com.heuristiq.notification.application.port.out.ChannelProviderConstants.*;
 
 @Component("sesEmailProvider")
 @RequiredArgsConstructor

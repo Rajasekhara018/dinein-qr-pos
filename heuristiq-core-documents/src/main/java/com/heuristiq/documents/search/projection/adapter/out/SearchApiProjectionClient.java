@@ -1,11 +1,11 @@
-package com.railcab.dms.search.projection.adapter.out;
+package com.heuristiq.documents.search.projection.adapter.out;
 
-import com.railcab.dms.common.DmsCommonConstants;
-import com.railcab.dms.search.projection.ProjectionConstants;
-import com.railcab.dms.search.projection.ProjectionGateway;
-import com.railcab.dms.search.projection.ProjectionPhase;
-import com.railcab.dms.search.projection.ProjectionRecord;
-import com.railcab.dms.search.projection.config.SearchProjectionProperties;
+import com.heuristiq.documents.common.DmsCommonConstants;
+import com.heuristiq.documents.search.projection.ProjectionConstants;
+import com.heuristiq.documents.search.projection.ProjectionGateway;
+import com.heuristiq.documents.search.projection.ProjectionPhase;
+import com.heuristiq.documents.search.projection.ProjectionRecord;
+import com.heuristiq.documents.search.projection.config.SearchProjectionProperties;
 import com.heuristiq.resilient.DownstreamUnavailableException;
 import com.heuristiq.resilient.Idempotency;
 import com.heuristiq.resilient.ResilientCaller;

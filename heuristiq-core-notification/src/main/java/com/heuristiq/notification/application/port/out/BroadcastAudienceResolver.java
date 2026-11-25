@@ -1,9 +1,9 @@
-package com.railcab.nms.application.port.out;
+package com.heuristiq.notification.application.port.out;
 
 import java.util.List;
 
-import com.railcab.nms.application.dto.UamUserSummary;
-import com.railcab.nms.domain.model.BroadcastSegment;
+import com.heuristiq.notification.application.dto.UamUserSummary;
+import com.heuristiq.notification.domain.model.BroadcastSegment;
 
 /** Port BroadcastService depends on instead of the concrete UAM integration client. */
 public interface BroadcastAudienceResolver {

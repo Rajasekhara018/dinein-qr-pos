@@ -1,6 +1,6 @@
-package com.heuristiq.paymentservice.shared.money;
+package com.heuristiq.payment.shared.money;
 
-import com.heuristiq.paymentservice.shared.exception.PaymentServiceException;
+import com.heuristiq.payment.shared.exception.PaymentServiceException;
 import java.math.BigDecimal;
 
 /** Reads an amount someone sent: it must be in the currency the service works in. */

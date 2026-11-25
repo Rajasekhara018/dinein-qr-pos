@@ -1,8 +1,8 @@
-package com.railcab.audit.config.security;
+package com.heuristiq.audit.config.security;
 
-import static com.railcab.audit.config.security.SecurityConstants.*;
+import static com.heuristiq.audit.config.security.SecurityConstants.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.railcab.audit.common.CommonResponseObject;
+import com.heuristiq.audit.common.CommonResponseObject;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;

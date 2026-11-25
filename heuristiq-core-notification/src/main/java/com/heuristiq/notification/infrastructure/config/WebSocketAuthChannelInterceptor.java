@@ -1,4 +1,4 @@
-package com.railcab.nms.infrastructure.config;
+package com.heuristiq.notification.infrastructure.config;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.messaging.Message;

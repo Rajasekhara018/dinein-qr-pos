@@ -1,13 +1,13 @@
-package com.railcab.dms.search.projection;
+package com.heuristiq.documents.search.projection;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.railcab.dms.common.paging.PagedResult;
-import com.railcab.dms.document.domain.DocumentMetadata;
-import com.railcab.dms.document.persistence.DocumentSearchCriteria;
-import com.railcab.dms.lifecycle.adapter.in.LifecycleDocumentRow;
-import com.railcab.dms.lifecycle.adapter.in.LifecycleMapper;
-import com.railcab.dms.lifecycle.application.LifecycleQueryService;
+import com.heuristiq.documents.common.paging.PagedResult;
+import com.heuristiq.documents.document.domain.DocumentMetadata;
+import com.heuristiq.documents.document.persistence.DocumentSearchCriteria;
+import com.heuristiq.documents.lifecycle.adapter.in.LifecycleDocumentRow;
+import com.heuristiq.documents.lifecycle.adapter.in.LifecycleMapper;
+import com.heuristiq.documents.lifecycle.application.LifecycleQueryService;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;

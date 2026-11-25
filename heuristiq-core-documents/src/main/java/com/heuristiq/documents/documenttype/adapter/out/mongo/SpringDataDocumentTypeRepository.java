@@ -1,4 +1,4 @@
-package com.railcab.dms.documenttype.adapter.out.mongo;
+package com.heuristiq.documents.documenttype.adapter.out.mongo;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 

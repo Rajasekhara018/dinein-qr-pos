@@ -1,4 +1,4 @@
-package com.railcab.nms.infrastructure.config;
+package com.heuristiq.notification.infrastructure.config;
 
 import java.time.Duration;
 
@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import com.heuristiq.resilient.ResilienceProfile;
 import com.heuristiq.resilient.ResilientCaller;
 
-import static com.railcab.nms.infrastructure.config.NmsConfigConstants.*;
+import static com.heuristiq.notification.infrastructure.config.NmsConfigConstants.*;
 
 /**
  * Resilience for NMS -> audit service pushes. The drain runs on a scheduler thread, so a short

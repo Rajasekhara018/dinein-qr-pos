@@ -1,4 +1,4 @@
-package com.railcab.nms.application.dto;
+package com.heuristiq.notification.application.dto;
 
 /** What happened to a {@link DeliveryReceipt}. Every value is a final answer; none should be retried by the provider. */
 public enum ReceiptOutcome {

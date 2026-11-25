@@ -1,7 +1,7 @@
-package com.railcab.nms.adapters.out.channel.fcm.firebase;
+package com.heuristiq.notification.adapters.out.channel.fcm.firebase;
 
-import com.railcab.nms.infrastructure.config.NmsProperties;
-import com.railcab.nms.domain.repository.IDeviceTokenRepository;
+import com.heuristiq.notification.infrastructure.config.NmsProperties;
+import com.heuristiq.notification.domain.repository.IDeviceTokenRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,16 +14,16 @@ import java.util.Map;
 import com.google.firebase.messaging.AndroidConfig;
 import com.google.firebase.messaging.AndroidNotification;
 import com.google.firebase.messaging.FirebaseMessaging;
-import com.railcab.nms.adapters.out.channel.ChannelAdapterConstants;
-import com.railcab.nms.application.usecase.support.PushDataConstants;
+import com.heuristiq.notification.adapters.out.channel.ChannelAdapterConstants;
+import com.heuristiq.notification.application.usecase.support.PushDataConstants;
 import com.google.firebase.messaging.MessagingErrorCode;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.Notification;
-import com.railcab.nms.adapters.out.channel.fcm.PushProvider;
-import com.railcab.nms.application.port.out.ProviderSendResult;
+import com.heuristiq.notification.adapters.out.channel.fcm.PushProvider;
+import com.heuristiq.notification.application.port.out.ProviderSendResult;
 
-import static com.railcab.nms.application.port.out.ChannelProviderConstants.*;
+import static com.heuristiq.notification.application.port.out.ChannelProviderConstants.*;
 
 @Component("firebasePushProvider")
 public class FirebasePushProvider implements PushProvider {

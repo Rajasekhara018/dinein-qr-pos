@@ -1,4 +1,4 @@
-package com.heuristiq.paymentservice.wallet.model;
+package com.heuristiq.payment.wallet.model;
 
 /**
  * Life of a top-up. CAPTURED means the gateway confirmed the payment AND Rider_WalletService holds the credit; it is

@@ -1,4 +1,4 @@
-package com.railcab.nms.application.dto;
+package com.heuristiq.notification.application.dto;
 
 /**
  * A voice provider's report on a call, already read from the provider's wire format by the inbound adapter.

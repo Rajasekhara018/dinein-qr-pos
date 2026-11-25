@@ -1,4 +1,4 @@
-package com.railcab.nms.adapters.out.integration.uam;
+package com.heuristiq.notification.adapters.out.integration.uam;
 
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;

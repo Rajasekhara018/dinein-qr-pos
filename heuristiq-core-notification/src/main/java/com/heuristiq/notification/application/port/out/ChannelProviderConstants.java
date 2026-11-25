@@ -1,4 +1,4 @@
-package com.railcab.nms.application.port.out;
+package com.heuristiq.notification.application.port.out;
 
 /**
  * Fixed vocabulary shared by channel providers and their delivery receipts: the concrete provider names (stored on

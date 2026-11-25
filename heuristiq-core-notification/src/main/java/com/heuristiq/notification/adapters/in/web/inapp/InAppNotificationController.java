@@ -1,6 +1,6 @@
-package com.railcab.nms.adapters.in.web.inapp;
+package com.heuristiq.notification.adapters.in.web.inapp;
 
-import com.railcab.nms.adapters.in.web.WebApiConstants;
+import com.heuristiq.notification.adapters.in.web.WebApiConstants;
 
 import java.util.Map;
 
@@ -14,9 +14,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.railcab.nms.adapters.in.web.WebPaginationSupport;
-import com.railcab.nms.application.port.in.InAppNotificationUseCase;
-import com.railcab.nms.shared.CommonResponseObject;
+import com.heuristiq.notification.adapters.in.web.WebPaginationSupport;
+import com.heuristiq.notification.application.port.in.InAppNotificationUseCase;
+import com.heuristiq.notification.shared.CommonResponseObject;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

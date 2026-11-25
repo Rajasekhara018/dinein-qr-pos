@@ -1,4 +1,4 @@
-package com.railcab.nms.application.dto;
+package com.heuristiq.notification.application.dto;
 
 import java.util.List;
 

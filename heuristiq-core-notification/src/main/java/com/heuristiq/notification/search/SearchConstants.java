@@ -1,4 +1,4 @@
-package com.railcab.nms.search;
+package com.heuristiq.notification.search;
 
 /** Fixed values of the search-index integration: stream record field names, reindex batch limits and thread name. */
 final class SearchConstants {

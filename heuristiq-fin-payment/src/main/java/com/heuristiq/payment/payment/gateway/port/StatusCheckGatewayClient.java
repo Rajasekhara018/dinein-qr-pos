@@ -1,8 +1,8 @@
-package com.heuristiq.paymentservice.payment.gateway.port;
+package com.heuristiq.payment.payment.gateway.port;
 
-import com.heuristiq.paymentservice.payment.gateway.dto.GatewayStatusResult;
-import com.heuristiq.paymentservice.payment.gateway.model.PaymentGatewayType;
-import com.heuristiq.paymentservice.payment.model.Payment;
+import com.heuristiq.payment.payment.gateway.dto.GatewayStatusResult;
+import com.heuristiq.payment.payment.gateway.model.PaymentGatewayType;
+import com.heuristiq.payment.payment.model.Payment;
 
 /**
  * Polls a specific gateway for the current status of a payment it holds a providerOrderId/

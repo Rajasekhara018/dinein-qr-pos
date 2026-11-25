@@ -1,4 +1,4 @@
-package com.railcab.dms.readiness.config;
+package com.heuristiq.documents.readiness.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.bind.DefaultValue;

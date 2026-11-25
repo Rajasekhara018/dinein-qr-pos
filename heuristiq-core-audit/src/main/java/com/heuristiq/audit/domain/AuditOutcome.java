@@ -1,4 +1,4 @@
-package com.railcab.audit.domain;
+package com.heuristiq.audit.domain;
 
 /** Result of the audited action. {@code DENIED} means the caller was refused (HTTP 401/403 or a privilege miss). */
 public enum AuditOutcome {

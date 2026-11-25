@@ -1,7 +1,7 @@
-package com.railcab.dms.storage;
+package com.heuristiq.documents.storage;
 
-import com.railcab.dms.config.DmsProperties;
-import com.railcab.dms.exception.DmsException;
+import com.heuristiq.documents.config.DmsProperties;
+import com.heuristiq.documents.exception.DmsException;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

@@ -1,7 +1,7 @@
-package com.railcab.dms.storage.aws;
+package com.heuristiq.documents.storage.aws;
 
-import com.railcab.dms.config.DmsProperties;
-import com.railcab.dms.storage.encryption.EncryptionMode;
+import com.heuristiq.documents.config.DmsProperties;
+import com.heuristiq.documents.storage.encryption.EncryptionMode;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.model.ServerSideEncryption;
 

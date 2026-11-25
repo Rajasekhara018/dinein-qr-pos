@@ -34,7 +34,7 @@ Frontend and backend are on the Docker network `dinein-network`. The database is
 
 | Container | Image | Memory | Notes |
 |---|---|---|---|
-| `dinein-frontend-container` | `nginx:1.27-alpine` + Angular build | 128m | `frontend/nginx/default.conf` proxies to `http://backend:8080` |
+| `dinein-frontend-container` | `nginx:1.27-alpine` + Angular build | 128m | `heuristiq-web-dinein/nginx/default.conf` proxies to `http://backend:8080` |
 | `dinein-backend-container` | Spring Boot 3.5, JRE 21 | 640m | network alias **`backend`**, so the nginx config works unchanged |
 | `bestride-postgres-container` | `postgres:16` | shared | owned by the bestride pipelines; dine-in only adds the `dinein` database |
 
@@ -42,8 +42,8 @@ Frontend and backend are on the Docker network `dinein-network`. The database is
 
 | Jenkinsfile | Stages |
 |---|---|
-| `jenkins-pipeline/dine-in-qr/Backend/Jenkinsfile` | Sparse checkout `backend/` → Docker build → **Ensure Postgres** (starts the shared bestride Postgres if no pipeline has yet, connects it to `dinein-network`, creates the `dinein` database if missing) → run → **Wait For Healthy** (fails the job unless `/actuator/health/readiness` passes) → image cleanup |
-| `jenkins-pipeline/dine-in-qr/Frontend/Jenkinsfile` | Sparse checkout `frontend/` → Docker build → **Check Backend** (fails clearly if the backend isn't running) → run → image cleanup |
+| `jenkins-pipeline/dine-in-qr/Backend/Jenkinsfile` | Sparse checkout `heuristiq-dinein-core/` → Docker build → **Ensure Postgres** (starts the shared bestride Postgres if no pipeline has yet, connects it to `dinein-network`, creates the `dinein` database if missing) → run → **Wait For Healthy** (fails the job unless `/actuator/health/readiness` passes) → image cleanup |
+| `jenkins-pipeline/dine-in-qr/Frontend/Jenkinsfile` | Sparse checkout `heuristiq-web-dinein/` → Docker build → **Check Backend** (fails clearly if the backend isn't running) → run → image cleanup |
 
 Both check out `git@github.com:Rajasekhara018/dinein-qr-pos.git`, branch `master`, with the Jenkins
 SSH credential `backend_key`. That key must have read access to this repository (if it is a

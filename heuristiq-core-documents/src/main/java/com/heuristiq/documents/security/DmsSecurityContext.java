@@ -1,4 +1,4 @@
-package com.railcab.dms.security;
+package com.heuristiq.documents.security;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;

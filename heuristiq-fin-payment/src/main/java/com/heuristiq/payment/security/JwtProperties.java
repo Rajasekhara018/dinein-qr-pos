@@ -1,4 +1,4 @@
-package com.heuristiq.paymentservice.security;
+package com.heuristiq.payment.security;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 

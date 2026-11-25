@@ -1,4 +1,4 @@
-package com.railcab.nms.infrastructure.cache;
+package com.heuristiq.notification.infrastructure.cache;
 
 import java.time.Duration;
 import java.util.Optional;
@@ -10,10 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.github.benmanes.caffeine.cache.Ticker;
-import com.railcab.nms.application.dto.OrganizationProfile;
-import com.railcab.nms.application.port.out.OrganizationProfileResolver;
-import com.railcab.nms.application.port.out.OrganizationProfileSource;
-import com.railcab.nms.infrastructure.config.NmsProperties;
+import com.heuristiq.notification.application.dto.OrganizationProfile;
+import com.heuristiq.notification.application.port.out.OrganizationProfileResolver;
+import com.heuristiq.notification.application.port.out.OrganizationProfileSource;
+import com.heuristiq.notification.infrastructure.config.NmsProperties;
 
 import io.micrometer.core.instrument.MeterRegistry;
 

@@ -1,4 +1,4 @@
-package com.heuristiq.paymentservice.security;
+package com.heuristiq.payment.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;

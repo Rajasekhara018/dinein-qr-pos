@@ -1,4 +1,4 @@
-package com.railcab.audit.application;
+package com.heuristiq.audit.application;
 
 /** Fixed values used when reading audit events back (search, detail, correlation, payload). */
 public final class QueryConstants {

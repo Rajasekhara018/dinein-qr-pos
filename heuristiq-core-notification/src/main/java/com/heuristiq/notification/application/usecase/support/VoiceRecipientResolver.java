@@ -1,13 +1,13 @@
-package com.railcab.nms.application.usecase.support;
+package com.heuristiq.notification.application.usecase.support;
 
 import java.util.List;
 
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import com.railcab.nms.application.dto.NotificationRequest;
-import com.railcab.nms.application.port.out.RecipientResolver;
-import com.railcab.nms.domain.model.NotificationChannel;
+import com.heuristiq.notification.application.dto.NotificationRequest;
+import com.heuristiq.notification.application.port.out.RecipientResolver;
+import com.heuristiq.notification.domain.model.NotificationChannel;
 
 /** VOICE calls go to the request's {@code toPhone}, like SMS. No phone, no call. */
 @Component
