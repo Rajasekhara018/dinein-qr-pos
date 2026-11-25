@@ -89,7 +89,9 @@ dependencies {
     testImplementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo.spring4x:4.24.0'
     // Real PostgreSQL for the migration test (downloads the binaries once; no Docker needed).
     testImplementation 'io.zonky.test:embedded-postgres:2.0.7'
-    // The default binaries cover x86-64 only. This one lets the test also run on an ARM Linux build server; elsewhere it is not used.
+    // Embedded-PostgreSQL binaries per platform: Windows and Linux x64 (developer PCs, CI) and ARM Linux build servers.
+    testRuntimeOnly 'io.zonky.test.postgres:embedded-postgres-binaries-windows-amd64:14.10.1'
+    testRuntimeOnly 'io.zonky.test.postgres:embedded-postgres-binaries-linux-amd64:14.10.1'
     testRuntimeOnly 'io.zonky.test.postgres:embedded-postgres-binaries-linux-arm64v8:14.10.1'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     testRuntimeOnly 'com.h2database:h2'
