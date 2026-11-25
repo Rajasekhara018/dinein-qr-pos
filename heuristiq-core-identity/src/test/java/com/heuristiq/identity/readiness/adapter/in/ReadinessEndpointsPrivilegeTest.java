@@ -139,7 +139,7 @@ class ReadinessEndpointsPrivilegeTest {
 
     @Test
     void theGatewayCopyIsByteIdentical() throws IOException {
-        assertThat(Files.readAllBytes(Path.of("../Rider_ApiGateway/src/main/resources/privilege.json")))
+        assertThat(Files.readAllBytes(Path.of("../heuristiq-core-gateway/src/main/resources/privilege.json")))
                 .isEqualTo(Files.readAllBytes(Path.of("src/main/resources/privilege.json")));
     }
 }

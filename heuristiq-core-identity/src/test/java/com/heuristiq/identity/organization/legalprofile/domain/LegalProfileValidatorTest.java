@@ -313,4 +313,15 @@ class LegalProfileValidatorTest {
         refused(() -> LegalProfileValidator.validate(draft(null, List.of(address("FR", null, null), operating, operating))),
                 ERROR_DUPLICATE_ADDRESS_KIND, "addresses[2].kind");
     }
+
+    @Test
+    void acceptsNewEuropeanAndAustralianTaxIds() {
+        assertThat(LegalProfileValidator.validate(withTax("VAT_DE", "DE123456789")).taxIds())
+                .containsExactly(new TaxId(TaxIdType.VAT_DE, "DE123456789"));
+        assertThat(LegalProfileValidator.validate(withTax("VAT_FR", "FR12345678901")).taxIds())
+                .containsExactly(new TaxId(TaxIdType.VAT_FR, "FR12345678901"));
+        assertThat(LegalProfileValidator.validate(withTax("ABN", "51824753556")).taxIds())
+                .containsExactly(new TaxId(TaxIdType.ABN, "51824753556"));
+        refused(() -> LegalProfileValidator.validate(withTax("VAT_DE", "DE12345")), ERROR_INVALID_TAX_ID, "taxIds[0].value");
+    }
 }

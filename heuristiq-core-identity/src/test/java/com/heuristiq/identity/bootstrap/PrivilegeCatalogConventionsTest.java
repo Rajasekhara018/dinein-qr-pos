@@ -26,7 +26,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 class PrivilegeCatalogConventionsTest {
     private static final Path UAM_COPY = Path.of("src/main/resources/privilege.json");
-    private static final Path GATEWAY_COPY = Path.of("../Rider_ApiGateway/src/main/resources/privilege.json");
+    private static final Path GATEWAY_COPY = Path.of("../heuristiq-core-gateway/src/main/resources/privilege.json");
 
     private static final Set<String> VIEW_OPERATIONS = Set.of("READ", "LIST");
     private static final Set<String> CHANGE_OPERATIONS = Set.of("CREATE", "UPDATE", "DELETE", "MANAGE");

@@ -15,6 +15,9 @@ public enum TaxIdType {
     VAT_GB(LegalProfileConstants.COUNTRY_GB, LegalProfileConstants.TAX_VAT_GB),
     CRN_GB(LegalProfileConstants.COUNTRY_GB, LegalProfileConstants.TAX_CRN_GB),
     EIN(LegalProfileConstants.COUNTRY_US, LegalProfileConstants.TAX_EIN),
+    VAT_DE(LegalProfileConstants.COUNTRY_DE, LegalProfileConstants.TAX_VAT_DE),
+    VAT_FR(LegalProfileConstants.COUNTRY_FR, LegalProfileConstants.TAX_VAT_FR),
+    ABN(LegalProfileConstants.COUNTRY_AU, LegalProfileConstants.TAX_ABN),
     TAX_ID(null, LegalProfileConstants.TAX_GENERIC);
 
     private final String country;

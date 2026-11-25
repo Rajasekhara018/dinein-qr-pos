@@ -34,6 +34,9 @@ public final class LegalProfileConstants {
     public static final Pattern TAX_VAT_GB = Pattern.compile("^(GB)?([0-9]{9}|[0-9]{12}|GD[0-9]{3}|HA[0-9]{3})$");
     public static final Pattern TAX_CRN_GB = Pattern.compile("^([0-9]{8}|[A-Z]{2}[0-9]{6})$");
     public static final Pattern TAX_EIN = Pattern.compile("^[0-9]{2}-?[0-9]{7}$");
+    public static final Pattern TAX_VAT_DE = Pattern.compile("^DE[0-9]{9}$");
+    public static final Pattern TAX_VAT_FR = Pattern.compile("^FR[0-9A-Z]{2}[0-9]{9}$");
+    public static final Pattern TAX_ABN = Pattern.compile("^[0-9]{11}$");
     public static final Pattern TAX_GENERIC = Pattern.compile("^[A-Z0-9][A-Z0-9./-]{2,39}$");
 
     /** Country codes of the tax types (informational: shown by the UI, not required to equal the registration country). */
@@ -44,6 +47,9 @@ public final class LegalProfileConstants {
     public static final String COUNTRY_US = "US";
     public static final String COUNTRY_QA = "QA";
     public static final String COUNTRY_HK = "HK";
+    public static final String COUNTRY_DE = "DE";
+    public static final String COUNTRY_FR = "FR";
+    public static final String COUNTRY_AU = "AU";
 
     /** Every ISO 3166 alpha-2 country code. */
     public static final Set<String> ISO_COUNTRIES = Set.of(Locale.getISOCountries());

@@ -29,7 +29,10 @@ import static org.assertj.core.api.Assertions.assertThat;
         "spring.cloud.vault.token=test-only-dummy-token-vault-is-not-used-in-tests",
         // railcab.nms.internal-api-key has no default (required env var/Vault value in real
         // deployments); tests need *some* value to let the context load.
-        "railcab.nms.internal-api-key=test-only-nms-internal-api-key"
+        "railcab.nms.internal-api-key=test-only-nms-internal-api-key",
+        // This test deliberately exercises Mongo mode (embedded MongoDB); PostgreSQL is the default now.
+        "railcab.uam.persistence.type=mongo",
+        "spring.autoconfigure.exclude=org.springframework.boot.jdbc.autoconfigure.DataSourceAutoConfiguration,org.springframework.boot.hibernate.autoconfigure.HibernateJpaAutoConfiguration,org.springframework.boot.data.jpa.autoconfigure.DataJpaRepositoriesAutoConfiguration"
 })
 class PermissionCatalogSeedingIntegrationTest {
 
