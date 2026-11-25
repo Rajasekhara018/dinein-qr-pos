@@ -1,7 +1,7 @@
-package com.heuristiq.uam.dto;
+package com.heuristiq.identity.dto;
 
-import com.heuristiq.uam.enums.UamEnums;
-import com.heuristiq.uam.helper.RUpload;
+import com.heuristiq.identity.enums.UamEnums;
+import com.heuristiq.identity.helper.RUpload;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import com.heuristiq.phone.validation.ValidPhone;

@@ -1,4 +1,4 @@
-package com.heuristiq.uam.franchiseaccess;
+package com.heuristiq.identity.franchiseaccess;
 
 import java.util.Collection;
 import java.util.List;
@@ -13,29 +13,29 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import com.heuristiq.uam.application.access.AccessSubjectType;
-import com.heuristiq.uam.application.access.ApplicationAccessServiceUseCase;
-import com.heuristiq.uam.application.access.GrantApplicationAccessRequest;
-import com.heuristiq.uam.application.repository.ApplicationRepository;
-import com.heuristiq.uam.common.UamException;
-import com.heuristiq.uam.dto.UpsertRoleRequest;
-import com.heuristiq.uam.franchiseaccess.FranchiseAccessModels.ApplicationResponse;
-import com.heuristiq.uam.franchiseaccess.FranchiseAccessModels.SubscribedResponse;
-import com.heuristiq.uam.franchiseaccess.FranchiseAccessModels.UserResponse;
-import com.heuristiq.uam.franchiseaccess.FranchiseAccessModels.UsersResponse;
-import com.heuristiq.uam.users.UamUserConstants;
-import com.heuristiq.uam.organization.Tenant;
-import com.heuristiq.uam.organization.membership.AddMemberRequest;
-import com.heuristiq.uam.organization.membership.TenantMembershipServiceUseCase;
-import com.heuristiq.uam.organization.repository.TenantRepository;
-import com.heuristiq.uam.organization.subscription.TenantApplicationServiceUseCase;
-import com.heuristiq.uam.orgstructure.domain.LoginAccounts;
-import com.heuristiq.uam.role.UamRole;
-import com.heuristiq.uam.role.UamRoleServiceUseCase;
-import com.heuristiq.uam.role.repository.UamRoleRepository;
-import com.heuristiq.uam.security.TenantContext;
-import com.heuristiq.uam.users.UamUser;
-import com.heuristiq.uam.users.UamUserServiceUseCase;
+import com.heuristiq.identity.application.access.AccessSubjectType;
+import com.heuristiq.identity.application.access.ApplicationAccessServiceUseCase;
+import com.heuristiq.identity.application.access.GrantApplicationAccessRequest;
+import com.heuristiq.identity.application.repository.ApplicationRepository;
+import com.heuristiq.identity.common.UamException;
+import com.heuristiq.identity.dto.UpsertRoleRequest;
+import com.heuristiq.identity.franchiseaccess.FranchiseAccessModels.ApplicationResponse;
+import com.heuristiq.identity.franchiseaccess.FranchiseAccessModels.SubscribedResponse;
+import com.heuristiq.identity.franchiseaccess.FranchiseAccessModels.UserResponse;
+import com.heuristiq.identity.franchiseaccess.FranchiseAccessModels.UsersResponse;
+import com.heuristiq.identity.users.UamUserConstants;
+import com.heuristiq.identity.organization.Tenant;
+import com.heuristiq.identity.organization.membership.AddMemberRequest;
+import com.heuristiq.identity.organization.membership.TenantMembershipServiceUseCase;
+import com.heuristiq.identity.organization.repository.TenantRepository;
+import com.heuristiq.identity.organization.subscription.TenantApplicationServiceUseCase;
+import com.heuristiq.identity.orgstructure.domain.LoginAccounts;
+import com.heuristiq.identity.role.UamRole;
+import com.heuristiq.identity.role.UamRoleServiceUseCase;
+import com.heuristiq.identity.role.repository.UamRoleRepository;
+import com.heuristiq.identity.security.TenantContext;
+import com.heuristiq.identity.users.UamUser;
+import com.heuristiq.identity.users.UamUserServiceUseCase;
 
 /**
  * What Rider_FranchiseService needs from the platform: applications, accounts, organization membership, roles, subscriptions

@@ -1,4 +1,4 @@
-package com.heuristiq.uam.users;
+package com.heuristiq.identity.users;
 
 /** Port: the shortest password an administrator may set for an account of an organization. */
 public interface PasswordMinimumLookup {

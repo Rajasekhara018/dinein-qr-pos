@@ -1,4 +1,4 @@
-package com.heuristiq.uam.feature.observability;
+package com.heuristiq.identity.feature.observability;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.health.contributor.Health;

@@ -1,4 +1,4 @@
-package com.heuristiq.uam.dto;
+package com.heuristiq.identity.dto;
 
 import java.util.List;
 

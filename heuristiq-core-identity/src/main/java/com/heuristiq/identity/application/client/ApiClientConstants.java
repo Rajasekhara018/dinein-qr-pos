@@ -1,4 +1,4 @@
-package com.heuristiq.uam.application.client;
+package com.heuristiq.identity.application.client;
 
 import java.util.Set;
 

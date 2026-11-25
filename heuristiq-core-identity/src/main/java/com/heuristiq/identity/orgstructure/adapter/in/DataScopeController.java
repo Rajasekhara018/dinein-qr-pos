@@ -1,4 +1,4 @@
-package com.heuristiq.uam.orgstructure.adapter.in;
+package com.heuristiq.identity.orgstructure.adapter.in;
 
 import java.util.Set;
 
@@ -7,9 +7,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.heuristiq.uam.common.CommonResponseObject;
-import com.heuristiq.uam.orgstructure.application.DataScopeResolver;
-import com.heuristiq.uam.orgstructure.domain.DataScope;
+import com.heuristiq.identity.common.CommonResponseObject;
+import com.heuristiq.identity.orgstructure.application.DataScopeResolver;
+import com.heuristiq.identity.orgstructure.domain.DataScope;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

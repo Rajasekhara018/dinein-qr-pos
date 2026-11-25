@@ -1,6 +1,6 @@
-package com.heuristiq.uam.role.repository.mongo;
+package com.heuristiq.identity.role.repository.mongo;
 
-import com.heuristiq.uam.role.persistance.mongo.UamRoleDocument;
+import com.heuristiq.identity.role.persistance.mongo.UamRoleDocument;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.Optional;

@@ -1,4 +1,4 @@
-package com.heuristiq.uam.selfregister;
+package com.heuristiq.identity.selfregister;
 
 /**
  * Proves, before an account exists, that the person signing up controls the email address: a one-time code is emailed, and
@@ -11,7 +11,7 @@ public interface SelfRegisterUseCase {
      * Emails a code to the address (or, for an address that already has an account, tells its owner so, with no code).
      * The answer is the same either way.
      *
-     * @throws com.heuristiq.uam.common.UamException 403 when sign-up is switched off, 400 for a blocked address, a failed bot check
+     * @throws com.heuristiq.identity.common.UamException 403 when sign-up is switched off, 400 for a blocked address, a failed bot check
      *         or a bad application code, 429 when the address or the client has asked too often
      */
     SendResult sendOtp(String email, String applicationCode, String botToken, String clientAddress);
@@ -19,7 +19,7 @@ public interface SelfRegisterUseCase {
     /**
      * Checks the code and, when right, spends it and returns a single-use token bound to this email and application.
      *
-     * @throws com.heuristiq.uam.common.UamException 400 {@code OTP_INVALID} for a wrong, expired or used code
+     * @throws com.heuristiq.identity.common.UamException 400 {@code OTP_INVALID} for a wrong, expired or used code
      */
     VerifyResult verifyOtp(String email, String otp, String applicationCode);
 

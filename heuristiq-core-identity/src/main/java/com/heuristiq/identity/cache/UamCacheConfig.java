@@ -1,4 +1,4 @@
-package com.heuristiq.uam.cache;
+package com.heuristiq.identity.cache;
 
 import com.github.benmanes.caffeine.cache.Ticker;
 import io.micrometer.core.instrument.MeterRegistry;

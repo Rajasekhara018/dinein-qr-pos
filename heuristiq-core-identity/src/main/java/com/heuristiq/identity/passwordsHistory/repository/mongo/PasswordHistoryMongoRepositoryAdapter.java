@@ -1,8 +1,8 @@
-package com.heuristiq.uam.passwordsHistory.repository.mongo;
+package com.heuristiq.identity.passwordsHistory.repository.mongo;
 
-import com.heuristiq.uam.passwordsHistory.PasswordHistory;
-import com.heuristiq.uam.passwordsHistory.persistance.mongo.PasswordHistoryDocument;
-import com.heuristiq.uam.passwordsHistory.PasswordHistoryRepository;
+import com.heuristiq.identity.passwordsHistory.PasswordHistory;
+import com.heuristiq.identity.passwordsHistory.persistance.mongo.PasswordHistoryDocument;
+import com.heuristiq.identity.passwordsHistory.PasswordHistoryRepository;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

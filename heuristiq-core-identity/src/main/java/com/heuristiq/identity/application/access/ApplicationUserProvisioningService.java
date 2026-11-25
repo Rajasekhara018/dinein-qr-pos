@@ -1,6 +1,6 @@
-package com.heuristiq.uam.application.access;
+package com.heuristiq.identity.application.access;
 
-import com.heuristiq.uam.common.UamCommonConstants;
+import com.heuristiq.identity.common.UamCommonConstants;
 import java.security.SecureRandom;
 import java.util.List;
 import java.util.Optional;
@@ -10,23 +10,23 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import com.heuristiq.uam.common.UamException;
-import com.heuristiq.uam.dto.IdentityRegisterRequest;
-import com.heuristiq.uam.enums.UamEnums;
-import com.heuristiq.uam.organization.membership.AddMemberRequest;
-import com.heuristiq.uam.organization.membership.TenantMembershipServiceUseCase;
-import com.heuristiq.uam.organization.Tenant;
-import com.heuristiq.uam.organization.repository.TenantRepository;
-import com.heuristiq.uam.organization.subscription.TenantApplicationServiceUseCase;
-import com.heuristiq.uam.registration.UserRegistrationServiceUseCase;
-import com.heuristiq.uam.usercredentials.UserCredentialServiceUseCase;
-import com.heuristiq.uam.users.UamUser;
-import com.heuristiq.uam.users.repository.UamUserRepository;
+import com.heuristiq.identity.common.UamException;
+import com.heuristiq.identity.dto.IdentityRegisterRequest;
+import com.heuristiq.identity.enums.UamEnums;
+import com.heuristiq.identity.organization.membership.AddMemberRequest;
+import com.heuristiq.identity.organization.membership.TenantMembershipServiceUseCase;
+import com.heuristiq.identity.organization.Tenant;
+import com.heuristiq.identity.organization.repository.TenantRepository;
+import com.heuristiq.identity.organization.subscription.TenantApplicationServiceUseCase;
+import com.heuristiq.identity.registration.UserRegistrationServiceUseCase;
+import com.heuristiq.identity.usercredentials.UserCredentialServiceUseCase;
+import com.heuristiq.identity.users.UamUser;
+import com.heuristiq.identity.users.repository.UamUserRepository;
 
 @Service
 public class ApplicationUserProvisioningService implements ApplicationUserProvisioningServiceUseCase {
     @org.springframework.beans.factory.annotation.Autowired
-    private com.heuristiq.uam.securitypolicy.SecurityPolicyPasswordGenerator policyPasswords;
+    private com.heuristiq.identity.securitypolicy.SecurityPolicyPasswordGenerator policyPasswords;
     private static final Logger log = LoggerFactory.getLogger(ApplicationUserProvisioningService.class);
 
     private final UamUserRepository userRepository;

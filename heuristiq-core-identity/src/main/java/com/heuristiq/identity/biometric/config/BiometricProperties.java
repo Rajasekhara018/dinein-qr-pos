@@ -1,4 +1,4 @@
-package com.heuristiq.uam.biometric.config;
+package com.heuristiq.identity.biometric.config;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;

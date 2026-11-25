@@ -1,7 +1,7 @@
-package com.heuristiq.uam.application.client.repository;
+package com.heuristiq.identity.application.client.repository;
 
-import com.heuristiq.uam.application.client.ApiClient;
-import com.heuristiq.uam.enums.UamEnums.ApiClientType;
+import com.heuristiq.identity.application.client.ApiClient;
+import com.heuristiq.identity.enums.UamEnums.ApiClientType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;

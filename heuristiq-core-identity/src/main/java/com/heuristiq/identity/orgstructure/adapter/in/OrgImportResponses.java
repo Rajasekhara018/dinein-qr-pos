@@ -1,8 +1,8 @@
-package com.heuristiq.uam.orgstructure.adapter.in;
+package com.heuristiq.identity.orgstructure.adapter.in;
 
 import java.util.List;
 
-import com.heuristiq.uam.orgstructure.domain.ImportModels.ImportRow;
+import com.heuristiq.identity.orgstructure.domain.ImportModels.ImportRow;
 
 /** Response shapes of the import API. */
 final class OrgImportResponses {

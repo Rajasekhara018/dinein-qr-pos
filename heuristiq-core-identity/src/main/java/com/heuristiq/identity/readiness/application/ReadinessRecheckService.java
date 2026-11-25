@@ -1,4 +1,4 @@
-package com.heuristiq.uam.readiness.application;
+package com.heuristiq.identity.readiness.application;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -12,15 +12,15 @@ import java.util.function.Predicate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.heuristiq.uam.organization.subscription.TenantApplication;
-import com.heuristiq.uam.organization.subscription.TenantApplicationServiceUseCase;
-import com.heuristiq.uam.readiness.application.port.SchedulerLease;
-import com.heuristiq.uam.readiness.config.GovernanceProperties;
-import com.heuristiq.uam.readiness.domain.ApplicationReadiness;
-import com.heuristiq.uam.readiness.domain.GoLiveBlocker;
-import com.heuristiq.uam.readiness.domain.GoLiveRules;
-import com.heuristiq.uam.readiness.domain.ReadinessProfiles;
-import com.heuristiq.uam.security.TenantContext;
+import com.heuristiq.identity.organization.subscription.TenantApplication;
+import com.heuristiq.identity.organization.subscription.TenantApplicationServiceUseCase;
+import com.heuristiq.identity.readiness.application.port.SchedulerLease;
+import com.heuristiq.identity.readiness.config.GovernanceProperties;
+import com.heuristiq.identity.readiness.domain.ApplicationReadiness;
+import com.heuristiq.identity.readiness.domain.GoLiveBlocker;
+import com.heuristiq.identity.readiness.domain.GoLiveRules;
+import com.heuristiq.identity.readiness.domain.ReadinessProfiles;
+import com.heuristiq.identity.security.TenantContext;
 
 /**
  * Re-evaluates the readiness of every ACTIVE organization-application link and alerts on blocking steps (see

@@ -1,4 +1,4 @@
-package com.heuristiq.uam.biometric.domain;
+package com.heuristiq.identity.biometric.domain;
 
 /** The phone platform of an enrolled installation (biometric sign-in is not offered on the web). */
 public enum BiometricPlatform {

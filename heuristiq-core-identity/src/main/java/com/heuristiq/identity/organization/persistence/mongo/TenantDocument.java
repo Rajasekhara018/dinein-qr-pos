@@ -1,4 +1,4 @@
-package com.heuristiq.uam.organization.persistence.mongo;
+package com.heuristiq.identity.organization.persistence.mongo;
 
 import java.util.Map;
 
@@ -8,12 +8,12 @@ import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.heuristiq.uam.enums.UamEnums.LanguageEnum;
-import com.heuristiq.uam.enums.UamEnums.TenantStatus;
-import com.heuristiq.uam.enums.UamEnums.TenantType;
-import com.heuristiq.uam.helper.AuditInfo;
-import com.heuristiq.uam.helper.RUpload;
-import com.heuristiq.uam.util.ImmutableAfterCreate;
+import com.heuristiq.identity.enums.UamEnums.LanguageEnum;
+import com.heuristiq.identity.enums.UamEnums.TenantStatus;
+import com.heuristiq.identity.enums.UamEnums.TenantType;
+import com.heuristiq.identity.helper.AuditInfo;
+import com.heuristiq.identity.helper.RUpload;
+import com.heuristiq.identity.util.ImmutableAfterCreate;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

@@ -1,7 +1,7 @@
-package com.heuristiq.uam.biometric.application.port;
+package com.heuristiq.identity.biometric.application.port;
 
-import com.heuristiq.uam.biometric.domain.BiometricCredential;
-import com.heuristiq.uam.biometric.domain.BiometricRevocationReason;
+import com.heuristiq.identity.biometric.domain.BiometricCredential;
+import com.heuristiq.identity.biometric.domain.BiometricRevocationReason;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
@@ -15,7 +15,7 @@ public interface BiometricCredentialStore {
     /**
      * Stores a new ACTIVE credential.
      *
-     * @throws com.heuristiq.uam.biometric.domain.BiometricException CONFLICT when another ACTIVE credential of the same
+     * @throws com.heuristiq.identity.biometric.domain.BiometricException CONFLICT when another ACTIVE credential of the same
      *                                                             application and installation exists (a racing enrolment)
      */
     void insert(BiometricCredential credential);

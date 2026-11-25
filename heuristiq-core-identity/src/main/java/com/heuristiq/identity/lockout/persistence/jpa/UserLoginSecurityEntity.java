@@ -1,4 +1,4 @@
-package com.heuristiq.uam.lockout.persistence.jpa;
+package com.heuristiq.identity.lockout.persistence.jpa;
 
 import java.time.LocalDateTime;
 

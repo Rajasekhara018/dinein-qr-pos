@@ -1,7 +1,7 @@
-package com.heuristiq.uam.cache;
+package com.heuristiq.identity.cache;
 
-import com.heuristiq.uam.organization.subscription.TenantApplicationService;
-import com.heuristiq.uam.organization.subscription.TenantApplicationServiceUseCase;
+import com.heuristiq.identity.organization.subscription.TenantApplicationService;
+import com.heuristiq.identity.organization.subscription.TenantApplicationServiceUseCase;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
@@ -69,23 +69,23 @@ public class CachingTenantApplicationService implements TenantApplicationService
     }
 
     @Override
-    public java.util.Optional<com.heuristiq.uam.organization.subscription.TenantApplication> find(String tenantId, String applicationCode) {
+    public java.util.Optional<com.heuristiq.identity.organization.subscription.TenantApplication> find(String tenantId, String applicationCode) {
         return delegate.find(tenantId, applicationCode);
     }
 
     @Override
-    public List<com.heuristiq.uam.organization.subscription.TenantApplication> activeLinks(String applicationCode) {
+    public List<com.heuristiq.identity.organization.subscription.TenantApplication> activeLinks(String applicationCode) {
         return delegate.activeLinks(applicationCode);
     }
 
     @Override
-    public com.heuristiq.uam.organization.subscription.TenantApplication updateOwnerTeam(String tenantId, String applicationCode,
+    public com.heuristiq.identity.organization.subscription.TenantApplication updateOwnerTeam(String tenantId, String applicationCode,
                                                                                          List<String> ownerTeamUserIds, String actor) {
         return delegate.updateOwnerTeam(tenantId, applicationCode, ownerTeamUserIds, actor);
     }
 
     @Override
-    public com.heuristiq.uam.organization.subscription.TenantApplication activateWithOverride(String tenantId, String applicationCode,
+    public com.heuristiq.identity.organization.subscription.TenantApplication activateWithOverride(String tenantId, String applicationCode,
                                                                                               GoLiveOverride override, String actor) {
         return delegate.activateWithOverride(tenantId, applicationCode, override, actor);
     }

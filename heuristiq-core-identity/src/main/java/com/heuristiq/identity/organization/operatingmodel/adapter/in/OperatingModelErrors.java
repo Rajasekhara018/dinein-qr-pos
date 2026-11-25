@@ -1,8 +1,8 @@
-package com.heuristiq.uam.organization.operatingmodel.adapter.in;
+package com.heuristiq.identity.organization.operatingmodel.adapter.in;
 
-import com.heuristiq.uam.common.UamException;
-import com.heuristiq.uam.organization.operatingmodel.application.OrganizationNotFoundException;
-import com.heuristiq.uam.organization.operatingmodel.domain.OperatingModelException;
+import com.heuristiq.identity.common.UamException;
+import com.heuristiq.identity.organization.operatingmodel.application.OrganizationNotFoundException;
+import com.heuristiq.identity.organization.operatingmodel.domain.OperatingModelException;
 import java.util.function.Supplier;
 import org.springframework.http.HttpStatus;
 

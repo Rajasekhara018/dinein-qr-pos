@@ -1,8 +1,8 @@
-package com.heuristiq.uam.organization;
+package com.heuristiq.identity.organization;
 
-import com.heuristiq.uam.enums.UamEnums.LanguageEnum;
-import com.heuristiq.uam.enums.UamEnums.TenantStatus;
-import com.heuristiq.uam.enums.UamEnums.TenantType;
+import com.heuristiq.identity.enums.UamEnums.LanguageEnum;
+import com.heuristiq.identity.enums.UamEnums.TenantStatus;
+import com.heuristiq.identity.enums.UamEnums.TenantType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

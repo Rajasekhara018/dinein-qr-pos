@@ -1,4 +1,4 @@
-package com.heuristiq.uam.dto;
+package com.heuristiq.identity.dto;
 
 /**
  * Outcome of a login step: either a full session ({@link LoginResponse}) or a request for the

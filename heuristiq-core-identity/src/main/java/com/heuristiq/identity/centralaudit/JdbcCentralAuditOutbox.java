@@ -1,4 +1,4 @@
-package com.heuristiq.uam.centralaudit;
+package com.heuristiq.identity.centralaudit;
 
 import java.sql.Timestamp;
 import java.time.Duration;

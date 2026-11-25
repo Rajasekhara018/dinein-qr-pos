@@ -1,8 +1,8 @@
-package com.heuristiq.uam.readiness.application;
+package com.heuristiq.identity.readiness.application;
 
-import com.heuristiq.uam.readiness.domain.ApplicationReadiness;
-import com.heuristiq.uam.readiness.domain.OverallReadinessStatus;
-import com.heuristiq.uam.readiness.domain.ReadinessStep;
+import com.heuristiq.identity.readiness.domain.ApplicationReadiness;
+import com.heuristiq.identity.readiness.domain.OverallReadinessStatus;
+import com.heuristiq.identity.readiness.domain.ReadinessStep;
 
 /**
  * One line of the readiness summary of the session organization's applications.

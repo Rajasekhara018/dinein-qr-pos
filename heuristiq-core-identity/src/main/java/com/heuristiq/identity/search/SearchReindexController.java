@@ -1,6 +1,6 @@
-package com.heuristiq.uam.search;
+package com.heuristiq.identity.search;
 
-import com.heuristiq.uam.common.CommonResponseObject;
+import com.heuristiq.identity.common.CommonResponseObject;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

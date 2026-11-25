@@ -1,14 +1,14 @@
-package com.heuristiq.uam.organization;
+package com.heuristiq.identity.organization;
 
-import com.heuristiq.uam.common.UamException;
-import com.heuristiq.uam.enums.UamEnums.TenantStatus;
-import com.heuristiq.uam.feature.management.ManagementPageSupport;
-import com.heuristiq.uam.helper.AuditInfo;
-import com.heuristiq.uam.identity.IdentityProviderSyncService;
-import com.heuristiq.uam.organization.repository.TenantRepository;
-import com.heuristiq.uam.security.TenantContext;
-import com.heuristiq.uam.security.TenantGuard;
-import com.heuristiq.uam.common.PageResult;
+import com.heuristiq.identity.common.UamException;
+import com.heuristiq.identity.enums.UamEnums.TenantStatus;
+import com.heuristiq.identity.feature.management.ManagementPageSupport;
+import com.heuristiq.identity.helper.AuditInfo;
+import com.heuristiq.identity.identity.IdentityProviderSyncService;
+import com.heuristiq.identity.organization.repository.TenantRepository;
+import com.heuristiq.identity.security.TenantContext;
+import com.heuristiq.identity.security.TenantGuard;
+import com.heuristiq.identity.common.PageResult;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;

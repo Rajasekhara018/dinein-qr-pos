@@ -1,7 +1,7 @@
-package com.heuristiq.uam.passwordsHistory;
+package com.heuristiq.identity.passwordsHistory;
 
-import com.heuristiq.uam.feature.management.ManagementPageSupport;
-import com.heuristiq.uam.common.PageResult;
+import com.heuristiq.identity.feature.management.ManagementPageSupport;
+import com.heuristiq.identity.common.PageResult;
 import org.springframework.stereotype.Service;
 
 @Service

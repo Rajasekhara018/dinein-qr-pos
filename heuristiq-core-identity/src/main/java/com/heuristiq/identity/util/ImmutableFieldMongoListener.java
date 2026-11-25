@@ -1,4 +1,4 @@
-package com.heuristiq.uam.util;
+package com.heuristiq.identity.util;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;

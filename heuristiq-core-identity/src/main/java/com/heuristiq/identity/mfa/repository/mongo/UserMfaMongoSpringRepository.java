@@ -1,7 +1,7 @@
-package com.heuristiq.uam.mfa.repository.mongo;
+package com.heuristiq.identity.mfa.repository.mongo;
 
-import com.heuristiq.uam.mfa.persistence.mongo.UserMfaDocument;
-import com.heuristiq.uam.enums.UamEnums.MfaType;
+import com.heuristiq.identity.mfa.persistence.mongo.UserMfaDocument;
+import com.heuristiq.identity.enums.UamEnums.MfaType;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.List;

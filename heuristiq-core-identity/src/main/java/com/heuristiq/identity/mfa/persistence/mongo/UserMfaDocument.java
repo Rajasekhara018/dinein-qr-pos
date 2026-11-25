@@ -1,4 +1,4 @@
-package com.heuristiq.uam.mfa.persistence.mongo;
+package com.heuristiq.identity.mfa.persistence.mongo;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -12,8 +12,8 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.heuristiq.uam.enums.UamEnums.MfaType;
-import com.heuristiq.uam.helper.RPhoneNumber;
+import com.heuristiq.identity.enums.UamEnums.MfaType;
+import com.heuristiq.identity.helper.RPhoneNumber;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

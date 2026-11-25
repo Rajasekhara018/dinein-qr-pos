@@ -1,4 +1,4 @@
-package com.heuristiq.uam.readiness.domain;
+package com.heuristiq.identity.readiness.domain;
 
 import java.util.ArrayList;
 import java.util.HashMap;

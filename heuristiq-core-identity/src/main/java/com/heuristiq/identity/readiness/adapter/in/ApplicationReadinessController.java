@@ -1,4 +1,4 @@
-package com.heuristiq.uam.readiness.adapter.in;
+package com.heuristiq.identity.readiness.adapter.in;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.heuristiq.uam.common.CommonResponseObject;
-import com.heuristiq.uam.readiness.application.ApplicationReadinessUseCase;
+import com.heuristiq.identity.common.CommonResponseObject;
+import com.heuristiq.identity.readiness.application.ApplicationReadinessUseCase;
 
 /**
  * Readiness of the session organization's applications (docs/APPLICATION_READINESS.md). Thin: parses, delegates, maps.

@@ -1,4 +1,4 @@
-package com.heuristiq.uam.orgstructure.application;
+package com.heuristiq.identity.orgstructure.application;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,20 +13,20 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import com.heuristiq.uam.orgstructure.domain.ImportLimits;
-import com.heuristiq.uam.orgstructure.domain.LoginAccounts;
-import com.heuristiq.uam.orgstructure.domain.OrgStructureConstants;
-import com.heuristiq.uam.orgstructure.domain.OrgStructureException;
-import com.heuristiq.uam.orgstructure.domain.RoleRuleFileSource;
-import com.heuristiq.uam.orgstructure.domain.RoleRuleImportAudit;
-import com.heuristiq.uam.orgstructure.domain.RoleRuleImportModels.RoleRuleBatch;
-import com.heuristiq.uam.orgstructure.domain.RoleRuleImportModels.RoleRuleFile;
-import com.heuristiq.uam.orgstructure.domain.RoleRuleImportModels.RoleRuleReference;
-import com.heuristiq.uam.orgstructure.domain.RoleRuleImportModels.RoleRuleRow;
-import com.heuristiq.uam.orgstructure.domain.RoleRuleImportModels.RoleRuleRowInput;
-import com.heuristiq.uam.orgstructure.domain.RoleRuleImportModels.StagedRoleRuleRow;
-import com.heuristiq.uam.orgstructure.domain.RoleRuleImportStore;
-import com.heuristiq.uam.orgstructure.domain.RoleRuleRowValidator;
+import com.heuristiq.identity.orgstructure.domain.ImportLimits;
+import com.heuristiq.identity.orgstructure.domain.LoginAccounts;
+import com.heuristiq.identity.orgstructure.domain.OrgStructureConstants;
+import com.heuristiq.identity.orgstructure.domain.OrgStructureException;
+import com.heuristiq.identity.orgstructure.domain.RoleRuleFileSource;
+import com.heuristiq.identity.orgstructure.domain.RoleRuleImportAudit;
+import com.heuristiq.identity.orgstructure.domain.RoleRuleImportModels.RoleRuleBatch;
+import com.heuristiq.identity.orgstructure.domain.RoleRuleImportModels.RoleRuleFile;
+import com.heuristiq.identity.orgstructure.domain.RoleRuleImportModels.RoleRuleReference;
+import com.heuristiq.identity.orgstructure.domain.RoleRuleImportModels.RoleRuleRow;
+import com.heuristiq.identity.orgstructure.domain.RoleRuleImportModels.RoleRuleRowInput;
+import com.heuristiq.identity.orgstructure.domain.RoleRuleImportModels.StagedRoleRuleRow;
+import com.heuristiq.identity.orgstructure.domain.RoleRuleImportStore;
+import com.heuristiq.identity.orgstructure.domain.RoleRuleRowValidator;
 
 /**
  * Bulk roles import. An upload is validated in full and staged without touching the organization; only a confirmed batch is applied, in

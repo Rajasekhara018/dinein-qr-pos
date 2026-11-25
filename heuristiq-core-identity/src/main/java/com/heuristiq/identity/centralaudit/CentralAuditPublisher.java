@@ -1,4 +1,4 @@
-package com.heuristiq.uam.centralaudit;
+package com.heuristiq.identity.centralaudit;
 
 import io.micrometer.core.instrument.MeterRegistry;
 import org.slf4j.Logger;

@@ -1,12 +1,12 @@
-package com.heuristiq.uam.passwordsHistory.persistance.jpa;
+package com.heuristiq.identity.passwordsHistory.persistance.jpa;
 
 import java.time.LocalDateTime;
 
 import org.hibernate.annotations.UuidGenerator;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.heuristiq.uam.enums.UamEnums.PasswordChangeReason;
-import com.heuristiq.uam.helper.AuditInfo;
+import com.heuristiq.identity.enums.UamEnums.PasswordChangeReason;
+import com.heuristiq.identity.helper.AuditInfo;
 
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;

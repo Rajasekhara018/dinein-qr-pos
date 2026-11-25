@@ -1,4 +1,4 @@
-package com.heuristiq.uam.readiness.adapter.out;
+package com.heuristiq.identity.readiness.adapter.out;
 
 import java.util.List;
 import java.util.Locale;
@@ -6,10 +6,10 @@ import java.util.Optional;
 
 import org.springframework.util.StringUtils;
 
-import com.heuristiq.uam.application.SessionOrganizationResolver;
-import com.heuristiq.uam.application.repository.ApplicationRepository;
-import com.heuristiq.uam.organization.subscription.TenantApplicationServiceUseCase;
-import com.heuristiq.uam.readiness.domain.UamReadinessFactsPort;
+import com.heuristiq.identity.application.SessionOrganizationResolver;
+import com.heuristiq.identity.application.repository.ApplicationRepository;
+import com.heuristiq.identity.organization.subscription.TenantApplicationServiceUseCase;
+import com.heuristiq.identity.readiness.domain.UamReadinessFactsPort;
 
 /**
  * Reads UAM's own data for the readiness checks, always scoped to one organization: the application row and the

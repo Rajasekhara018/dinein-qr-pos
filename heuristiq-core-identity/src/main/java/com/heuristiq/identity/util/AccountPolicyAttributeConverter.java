@@ -1,6 +1,6 @@
-package com.heuristiq.uam.util;
+package com.heuristiq.identity.util;
 
-import com.heuristiq.uam.helper.AccountPolicy;
+import com.heuristiq.identity.helper.AccountPolicy;
 import jakarta.persistence.Converter;
 
 @Converter(autoApply = false)

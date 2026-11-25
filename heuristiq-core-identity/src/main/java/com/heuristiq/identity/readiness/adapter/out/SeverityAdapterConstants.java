@@ -1,4 +1,4 @@
-package com.heuristiq.uam.readiness.adapter.out;
+package com.heuristiq.identity.readiness.adapter.out;
 
 /** Fixed values of the severity override adapters (SQL, collection and field names, audit wording). */
 final class SeverityAdapterConstants {

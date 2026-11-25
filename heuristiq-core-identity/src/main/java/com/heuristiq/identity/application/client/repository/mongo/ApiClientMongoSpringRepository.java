@@ -1,6 +1,6 @@
-package com.heuristiq.uam.application.client.repository.mongo;
+package com.heuristiq.identity.application.client.repository.mongo;
 
-import com.heuristiq.uam.application.client.persistence.mongo.ApiClientDocument;
+import com.heuristiq.identity.application.client.persistence.mongo.ApiClientDocument;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.Optional;

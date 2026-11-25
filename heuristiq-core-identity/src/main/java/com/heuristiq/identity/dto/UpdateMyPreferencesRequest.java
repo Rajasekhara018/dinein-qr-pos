@@ -1,16 +1,16 @@
-package com.heuristiq.uam.dto;
+package com.heuristiq.identity.dto;
 
-import com.heuristiq.uam.helper.AccessibilityPreference;
-import com.heuristiq.uam.helper.DashboardPreference;
-import com.heuristiq.uam.helper.NotificationPreference;
-import com.heuristiq.uam.helper.RegionalPreference;
-import com.heuristiq.uam.helper.UiPreference;
+import com.heuristiq.identity.helper.AccessibilityPreference;
+import com.heuristiq.identity.helper.DashboardPreference;
+import com.heuristiq.identity.helper.NotificationPreference;
+import com.heuristiq.identity.helper.RegionalPreference;
+import com.heuristiq.identity.helper.UiPreference;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * Self-service preferences update — has no {@code userId}/{@code tenantId} fields, unlike
  * {@link UpsertUserPreferenceRequest} (whose {@code @NotBlank userId} would fail validation on a
- * self-service payload that never supplies one). {@link com.heuristiq.uam.userpreference.UserPreferenceProfileController}
+ * self-service payload that never supplies one). {@link com.heuristiq.identity.userpreference.UserPreferenceProfileController}
  * fills in the caller's own id server-side before delegating to {@code UserPreferenceService}.
  */
 @Schema(description = "Self-service preferences update for the caller's own account. The user id is always the JWT subject, never client-supplied.")

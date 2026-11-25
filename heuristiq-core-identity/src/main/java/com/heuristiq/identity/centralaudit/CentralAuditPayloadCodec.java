@@ -1,4 +1,4 @@
-package com.heuristiq.uam.centralaudit;
+package com.heuristiq.identity.centralaudit;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;

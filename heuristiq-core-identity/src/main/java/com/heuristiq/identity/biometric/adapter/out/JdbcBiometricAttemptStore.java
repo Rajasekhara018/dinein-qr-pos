@@ -1,8 +1,8 @@
-package com.heuristiq.uam.biometric.adapter.out;
+package com.heuristiq.identity.biometric.adapter.out;
 
-import static com.heuristiq.uam.biometric.adapter.out.BiometricAdapterConstants.*;
+import static com.heuristiq.identity.biometric.adapter.out.BiometricAdapterConstants.*;
 
-import com.heuristiq.uam.biometric.application.port.BiometricAttemptStore;
+import com.heuristiq.identity.biometric.application.port.BiometricAttemptStore;
 import java.sql.Timestamp;
 import java.time.Duration;
 import java.time.Instant;

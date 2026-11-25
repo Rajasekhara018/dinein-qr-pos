@@ -1,4 +1,4 @@
-package com.heuristiq.uam.readiness.adapter.out;
+package com.heuristiq.identity.readiness.adapter.out;
 
 import java.util.Map;
 

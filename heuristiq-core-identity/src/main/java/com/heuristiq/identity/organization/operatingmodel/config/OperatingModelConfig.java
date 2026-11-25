@@ -1,14 +1,14 @@
-package com.heuristiq.uam.organization.operatingmodel.config;
+package com.heuristiq.identity.organization.operatingmodel.config;
 
-import com.heuristiq.uam.audit.AuditLogServiceUseCase;
-import com.heuristiq.uam.organization.operatingmodel.adapter.out.AuditLogOperatingModelAudit;
-import com.heuristiq.uam.organization.operatingmodel.adapter.out.JdbcOperatingModelScheduleStore;
-import com.heuristiq.uam.organization.operatingmodel.adapter.out.MongoOperatingModelScheduleStore;
-import com.heuristiq.uam.organization.operatingmodel.adapter.out.TenantOrganizationDirectory;
-import com.heuristiq.uam.organization.operatingmodel.application.OperatingModelService;
-import com.heuristiq.uam.organization.operatingmodel.application.OperatingModelUseCase;
-import com.heuristiq.uam.organization.operatingmodel.application.port.OperatingModelScheduleStore;
-import com.heuristiq.uam.organization.repository.TenantRepository;
+import com.heuristiq.identity.audit.AuditLogServiceUseCase;
+import com.heuristiq.identity.organization.operatingmodel.adapter.out.AuditLogOperatingModelAudit;
+import com.heuristiq.identity.organization.operatingmodel.adapter.out.JdbcOperatingModelScheduleStore;
+import com.heuristiq.identity.organization.operatingmodel.adapter.out.MongoOperatingModelScheduleStore;
+import com.heuristiq.identity.organization.operatingmodel.adapter.out.TenantOrganizationDirectory;
+import com.heuristiq.identity.organization.operatingmodel.application.OperatingModelService;
+import com.heuristiq.identity.organization.operatingmodel.application.OperatingModelUseCase;
+import com.heuristiq.identity.organization.operatingmodel.application.port.OperatingModelScheduleStore;
+import com.heuristiq.identity.organization.repository.TenantRepository;
 import java.time.Clock;
 import java.time.ZoneId;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;

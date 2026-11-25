@@ -1,4 +1,4 @@
-package com.heuristiq.uam.lockout;
+package com.heuristiq.identity.lockout;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 

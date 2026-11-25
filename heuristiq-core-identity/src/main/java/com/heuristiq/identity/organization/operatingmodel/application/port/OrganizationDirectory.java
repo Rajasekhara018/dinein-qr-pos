@@ -1,4 +1,4 @@
-package com.heuristiq.uam.organization.operatingmodel.application.port;
+package com.heuristiq.identity.organization.operatingmodel.application.port;
 
 import java.util.Optional;
 

@@ -1,6 +1,6 @@
-package com.heuristiq.uam.securitypolicy;
+package com.heuristiq.identity.securitypolicy;
 
-import com.heuristiq.uam.common.PageResult;
+import com.heuristiq.identity.common.PageResult;
 
 import java.util.List;
 

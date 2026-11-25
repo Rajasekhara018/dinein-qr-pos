@@ -1,8 +1,8 @@
-package com.heuristiq.uam.securitypolicy.repository.mongo;
+package com.heuristiq.identity.securitypolicy.repository.mongo;
 
-import com.heuristiq.uam.securitypolicy.SecurityPolicy;
-import com.heuristiq.uam.securitypolicy.persistence.mongo.SecurityPolicyDocument;
-import com.heuristiq.uam.securitypolicy.repository.SecurityPolicyRepository;
+import com.heuristiq.identity.securitypolicy.SecurityPolicy;
+import com.heuristiq.identity.securitypolicy.persistence.mongo.SecurityPolicyDocument;
+import com.heuristiq.identity.securitypolicy.repository.SecurityPolicyRepository;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;

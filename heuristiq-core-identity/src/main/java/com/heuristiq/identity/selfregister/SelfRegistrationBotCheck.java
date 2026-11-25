@@ -1,4 +1,4 @@
-package com.heuristiq.uam.selfregister;
+package com.heuristiq.identity.selfregister;
 
 /**
  * Port for a bot check (a CAPTCHA provider) in front of the sign-up email. The default implementation accepts everything;

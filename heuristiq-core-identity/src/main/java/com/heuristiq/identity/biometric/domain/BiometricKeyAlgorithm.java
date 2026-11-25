@@ -1,4 +1,4 @@
-package com.heuristiq.uam.biometric.domain;
+package com.heuristiq.identity.biometric.domain;
 
 /**
  * The two device-key algorithms accepted at enrolment: an EC P-256 key signing with SHA256withECDSA (DER signature) or an

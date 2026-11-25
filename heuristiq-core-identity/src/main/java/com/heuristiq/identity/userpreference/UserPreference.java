@@ -1,12 +1,12 @@
-package com.heuristiq.uam.userpreference;
+package com.heuristiq.identity.userpreference;
 
 import java.time.LocalDateTime;
 
-import com.heuristiq.uam.helper.AccessibilityPreference;
-import com.heuristiq.uam.helper.DashboardPreference;
-import com.heuristiq.uam.helper.NotificationPreference;
-import com.heuristiq.uam.helper.RegionalPreference;
-import com.heuristiq.uam.helper.UiPreference;
+import com.heuristiq.identity.helper.AccessibilityPreference;
+import com.heuristiq.identity.helper.DashboardPreference;
+import com.heuristiq.identity.helper.NotificationPreference;
+import com.heuristiq.identity.helper.RegionalPreference;
+import com.heuristiq.identity.helper.UiPreference;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -1,6 +1,6 @@
-package com.heuristiq.uam.users.repository.jpa;
+package com.heuristiq.identity.users.repository.jpa;
 
-import com.heuristiq.uam.users.persistence.jpa.UamUserEntity;
+import com.heuristiq.identity.users.persistence.jpa.UamUserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 

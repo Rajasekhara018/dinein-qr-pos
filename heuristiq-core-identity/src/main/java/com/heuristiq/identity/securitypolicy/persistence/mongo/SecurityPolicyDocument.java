@@ -1,4 +1,4 @@
-package com.heuristiq.uam.securitypolicy.persistence.mongo;
+package com.heuristiq.identity.securitypolicy.persistence.mongo;
 
 import java.time.LocalDateTime;
 
@@ -8,13 +8,13 @@ import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.heuristiq.uam.helper.AccountPolicy;
-import com.heuristiq.uam.helper.ApiSecurityPolicy;
-import com.heuristiq.uam.helper.AuditInfo;
-import com.heuristiq.uam.helper.LoginPolicy;
-import com.heuristiq.uam.helper.MfaPolicy;
-import com.heuristiq.uam.helper.PasswordPolicy;
-import com.heuristiq.uam.helper.SessionPolicy;
+import com.heuristiq.identity.helper.AccountPolicy;
+import com.heuristiq.identity.helper.ApiSecurityPolicy;
+import com.heuristiq.identity.helper.AuditInfo;
+import com.heuristiq.identity.helper.LoginPolicy;
+import com.heuristiq.identity.helper.MfaPolicy;
+import com.heuristiq.identity.helper.PasswordPolicy;
+import com.heuristiq.identity.helper.SessionPolicy;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;

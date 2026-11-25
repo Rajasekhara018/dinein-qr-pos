@@ -1,4 +1,4 @@
-package com.heuristiq.uam.orgstructure.domain;
+package com.heuristiq.identity.orgstructure.domain;
 
 /** Where the organization-structure feature learns an organization's data-scope setting and who its administrators are. */
 public interface DataScopeSource {

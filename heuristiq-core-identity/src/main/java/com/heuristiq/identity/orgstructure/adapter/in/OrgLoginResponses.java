@@ -1,8 +1,8 @@
-package com.heuristiq.uam.orgstructure.adapter.in;
+package com.heuristiq.identity.orgstructure.adapter.in;
 
 import java.util.List;
 
-import com.heuristiq.uam.orgstructure.domain.LoginModels.LoginCandidate;
+import com.heuristiq.identity.orgstructure.domain.LoginModels.LoginCandidate;
 
 /** Response shapes of the login API. */
 final class OrgLoginResponses {

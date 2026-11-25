@@ -1,4 +1,4 @@
-package com.heuristiq.uam.cache;
+package com.heuristiq.identity.cache;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;

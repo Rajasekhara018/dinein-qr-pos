@@ -1,4 +1,4 @@
-package com.heuristiq.uam.readiness.application;
+package com.heuristiq.identity.readiness.application;
 
 import java.time.Clock;
 import java.time.LocalDateTime;
@@ -11,16 +11,16 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.heuristiq.uam.organization.subscription.TenantApplication;
-import com.heuristiq.uam.organization.subscription.TenantApplicationServiceUseCase;
-import com.heuristiq.uam.organization.subscription.TenantApplicationServiceUseCase.AlertKind;
-import com.heuristiq.uam.readiness.application.port.AlertRecipient;
-import com.heuristiq.uam.readiness.application.port.AlertRecipientDirectory;
-import com.heuristiq.uam.readiness.application.port.ReadinessAlertSender;
-import com.heuristiq.uam.readiness.config.GovernanceProperties;
-import com.heuristiq.uam.readiness.domain.GoLiveBlocker;
-import com.heuristiq.uam.readiness.domain.GoLiveRules;
-import com.heuristiq.uam.readiness.domain.GovernanceConstants;
+import com.heuristiq.identity.organization.subscription.TenantApplication;
+import com.heuristiq.identity.organization.subscription.TenantApplicationServiceUseCase;
+import com.heuristiq.identity.organization.subscription.TenantApplicationServiceUseCase.AlertKind;
+import com.heuristiq.identity.readiness.application.port.AlertRecipient;
+import com.heuristiq.identity.readiness.application.port.AlertRecipientDirectory;
+import com.heuristiq.identity.readiness.application.port.ReadinessAlertSender;
+import com.heuristiq.identity.readiness.config.GovernanceProperties;
+import com.heuristiq.identity.readiness.domain.GoLiveBlocker;
+import com.heuristiq.identity.readiness.domain.GoLiveRules;
+import com.heuristiq.identity.readiness.domain.GovernanceConstants;
 
 /**
  * Alerts about applications that are blocked or were forced live. Recipients are the platform's SUPER_ADMINs plus the owner

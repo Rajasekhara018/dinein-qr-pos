@@ -1,4 +1,4 @@
-package com.heuristiq.uam.refreshToken;
+package com.heuristiq.identity.refreshToken;
 
 import java.time.LocalDateTime;
 import java.util.List;

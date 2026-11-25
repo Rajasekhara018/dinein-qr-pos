@@ -1,4 +1,4 @@
-package com.heuristiq.uam.readiness.domain;
+package com.heuristiq.identity.readiness.domain;
 
 /**
  * Asks one service for its readiness facts about one application in one organization

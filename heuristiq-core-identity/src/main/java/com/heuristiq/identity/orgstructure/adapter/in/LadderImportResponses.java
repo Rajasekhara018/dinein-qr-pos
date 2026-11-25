@@ -1,8 +1,8 @@
-package com.heuristiq.uam.orgstructure.adapter.in;
+package com.heuristiq.identity.orgstructure.adapter.in;
 
 import java.util.List;
 
-import com.heuristiq.uam.orgstructure.domain.LadderImportModels.LadderRow;
+import com.heuristiq.identity.orgstructure.domain.LadderImportModels.LadderRow;
 
 /** Response shapes of the ladders import API. */
 final class LadderImportResponses {

@@ -1,4 +1,4 @@
-package com.heuristiq.uam.organization.membership;
+package com.heuristiq.identity.organization.membership;
 
 import java.time.LocalDateTime;
 

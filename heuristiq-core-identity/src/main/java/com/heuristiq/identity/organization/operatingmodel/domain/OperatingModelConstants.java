@@ -1,4 +1,4 @@
-package com.heuristiq.uam.organization.operatingmodel.domain;
+package com.heuristiq.identity.organization.operatingmodel.domain;
 
 /** Fixed values of the operating model. */
 public final class OperatingModelConstants {

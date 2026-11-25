@@ -1,10 +1,10 @@
-package com.heuristiq.uam.otp;
+package com.heuristiq.identity.otp;
 
-import com.heuristiq.uam.users.UamUser;
-import com.heuristiq.uam.dto.LoginResponse;
-import com.heuristiq.uam.dto.LoginResult;
-import com.heuristiq.uam.dto.OtpSentResponse;
-import com.heuristiq.uam.enums.UamEnums;
+import com.heuristiq.identity.users.UamUser;
+import com.heuristiq.identity.dto.LoginResponse;
+import com.heuristiq.identity.dto.LoginResult;
+import com.heuristiq.identity.dto.OtpSentResponse;
+import com.heuristiq.identity.enums.UamEnums;
 
 public interface UamOtpAuthServiceUseCase {
 
@@ -14,7 +14,7 @@ public interface UamOtpAuthServiceUseCase {
 
     /**
      * A successful OTP verification is a full login — it goes through
-     * {@link com.heuristiq.uam.auth.LoginSessionService#issue} exactly like local/Google login does,
+     * {@link com.heuristiq.identity.auth.LoginSessionService#issue} exactly like local/Google login does,
      * so it gets a real session + rotating refresh token (LoginResponse.refreshToken) too, not just
      * a bare access token. Response type was AppLoginResponse (no refreshToken) before this — that
      * record has been removed since nothing else used it.
@@ -24,7 +24,7 @@ public interface UamOtpAuthServiceUseCase {
             this(phone, otp, userType, null);
         }
     }
-    /** A {@link LoginResponse}, or a {@link com.heuristiq.uam.dto.MfaChallengeRequiredResponse} when the user has MFA enrolled and sent no totpCode. */
+    /** A {@link LoginResponse}, or a {@link com.heuristiq.identity.dto.MfaChallengeRequiredResponse} when the user has MFA enrolled and sent no totpCode. */
     record VerifyPhoneOtpOutput(LoginResult response) {}
     VerifyPhoneOtpOutput verifyPhoneOtp(VerifyPhoneOtpInput input);
 
@@ -37,7 +37,7 @@ public interface UamOtpAuthServiceUseCase {
             this(email, otp, userType, null);
         }
     }
-    /** A {@link LoginResponse}, or a {@link com.heuristiq.uam.dto.MfaChallengeRequiredResponse} when the user has MFA enrolled and sent no totpCode. */
+    /** A {@link LoginResponse}, or a {@link com.heuristiq.identity.dto.MfaChallengeRequiredResponse} when the user has MFA enrolled and sent no totpCode. */
     record VerifyEmailOtpOutput(LoginResult response) {}
     VerifyEmailOtpOutput verifyEmailOtp(VerifyEmailOtpInput input);
 

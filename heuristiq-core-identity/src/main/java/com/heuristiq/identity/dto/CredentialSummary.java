@@ -1,7 +1,7 @@
-package com.heuristiq.uam.dto;
+package com.heuristiq.identity.dto;
 
-import com.heuristiq.uam.usercredentials.UserCredential;
-import com.heuristiq.uam.enums.UamEnums.AuthProvider;
+import com.heuristiq.identity.usercredentials.UserCredential;
+import com.heuristiq.identity.enums.UamEnums.AuthProvider;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.time.LocalDateTime;

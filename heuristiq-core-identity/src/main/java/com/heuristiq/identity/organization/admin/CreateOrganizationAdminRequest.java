@@ -1,4 +1,4 @@
-package com.heuristiq.uam.organization.admin;
+package com.heuristiq.identity.organization.admin;
 
 import com.heuristiq.phone.validation.ValidPhone;
 import io.swagger.v3.oas.annotations.media.Schema;

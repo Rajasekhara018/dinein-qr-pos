@@ -1,4 +1,4 @@
-package com.heuristiq.uam.readiness.adapter.out;
+package com.heuristiq.identity.readiness.adapter.out;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -13,8 +13,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import com.heuristiq.uam.readiness.domain.ReadinessCheck;
-import com.heuristiq.uam.readiness.domain.ReadinessStatus;
+import com.heuristiq.identity.readiness.domain.ReadinessCheck;
+import com.heuristiq.identity.readiness.domain.ReadinessStatus;
 
 /**
  * Reads a service's readiness answer. The report sits under {@code responseObject} (the standard envelope: wallet, reports,

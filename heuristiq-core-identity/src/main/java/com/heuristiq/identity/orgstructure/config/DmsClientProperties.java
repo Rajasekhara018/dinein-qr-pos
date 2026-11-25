@@ -1,4 +1,4 @@
-package com.heuristiq.uam.orgstructure.config;
+package com.heuristiq.identity.orgstructure.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.bind.DefaultValue;

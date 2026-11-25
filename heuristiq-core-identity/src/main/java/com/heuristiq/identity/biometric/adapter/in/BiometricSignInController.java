@@ -1,11 +1,11 @@
-package com.heuristiq.uam.biometric.adapter.in;
+package com.heuristiq.identity.biometric.adapter.in;
 
-import com.heuristiq.uam.auth.AuthConstants;
-import com.heuristiq.uam.biometric.application.BiometricUseCase;
-import com.heuristiq.uam.common.CommonRequestMapper;
-import com.heuristiq.uam.common.CommonRequestObject;
-import com.heuristiq.uam.common.CommonResponseObject;
-import com.heuristiq.uam.common.RequestObjectType;
+import com.heuristiq.identity.auth.AuthConstants;
+import com.heuristiq.identity.biometric.application.BiometricUseCase;
+import com.heuristiq.identity.common.CommonRequestMapper;
+import com.heuristiq.identity.common.CommonRequestObject;
+import com.heuristiq.identity.common.CommonResponseObject;
+import com.heuristiq.identity.common.RequestObjectType;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;

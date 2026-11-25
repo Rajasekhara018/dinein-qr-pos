@@ -1,4 +1,4 @@
-package com.heuristiq.uam.organization.membership.repository;
+package com.heuristiq.identity.organization.membership.repository;
 
 import java.util.List;
 import java.util.Optional;
@@ -6,8 +6,8 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import com.heuristiq.uam.organization.membership.TenantMembership;
-import com.heuristiq.uam.organization.membership.TenantMembershipStatus;
+import com.heuristiq.identity.organization.membership.TenantMembership;
+import com.heuristiq.identity.organization.membership.TenantMembershipStatus;
 
 /** Port for organization memberships; one adapter per persistence backend (Postgres / Mongo). */
 public interface TenantMembershipRepository {

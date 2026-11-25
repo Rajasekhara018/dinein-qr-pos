@@ -1,6 +1,6 @@
-package com.heuristiq.uam.orgstructure.adapter.out;
+package com.heuristiq.identity.orgstructure.adapter.out;
 
-import com.heuristiq.uam.common.UamCommonConstants;
+import com.heuristiq.identity.common.UamCommonConstants;
 import com.heuristiq.phone.PhoneNumbers;
 import java.security.SecureRandom;
 import java.util.List;
@@ -11,19 +11,19 @@ import java.util.stream.Collectors;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
-import com.heuristiq.uam.common.UamException;
-import com.heuristiq.uam.dto.UpsertUserRequest;
-import com.heuristiq.uam.enums.UamEnums.UserStatus;
-import com.heuristiq.uam.enums.UamEnums.UserType;
-import com.heuristiq.uam.orgstructure.domain.LoginAccounts;
-import com.heuristiq.uam.orgstructure.domain.OrgStructureException;
-import com.heuristiq.uam.organization.membership.AddMemberRequest;
-import com.heuristiq.uam.organization.membership.TenancyConstants;
-import com.heuristiq.uam.organization.membership.TenantMembershipServiceUseCase;
-import com.heuristiq.uam.role.UamRole;
-import com.heuristiq.uam.role.UamRoleServiceUseCase;
-import com.heuristiq.uam.users.UamUser;
-import com.heuristiq.uam.users.UamUserServiceUseCase;
+import com.heuristiq.identity.common.UamException;
+import com.heuristiq.identity.dto.UpsertUserRequest;
+import com.heuristiq.identity.enums.UamEnums.UserStatus;
+import com.heuristiq.identity.enums.UamEnums.UserType;
+import com.heuristiq.identity.orgstructure.domain.LoginAccounts;
+import com.heuristiq.identity.orgstructure.domain.OrgStructureException;
+import com.heuristiq.identity.organization.membership.AddMemberRequest;
+import com.heuristiq.identity.organization.membership.TenancyConstants;
+import com.heuristiq.identity.organization.membership.TenantMembershipServiceUseCase;
+import com.heuristiq.identity.role.UamRole;
+import com.heuristiq.identity.role.UamRoleServiceUseCase;
+import com.heuristiq.identity.users.UamUser;
+import com.heuristiq.identity.users.UamUserServiceUseCase;
 
 /**
  * {@link LoginAccounts} on top of the user and role features' own use cases, so account rules (unique email, password
@@ -34,7 +34,7 @@ import com.heuristiq.uam.users.UamUserServiceUseCase;
 @ConditionalOnProperty(prefix = "railcab.uam.persistence", name = "type", havingValue = "postgres")
 class UamLoginAccounts implements LoginAccounts {
     @org.springframework.beans.factory.annotation.Autowired
-    private com.heuristiq.uam.securitypolicy.SecurityPolicyPasswordGenerator policyPasswords;
+    private com.heuristiq.identity.securitypolicy.SecurityPolicyPasswordGenerator policyPasswords;
 
     private final UamUserServiceUseCase users;
     private final UamRoleServiceUseCase roles;

@@ -1,4 +1,4 @@
-package com.heuristiq.uam.google;
+package com.heuristiq.identity.google;
 
 public record GoogleIdentity(
         String firebaseUid,

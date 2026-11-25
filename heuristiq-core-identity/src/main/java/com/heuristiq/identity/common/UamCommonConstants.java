@@ -1,4 +1,4 @@
-package com.heuristiq.uam.common;
+package com.heuristiq.identity.common;
 
 /**
  * Fixed values shared by more than one UAM feature, kept in one place so the same literal is never

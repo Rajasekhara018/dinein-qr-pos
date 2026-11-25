@@ -1,4 +1,4 @@
-package com.heuristiq.uam.userpreference.persistance.mongo;
+package com.heuristiq.identity.userpreference.persistance.mongo;
 
 import java.time.LocalDateTime;
 
@@ -9,11 +9,11 @@ import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.heuristiq.uam.helper.AccessibilityPreference;
-import com.heuristiq.uam.helper.DashboardPreference;
-import com.heuristiq.uam.helper.NotificationPreference;
-import com.heuristiq.uam.helper.RegionalPreference;
-import com.heuristiq.uam.helper.UiPreference;
+import com.heuristiq.identity.helper.AccessibilityPreference;
+import com.heuristiq.identity.helper.DashboardPreference;
+import com.heuristiq.identity.helper.NotificationPreference;
+import com.heuristiq.identity.helper.RegionalPreference;
+import com.heuristiq.identity.helper.UiPreference;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -1,4 +1,4 @@
-package com.heuristiq.uam.device.persistence.mongo;
+package com.heuristiq.identity.device.persistence.mongo;
 
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -10,8 +10,8 @@ import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.heuristiq.uam.enums.UamEnums.DeviceType;
-import com.heuristiq.uam.enums.UamEnums.Platform;
+import com.heuristiq.identity.enums.UamEnums.DeviceType;
+import com.heuristiq.identity.enums.UamEnums.Platform;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

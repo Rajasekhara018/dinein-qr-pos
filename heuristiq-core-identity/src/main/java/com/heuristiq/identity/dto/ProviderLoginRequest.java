@@ -1,6 +1,6 @@
-package com.heuristiq.uam.dto;
+package com.heuristiq.identity.dto;
 
-import com.heuristiq.uam.enums.UamEnums;
+import com.heuristiq.identity.enums.UamEnums;
 
 import jakarta.validation.constraints.NotBlank;
 

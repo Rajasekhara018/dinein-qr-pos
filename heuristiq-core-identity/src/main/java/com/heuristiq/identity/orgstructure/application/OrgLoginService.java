@@ -1,4 +1,4 @@
-package com.heuristiq.uam.orgstructure.application;
+package com.heuristiq.identity.orgstructure.application;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,20 +12,20 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
-import com.heuristiq.uam.orgstructure.domain.EmployeeStore;
-import com.heuristiq.uam.orgstructure.domain.LoginAccounts;
-import com.heuristiq.uam.orgstructure.domain.LoginModels.Candidate;
-import com.heuristiq.uam.orgstructure.domain.LoginModels.LoginCandidate;
-import com.heuristiq.uam.orgstructure.domain.LoginModels.LoginIssue;
-import com.heuristiq.uam.orgstructure.domain.LoginModels.LoginOutcome;
-import com.heuristiq.uam.orgstructure.domain.LoginModels.LoginResult;
-import com.heuristiq.uam.orgstructure.domain.LoginModels.LoginRun;
-import com.heuristiq.uam.orgstructure.domain.LoginModels.RoleRule;
-import com.heuristiq.uam.orgstructure.domain.Models.Employee;
-import com.heuristiq.uam.orgstructure.domain.OrgStructureConstants;
-import com.heuristiq.uam.orgstructure.domain.OrgStructureException;
-import com.heuristiq.uam.orgstructure.domain.RoleRuleMatcher;
-import com.heuristiq.uam.orgstructure.domain.RoleRuleStore;
+import com.heuristiq.identity.orgstructure.domain.EmployeeStore;
+import com.heuristiq.identity.orgstructure.domain.LoginAccounts;
+import com.heuristiq.identity.orgstructure.domain.LoginModels.Candidate;
+import com.heuristiq.identity.orgstructure.domain.LoginModels.LoginCandidate;
+import com.heuristiq.identity.orgstructure.domain.LoginModels.LoginIssue;
+import com.heuristiq.identity.orgstructure.domain.LoginModels.LoginOutcome;
+import com.heuristiq.identity.orgstructure.domain.LoginModels.LoginResult;
+import com.heuristiq.identity.orgstructure.domain.LoginModels.LoginRun;
+import com.heuristiq.identity.orgstructure.domain.LoginModels.RoleRule;
+import com.heuristiq.identity.orgstructure.domain.Models.Employee;
+import com.heuristiq.identity.orgstructure.domain.OrgStructureConstants;
+import com.heuristiq.identity.orgstructure.domain.OrgStructureException;
+import com.heuristiq.identity.orgstructure.domain.RoleRuleMatcher;
+import com.heuristiq.identity.orgstructure.domain.RoleRuleStore;
 
 /**
  * Role-mapping rules and login creation. Roles are never typed in by hand per person: they come from the rules, which

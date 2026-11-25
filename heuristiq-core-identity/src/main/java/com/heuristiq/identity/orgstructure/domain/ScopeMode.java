@@ -1,4 +1,4 @@
-package com.heuristiq.uam.orgstructure.domain;
+package com.heuristiq.identity.orgstructure.domain;
 
 /**
  * How much of the organization a caller may see. A SUPER_ADMIN is always {@link #ORG_WIDE}, whatever

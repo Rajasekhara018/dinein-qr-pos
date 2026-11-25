@@ -1,4 +1,4 @@
-package com.heuristiq.uam.helper;
+package com.heuristiq.identity.helper;
 
 /**
  * Turns the one text an administrator types as a person's name ("QA Retest UI Owner") into the parts UAM stores. Pure and stateless.

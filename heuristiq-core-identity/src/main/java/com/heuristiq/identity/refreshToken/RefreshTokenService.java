@@ -1,8 +1,8 @@
-package com.heuristiq.uam.refreshToken;
+package com.heuristiq.identity.refreshToken;
 
-import com.heuristiq.uam.common.UamException;
-import com.heuristiq.uam.helper.AuditInfo;
-import com.heuristiq.uam.refreshToken.config.RefreshTokenProperties;
+import com.heuristiq.identity.common.UamException;
+import com.heuristiq.identity.helper.AuditInfo;
+import com.heuristiq.identity.refreshToken.config.RefreshTokenProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.ObjectProvider;

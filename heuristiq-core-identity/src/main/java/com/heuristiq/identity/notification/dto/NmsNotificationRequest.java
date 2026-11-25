@@ -1,4 +1,4 @@
-package com.heuristiq.uam.notification.dto;
+package com.heuristiq.identity.notification.dto;
 
 import java.util.List;
 import java.util.Map;

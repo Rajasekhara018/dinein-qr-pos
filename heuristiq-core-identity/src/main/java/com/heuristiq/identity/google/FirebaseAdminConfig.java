@@ -1,4 +1,4 @@
-package com.heuristiq.uam.google;
+package com.heuristiq.identity.google;
 
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.auth.oauth2.GoogleCredentials;

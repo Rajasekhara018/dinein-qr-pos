@@ -1,4 +1,4 @@
-package com.heuristiq.uam.orgstructure.domain;
+package com.heuristiq.identity.orgstructure.domain;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,10 +7,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.heuristiq.uam.orgstructure.domain.DepartmentImportModels.DepartmentReference;
-import com.heuristiq.uam.orgstructure.domain.DepartmentImportModels.DepartmentRow;
-import com.heuristiq.uam.orgstructure.domain.DepartmentImportModels.DepartmentRowInput;
-import com.heuristiq.uam.orgstructure.domain.DepartmentImportModels.ExistingUnit;
+import com.heuristiq.identity.orgstructure.domain.DepartmentImportModels.DepartmentReference;
+import com.heuristiq.identity.orgstructure.domain.DepartmentImportModels.DepartmentRow;
+import com.heuristiq.identity.orgstructure.domain.DepartmentImportModels.DepartmentRowInput;
+import com.heuristiq.identity.orgstructure.domain.DepartmentImportModels.ExistingUnit;
 
 /**
  * Checks every row of a department file against the organization as it is now and against the rest of the file. Pure logic: it reads

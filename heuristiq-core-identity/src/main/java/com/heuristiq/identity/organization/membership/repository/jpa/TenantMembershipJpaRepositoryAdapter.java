@@ -1,4 +1,4 @@
-package com.heuristiq.uam.organization.membership.repository.jpa;
+package com.heuristiq.identity.organization.membership.repository.jpa;
 
 import java.util.List;
 import java.util.Optional;
@@ -8,10 +8,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
-import com.heuristiq.uam.organization.membership.TenantMembership;
-import com.heuristiq.uam.organization.membership.TenantMembershipStatus;
-import com.heuristiq.uam.organization.membership.persistence.jpa.TenantMembershipEntity;
-import com.heuristiq.uam.organization.membership.repository.TenantMembershipRepository;
+import com.heuristiq.identity.organization.membership.TenantMembership;
+import com.heuristiq.identity.organization.membership.TenantMembershipStatus;
+import com.heuristiq.identity.organization.membership.persistence.jpa.TenantMembershipEntity;
+import com.heuristiq.identity.organization.membership.repository.TenantMembershipRepository;
 
 @Repository
 @ConditionalOnProperty(prefix = "railcab.uam.persistence", name = "type", havingValue = "postgres")

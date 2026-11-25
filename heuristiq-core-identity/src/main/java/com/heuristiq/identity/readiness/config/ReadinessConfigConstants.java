@@ -1,9 +1,9 @@
-package com.heuristiq.uam.readiness.config;
+package com.heuristiq.identity.readiness.config;
 
 import java.util.Map;
 
-import com.heuristiq.uam.readiness.adapter.out.ReadinessAuthMode;
-import com.heuristiq.uam.readiness.domain.ReadinessSource;
+import com.heuristiq.identity.readiness.adapter.out.ReadinessAuthMode;
+import com.heuristiq.identity.readiness.domain.ReadinessSource;
 
 /**
  * Built-in defaults of each service's readiness endpoint, used when {@code railcab.uam.readiness.services.<name>.*} leaves a

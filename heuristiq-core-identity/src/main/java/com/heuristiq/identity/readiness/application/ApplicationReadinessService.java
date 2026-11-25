@@ -1,4 +1,4 @@
-package com.heuristiq.uam.readiness.application;
+package com.heuristiq.identity.readiness.application;
 
 import java.time.Clock;
 import java.util.ArrayList;
@@ -10,20 +10,20 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import com.heuristiq.uam.application.ApplicationConstants;
-import com.heuristiq.uam.application.catalogue.ApplicationCatalogue;
-import com.heuristiq.uam.application.catalogue.ApplicationCatalogueEntry;
-import com.heuristiq.uam.common.UamException;
-import com.heuristiq.uam.readiness.domain.ApplicationReadiness;
-import com.heuristiq.uam.readiness.domain.ReadinessEvaluator;
-import com.heuristiq.uam.readiness.domain.ReadinessProfiles;
-import com.heuristiq.uam.readiness.application.port.ReadinessSeverityOverrideRepository;
-import com.heuristiq.uam.readiness.domain.ReadinessSeverity;
-import com.heuristiq.uam.readiness.domain.ReadinessSource;
-import com.heuristiq.uam.readiness.domain.ReadinessStepDefinition;
-import com.heuristiq.uam.readiness.domain.ServiceReport;
-import com.heuristiq.uam.readiness.domain.UamReadinessFactsPort;
-import com.heuristiq.uam.readiness.domain.UamReadinessFactsPort.ApplicationFacts;
+import com.heuristiq.identity.application.ApplicationConstants;
+import com.heuristiq.identity.application.catalogue.ApplicationCatalogue;
+import com.heuristiq.identity.application.catalogue.ApplicationCatalogueEntry;
+import com.heuristiq.identity.common.UamException;
+import com.heuristiq.identity.readiness.domain.ApplicationReadiness;
+import com.heuristiq.identity.readiness.domain.ReadinessEvaluator;
+import com.heuristiq.identity.readiness.domain.ReadinessProfiles;
+import com.heuristiq.identity.readiness.application.port.ReadinessSeverityOverrideRepository;
+import com.heuristiq.identity.readiness.domain.ReadinessSeverity;
+import com.heuristiq.identity.readiness.domain.ReadinessSource;
+import com.heuristiq.identity.readiness.domain.ReadinessStepDefinition;
+import com.heuristiq.identity.readiness.domain.ServiceReport;
+import com.heuristiq.identity.readiness.domain.UamReadinessFactsPort;
+import com.heuristiq.identity.readiness.domain.UamReadinessFactsPort.ApplicationFacts;
 
 /**
  * Readiness of the session organization's applications. The organization is always the session's (the token's

@@ -1,15 +1,15 @@
-package com.heuristiq.uam.orgstructure.domain;
+package com.heuristiq.identity.orgstructure.domain;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-import com.heuristiq.uam.orgstructure.domain.Models.Change;
-import com.heuristiq.uam.orgstructure.domain.Models.LadderView;
-import com.heuristiq.uam.orgstructure.domain.Models.PersonView;
-import com.heuristiq.uam.orgstructure.domain.Models.PositionView;
-import com.heuristiq.uam.orgstructure.domain.Models.UnitView;
-import com.heuristiq.uam.orgstructure.domain.Models.ValidationIssue;
+import com.heuristiq.identity.orgstructure.domain.Models.Change;
+import com.heuristiq.identity.orgstructure.domain.Models.LadderView;
+import com.heuristiq.identity.orgstructure.domain.Models.PersonView;
+import com.heuristiq.identity.orgstructure.domain.Models.PositionView;
+import com.heuristiq.identity.orgstructure.domain.Models.UnitView;
+import com.heuristiq.identity.orgstructure.domain.Models.ValidationIssue;
 
 /** Port to the live organization tables (units, ladders, positions, assignments, reporting lines). */
 public interface OrgStructureStore {

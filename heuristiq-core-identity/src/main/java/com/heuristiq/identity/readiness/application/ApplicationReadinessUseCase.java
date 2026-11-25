@@ -1,8 +1,8 @@
-package com.heuristiq.uam.readiness.application;
+package com.heuristiq.identity.readiness.application;
 
 import java.util.List;
 
-import com.heuristiq.uam.readiness.domain.ApplicationReadiness;
+import com.heuristiq.identity.readiness.domain.ApplicationReadiness;
 
 /** Readiness of the session organization's applications (docs/APPLICATION_READINESS.md, stage 1b). */
 public interface ApplicationReadinessUseCase {
@@ -12,7 +12,7 @@ public interface ApplicationReadinessUseCase {
      *
      * @param applicationCode catalogue code (any case)
      * @param refresh         true re-checks now instead of reusing a recent result
-     * @throws com.heuristiq.uam.common.UamException 404 when the code is not linked to the session organization
+     * @throws com.heuristiq.identity.common.UamException 404 when the code is not linked to the session organization
      */
     ApplicationReadiness readiness(String applicationCode, boolean refresh);
 
@@ -28,7 +28,7 @@ public interface ApplicationReadinessUseCase {
      * has no signed-in caller (the go-live guard, the scheduled re-check). The application only needs a readiness profile;
      * it does not have to be ACTIVE, because the guard evaluates a link that is about to be switched on.
      *
-     * @throws com.heuristiq.uam.common.UamException 404 when the code has no readiness profile
+     * @throws com.heuristiq.identity.common.UamException 404 when the code has no readiness profile
      */
     ApplicationReadiness evaluateFor(String tenantId, String applicationCode);
 

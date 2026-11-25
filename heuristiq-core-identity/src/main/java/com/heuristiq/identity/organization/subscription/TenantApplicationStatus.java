@@ -1,4 +1,4 @@
-package com.heuristiq.uam.organization.subscription;
+package com.heuristiq.identity.organization.subscription;
 
 /** State of an organization's use of an application. A cancelled subscription is kept so the history stays readable. */
 public enum TenantApplicationStatus {

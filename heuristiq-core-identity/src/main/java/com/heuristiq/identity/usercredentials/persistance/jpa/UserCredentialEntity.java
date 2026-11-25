@@ -1,4 +1,4 @@
-package com.heuristiq.uam.usercredentials.persistance.jpa;
+package com.heuristiq.identity.usercredentials.persistance.jpa;
 
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -6,8 +6,8 @@ import java.util.Map;
 import org.hibernate.annotations.UuidGenerator;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.heuristiq.uam.enums.UamEnums.AuthProvider;
-import com.heuristiq.uam.util.JsonMapAttributeConverter;
+import com.heuristiq.identity.enums.UamEnums.AuthProvider;
+import com.heuristiq.identity.util.JsonMapAttributeConverter;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;

@@ -1,6 +1,6 @@
-package com.heuristiq.uam.passwordsHistory;
+package com.heuristiq.identity.passwordsHistory;
 
-import com.heuristiq.uam.passwordsHistory.PasswordHistory;
+import com.heuristiq.identity.passwordsHistory.PasswordHistory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

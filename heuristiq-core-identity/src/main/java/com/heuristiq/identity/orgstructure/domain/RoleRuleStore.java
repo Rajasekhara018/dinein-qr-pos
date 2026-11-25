@@ -1,10 +1,10 @@
-package com.heuristiq.uam.orgstructure.domain;
+package com.heuristiq.identity.orgstructure.domain;
 
 import java.util.List;
 import java.util.Set;
 
-import com.heuristiq.uam.orgstructure.domain.LoginModels.Candidate;
-import com.heuristiq.uam.orgstructure.domain.LoginModels.RoleRule;
+import com.heuristiq.identity.orgstructure.domain.LoginModels.Candidate;
+import com.heuristiq.identity.orgstructure.domain.LoginModels.RoleRule;
 
 /** Port to role-mapping rules and to the employees who may be given a login. */
 public interface RoleRuleStore {

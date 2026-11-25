@@ -1,13 +1,13 @@
-package com.heuristiq.uam.users;
+package com.heuristiq.identity.users;
 
-import com.heuristiq.uam.common.CommonRequestMapper;
-import com.heuristiq.uam.common.CommonRequestObject;
-import com.heuristiq.uam.common.CommonResponseObject;
-import com.heuristiq.uam.common.OperationResult;
-import com.heuristiq.uam.common.RequestObjectType;
-import com.heuristiq.uam.enums.UamEnums;
-import com.heuristiq.uam.dto.SetPasswordRequest;
-import com.heuristiq.uam.dto.UpsertUserRequest;
+import com.heuristiq.identity.common.CommonRequestMapper;
+import com.heuristiq.identity.common.CommonRequestObject;
+import com.heuristiq.identity.common.CommonResponseObject;
+import com.heuristiq.identity.common.OperationResult;
+import com.heuristiq.identity.common.RequestObjectType;
+import com.heuristiq.identity.enums.UamEnums;
+import com.heuristiq.identity.dto.SetPasswordRequest;
+import com.heuristiq.identity.dto.UpsertUserRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -182,7 +182,7 @@ public class UserController {
     }
 
     /** Folds the discrete username/email filters the frontend sends into the single free-text
-     *  {@code search} param that {@link com.heuristiq.uam.users.repository.UamUserSearchCriteria}
+     *  {@code search} param that {@link com.heuristiq.identity.users.repository.UamUserSearchCriteria}
      *  actually supports (it has no per-field username/email constraints). */
     private String combineSearchTerms(String search, String username, String email) {
         StringBuilder combined = new StringBuilder();

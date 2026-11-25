@@ -1,4 +1,4 @@
-package com.heuristiq.uam.orgstructure.adapter.in;
+package com.heuristiq.identity.orgstructure.adapter.in;
 
 import java.util.List;
 
@@ -15,15 +15,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.heuristiq.uam.common.CommonRequestMapper;
-import com.heuristiq.uam.common.CommonRequestObject;
-import com.heuristiq.uam.common.CommonResponseObject;
-import com.heuristiq.uam.common.RequestObjectType;
-import com.heuristiq.uam.orgstructure.adapter.in.OrgLoginResponses.LoginCandidateResponse;
-import com.heuristiq.uam.orgstructure.adapter.in.OrgStructureRequests.CreateLoginsRequest;
-import com.heuristiq.uam.orgstructure.adapter.in.OrgStructureRequests.RoleRuleRequest;
-import com.heuristiq.uam.orgstructure.application.OrgLoginUseCase;
-import com.heuristiq.uam.orgstructure.domain.OrgStructureConstants;
+import com.heuristiq.identity.common.CommonRequestMapper;
+import com.heuristiq.identity.common.CommonRequestObject;
+import com.heuristiq.identity.common.CommonResponseObject;
+import com.heuristiq.identity.common.RequestObjectType;
+import com.heuristiq.identity.orgstructure.adapter.in.OrgLoginResponses.LoginCandidateResponse;
+import com.heuristiq.identity.orgstructure.adapter.in.OrgStructureRequests.CreateLoginsRequest;
+import com.heuristiq.identity.orgstructure.adapter.in.OrgStructureRequests.RoleRuleRequest;
+import com.heuristiq.identity.orgstructure.application.OrgLoginUseCase;
+import com.heuristiq.identity.orgstructure.domain.OrgStructureConstants;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

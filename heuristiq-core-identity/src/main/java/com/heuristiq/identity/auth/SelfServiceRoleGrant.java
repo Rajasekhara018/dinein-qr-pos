@@ -1,11 +1,11 @@
-package com.heuristiq.uam.auth;
+package com.heuristiq.identity.auth;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import com.heuristiq.uam.enums.UamEnums;
-import com.heuristiq.uam.users.UamUser;
+import com.heuristiq.identity.enums.UamEnums;
+import com.heuristiq.identity.users.UamUser;
 
 /**
  * One account, more than one self-service role. An email belongs to exactly one account across the platform, so a driver who

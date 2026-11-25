@@ -1,14 +1,14 @@
-package com.heuristiq.uam.organization.legalprofile.application;
+package com.heuristiq.identity.organization.legalprofile.application;
 
-import com.heuristiq.uam.organization.legalprofile.application.port.LegalOrganizationDirectory;
-import com.heuristiq.uam.organization.legalprofile.application.port.LegalOrganizationDirectory.Organization;
-import com.heuristiq.uam.organization.legalprofile.application.port.LegalProfileAudit;
-import com.heuristiq.uam.organization.legalprofile.application.port.LegalProfileStore;
-import com.heuristiq.uam.organization.legalprofile.domain.LegalProfile;
-import com.heuristiq.uam.organization.legalprofile.domain.LegalProfileDraft;
-import com.heuristiq.uam.organization.legalprofile.domain.LegalProfileException;
-import com.heuristiq.uam.organization.legalprofile.domain.LegalProfileValidator;
-import com.heuristiq.uam.organization.legalprofile.domain.StoredLegalProfile;
+import com.heuristiq.identity.organization.legalprofile.application.port.LegalOrganizationDirectory;
+import com.heuristiq.identity.organization.legalprofile.application.port.LegalOrganizationDirectory.Organization;
+import com.heuristiq.identity.organization.legalprofile.application.port.LegalProfileAudit;
+import com.heuristiq.identity.organization.legalprofile.application.port.LegalProfileStore;
+import com.heuristiq.identity.organization.legalprofile.domain.LegalProfile;
+import com.heuristiq.identity.organization.legalprofile.domain.LegalProfileDraft;
+import com.heuristiq.identity.organization.legalprofile.domain.LegalProfileException;
+import com.heuristiq.identity.organization.legalprofile.domain.LegalProfileValidator;
+import com.heuristiq.identity.organization.legalprofile.domain.StoredLegalProfile;
 import java.time.Clock;
 import java.util.Objects;
 import java.util.Optional;

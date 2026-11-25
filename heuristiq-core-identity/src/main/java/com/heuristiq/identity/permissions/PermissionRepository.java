@@ -1,6 +1,6 @@
-package com.heuristiq.uam.permissions;
+package com.heuristiq.identity.permissions;
 
-import com.heuristiq.uam.permissions.Permission;
+import com.heuristiq.identity.permissions.Permission;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;

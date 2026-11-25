@@ -1,6 +1,6 @@
-package com.heuristiq.uam.application.client;
+package com.heuristiq.identity.application.client;
 
-import com.heuristiq.uam.common.UamException;
+import com.heuristiq.identity.common.UamException;
 
 import java.net.URI;
 import java.net.URISyntaxException;

@@ -1,4 +1,4 @@
-package com.heuristiq.uam.application.access;
+package com.heuristiq.identity.application.access;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;

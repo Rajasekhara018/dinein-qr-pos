@@ -1,6 +1,6 @@
-package com.heuristiq.uam.util;
+package com.heuristiq.identity.util;
 
-import com.heuristiq.uam.enums.UamEnums;
+import com.heuristiq.identity.enums.UamEnums;
 
 import java.util.List;
 

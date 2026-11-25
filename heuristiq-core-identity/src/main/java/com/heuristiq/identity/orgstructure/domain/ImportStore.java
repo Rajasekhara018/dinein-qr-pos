@@ -1,12 +1,12 @@
-package com.heuristiq.uam.orgstructure.domain;
+package com.heuristiq.identity.orgstructure.domain;
 
 import java.util.List;
 import java.util.Optional;
 
-import com.heuristiq.uam.orgstructure.domain.ImportModels.ImportBatch;
-import com.heuristiq.uam.orgstructure.domain.ImportModels.ImportReference;
-import com.heuristiq.uam.orgstructure.domain.ImportModels.ImportRow;
-import com.heuristiq.uam.orgstructure.domain.ImportModels.StagedRow;
+import com.heuristiq.identity.orgstructure.domain.ImportModels.ImportBatch;
+import com.heuristiq.identity.orgstructure.domain.ImportModels.ImportReference;
+import com.heuristiq.identity.orgstructure.domain.ImportModels.ImportRow;
+import com.heuristiq.identity.orgstructure.domain.ImportModels.StagedRow;
 
 /** Port to staged import files: the batch, its rows and the reference data rows are checked against. */
 public interface ImportStore {

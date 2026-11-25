@@ -1,4 +1,4 @@
-package com.heuristiq.uam.time;
+package com.heuristiq.identity.time;
 
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;

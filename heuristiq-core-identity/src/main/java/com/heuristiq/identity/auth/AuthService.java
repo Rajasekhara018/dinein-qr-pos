@@ -1,25 +1,25 @@
-package com.heuristiq.uam.auth;
+package com.heuristiq.identity.auth;
 
 import org.springframework.http.HttpHeaders;
-import com.heuristiq.uam.common.UamCommonConstants;
-import com.heuristiq.uam.audit.AuditLog;
-import com.heuristiq.uam.audit.AuditLogServiceUseCase;
-import com.heuristiq.uam.audit.authevent.AuthAuditService;
-import com.heuristiq.uam.common.UamException;
-import com.heuristiq.uam.refreshToken.RefreshTokenFailures;
-import com.heuristiq.uam.users.UamUser;
-import com.heuristiq.uam.dto.LoginRequest;
-import com.heuristiq.uam.dto.LoginResponse;
-import com.heuristiq.uam.dto.MfaChallengeRequiredResponse;
-import com.heuristiq.uam.enums.UamEnums;
-import com.heuristiq.uam.lockout.LoginAttemptServiceUseCase;
-import com.heuristiq.uam.lockout.UserLoginSecurityServiceUseCase;
-import com.heuristiq.uam.metrics.Outcome;
-import com.heuristiq.uam.metrics.UamMetrics;
-import com.heuristiq.uam.mfa.UserMfa;
-import com.heuristiq.uam.mfa.UserMfaServiceUseCase;
-import com.heuristiq.uam.users.repository.UamUserRepository;
-import com.heuristiq.uam.usercredentials.UserCredentialServiceUseCase;
+import com.heuristiq.identity.common.UamCommonConstants;
+import com.heuristiq.identity.audit.AuditLog;
+import com.heuristiq.identity.audit.AuditLogServiceUseCase;
+import com.heuristiq.identity.audit.authevent.AuthAuditService;
+import com.heuristiq.identity.common.UamException;
+import com.heuristiq.identity.refreshToken.RefreshTokenFailures;
+import com.heuristiq.identity.users.UamUser;
+import com.heuristiq.identity.dto.LoginRequest;
+import com.heuristiq.identity.dto.LoginResponse;
+import com.heuristiq.identity.dto.MfaChallengeRequiredResponse;
+import com.heuristiq.identity.enums.UamEnums;
+import com.heuristiq.identity.lockout.LoginAttemptServiceUseCase;
+import com.heuristiq.identity.lockout.UserLoginSecurityServiceUseCase;
+import com.heuristiq.identity.metrics.Outcome;
+import com.heuristiq.identity.metrics.UamMetrics;
+import com.heuristiq.identity.mfa.UserMfa;
+import com.heuristiq.identity.mfa.UserMfaServiceUseCase;
+import com.heuristiq.identity.users.repository.UamUserRepository;
+import com.heuristiq.identity.usercredentials.UserCredentialServiceUseCase;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.MDC;
 import org.springframework.stereotype.Service;
@@ -37,7 +37,7 @@ import java.util.Optional;
 @Service
 public class AuthService implements AuthServiceUseCase {
     @org.springframework.beans.factory.annotation.Autowired
-    private com.heuristiq.uam.securitypolicy.SecurityPolicyEnforcer policyEnforcer;
+    private com.heuristiq.identity.securitypolicy.SecurityPolicyEnforcer policyEnforcer;
     private final UamUserRepository userRepository;
     private final UserCredentialServiceUseCase userCredentialService;
     private final LoginAttemptServiceUseCase loginAttemptService;

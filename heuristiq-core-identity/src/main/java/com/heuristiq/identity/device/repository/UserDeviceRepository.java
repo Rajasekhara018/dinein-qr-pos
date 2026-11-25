@@ -1,6 +1,6 @@
-package com.heuristiq.uam.device.repository;
+package com.heuristiq.identity.device.repository;
 
-import com.heuristiq.uam.device.UserDevice;
+import com.heuristiq.identity.device.UserDevice;
 
 import java.util.List;
 import java.util.Optional;

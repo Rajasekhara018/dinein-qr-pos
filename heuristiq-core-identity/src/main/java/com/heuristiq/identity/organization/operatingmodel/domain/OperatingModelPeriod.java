@@ -1,4 +1,4 @@
-package com.heuristiq.uam.organization.operatingmodel.domain;
+package com.heuristiq.identity.organization.operatingmodel.domain;
 
 import java.time.LocalDate;
 import java.util.Objects;

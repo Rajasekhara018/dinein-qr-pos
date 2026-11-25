@@ -1,6 +1,6 @@
-package com.heuristiq.uam.orgstructure.domain;
+package com.heuristiq.identity.orgstructure.domain;
 
-import com.heuristiq.uam.orgstructure.domain.LadderImportModels.LadderFile;
+import com.heuristiq.identity.orgstructure.domain.LadderImportModels.LadderFile;
 
 /**
  * Port to wherever uploaded import files live (the document store), for a ladders file. The user uploads the file there; the import

@@ -1,4 +1,4 @@
-package com.heuristiq.uam.orgstructure.adapter.out;
+package com.heuristiq.identity.orgstructure.adapter.out;
 
 import java.sql.Timestamp;
 import java.time.Clock;
@@ -11,7 +11,7 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import com.heuristiq.uam.orgstructure.domain.StructureSnapshotStore;
+import com.heuristiq.identity.orgstructure.domain.StructureSnapshotStore;
 
 /**
  * PostgreSQL implementation of {@link StructureSnapshotStore}. The snapshot is copied inside the database with

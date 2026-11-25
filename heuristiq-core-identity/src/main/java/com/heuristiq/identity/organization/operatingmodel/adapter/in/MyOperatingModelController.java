@@ -1,10 +1,10 @@
-package com.heuristiq.uam.organization.operatingmodel.adapter.in;
+package com.heuristiq.identity.organization.operatingmodel.adapter.in;
 
-import com.heuristiq.uam.common.CommonResponseObject;
-import com.heuristiq.uam.organization.operatingmodel.application.OperatingModelUseCase;
-import com.heuristiq.uam.organization.operatingmodel.domain.OperatingModelConstants;
-import com.heuristiq.uam.organization.operatingmodel.domain.OperatingModelException;
-import com.heuristiq.uam.security.TenantContext;
+import com.heuristiq.identity.common.CommonResponseObject;
+import com.heuristiq.identity.organization.operatingmodel.application.OperatingModelUseCase;
+import com.heuristiq.identity.organization.operatingmodel.domain.OperatingModelConstants;
+import com.heuristiq.identity.organization.operatingmodel.domain.OperatingModelException;
+import com.heuristiq.identity.security.TenantContext;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;

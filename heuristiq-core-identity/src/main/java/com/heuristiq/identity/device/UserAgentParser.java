@@ -1,6 +1,6 @@
-package com.heuristiq.uam.device;
+package com.heuristiq.identity.device;
 
-import com.heuristiq.uam.enums.UamEnums;
+import com.heuristiq.identity.enums.UamEnums;
 import eu.bitwalker.useragentutils.Browser;
 import eu.bitwalker.useragentutils.OperatingSystem;
 import eu.bitwalker.useragentutils.UserAgent;
@@ -8,7 +8,7 @@ import eu.bitwalker.useragentutils.Version;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-/** Parses a raw {@code User-Agent} header into the fields {@link com.heuristiq.uam.auth.LoginSessionService}
+/** Parses a raw {@code User-Agent} header into the fields {@link com.heuristiq.identity.auth.LoginSessionService}
  *  needs to fingerprint/describe a device -- kept separate from login/session orchestration so that
  *  logic stays testable and reusable on its own. */
 @Component

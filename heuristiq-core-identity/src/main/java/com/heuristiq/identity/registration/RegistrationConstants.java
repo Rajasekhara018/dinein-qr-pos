@@ -1,4 +1,4 @@
-package com.heuristiq.uam.registration;
+package com.heuristiq.identity.registration;
 
 /** Fixed values of self-registration. */
 final class RegistrationConstants {

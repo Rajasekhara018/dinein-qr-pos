@@ -1,6 +1,6 @@
-package com.heuristiq.uam.otp;
+package com.heuristiq.identity.otp;
 
-import com.heuristiq.uam.common.UamCommonConstants;
+import com.heuristiq.identity.common.UamCommonConstants;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;

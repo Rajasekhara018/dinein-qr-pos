@@ -1,14 +1,14 @@
-package com.heuristiq.uam.identity;
+package com.heuristiq.identity.identity;
 
-import com.heuristiq.uam.auth.AuthServiceUseCase;
-import com.heuristiq.uam.config.UamProperties;
-import com.heuristiq.uam.users.UamUser;
-import com.heuristiq.uam.dto.ExternalUserInfo;
-import com.heuristiq.uam.dto.LoginResponse;
-import com.heuristiq.uam.dto.ProviderLoginRequest;
-import com.heuristiq.uam.dto.ProviderRefreshRequest;
-import com.heuristiq.uam.dto.ProviderTokenResponse;
-import com.heuristiq.uam.enums.UamEnums;
+import com.heuristiq.identity.auth.AuthServiceUseCase;
+import com.heuristiq.identity.config.UamProperties;
+import com.heuristiq.identity.users.UamUser;
+import com.heuristiq.identity.dto.ExternalUserInfo;
+import com.heuristiq.identity.dto.LoginResponse;
+import com.heuristiq.identity.dto.ProviderLoginRequest;
+import com.heuristiq.identity.dto.ProviderRefreshRequest;
+import com.heuristiq.identity.dto.ProviderTokenResponse;
+import com.heuristiq.identity.enums.UamEnums;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;

@@ -1,4 +1,4 @@
-package com.heuristiq.uam.orgstructure.adapter.out;
+package com.heuristiq.identity.orgstructure.adapter.out;
 
 import java.sql.Timestamp;
 import java.time.Clock;
@@ -15,11 +15,11 @@ import org.springframework.stereotype.Repository;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.heuristiq.uam.orgstructure.domain.ChangeSetStore;
-import com.heuristiq.uam.orgstructure.domain.ChangeType;
-import com.heuristiq.uam.orgstructure.domain.Models.Change;
-import com.heuristiq.uam.orgstructure.domain.Models.ChangeSet;
-import com.heuristiq.uam.orgstructure.domain.OrgStructureConstants;
+import com.heuristiq.identity.orgstructure.domain.ChangeSetStore;
+import com.heuristiq.identity.orgstructure.domain.ChangeType;
+import com.heuristiq.identity.orgstructure.domain.Models.Change;
+import com.heuristiq.identity.orgstructure.domain.Models.ChangeSet;
+import com.heuristiq.identity.orgstructure.domain.OrgStructureConstants;
 
 /** PostgreSQL implementation of {@link ChangeSetStore}; operation payloads are stored as JSON text. */
 @Repository

@@ -1,4 +1,4 @@
-package com.heuristiq.uam.organization.subscription;
+package com.heuristiq.identity.organization.subscription;
 
 import java.time.Clock;
 import java.time.LocalDate;
@@ -10,14 +10,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import com.heuristiq.uam.application.Application;
-import com.heuristiq.uam.application.repository.ApplicationRepository;
-import com.heuristiq.uam.common.UamException;
-import com.heuristiq.uam.enums.UamEnums.TenantStatus;
-import com.heuristiq.uam.organization.Tenant;
-import com.heuristiq.uam.organization.repository.TenantRepository;
-import com.heuristiq.uam.organization.subscription.repository.TenantApplicationRepository;
-import com.heuristiq.uam.security.TenantGuard;
+import com.heuristiq.identity.application.Application;
+import com.heuristiq.identity.application.repository.ApplicationRepository;
+import com.heuristiq.identity.common.UamException;
+import com.heuristiq.identity.enums.UamEnums.TenantStatus;
+import com.heuristiq.identity.organization.Tenant;
+import com.heuristiq.identity.organization.repository.TenantRepository;
+import com.heuristiq.identity.organization.subscription.repository.TenantApplicationRepository;
+import com.heuristiq.identity.security.TenantGuard;
 
 @Service
 public class TenantApplicationService implements TenantApplicationServiceUseCase {
@@ -25,7 +25,7 @@ public class TenantApplicationService implements TenantApplicationServiceUseCase
     private final ApplicationRepository applicationRepository;
     private final TenantApplicationRepository subscriptionRepository;
     private final Clock clock;
-    private com.heuristiq.uam.organization.admin.OrganizationAdminAccess adminAccess;
+    private com.heuristiq.identity.organization.admin.OrganizationAdminAccess adminAccess;
     private org.springframework.beans.factory.ObjectProvider<GoLiveGuard> goLiveGuard;
 
     @Autowired
@@ -56,7 +56,7 @@ public class TenantApplicationService implements TenantApplicationServiceUseCase
 
     /** Optional: lets a new subscription reach the organization's administrator role too. */
     @org.springframework.beans.factory.annotation.Autowired(required = false)
-    public void setAdminAccess(com.heuristiq.uam.organization.admin.OrganizationAdminAccess adminAccess) {
+    public void setAdminAccess(com.heuristiq.identity.organization.admin.OrganizationAdminAccess adminAccess) {
         this.adminAccess = adminAccess;
     }
 

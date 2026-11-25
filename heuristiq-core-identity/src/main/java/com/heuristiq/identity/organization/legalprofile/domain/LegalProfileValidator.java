@@ -1,6 +1,6 @@
-package com.heuristiq.uam.organization.legalprofile.domain;
+package com.heuristiq.identity.organization.legalprofile.domain;
 
-import static com.heuristiq.uam.organization.legalprofile.domain.LegalProfileConstants.*;
+import static com.heuristiq.identity.organization.legalprofile.domain.LegalProfileConstants.*;
 
 import java.util.ArrayList;
 import java.util.EnumSet;

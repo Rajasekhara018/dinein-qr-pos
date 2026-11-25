@@ -1,4 +1,4 @@
-package com.heuristiq.uam.biometric.domain;
+package com.heuristiq.identity.biometric.domain;
 
 /** Why a device credential stopped working; stored on the credential and written to its audit entry. */
 public enum BiometricRevocationReason {

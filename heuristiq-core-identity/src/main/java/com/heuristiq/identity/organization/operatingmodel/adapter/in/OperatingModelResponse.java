@@ -1,8 +1,8 @@
-package com.heuristiq.uam.organization.operatingmodel.adapter.in;
+package com.heuristiq.identity.organization.operatingmodel.adapter.in;
 
-import com.heuristiq.uam.organization.operatingmodel.application.OperatingModelUseCase.ModelOnDay;
-import com.heuristiq.uam.organization.operatingmodel.application.OperatingModelUseCase.OperatingModelView;
-import com.heuristiq.uam.organization.operatingmodel.domain.OperatingModel;
+import com.heuristiq.identity.organization.operatingmodel.application.OperatingModelUseCase.ModelOnDay;
+import com.heuristiq.identity.organization.operatingmodel.application.OperatingModelUseCase.OperatingModelView;
+import com.heuristiq.identity.organization.operatingmodel.domain.OperatingModel;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDate;
 import java.util.List;

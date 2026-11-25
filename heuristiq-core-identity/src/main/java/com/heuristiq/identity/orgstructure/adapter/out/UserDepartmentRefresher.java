@@ -1,6 +1,6 @@
-package com.heuristiq.uam.orgstructure.adapter.out;
+package com.heuristiq.identity.orgstructure.adapter.out;
 
-import com.heuristiq.uam.common.UamCommonConstants;
+import com.heuristiq.identity.common.UamCommonConstants;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,12 +11,12 @@ import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
-import com.heuristiq.uam.orgstructure.application.OrgStructureChanged;
-import com.heuristiq.uam.orgstructure.domain.EmployeeStore;
-import com.heuristiq.uam.orgstructure.domain.Models.Employee;
-import com.heuristiq.uam.orgstructure.domain.OrgStructureConstants;
-import com.heuristiq.uam.search.UserSearchIndexer;
-import com.heuristiq.uam.users.repository.UamUserRepository;
+import com.heuristiq.identity.orgstructure.application.OrgStructureChanged;
+import com.heuristiq.identity.orgstructure.domain.EmployeeStore;
+import com.heuristiq.identity.orgstructure.domain.Models.Employee;
+import com.heuristiq.identity.orgstructure.domain.OrgStructureConstants;
+import com.heuristiq.identity.search.UserSearchIndexer;
+import com.heuristiq.identity.users.repository.UamUserRepository;
 
 /**
  * After the structure is published, refreshes the search entries of the organization's people so the department in each

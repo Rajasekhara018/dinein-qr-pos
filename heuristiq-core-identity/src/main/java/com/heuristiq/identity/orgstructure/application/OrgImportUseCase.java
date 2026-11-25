@@ -1,9 +1,9 @@
-package com.heuristiq.uam.orgstructure.application;
+package com.heuristiq.identity.orgstructure.application;
 
 import java.util.List;
 
-import com.heuristiq.uam.orgstructure.domain.ImportModels.ImportBatch;
-import com.heuristiq.uam.orgstructure.domain.ImportModels.ImportRow;
+import com.heuristiq.identity.orgstructure.domain.ImportModels.ImportBatch;
+import com.heuristiq.identity.orgstructure.domain.ImportModels.ImportRow;
 
 /** Use cases of the bulk employee import: stage and validate a file, review it, then confirm or cancel. */
 public interface OrgImportUseCase {

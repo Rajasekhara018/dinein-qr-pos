@@ -1,4 +1,4 @@
-package com.heuristiq.uam.application;
+package com.heuristiq.identity.application;
 
 /** Fixed values of the applications feature: field names, messages and the lookup's cache lifetime. */
 public final class ApplicationConstants {

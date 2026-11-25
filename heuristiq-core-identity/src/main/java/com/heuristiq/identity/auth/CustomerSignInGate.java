@@ -1,8 +1,8 @@
-package com.heuristiq.uam.auth;
+package com.heuristiq.identity.auth;
 
-import com.heuristiq.uam.common.UamException;
-import com.heuristiq.uam.enums.UamEnums;
-import com.heuristiq.uam.users.UamUser;
+import com.heuristiq.identity.common.UamException;
+import com.heuristiq.identity.enums.UamEnums;
+import com.heuristiq.identity.users.UamUser;
 import org.springframework.http.HttpStatus;
 
 /**

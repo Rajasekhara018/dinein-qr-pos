@@ -1,10 +1,10 @@
-package com.heuristiq.uam.organization.repository.jpa;
+package com.heuristiq.identity.organization.repository.jpa;
 
-import com.heuristiq.uam.enums.UamEnums.TenantStatus;
-import com.heuristiq.uam.enums.UamEnums.TenantType;
-import com.heuristiq.uam.organization.Tenant;
-import com.heuristiq.uam.organization.persistence.jpa.TenantEntity;
-import com.heuristiq.uam.organization.repository.TenantRepository;
+import com.heuristiq.identity.enums.UamEnums.TenantStatus;
+import com.heuristiq.identity.enums.UamEnums.TenantType;
+import com.heuristiq.identity.organization.Tenant;
+import com.heuristiq.identity.organization.persistence.jpa.TenantEntity;
+import com.heuristiq.identity.organization.repository.TenantRepository;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

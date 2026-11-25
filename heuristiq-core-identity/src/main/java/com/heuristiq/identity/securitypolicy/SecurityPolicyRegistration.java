@@ -1,10 +1,10 @@
-package com.heuristiq.uam.securitypolicy;
+package com.heuristiq.identity.securitypolicy;
 
-import com.heuristiq.uam.auth.AuthConstants;
-import com.heuristiq.uam.common.UamException;
-import com.heuristiq.uam.enums.UamEnums;
-import com.heuristiq.uam.security.SecurityConstants;
-import com.heuristiq.uam.security.TenantContext;
+import com.heuristiq.identity.auth.AuthConstants;
+import com.heuristiq.identity.common.UamException;
+import com.heuristiq.identity.enums.UamEnums;
+import com.heuristiq.identity.security.SecurityConstants;
+import com.heuristiq.identity.security.TenantContext;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;

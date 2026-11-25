@@ -1,4 +1,4 @@
-package com.heuristiq.uam.application.access.repository.mongo;
+package com.heuristiq.identity.application.access.repository.mongo;
 
 import java.util.Collection;
 import java.util.List;
@@ -7,10 +7,10 @@ import java.util.Optional;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Repository;
 
-import com.heuristiq.uam.application.access.AccessSubjectType;
-import com.heuristiq.uam.application.access.ApplicationAccess;
-import com.heuristiq.uam.application.access.persistence.mongo.ApplicationAccessDocument;
-import com.heuristiq.uam.application.access.repository.ApplicationAccessRepository;
+import com.heuristiq.identity.application.access.AccessSubjectType;
+import com.heuristiq.identity.application.access.ApplicationAccess;
+import com.heuristiq.identity.application.access.persistence.mongo.ApplicationAccessDocument;
+import com.heuristiq.identity.application.access.repository.ApplicationAccessRepository;
 
 @Repository
 @ConditionalOnProperty(prefix = "railcab.uam.persistence", name = "type", havingValue = "mongo", matchIfMissing = true)

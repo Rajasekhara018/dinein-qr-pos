@@ -1,6 +1,6 @@
-package com.heuristiq.uam.helper;
+package com.heuristiq.identity.helper;
 
-import com.heuristiq.uam.enums.UamEnums.ThemeEnum;
+import com.heuristiq.identity.enums.UamEnums.ThemeEnum;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

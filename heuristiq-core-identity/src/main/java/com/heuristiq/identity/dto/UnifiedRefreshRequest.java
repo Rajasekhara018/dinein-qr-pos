@@ -1,4 +1,4 @@
-package com.heuristiq.uam.dto;
+package com.heuristiq.identity.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
@@ -7,7 +7,7 @@ import jakarta.validation.constraints.NotBlank;
  * The single request shape for {@code POST /identity/auth/refresh}. If {@code providerType} is
  * present, {@code refreshToken} is redeemed against that external IdP (Keycloak/OIDC) and the
  * result re-bridged onto a local session, exactly like {@code /login} does -- see
- * {@link com.heuristiq.uam.identity.IdentityProviderAuthRouter#refresh}. Otherwise
+ * {@link com.heuristiq.identity.identity.IdentityProviderAuthRouter#refresh}. Otherwise
  * {@code refreshToken} is UAM's own rotating local refresh token, handled by
  * {@code AuthService.refresh}. Either way the response is the same {@code LoginResponse} shape.
  */

@@ -1,13 +1,13 @@
-package com.heuristiq.uam.identity.oidc;
+package com.heuristiq.identity.identity.oidc;
 
-import com.heuristiq.uam.application.client.ApiClient;
-import com.heuristiq.uam.permissions.Permission;
-import com.heuristiq.uam.role.UamRole;
-import com.heuristiq.uam.users.UamUser;
-import com.heuristiq.uam.identity.IdentityProviderSyncAdapter;
-import com.heuristiq.uam.identity.IdentityProviderSyncOperation;
-import com.heuristiq.uam.organization.Tenant;
-import com.heuristiq.uam.identity.IdentityProviderType;
+import com.heuristiq.identity.application.client.ApiClient;
+import com.heuristiq.identity.permissions.Permission;
+import com.heuristiq.identity.role.UamRole;
+import com.heuristiq.identity.users.UamUser;
+import com.heuristiq.identity.identity.IdentityProviderSyncAdapter;
+import com.heuristiq.identity.identity.IdentityProviderSyncOperation;
+import com.heuristiq.identity.organization.Tenant;
+import com.heuristiq.identity.identity.IdentityProviderType;
 import org.springframework.stereotype.Service;
 
 @Service

@@ -1,4 +1,4 @@
-package com.heuristiq.uam.dto;
+package com.heuristiq.identity.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -7,7 +7,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
  * the caller's own JWT (no fields needed for that). If {@code providerType} + {@code refreshToken}
  * (the external IdP's own refresh token, not UAM's) are also supplied, the external provider's
  * session is revoked too in the same call -- see
- * {@link com.heuristiq.uam.identity.IdentityProviderAuthRouter#logout}.
+ * {@link com.heuristiq.identity.identity.IdentityProviderAuthRouter#logout}.
  */
 @Schema(description = "Optional logout body. The caller's local session is always revoked from their own JWT with no "
         + "fields needed; supplying providerType + refreshToken also revokes the external IdP session in the same call.")

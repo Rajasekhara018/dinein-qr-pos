@@ -1,4 +1,4 @@
-package com.heuristiq.uam.notification;
+package com.heuristiq.identity.notification;
 
 /** Fixed values for outbound NMS notifications. */
 public final class NmsNotificationConstants {

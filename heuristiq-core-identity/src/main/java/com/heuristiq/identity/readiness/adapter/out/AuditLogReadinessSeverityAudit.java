@@ -1,4 +1,4 @@
-package com.heuristiq.uam.readiness.adapter.out;
+package com.heuristiq.identity.readiness.adapter.out;
 
 import java.util.Map;
 
@@ -6,13 +6,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
-import com.heuristiq.uam.audit.AuditLog;
-import com.heuristiq.uam.audit.AuditLogServiceUseCase;
-import com.heuristiq.uam.common.UamCommonConstants;
-import com.heuristiq.uam.enums.UamEnums.AuditAction;
-import com.heuristiq.uam.enums.UamEnums.AuditStatus;
-import com.heuristiq.uam.readiness.application.port.ReadinessSeverityAudit;
-import com.heuristiq.uam.readiness.domain.GovernanceConstants;
+import com.heuristiq.identity.audit.AuditLog;
+import com.heuristiq.identity.audit.AuditLogServiceUseCase;
+import com.heuristiq.identity.common.UamCommonConstants;
+import com.heuristiq.identity.enums.UamEnums.AuditAction;
+import com.heuristiq.identity.enums.UamEnums.AuditStatus;
+import com.heuristiq.identity.readiness.application.port.ReadinessSeverityAudit;
+import com.heuristiq.identity.readiness.domain.GovernanceConstants;
 
 /** Writes the severity-change domain audit events to UAM's audit log. A failed write is logged and never fails the action. */
 public class AuditLogReadinessSeverityAudit implements ReadinessSeverityAudit {

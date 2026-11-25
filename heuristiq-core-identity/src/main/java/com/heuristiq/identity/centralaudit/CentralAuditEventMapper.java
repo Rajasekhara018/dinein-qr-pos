@@ -1,7 +1,7 @@
-package com.heuristiq.uam.centralaudit;
+package com.heuristiq.identity.centralaudit;
 
-import com.heuristiq.uam.audit.AuditLog;
-import com.heuristiq.uam.enums.UamEnums.AuditStatus;
+import com.heuristiq.identity.audit.AuditLog;
+import com.heuristiq.identity.enums.UamEnums.AuditStatus;
 import org.springframework.util.StringUtils;
 
 import java.time.Instant;
@@ -10,7 +10,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
-import static com.heuristiq.uam.centralaudit.CentralAuditConstants.*;
+import static com.heuristiq.identity.centralaudit.CentralAuditConstants.*;
 
 /**
  * Turns a UAM {@link AuditLog} into a central audit event. The audit service rejects an event whose subject type,

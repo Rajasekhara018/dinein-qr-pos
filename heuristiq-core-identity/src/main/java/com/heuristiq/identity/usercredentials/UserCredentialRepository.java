@@ -1,7 +1,7 @@
-package com.heuristiq.uam.usercredentials;
+package com.heuristiq.identity.usercredentials;
 
-import com.heuristiq.uam.usercredentials.UserCredential;
-import com.heuristiq.uam.enums.UamEnums.AuthProvider;
+import com.heuristiq.identity.usercredentials.UserCredential;
+import com.heuristiq.identity.enums.UamEnums.AuthProvider;
 
 import java.util.List;
 import java.util.Optional;

@@ -1,10 +1,10 @@
-package com.heuristiq.uam.security;
+package com.heuristiq.identity.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.security.SignatureException;
-import com.heuristiq.uam.metrics.UamMetricNames;
+import com.heuristiq.identity.metrics.UamMetricNames;
 import io.micrometer.core.instrument.MeterRegistry;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -26,7 +26,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
     private final MeterRegistry meterRegistry;
     @org.springframework.beans.factory.annotation.Autowired
-    private com.heuristiq.uam.securitypolicy.SecurityPolicyEnforcer policyEnforcer;
+    private com.heuristiq.identity.securitypolicy.SecurityPolicyEnforcer policyEnforcer;
 
     public JwtAuthenticationFilter(JwtService jwtService, MeterRegistry meterRegistry) {
         this.jwtService = jwtService;
@@ -75,14 +75,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             if (policyEnforcer != null && !serviceToken) {
                 try {
                     if (claims.get("sid") == null)
-                        throw new com.heuristiq.uam.common.UamException("Sign in to start a policy-enforced session", org.springframework.http.HttpStatus.UNAUTHORIZED);
+                        throw new com.heuristiq.identity.common.UamException("Sign in to start a policy-enforced session", org.springframework.http.HttpStatus.UNAUTHORIZED);
                     var session = policyEnforcer.requireSession(String.valueOf(claims.get("sid")), claims.getSubject());
                     String tenant = claims.get(SecurityConstants.TENANT_ID_CLAIM) == null ? ""
                             : String.valueOf(claims.get(SecurityConstants.TENANT_ID_CLAIM));
                     if (!tenant.equals(session.getMetadata().getOrDefault("policyTenantId", "")))
-                        throw new com.heuristiq.uam.common.UamException("Organization context changed", org.springframework.http.HttpStatus.UNAUTHORIZED);
+                        throw new com.heuristiq.identity.common.UamException("Organization context changed", org.springframework.http.HttpStatus.UNAUTHORIZED);
                     request.setAttribute("uam.policySessionId", String.valueOf(claims.get("sid")));
-                } catch (com.heuristiq.uam.common.UamException rejectedPolicy) {
+                } catch (com.heuristiq.identity.common.UamException rejectedPolicy) {
                     SecurityContextHolder.clearContext();
                     filterChain.doFilter(request, response);
                     return;
@@ -95,8 +95,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     .collect(Collectors.toSet());
             // An organization-wide caller (the token's orgWide claim, set at sign-in from the privilege) may work in other
             // organizations; the authority carries that to the services that decide it (e.g. the org structure).
-            if (Boolean.TRUE.equals(claims.get(com.heuristiq.uam.organization.OrgWideConstants.CLAIM))) {
-                authorities.add(new SimpleGrantedAuthority(com.heuristiq.uam.organization.OrgWideConstants.AUTHORITY));
+            if (Boolean.TRUE.equals(claims.get(com.heuristiq.identity.organization.OrgWideConstants.CLAIM))) {
+                authorities.add(new SimpleGrantedAuthority(com.heuristiq.identity.organization.OrgWideConstants.AUTHORITY));
             }
             var auth = new UsernamePasswordAuthenticationToken(claims.getSubject(), null, authorities);
             Object tenantId = claims.get(SecurityConstants.TENANT_ID_CLAIM);

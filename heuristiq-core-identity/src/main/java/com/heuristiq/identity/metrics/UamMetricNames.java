@@ -1,4 +1,4 @@
-package com.heuristiq.uam.metrics;
+package com.heuristiq.identity.metrics;
 
 import java.time.Duration;
 

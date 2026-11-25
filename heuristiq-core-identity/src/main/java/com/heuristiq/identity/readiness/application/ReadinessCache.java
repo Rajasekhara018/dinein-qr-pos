@@ -1,4 +1,4 @@
-package com.heuristiq.uam.readiness.application;
+package com.heuristiq.identity.readiness.application;
 
 import java.time.Duration;
 import java.util.Locale;
@@ -8,7 +8,7 @@ import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.Ticker;
 
-import com.heuristiq.uam.readiness.domain.ApplicationReadiness;
+import com.heuristiq.identity.readiness.domain.ApplicationReadiness;
 
 /**
  * Short, bounded cache of readiness results. The key is (organization id, application code), so one organization's result

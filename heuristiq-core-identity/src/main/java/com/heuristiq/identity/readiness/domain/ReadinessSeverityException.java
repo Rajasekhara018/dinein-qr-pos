@@ -1,8 +1,8 @@
-package com.heuristiq.uam.readiness.domain;
+package com.heuristiq.identity.readiness.domain;
 
 import org.springframework.http.HttpStatus;
 
-import com.heuristiq.uam.common.UamException;
+import com.heuristiq.identity.common.UamException;
 
 /**
  * A refused change of a step's severity: the step is locked (409), unknown to the application (404) or the severity value

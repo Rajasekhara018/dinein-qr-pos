@@ -1,4 +1,4 @@
-package com.heuristiq.uam.otp;
+package com.heuristiq.identity.otp;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Version;

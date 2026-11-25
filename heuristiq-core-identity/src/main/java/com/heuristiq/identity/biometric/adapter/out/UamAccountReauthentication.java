@@ -1,13 +1,13 @@
-package com.heuristiq.uam.biometric.adapter.out;
+package com.heuristiq.identity.biometric.adapter.out;
 
-import com.heuristiq.uam.auth.AuthConstants;
-import com.heuristiq.uam.biometric.application.port.AccountReauthentication;
-import com.heuristiq.uam.lockout.LoginAttemptServiceUseCase;
-import com.heuristiq.uam.session.UserSession;
-import com.heuristiq.uam.session.repository.UserSessionRepository;
-import com.heuristiq.uam.usercredentials.UserCredentialServiceUseCase;
-import com.heuristiq.uam.users.UamUser;
-import com.heuristiq.uam.users.repository.UamUserRepository;
+import com.heuristiq.identity.auth.AuthConstants;
+import com.heuristiq.identity.biometric.application.port.AccountReauthentication;
+import com.heuristiq.identity.lockout.LoginAttemptServiceUseCase;
+import com.heuristiq.identity.session.UserSession;
+import com.heuristiq.identity.session.repository.UserSessionRepository;
+import com.heuristiq.identity.usercredentials.UserCredentialServiceUseCase;
+import com.heuristiq.identity.users.UamUser;
+import com.heuristiq.identity.users.repository.UamUserRepository;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.util.Optional;

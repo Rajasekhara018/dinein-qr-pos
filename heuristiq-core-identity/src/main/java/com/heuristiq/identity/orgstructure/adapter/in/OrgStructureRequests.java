@@ -1,9 +1,9 @@
-package com.heuristiq.uam.orgstructure.adapter.in;
+package com.heuristiq.identity.orgstructure.adapter.in;
 
 import java.time.LocalDate;
 import java.util.Map;
 
-import com.heuristiq.uam.orgstructure.domain.ChangeType;
+import com.heuristiq.identity.orgstructure.domain.ChangeType;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

@@ -1,7 +1,7 @@
-package com.heuristiq.uam.mfa;
+package com.heuristiq.identity.mfa;
 
-import com.heuristiq.uam.common.CommonResponseObject;
-import com.heuristiq.uam.common.OperationResult;
+import com.heuristiq.identity.common.CommonResponseObject;
+import com.heuristiq.identity.common.OperationResult;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

@@ -1,6 +1,6 @@
-package com.heuristiq.uam.orgstructure.adapter.in;
+package com.heuristiq.identity.orgstructure.adapter.in;
 
-import com.heuristiq.uam.common.UamCommonConstants;
+import com.heuristiq.identity.common.UamCommonConstants;
 import java.util.function.Supplier;
 
 import org.springframework.security.core.Authentication;
@@ -9,15 +9,15 @@ import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import com.heuristiq.uam.orgstructure.domain.OrgStructureException;
-import com.heuristiq.uam.orgstructure.domain.ScopeMode;
-import com.heuristiq.uam.security.TenantContext;
-import com.heuristiq.uam.security.TenantGuard;
+import com.heuristiq.identity.orgstructure.domain.OrgStructureException;
+import com.heuristiq.identity.orgstructure.domain.ScopeMode;
+import com.heuristiq.identity.security.TenantContext;
+import com.heuristiq.identity.security.TenantGuard;
 
 /**
  * Resolves who is calling, for which organization and with what reach. Identity always comes from the token; the
  * only request value honoured is {@value OrgStructureWebConstants#ORG_HEADER}, and only for an organization-wide caller (see
- * {@link com.heuristiq.uam.organization.OrgWideConstants}).
+ * {@link com.heuristiq.identity.organization.OrgWideConstants}).
  *
  * <p>Only work with no signed-in person (internal calls) without a tenant is placed in the default organization; a
  * signed-in caller whose token names no organization is refused.
@@ -87,7 +87,7 @@ public class CallerContext {
     static boolean isOrgWide() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         return auth != null && auth.getAuthorities().stream()
-                .anyMatch(authority -> com.heuristiq.uam.organization.OrgWideConstants.AUTHORITY.equals(authority.getAuthority()));
+                .anyMatch(authority -> com.heuristiq.identity.organization.OrgWideConstants.AUTHORITY.equals(authority.getAuthority()));
     }
 
     /** SUPER_ADMIN sees the whole organization irrespective of position; everyone else is limited by position. */

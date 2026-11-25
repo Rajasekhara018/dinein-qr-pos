@@ -1,4 +1,4 @@
-package com.heuristiq.uam.config;
+package com.heuristiq.identity.config;
 
 import org.springframework.context.annotation.Configuration;
 

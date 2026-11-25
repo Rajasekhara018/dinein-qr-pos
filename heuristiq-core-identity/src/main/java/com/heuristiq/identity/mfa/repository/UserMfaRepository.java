@@ -1,7 +1,7 @@
-package com.heuristiq.uam.mfa.repository;
+package com.heuristiq.identity.mfa.repository;
 
-import com.heuristiq.uam.mfa.UserMfa;
-import com.heuristiq.uam.enums.UamEnums.MfaType;
+import com.heuristiq.identity.mfa.UserMfa;
+import com.heuristiq.identity.enums.UamEnums.MfaType;
 
 import java.util.List;
 import java.util.Optional;

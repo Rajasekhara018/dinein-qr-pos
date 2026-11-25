@@ -1,11 +1,11 @@
-package com.heuristiq.uam.permissions;
+package com.heuristiq.identity.permissions;
 
 import java.util.Map;
 
-import com.heuristiq.uam.enums.UamEnums.ModuleCategory;
-import com.heuristiq.uam.enums.UamEnums.PermissionAction;
-import com.heuristiq.uam.enums.UamEnums.ResourceType;
-import com.heuristiq.uam.helper.AuditInfo;
+import com.heuristiq.identity.enums.UamEnums.ModuleCategory;
+import com.heuristiq.identity.enums.UamEnums.PermissionAction;
+import com.heuristiq.identity.enums.UamEnums.ResourceType;
+import com.heuristiq.identity.helper.AuditInfo;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

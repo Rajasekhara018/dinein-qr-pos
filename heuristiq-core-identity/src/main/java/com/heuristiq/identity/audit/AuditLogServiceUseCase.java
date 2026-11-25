@@ -1,4 +1,4 @@
-package com.heuristiq.uam.audit;
+package com.heuristiq.identity.audit;
 
 /**
  * Port for UAM's domain audit events. UAM stores and queries nothing itself: the implementation hands the entry to the

@@ -1,4 +1,4 @@
-package com.heuristiq.uam.cache;
+package com.heuristiq.identity.cache;
 
 import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationManager;

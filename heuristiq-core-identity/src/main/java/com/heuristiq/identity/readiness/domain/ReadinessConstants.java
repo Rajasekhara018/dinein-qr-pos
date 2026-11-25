@@ -1,4 +1,4 @@
-package com.heuristiq.uam.readiness.domain;
+package com.heuristiq.identity.readiness.domain;
 
 /** Fixed values of the readiness feature's domain: message key parts, parameter names and reason codes. */
 public final class ReadinessConstants {

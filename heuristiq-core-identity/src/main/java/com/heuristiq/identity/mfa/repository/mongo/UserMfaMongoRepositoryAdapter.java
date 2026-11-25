@@ -1,9 +1,9 @@
-package com.heuristiq.uam.mfa.repository.mongo;
+package com.heuristiq.identity.mfa.repository.mongo;
 
-import com.heuristiq.uam.enums.UamEnums.MfaType;
-import com.heuristiq.uam.mfa.UserMfa;
-import com.heuristiq.uam.mfa.persistence.mongo.UserMfaDocument;
-import com.heuristiq.uam.mfa.repository.UserMfaRepository;
+import com.heuristiq.identity.enums.UamEnums.MfaType;
+import com.heuristiq.identity.mfa.UserMfa;
+import com.heuristiq.identity.mfa.persistence.mongo.UserMfaDocument;
+import com.heuristiq.identity.mfa.repository.UserMfaRepository;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Repository;
 

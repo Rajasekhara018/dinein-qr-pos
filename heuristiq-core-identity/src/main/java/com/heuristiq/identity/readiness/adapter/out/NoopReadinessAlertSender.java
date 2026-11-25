@@ -1,9 +1,9 @@
-package com.heuristiq.uam.readiness.adapter.out;
+package com.heuristiq.identity.readiness.adapter.out;
 
 import java.util.Map;
 
-import com.heuristiq.uam.readiness.application.port.AlertRecipient;
-import com.heuristiq.uam.readiness.application.port.ReadinessAlertSender;
+import com.heuristiq.identity.readiness.application.port.AlertRecipient;
+import com.heuristiq.identity.readiness.application.port.ReadinessAlertSender;
 
 /**
  * Readiness alerts are not delivered: NMS no longer has templates for the application go-live events. The alert logic

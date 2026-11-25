@@ -1,4 +1,4 @@
-package com.heuristiq.uam.feature.observability;
+package com.heuristiq.identity.feature.observability;
 
 import java.util.Map;
 

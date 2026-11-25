@@ -1,10 +1,10 @@
-package com.heuristiq.uam.role.persistance.jpa;
+package com.heuristiq.identity.role.persistance.jpa;
 
 import org.hibernate.annotations.UuidGenerator;
 
-import com.heuristiq.uam.enums.UamEnums.AssignmentType;
-import com.heuristiq.uam.helper.AuditInfo;
-import com.heuristiq.uam.util.JsonMapAttributeConverter;
+import com.heuristiq.identity.enums.UamEnums.AssignmentType;
+import com.heuristiq.identity.helper.AuditInfo;
+import com.heuristiq.identity.util.JsonMapAttributeConverter;
 
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;

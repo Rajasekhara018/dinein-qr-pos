@@ -1,6 +1,6 @@
-package com.heuristiq.uam.role.repository;
+package com.heuristiq.identity.role.repository;
 
-import com.heuristiq.uam.role.UamRole;
+import com.heuristiq.identity.role.UamRole;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;

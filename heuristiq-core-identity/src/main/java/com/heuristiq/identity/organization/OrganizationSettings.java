@@ -1,4 +1,4 @@
-package com.heuristiq.uam.organization;
+package com.heuristiq.identity.organization;
 
 import java.util.Map;
 

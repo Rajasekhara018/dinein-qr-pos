@@ -1,4 +1,4 @@
-package com.heuristiq.uam.auth;
+package com.heuristiq.identity.auth;
 
 /**
  * Fixed values of the sign-in feature: request headers, refresh-token shape, audit entity type and the
@@ -10,19 +10,19 @@ public final class AuthConstants {
      * Account types the public register endpoint may create (an allow-list, so a type added to the enum later is refused
      * until someone decides it is self-registrable). Staff types are never on it.
      */
-    public static final java.util.Set<com.heuristiq.uam.enums.UamEnums.UserType> SELF_REGISTRABLE_USER_TYPES = java.util.EnumSet.of(
-            com.heuristiq.uam.enums.UamEnums.UserType.CUSTOMER, com.heuristiq.uam.enums.UamEnums.UserType.DRIVER,
-            com.heuristiq.uam.enums.UamEnums.UserType.VENDOR, com.heuristiq.uam.enums.UamEnums.UserType.BUSINESS);
+    public static final java.util.Set<com.heuristiq.identity.enums.UamEnums.UserType> SELF_REGISTRABLE_USER_TYPES = java.util.EnumSet.of(
+            com.heuristiq.identity.enums.UamEnums.UserType.CUSTOMER, com.heuristiq.identity.enums.UamEnums.UserType.DRIVER,
+            com.heuristiq.identity.enums.UamEnums.UserType.VENDOR, com.heuristiq.identity.enums.UamEnums.UserType.BUSINESS);
 
     /**
      * Account types a first Google or external-IdP sign-in may create: the self-registrable ones plus OPS, the
      * back-office type Rider_Web's sign-in asks for (an OPS account starts with no organization membership and no
      * privileges). SUPER_ADMIN, ADMIN and SECURITY are never created by a sign-in; they are provisioned by an admin.
      */
-    public static final java.util.Set<com.heuristiq.uam.enums.UamEnums.UserType> SIGN_IN_PROVISIONABLE_USER_TYPES = java.util.EnumSet.of(
-            com.heuristiq.uam.enums.UamEnums.UserType.CUSTOMER, com.heuristiq.uam.enums.UamEnums.UserType.DRIVER,
-            com.heuristiq.uam.enums.UamEnums.UserType.VENDOR, com.heuristiq.uam.enums.UamEnums.UserType.BUSINESS,
-            com.heuristiq.uam.enums.UamEnums.UserType.OPS);
+    public static final java.util.Set<com.heuristiq.identity.enums.UamEnums.UserType> SIGN_IN_PROVISIONABLE_USER_TYPES = java.util.EnumSet.of(
+            com.heuristiq.identity.enums.UamEnums.UserType.CUSTOMER, com.heuristiq.identity.enums.UamEnums.UserType.DRIVER,
+            com.heuristiq.identity.enums.UamEnums.UserType.VENDOR, com.heuristiq.identity.enums.UamEnums.UserType.BUSINESS,
+            com.heuristiq.identity.enums.UamEnums.UserType.OPS);
 
     /** Refusal when a public flow asks for an account type it may not create (403). */
     public static final String ACCOUNT_TYPE_NOT_ALLOWED_MESSAGE = "That account type cannot be registered here.";
@@ -80,9 +80,9 @@ public final class AuthConstants {
      * Back-office account types (platform and organization administration, operations, security). An account holding one of them
      * never signs in to a customer app (a sign-in naming a self-service user type), and is never put through onboarding.
      */
-    public static final java.util.Set<com.heuristiq.uam.enums.UamEnums.UserType> BACK_OFFICE_USER_TYPES = java.util.EnumSet.of(
-            com.heuristiq.uam.enums.UamEnums.UserType.SUPER_ADMIN, com.heuristiq.uam.enums.UamEnums.UserType.ADMIN,
-            com.heuristiq.uam.enums.UamEnums.UserType.OPS, com.heuristiq.uam.enums.UamEnums.UserType.SECURITY);
+    public static final java.util.Set<com.heuristiq.identity.enums.UamEnums.UserType> BACK_OFFICE_USER_TYPES = java.util.EnumSet.of(
+            com.heuristiq.identity.enums.UamEnums.UserType.SUPER_ADMIN, com.heuristiq.identity.enums.UamEnums.UserType.ADMIN,
+            com.heuristiq.identity.enums.UamEnums.UserType.OPS, com.heuristiq.identity.enums.UamEnums.UserType.SECURITY);
 
     /** Error code of a back-office account signing in to a customer app. Clients map it to their own translated text. */
     public static final String ERROR_STAFF_ACCOUNT_NOT_ALLOWED = "STAFF_ACCOUNT_NOT_ALLOWED";

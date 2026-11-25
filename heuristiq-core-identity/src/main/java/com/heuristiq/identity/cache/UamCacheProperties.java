@@ -1,4 +1,4 @@
-package com.heuristiq.uam.cache;
+package com.heuristiq.identity.cache;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;

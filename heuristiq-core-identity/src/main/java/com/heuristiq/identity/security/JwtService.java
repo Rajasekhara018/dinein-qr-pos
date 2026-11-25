@@ -1,11 +1,11 @@
-package com.heuristiq.uam.security;
+package com.heuristiq.identity.security;
 
-import com.heuristiq.uam.config.UamProperties;
-import com.heuristiq.uam.organization.operatingmodel.application.OperatingModelUseCase;
-import com.heuristiq.uam.organization.operatingmodel.application.OrganizationNotFoundException;
-import com.heuristiq.uam.organization.operatingmodel.domain.OperatingModel;
-import com.heuristiq.uam.users.UamUser;
-import com.heuristiq.uam.util.UserTypeResolver;
+import com.heuristiq.identity.config.UamProperties;
+import com.heuristiq.identity.organization.operatingmodel.application.OperatingModelUseCase;
+import com.heuristiq.identity.organization.operatingmodel.application.OrganizationNotFoundException;
+import com.heuristiq.identity.organization.operatingmodel.domain.OperatingModel;
+import com.heuristiq.identity.users.UamUser;
+import com.heuristiq.identity.util.UserTypeResolver;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -195,7 +195,7 @@ public class JwtService {
             builder.claim(SecurityConstants.AMR_CLAIM, authenticationMethods);
         }
         if (orgWide) {
-            builder.claim(com.heuristiq.uam.organization.OrgWideConstants.CLAIM, true);
+            builder.claim(com.heuristiq.identity.organization.OrgWideConstants.CLAIM, true);
         }
         // A franchise owner's or agent's ACTIVE franchises travel with the session; it is left out for everyone else, so an ordinary
         // token is unchanged. Holders of a role with a lookup prefix (railcab.uam.franchise.service.lookup-role-prefixes) are looked up, and with

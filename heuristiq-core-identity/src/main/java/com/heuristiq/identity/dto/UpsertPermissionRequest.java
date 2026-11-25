@@ -1,8 +1,8 @@
-package com.heuristiq.uam.dto;
+package com.heuristiq.identity.dto;
 
-import com.heuristiq.uam.enums.UamEnums.ModuleCategory;
-import com.heuristiq.uam.enums.UamEnums.PermissionAction;
-import com.heuristiq.uam.enums.UamEnums.ResourceType;
+import com.heuristiq.identity.enums.UamEnums.ModuleCategory;
+import com.heuristiq.identity.enums.UamEnums.PermissionAction;
+import com.heuristiq.identity.enums.UamEnums.ResourceType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 

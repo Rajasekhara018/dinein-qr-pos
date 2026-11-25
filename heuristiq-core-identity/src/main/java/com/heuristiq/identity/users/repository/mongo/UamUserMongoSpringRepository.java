@@ -1,6 +1,6 @@
-package com.heuristiq.uam.users.repository.mongo;
+package com.heuristiq.identity.users.repository.mongo;
 
-import com.heuristiq.uam.users.persistence.mongo.UamUserDocument;
+import com.heuristiq.identity.users.persistence.mongo.UamUserDocument;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.List;

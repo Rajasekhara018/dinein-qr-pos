@@ -1,13 +1,13 @@
-package com.heuristiq.uam.application.client.persistence.jpa;
+package com.heuristiq.identity.application.client.persistence.jpa;
 
 import java.util.Set;
 
 import org.hibernate.annotations.UuidGenerator;
 
-import com.heuristiq.uam.enums.UamEnums.ApiClientType;
-import com.heuristiq.uam.enums.UamEnums.ClientAuthenticationMethod;
-import com.heuristiq.uam.enums.UamEnums.GrantType;
-import com.heuristiq.uam.helper.AuditInfo;
+import com.heuristiq.identity.enums.UamEnums.ApiClientType;
+import com.heuristiq.identity.enums.UamEnums.ClientAuthenticationMethod;
+import com.heuristiq.identity.enums.UamEnums.GrantType;
+import com.heuristiq.identity.helper.AuditInfo;
 
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;

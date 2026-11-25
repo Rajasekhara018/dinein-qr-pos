@@ -1,6 +1,6 @@
-package com.heuristiq.uam.util;
+package com.heuristiq.identity.util;
 
-import com.heuristiq.uam.helper.UiPreference;
+import com.heuristiq.identity.helper.UiPreference;
 import jakarta.persistence.Converter;
 
 @Converter(autoApply = false)

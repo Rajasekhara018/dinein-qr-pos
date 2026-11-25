@@ -1,9 +1,9 @@
-package com.heuristiq.uam.readiness.application.port;
+package com.heuristiq.identity.readiness.application.port;
 
 import java.time.Instant;
 import java.util.Map;
 
-import com.heuristiq.uam.readiness.domain.ReadinessSeverity;
+import com.heuristiq.identity.readiness.domain.ReadinessSeverity;
 
 /**
  * Stored severity overrides of readiness steps, per organization and application. Only differences from the code defaults are

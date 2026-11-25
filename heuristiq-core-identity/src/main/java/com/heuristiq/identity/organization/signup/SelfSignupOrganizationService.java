@@ -1,4 +1,4 @@
-package com.heuristiq.uam.organization.signup;
+package com.heuristiq.identity.organization.signup;
 
 import java.util.Comparator;
 import java.util.List;
@@ -7,14 +7,14 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import com.heuristiq.uam.common.UamException;
-import com.heuristiq.uam.enums.UamEnums;
-import com.heuristiq.uam.organization.OrganizationSettings;
-import com.heuristiq.uam.organization.Tenant;
-import com.heuristiq.uam.organization.repository.TenantRepository;
-import com.heuristiq.uam.organization.subscription.TenantApplication;
-import com.heuristiq.uam.organization.subscription.TenantApplicationServiceUseCase;
-import com.heuristiq.uam.organization.subscription.repository.TenantApplicationRepository;
+import com.heuristiq.identity.common.UamException;
+import com.heuristiq.identity.enums.UamEnums;
+import com.heuristiq.identity.organization.OrganizationSettings;
+import com.heuristiq.identity.organization.Tenant;
+import com.heuristiq.identity.organization.repository.TenantRepository;
+import com.heuristiq.identity.organization.subscription.TenantApplication;
+import com.heuristiq.identity.organization.subscription.TenantApplicationServiceUseCase;
+import com.heuristiq.identity.organization.subscription.repository.TenantApplicationRepository;
 
 /** Read-only; the eligibility rule lives here once and serves both the public list and the internal resolver. */
 @Service

@@ -1,4 +1,4 @@
-package com.heuristiq.uam.application.access;
+package com.heuristiq.identity.application.access;
 
 /** Who an {@link ApplicationAccess} grant applies to. */
 public enum AccessSubjectType {

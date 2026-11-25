@@ -1,4 +1,4 @@
-package com.heuristiq.uam.securitypolicy;
+package com.heuristiq.identity.securitypolicy;
 
 /** Returned only after primary authentication succeeds, before a full session is created. */
 public class SecurityPolicyEnrollmentRequired extends RuntimeException {

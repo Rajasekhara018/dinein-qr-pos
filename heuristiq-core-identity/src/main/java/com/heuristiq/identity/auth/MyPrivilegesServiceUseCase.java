@@ -1,6 +1,6 @@
-package com.heuristiq.uam.auth;
+package com.heuristiq.identity.auth;
 
-import com.heuristiq.uam.dto.MyPrivilegesResponse;
+import com.heuristiq.identity.dto.MyPrivilegesResponse;
 
 /** Resolves the privileges a signed-in user holds through their roles. */
 public interface MyPrivilegesServiceUseCase {
@@ -23,7 +23,7 @@ public interface MyPrivilegesServiceUseCase {
      * Resolves the user's roles to the permissions those roles grant, the same way the gateway does:
      * role code, then its permission codes, then each permission's numeric {@code privilegeId}.
      *
-     * @throws com.heuristiq.uam.common.UamException if the user does not exist
+     * @throws com.heuristiq.identity.common.UamException if the user does not exist
      */
     ForUserOutput forUser(ForUserInput input);
 }

@@ -1,9 +1,9 @@
-package com.heuristiq.uam.lockout;
+package com.heuristiq.identity.lockout;
 
-import com.heuristiq.uam.common.CommonResponseObject;
-import com.heuristiq.uam.common.UamException;
-import com.heuristiq.uam.users.UamUser;
-import com.heuristiq.uam.users.repository.UamUserRepository;
+import com.heuristiq.identity.common.CommonResponseObject;
+import com.heuristiq.identity.common.UamException;
+import com.heuristiq.identity.users.UamUser;
+import com.heuristiq.identity.users.repository.UamUserRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

@@ -1,6 +1,6 @@
-package com.heuristiq.uam.security;
+package com.heuristiq.identity.security;
 
-import com.heuristiq.uam.common.UamException;
+import com.heuristiq.identity.common.UamException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

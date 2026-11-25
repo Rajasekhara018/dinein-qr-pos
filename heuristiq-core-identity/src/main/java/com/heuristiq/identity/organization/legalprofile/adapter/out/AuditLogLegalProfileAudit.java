@@ -1,12 +1,12 @@
-package com.heuristiq.uam.organization.legalprofile.adapter.out;
+package com.heuristiq.identity.organization.legalprofile.adapter.out;
 
-import com.heuristiq.uam.audit.AuditLog;
-import com.heuristiq.uam.audit.AuditLogServiceUseCase;
-import com.heuristiq.uam.common.UamCommonConstants;
-import com.heuristiq.uam.enums.UamEnums.AuditAction;
-import com.heuristiq.uam.enums.UamEnums.AuditStatus;
-import com.heuristiq.uam.organization.legalprofile.application.port.LegalProfileAudit;
-import com.heuristiq.uam.organization.legalprofile.domain.LegalProfileConstants;
+import com.heuristiq.identity.audit.AuditLog;
+import com.heuristiq.identity.audit.AuditLogServiceUseCase;
+import com.heuristiq.identity.common.UamCommonConstants;
+import com.heuristiq.identity.enums.UamEnums.AuditAction;
+import com.heuristiq.identity.enums.UamEnums.AuditStatus;
+import com.heuristiq.identity.organization.legalprofile.application.port.LegalProfileAudit;
+import com.heuristiq.identity.organization.legalprofile.domain.LegalProfileConstants;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

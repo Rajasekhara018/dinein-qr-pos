@@ -1,4 +1,4 @@
-package com.heuristiq.uam.users;
+package com.heuristiq.identity.users;
 
 import java.util.List;
 
@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.heuristiq.uam.common.CommonResponseObject;
-import com.heuristiq.uam.enums.UamEnums;
+import com.heuristiq.identity.common.CommonResponseObject;
+import com.heuristiq.identity.enums.UamEnums;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

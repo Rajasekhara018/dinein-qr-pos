@@ -1,4 +1,4 @@
-package com.heuristiq.uam.biometric.domain;
+package com.heuristiq.identity.biometric.domain;
 
 /** A refused biometric enrolment or sign-in; the kind tells the web layer which status and error code to answer. */
 public class BiometricException extends RuntimeException {

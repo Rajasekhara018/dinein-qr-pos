@@ -1,13 +1,13 @@
-package com.heuristiq.uam.permissions;
+package com.heuristiq.identity.permissions;
 
-import com.heuristiq.uam.common.UamException;
-import com.heuristiq.uam.permissions.Permission;
-import com.heuristiq.uam.dto.UpsertPermissionRequest;
-import com.heuristiq.uam.feature.management.ManagementPageSupport;
-import com.heuristiq.uam.helper.AuditInfo;
-import com.heuristiq.uam.identity.IdentityProviderSyncService;
-import com.heuristiq.uam.permissions.PermissionRepository;
-import com.heuristiq.uam.common.PageResult;
+import com.heuristiq.identity.common.UamException;
+import com.heuristiq.identity.permissions.Permission;
+import com.heuristiq.identity.dto.UpsertPermissionRequest;
+import com.heuristiq.identity.feature.management.ManagementPageSupport;
+import com.heuristiq.identity.helper.AuditInfo;
+import com.heuristiq.identity.identity.IdentityProviderSyncService;
+import com.heuristiq.identity.permissions.PermissionRepository;
+import com.heuristiq.identity.common.PageResult;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;

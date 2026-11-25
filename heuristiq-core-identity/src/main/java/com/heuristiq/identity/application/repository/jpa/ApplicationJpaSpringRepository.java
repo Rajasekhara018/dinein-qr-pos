@@ -1,7 +1,7 @@
-package com.heuristiq.uam.application.repository.jpa;
+package com.heuristiq.identity.application.repository.jpa;
 
-import com.heuristiq.uam.application.persistence.jpa.ApplicationEntity;
-import com.heuristiq.uam.enums.UamEnums.ApplicationType;
+import com.heuristiq.identity.application.persistence.jpa.ApplicationEntity;
+import com.heuristiq.identity.enums.UamEnums.ApplicationType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

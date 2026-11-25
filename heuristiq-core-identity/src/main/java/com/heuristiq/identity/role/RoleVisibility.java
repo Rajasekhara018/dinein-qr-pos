@@ -1,7 +1,7 @@
-package com.heuristiq.uam.role;
+package com.heuristiq.identity.role;
 
-import com.heuristiq.uam.common.UamCommonConstants;
-import com.heuristiq.uam.security.TenantGuard;
+import com.heuristiq.identity.common.UamCommonConstants;
+import com.heuristiq.identity.security.TenantGuard;
 
 /**
  * The platform administrator role belongs to the platform, not to any organization: people working inside an organization

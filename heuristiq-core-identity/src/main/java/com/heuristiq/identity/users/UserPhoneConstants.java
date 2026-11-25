@@ -1,4 +1,4 @@
-package com.heuristiq.uam.users;
+package com.heuristiq.identity.users;
 
 /** Fixed names for the canonical (E.164) phone uniqueness of an account, shared by both persistence backends. */
 public final class UserPhoneConstants {

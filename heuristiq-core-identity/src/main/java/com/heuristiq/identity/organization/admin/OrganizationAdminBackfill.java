@@ -1,4 +1,4 @@
-package com.heuristiq.uam.organization.admin;
+package com.heuristiq.identity.organization.admin;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,8 +8,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 
-import com.heuristiq.uam.organization.Tenant;
-import com.heuristiq.uam.organization.repository.TenantRepository;
+import com.heuristiq.identity.organization.Tenant;
+import com.heuristiq.identity.organization.repository.TenantRepository;
 
 /**
  * Once the service is up, brings every organization's existing administrator role up to date: administrators set up

@@ -1,4 +1,4 @@
-package com.heuristiq.uam.usercredentials.persistance.mongo;
+package com.heuristiq.identity.usercredentials.persistance.mongo;
 
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -11,7 +11,7 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.heuristiq.uam.enums.UamEnums.AuthProvider;
+import com.heuristiq.identity.enums.UamEnums.AuthProvider;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

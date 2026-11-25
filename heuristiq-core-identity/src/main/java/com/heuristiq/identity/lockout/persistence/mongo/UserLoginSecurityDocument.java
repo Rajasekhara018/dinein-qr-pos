@@ -1,4 +1,4 @@
-package com.heuristiq.uam.lockout.persistence.mongo;
+package com.heuristiq.identity.lockout.persistence.mongo;
 
 import java.time.LocalDateTime;
 

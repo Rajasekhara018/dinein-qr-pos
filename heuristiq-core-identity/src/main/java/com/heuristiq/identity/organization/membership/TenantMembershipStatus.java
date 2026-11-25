@@ -1,4 +1,4 @@
-package com.heuristiq.uam.organization.membership;
+package com.heuristiq.identity.organization.membership;
 
 /** A person's standing in one organization. A removed membership is kept so the history stays readable. */
 public enum TenantMembershipStatus {

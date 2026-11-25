@@ -1,10 +1,10 @@
-package com.heuristiq.uam.application.access.persistence.jpa;
+package com.heuristiq.identity.application.access.persistence.jpa;
 
 import java.time.LocalDateTime;
 
 import org.hibernate.annotations.UuidGenerator;
 
-import com.heuristiq.uam.application.access.AccessSubjectType;
+import com.heuristiq.identity.application.access.AccessSubjectType;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

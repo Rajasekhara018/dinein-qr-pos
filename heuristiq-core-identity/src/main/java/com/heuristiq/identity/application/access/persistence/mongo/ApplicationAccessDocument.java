@@ -1,4 +1,4 @@
-package com.heuristiq.uam.application.access.persistence.mongo;
+package com.heuristiq.identity.application.access.persistence.mongo;
 
 import java.time.LocalDateTime;
 
@@ -7,7 +7,7 @@ import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.heuristiq.uam.application.access.AccessSubjectType;
+import com.heuristiq.identity.application.access.AccessSubjectType;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

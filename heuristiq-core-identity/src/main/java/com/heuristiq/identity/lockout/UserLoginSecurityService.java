@@ -1,7 +1,7 @@
-package com.heuristiq.uam.lockout;
+package com.heuristiq.identity.lockout;
 
-import com.heuristiq.uam.common.UamException;
-import com.heuristiq.uam.lockout.repository.UserLoginSecurityRepository;
+import com.heuristiq.identity.common.UamException;
+import com.heuristiq.identity.lockout.repository.UserLoginSecurityRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;

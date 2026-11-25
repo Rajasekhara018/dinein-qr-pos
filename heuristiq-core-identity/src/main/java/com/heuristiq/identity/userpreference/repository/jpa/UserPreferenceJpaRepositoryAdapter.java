@@ -1,8 +1,8 @@
-package com.heuristiq.uam.userpreference.repository.jpa;
+package com.heuristiq.identity.userpreference.repository.jpa;
 
-import com.heuristiq.uam.userpreference.UserPreference;
-import com.heuristiq.uam.userpreference.persistance.jpa.UserPreferenceEntity;
-import com.heuristiq.uam.userpreference.UserPreferenceRepository;
+import com.heuristiq.identity.userpreference.UserPreference;
+import com.heuristiq.identity.userpreference.persistance.jpa.UserPreferenceEntity;
+import com.heuristiq.identity.userpreference.UserPreferenceRepository;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

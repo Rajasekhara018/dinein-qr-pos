@@ -1,4 +1,4 @@
-package com.heuristiq.uam.orgstructure.domain;
+package com.heuristiq.identity.orgstructure.domain;
 
 /** Business-rule failure in the organization structure; the inbound adapter maps {@link Kind} to HTTP. */
 public class OrgStructureException extends RuntimeException {

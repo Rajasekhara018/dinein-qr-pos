@@ -1,4 +1,4 @@
-package com.heuristiq.uam.securitypolicy;
+package com.heuristiq.identity.securitypolicy;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -7,14 +7,14 @@ import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import com.heuristiq.uam.helper.AccountPolicy;
-import com.heuristiq.uam.helper.ApiSecurityPolicy;
-import com.heuristiq.uam.helper.AuditInfo;
-import com.heuristiq.uam.helper.LoginPolicy;
-import com.heuristiq.uam.helper.MfaPolicy;
-import com.heuristiq.uam.helper.PasswordPolicy;
-import com.heuristiq.uam.helper.SessionPolicy;
-import com.heuristiq.uam.search.SearchIndexable;
+import com.heuristiq.identity.helper.AccountPolicy;
+import com.heuristiq.identity.helper.ApiSecurityPolicy;
+import com.heuristiq.identity.helper.AuditInfo;
+import com.heuristiq.identity.helper.LoginPolicy;
+import com.heuristiq.identity.helper.MfaPolicy;
+import com.heuristiq.identity.helper.PasswordPolicy;
+import com.heuristiq.identity.helper.SessionPolicy;
+import com.heuristiq.identity.search.SearchIndexable;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

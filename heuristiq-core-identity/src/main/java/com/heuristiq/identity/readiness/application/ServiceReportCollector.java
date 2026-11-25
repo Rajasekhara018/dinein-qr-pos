@@ -1,4 +1,4 @@
-package com.heuristiq.uam.readiness.application;
+package com.heuristiq.identity.readiness.application;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -19,10 +19,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
-import com.heuristiq.uam.readiness.domain.ReadinessConstants;
-import com.heuristiq.uam.readiness.domain.ReadinessSource;
-import com.heuristiq.uam.readiness.domain.ServiceReadinessPort;
-import com.heuristiq.uam.readiness.domain.ServiceReport;
+import com.heuristiq.identity.readiness.domain.ReadinessConstants;
+import com.heuristiq.identity.readiness.domain.ReadinessSource;
+import com.heuristiq.identity.readiness.domain.ServiceReadinessPort;
+import com.heuristiq.identity.readiness.domain.ServiceReport;
 
 /**
  * Calls the services in parallel on a bounded executor and waits at most one overall budget for all of them. A call still

@@ -1,4 +1,4 @@
-package com.heuristiq.uam.organization.legalprofile.adapter.out;
+package com.heuristiq.identity.organization.legalprofile.adapter.out;
 
 /** Fixed values of the legal-profile stores (SQL, collection and field names). */
 final class LegalProfileAdapterConstants {

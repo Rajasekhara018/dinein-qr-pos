@@ -1,8 +1,8 @@
-package com.heuristiq.uam.organization.subscription.persistence.jpa;
+package com.heuristiq.identity.organization.subscription.persistence.jpa;
 
 import java.util.List;
 
-import com.heuristiq.uam.organization.subscription.repository.OwnerTeamCodec;
+import com.heuristiq.identity.organization.subscription.repository.OwnerTeamCodec;
 
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;

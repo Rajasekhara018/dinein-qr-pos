@@ -1,6 +1,6 @@
-package com.heuristiq.uam.refreshToken;
+package com.heuristiq.identity.refreshToken;
 
-import com.heuristiq.uam.common.UamException;
+import com.heuristiq.identity.common.UamException;
 import org.springframework.http.HttpStatus;
 
 /** The one failure every refused refresh returns: 401 with {@code errorCode = REFRESH_TOKEN_INVALID} ("sign in again"). */

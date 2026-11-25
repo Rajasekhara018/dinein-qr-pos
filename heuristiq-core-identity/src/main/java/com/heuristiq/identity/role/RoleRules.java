@@ -1,7 +1,7 @@
-package com.heuristiq.uam.role;
+package com.heuristiq.identity.role;
 
-import com.heuristiq.uam.common.UamCommonConstants;
-import com.heuristiq.uam.common.UamException;
+import com.heuristiq.identity.common.UamCommonConstants;
+import com.heuristiq.identity.common.UamException;
 import org.springframework.http.HttpStatus;
 
 import java.util.Collection;

@@ -1,4 +1,4 @@
-package com.heuristiq.uam.orgstructure.adapter.out;
+package com.heuristiq.identity.orgstructure.adapter.out;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import com.heuristiq.uam.orgstructure.domain.DepartmentImportModels.DepartmentRowInput;
-import com.heuristiq.uam.orgstructure.domain.OrgStructureException;
+import com.heuristiq.identity.orgstructure.domain.DepartmentImportModels.DepartmentRowInput;
+import com.heuristiq.identity.orgstructure.domain.OrgStructureException;
 
 /**
  * Turns an uploaded department CSV into import rows, checking the header; row content is validated later by the domain.

@@ -1,4 +1,4 @@
-package com.heuristiq.uam.franchiseaccess;
+package com.heuristiq.identity.franchiseaccess;
 
 /** Fixed values of the franchise-access internal API. */
 final class FranchiseAccessConstants {

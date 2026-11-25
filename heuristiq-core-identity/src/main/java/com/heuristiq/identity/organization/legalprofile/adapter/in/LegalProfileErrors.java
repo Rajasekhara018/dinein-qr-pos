@@ -1,7 +1,7 @@
-package com.heuristiq.uam.organization.legalprofile.adapter.in;
+package com.heuristiq.identity.organization.legalprofile.adapter.in;
 
-import com.heuristiq.uam.common.UamException;
-import com.heuristiq.uam.organization.legalprofile.domain.LegalProfileException;
+import com.heuristiq.identity.common.UamException;
+import com.heuristiq.identity.organization.legalprofile.domain.LegalProfileException;
 import java.util.function.Supplier;
 import org.springframework.http.HttpStatus;
 

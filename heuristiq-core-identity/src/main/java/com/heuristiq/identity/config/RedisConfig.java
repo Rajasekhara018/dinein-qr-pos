@@ -1,4 +1,4 @@
-package com.heuristiq.uam.config;
+package com.heuristiq.identity.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

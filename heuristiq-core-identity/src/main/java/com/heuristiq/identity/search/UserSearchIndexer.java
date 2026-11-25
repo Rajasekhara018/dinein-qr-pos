@@ -1,11 +1,11 @@
-package com.heuristiq.uam.search;
+package com.heuristiq.identity.search;
 
 import java.util.List;
 
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.stereotype.Component;
 
-import com.heuristiq.uam.users.UamUser;
+import com.heuristiq.identity.users.UamUser;
 
 /** Re-publishes a user's search entry with everything the enrichers add, for changes that do not go through saving the user. */
 @Component

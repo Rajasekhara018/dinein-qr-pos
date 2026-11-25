@@ -1,7 +1,7 @@
-package com.heuristiq.uam.helper;
+package com.heuristiq.identity.helper;
 
 import com.heuristiq.phone.PhoneNumbers;
-import com.heuristiq.uam.common.UamException;
+import com.heuristiq.identity.common.UamException;
 
 import java.util.Optional;
 

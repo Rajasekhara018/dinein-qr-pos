@@ -1,6 +1,6 @@
-package com.heuristiq.uam.usercredentials;
+package com.heuristiq.identity.usercredentials;
 
-import com.heuristiq.uam.common.UamException;
+import com.heuristiq.identity.common.UamException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;

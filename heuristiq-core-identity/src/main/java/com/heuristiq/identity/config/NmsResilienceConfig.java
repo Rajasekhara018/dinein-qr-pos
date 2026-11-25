@@ -1,4 +1,4 @@
-package com.heuristiq.uam.config;
+package com.heuristiq.identity.config;
 
 import com.heuristiq.resilient.ResilienceProfile;
 import com.heuristiq.resilient.ResilientCaller;

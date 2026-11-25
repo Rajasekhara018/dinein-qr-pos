@@ -1,8 +1,8 @@
-package com.heuristiq.uam.application.access;
+package com.heuristiq.identity.application.access;
 
 import java.util.List;
 
-import com.heuristiq.uam.users.UamUser;
+import com.heuristiq.identity.users.UamUser;
 
 public interface ApplicationAccessServiceUseCase {
 

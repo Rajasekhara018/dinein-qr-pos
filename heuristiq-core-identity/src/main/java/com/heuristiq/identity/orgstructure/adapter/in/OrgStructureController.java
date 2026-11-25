@@ -1,4 +1,4 @@
-package com.heuristiq.uam.orgstructure.adapter.in;
+package com.heuristiq.identity.orgstructure.adapter.in;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpStatus;
@@ -14,16 +14,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.heuristiq.uam.common.CommonRequestMapper;
-import com.heuristiq.uam.common.CommonRequestObject;
-import com.heuristiq.uam.common.CommonResponseObject;
-import com.heuristiq.uam.common.RequestObjectType;
-import com.heuristiq.uam.orgstructure.adapter.in.OrgStructureRequests.AddChangeRequest;
-import com.heuristiq.uam.orgstructure.adapter.in.OrgStructureRequests.EmployeeRequest;
-import com.heuristiq.uam.orgstructure.adapter.in.OrgStructureRequests.OpenDraftRequest;
-import com.heuristiq.uam.orgstructure.application.OrgStructureUseCase;
-import com.heuristiq.uam.orgstructure.domain.Models.Employee;
-import com.heuristiq.uam.orgstructure.domain.OrgStructureConstants;
+import com.heuristiq.identity.common.CommonRequestMapper;
+import com.heuristiq.identity.common.CommonRequestObject;
+import com.heuristiq.identity.common.CommonResponseObject;
+import com.heuristiq.identity.common.RequestObjectType;
+import com.heuristiq.identity.orgstructure.adapter.in.OrgStructureRequests.AddChangeRequest;
+import com.heuristiq.identity.orgstructure.adapter.in.OrgStructureRequests.EmployeeRequest;
+import com.heuristiq.identity.orgstructure.adapter.in.OrgStructureRequests.OpenDraftRequest;
+import com.heuristiq.identity.orgstructure.application.OrgStructureUseCase;
+import com.heuristiq.identity.orgstructure.domain.Models.Employee;
+import com.heuristiq.identity.orgstructure.domain.OrgStructureConstants;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -42,10 +42,10 @@ public class OrgStructureController {
     private final OrgStructureUseCase useCase;
     private final CommonRequestMapper requestMapper;
     private final CallerContext caller;
-    private final com.heuristiq.uam.orgstructure.application.DataScopeResolver scopes;
+    private final com.heuristiq.identity.orgstructure.application.DataScopeResolver scopes;
 
     public OrgStructureController(OrgStructureUseCase useCase, CommonRequestMapper requestMapper, CallerContext caller,
-                                  com.heuristiq.uam.orgstructure.application.DataScopeResolver scopes) {
+                                  com.heuristiq.identity.orgstructure.application.DataScopeResolver scopes) {
         this.scopes = scopes;
         this.useCase = useCase;
         this.requestMapper = requestMapper;
@@ -194,7 +194,7 @@ public class OrgStructureController {
     // ---- helpers --------------------------------------------------------------------------------
 
     /** What the signed-in caller may see of the organization (everything unless the organization limits people to their department). */
-    private com.heuristiq.uam.orgstructure.domain.DataScope scope(String tenant) {
+    private com.heuristiq.identity.orgstructure.domain.DataScope scope(String tenant) {
         return scopes.resolve(tenant, CallerContext.userId(), CallerContext.roles());
     }
 

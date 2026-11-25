@@ -1,4 +1,4 @@
-package com.heuristiq.uam.feature.management;
+package com.heuristiq.identity.feature.management;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;

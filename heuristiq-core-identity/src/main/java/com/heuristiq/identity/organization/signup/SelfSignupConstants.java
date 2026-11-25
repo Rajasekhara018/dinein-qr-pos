@@ -1,4 +1,4 @@
-package com.heuristiq.uam.organization.signup;
+package com.heuristiq.identity.organization.signup;
 
 import java.util.regex.Pattern;
 

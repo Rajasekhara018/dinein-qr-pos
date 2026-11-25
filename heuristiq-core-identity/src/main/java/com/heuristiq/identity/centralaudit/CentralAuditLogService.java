@@ -1,7 +1,7 @@
-package com.heuristiq.uam.centralaudit;
+package com.heuristiq.identity.centralaudit;
 
-import com.heuristiq.uam.audit.AuditLog;
-import com.heuristiq.uam.audit.AuditLogServiceUseCase;
+import com.heuristiq.identity.audit.AuditLog;
+import com.heuristiq.identity.audit.AuditLogServiceUseCase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

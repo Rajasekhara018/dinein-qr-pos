@@ -1,6 +1,6 @@
-package com.heuristiq.uam.organization.membership;
+package com.heuristiq.identity.organization.membership;
 
-import com.heuristiq.uam.helper.IanaTimeZone;
+import com.heuristiq.identity.helper.IanaTimeZone;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 /** An organization a person belongs to, for choosing which one to work in. */
@@ -29,7 +29,7 @@ public record OrganizationView(
     }
 
     /** The view of an organization with its regional settings (the zone validated as above). */
-    public static OrganizationView of(com.heuristiq.uam.organization.Tenant tenant, TenantMembershipStatus status) {
+    public static OrganizationView of(com.heuristiq.identity.organization.Tenant tenant, TenantMembershipStatus status) {
         return new OrganizationView(tenant.getId(), tenant.getCode(), tenant.getName(), status, IanaTimeZone.validOrNull(tenant.getTimeZone()),
                 tenant.getCurrency(), tenant.getCountry(), tenant.getDefaultLanguage() == null ? null : tenant.getDefaultLanguage().name());
     }

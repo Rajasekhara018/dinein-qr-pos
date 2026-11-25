@@ -1,4 +1,4 @@
-package com.heuristiq.uam.refreshToken.config;
+package com.heuristiq.identity.refreshToken.config;
 
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;

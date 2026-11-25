@@ -1,12 +1,12 @@
-package com.heuristiq.uam.readiness.adapter.out;
+package com.heuristiq.identity.readiness.adapter.out;
 
 import java.util.List;
 
 import org.springframework.beans.factory.ObjectProvider;
 
-import com.heuristiq.uam.orgstructure.application.OrgStructureUseCase;
-import com.heuristiq.uam.readiness.application.port.OwnerCandidate;
-import com.heuristiq.uam.readiness.application.port.OwnerCandidateDirectory;
+import com.heuristiq.identity.orgstructure.application.OrgStructureUseCase;
+import com.heuristiq.identity.readiness.application.port.OwnerCandidate;
+import com.heuristiq.identity.readiness.application.port.OwnerCandidateDirectory;
 
 /**
  * The owner candidates are the department heads of the organization builder (active departments whose head has an account),

@@ -1,11 +1,11 @@
-package com.heuristiq.uam.organization.membership;
+package com.heuristiq.identity.organization.membership;
 
 import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import com.heuristiq.uam.users.UamUser;
+import com.heuristiq.identity.users.UamUser;
 
 public interface TenantMembershipServiceUseCase {
 

@@ -1,10 +1,10 @@
-package com.heuristiq.uam.readiness.domain;
+package com.heuristiq.identity.readiness.domain;
 
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
 
-import com.heuristiq.uam.common.UamException;
+import com.heuristiq.identity.common.UamException;
 
 /**
  * An application cannot be switched on for the organization while blocking readiness steps fail or are unknown (409). Carries

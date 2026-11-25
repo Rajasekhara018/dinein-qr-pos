@@ -1,10 +1,10 @@
-package com.heuristiq.uam.passwordsHistory;
+package com.heuristiq.identity.passwordsHistory;
 
 import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.heuristiq.uam.enums.UamEnums.PasswordChangeReason;
-import com.heuristiq.uam.helper.AuditInfo;
+import com.heuristiq.identity.enums.UamEnums.PasswordChangeReason;
+import com.heuristiq.identity.helper.AuditInfo;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

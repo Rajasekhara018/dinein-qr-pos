@@ -1,6 +1,6 @@
-package com.heuristiq.uam.config;
+package com.heuristiq.identity.config;
 
-import com.heuristiq.uam.common.UamCommonConstants;
+import com.heuristiq.identity.common.UamCommonConstants;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.task.VirtualThreadTaskExecutor;

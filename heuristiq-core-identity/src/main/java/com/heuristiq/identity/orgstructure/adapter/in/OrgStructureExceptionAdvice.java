@@ -1,4 +1,4 @@
-package com.heuristiq.uam.orgstructure.adapter.in;
+package com.heuristiq.identity.orgstructure.adapter.in;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.Ordered;
@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.heuristiq.resilient.DownstreamUnavailableException;
-import com.heuristiq.uam.common.CommonResponseObject;
-import com.heuristiq.uam.orgstructure.domain.OrgStructureException;
+import com.heuristiq.identity.common.CommonResponseObject;
+import com.heuristiq.identity.orgstructure.domain.OrgStructureException;
 
 /**
  * Maps organization-structure rule failures onto the standard error envelope. Ordered ahead of the application-wide

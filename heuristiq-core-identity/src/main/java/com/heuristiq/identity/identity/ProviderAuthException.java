@@ -1,4 +1,4 @@
-package com.heuristiq.uam.identity;
+package com.heuristiq.identity.identity;
 
 import org.springframework.http.HttpStatus;
 

@@ -1,10 +1,10 @@
-package com.heuristiq.uam.readiness.application;
+package com.heuristiq.identity.readiness.application;
 
-import com.heuristiq.uam.readiness.domain.ApplicationReadiness;
+import com.heuristiq.identity.readiness.domain.ApplicationReadiness;
 
 /**
  * Lets an admin choose, for the session organization and one application, which setup steps are Required (BLOCK) and which
- * only Recommended (WARN). Rules: {@link com.heuristiq.uam.readiness.domain.ReadinessSeverityRules}. Every call returns the
+ * only Recommended (WARN). Rules: {@link com.heuristiq.identity.readiness.domain.ReadinessSeverityRules}. Every call returns the
  * fresh readiness of the application.
  */
 public interface ReadinessSeverityUseCase {
@@ -13,8 +13,8 @@ public interface ReadinessSeverityUseCase {
      * Sets one step's severity (the dependency rule may change other steps too).
      *
      * @param severity {@code BLOCK} or {@code WARN} (any case)
-     * @throws com.heuristiq.uam.readiness.domain.ReadinessSeverityException 400 invalid severity, 404 unknown step, 409 locked step
-     * @throws com.heuristiq.uam.common.UamException 404 when the application is not linked to the session organization
+     * @throws com.heuristiq.identity.readiness.domain.ReadinessSeverityException 400 invalid severity, 404 unknown step, 409 locked step
+     * @throws com.heuristiq.identity.common.UamException 404 when the application is not linked to the session organization
      */
     ApplicationReadiness change(String applicationCode, String stepId, String severity);
 

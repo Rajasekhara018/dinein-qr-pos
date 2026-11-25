@@ -1,4 +1,4 @@
-package com.heuristiq.uam.role.persistance.mongo;
+package com.heuristiq.identity.role.persistance.mongo;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,8 +8,8 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.heuristiq.uam.enums.UamEnums.AssignmentType;
-import com.heuristiq.uam.helper.AuditInfo;
+import com.heuristiq.identity.enums.UamEnums.AssignmentType;
+import com.heuristiq.identity.helper.AuditInfo;
 
 import java.time.LocalDateTime;
 import java.util.List;

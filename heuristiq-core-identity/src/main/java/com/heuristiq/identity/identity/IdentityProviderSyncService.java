@@ -1,10 +1,10 @@
-package com.heuristiq.uam.identity;
+package com.heuristiq.identity.identity;
 
-import com.heuristiq.uam.application.client.ApiClient;
-import com.heuristiq.uam.permissions.Permission;
-import com.heuristiq.uam.role.UamRole;
-import com.heuristiq.uam.users.UamUser;
-import com.heuristiq.uam.organization.Tenant;
+import com.heuristiq.identity.application.client.ApiClient;
+import com.heuristiq.identity.permissions.Permission;
+import com.heuristiq.identity.role.UamRole;
+import com.heuristiq.identity.users.UamUser;
+import com.heuristiq.identity.organization.Tenant;
 
 public interface IdentityProviderSyncService {
     void syncOrganization(Tenant tenant);

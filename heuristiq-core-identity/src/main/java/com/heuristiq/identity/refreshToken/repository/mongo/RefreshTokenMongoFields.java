@@ -1,4 +1,4 @@
-package com.heuristiq.uam.refreshToken.repository.mongo;
+package com.heuristiq.identity.refreshToken.repository.mongo;
 
 /** Field names of {@code refresh_tokens} documents used by the adapter's conditional updates. */
 final class RefreshTokenMongoFields {

@@ -1,12 +1,12 @@
-package com.heuristiq.uam.organization.operatingmodel.adapter.out;
+package com.heuristiq.identity.organization.operatingmodel.adapter.out;
 
-import com.heuristiq.uam.audit.AuditLog;
-import com.heuristiq.uam.audit.AuditLogServiceUseCase;
-import com.heuristiq.uam.common.UamCommonConstants;
-import com.heuristiq.uam.enums.UamEnums.AuditAction;
-import com.heuristiq.uam.enums.UamEnums.AuditStatus;
-import com.heuristiq.uam.organization.operatingmodel.application.port.OperatingModelAudit;
-import com.heuristiq.uam.organization.operatingmodel.domain.OperatingModelConstants;
+import com.heuristiq.identity.audit.AuditLog;
+import com.heuristiq.identity.audit.AuditLogServiceUseCase;
+import com.heuristiq.identity.common.UamCommonConstants;
+import com.heuristiq.identity.enums.UamEnums.AuditAction;
+import com.heuristiq.identity.enums.UamEnums.AuditStatus;
+import com.heuristiq.identity.organization.operatingmodel.application.port.OperatingModelAudit;
+import com.heuristiq.identity.organization.operatingmodel.domain.OperatingModelConstants;
 import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;

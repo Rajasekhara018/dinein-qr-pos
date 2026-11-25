@@ -1,10 +1,10 @@
-package com.heuristiq.uam.orgstructure.application;
+package com.heuristiq.identity.orgstructure.application;
 
 import java.util.List;
 
-import com.heuristiq.uam.orgstructure.domain.LoginModels.LoginCandidate;
-import com.heuristiq.uam.orgstructure.domain.LoginModels.LoginRun;
-import com.heuristiq.uam.orgstructure.domain.LoginModels.RoleRule;
+import com.heuristiq.identity.orgstructure.domain.LoginModels.LoginCandidate;
+import com.heuristiq.identity.orgstructure.domain.LoginModels.LoginRun;
+import com.heuristiq.identity.orgstructure.domain.LoginModels.RoleRule;
 
 /** Use cases of role-mapping rules and of creating logins for employees from them. */
 public interface OrgLoginUseCase {

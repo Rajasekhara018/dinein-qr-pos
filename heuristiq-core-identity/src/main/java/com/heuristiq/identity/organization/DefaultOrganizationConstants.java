@@ -1,8 +1,8 @@
-package com.heuristiq.uam.organization;
+package com.heuristiq.identity.organization;
 
 import java.util.List;
 
-import com.heuristiq.uam.application.catalogue.ApplicationCatalogue;
+import com.heuristiq.identity.application.catalogue.ApplicationCatalogue;
 
 /** Fixed values around the organization every account and record belonged to before organizations were separated; its code and name are {@link PlatformOrganizationProperties}. */
 public final class DefaultOrganizationConstants {

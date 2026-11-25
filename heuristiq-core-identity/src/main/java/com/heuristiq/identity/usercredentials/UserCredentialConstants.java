@@ -1,4 +1,4 @@
-package com.heuristiq.uam.usercredentials;
+package com.heuristiq.identity.usercredentials;
 
 /** Fixed values of the user-credential feature. */
 final class UserCredentialConstants {

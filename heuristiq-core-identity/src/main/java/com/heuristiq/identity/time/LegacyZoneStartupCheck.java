@@ -1,4 +1,4 @@
-package com.heuristiq.uam.time;
+package com.heuristiq.identity.time;
 
 import java.time.Clock;
 import java.time.Instant;

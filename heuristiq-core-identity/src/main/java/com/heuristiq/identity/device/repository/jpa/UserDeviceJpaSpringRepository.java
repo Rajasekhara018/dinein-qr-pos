@@ -1,6 +1,6 @@
-package com.heuristiq.uam.device.repository.jpa;
+package com.heuristiq.identity.device.repository.jpa;
 
-import com.heuristiq.uam.device.persistence.jpa.UserDeviceEntity;
+import com.heuristiq.identity.device.persistence.jpa.UserDeviceEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

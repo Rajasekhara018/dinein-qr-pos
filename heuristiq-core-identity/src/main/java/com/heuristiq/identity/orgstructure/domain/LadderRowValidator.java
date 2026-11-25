@@ -1,4 +1,4 @@
-package com.heuristiq.uam.orgstructure.domain;
+package com.heuristiq.identity.orgstructure.domain;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -6,10 +6,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import com.heuristiq.uam.orgstructure.domain.LadderImportModels.ExistingPosition;
-import com.heuristiq.uam.orgstructure.domain.LadderImportModels.LadderReference;
-import com.heuristiq.uam.orgstructure.domain.LadderImportModels.LadderRow;
-import com.heuristiq.uam.orgstructure.domain.LadderImportModels.LadderRowInput;
+import com.heuristiq.identity.orgstructure.domain.LadderImportModels.ExistingPosition;
+import com.heuristiq.identity.orgstructure.domain.LadderImportModels.LadderReference;
+import com.heuristiq.identity.orgstructure.domain.LadderImportModels.LadderRow;
+import com.heuristiq.identity.orgstructure.domain.LadderImportModels.LadderRowInput;
 
 /**
  * Checks every row of a ladders file on its own and against the rest of the file and the positions that exist now. Pure logic: it

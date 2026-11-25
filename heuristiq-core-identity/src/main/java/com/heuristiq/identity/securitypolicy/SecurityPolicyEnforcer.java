@@ -1,15 +1,15 @@
-package com.heuristiq.uam.securitypolicy;
+package com.heuristiq.identity.securitypolicy;
 
-import com.heuristiq.uam.application.access.ApplicationAccessServiceUseCase;
-import com.heuristiq.uam.common.UamException;
-import com.heuristiq.uam.enums.UamEnums;
-import com.heuristiq.uam.passwordsHistory.PasswordHistoryRepository;
-import com.heuristiq.uam.security.PasswordService;
-import com.heuristiq.uam.session.UserSession;
-import com.heuristiq.uam.session.repository.UserSessionRepository;
-import com.heuristiq.uam.usercredentials.UserCredentialRepository;
-import com.heuristiq.uam.users.UamUser;
-import com.heuristiq.uam.users.repository.UamUserRepository;
+import com.heuristiq.identity.application.access.ApplicationAccessServiceUseCase;
+import com.heuristiq.identity.common.UamException;
+import com.heuristiq.identity.enums.UamEnums;
+import com.heuristiq.identity.passwordsHistory.PasswordHistoryRepository;
+import com.heuristiq.identity.security.PasswordService;
+import com.heuristiq.identity.session.UserSession;
+import com.heuristiq.identity.session.repository.UserSessionRepository;
+import com.heuristiq.identity.usercredentials.UserCredentialRepository;
+import com.heuristiq.identity.users.UamUser;
+import com.heuristiq.identity.users.repository.UamUserRepository;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;

@@ -1,4 +1,4 @@
-package com.heuristiq.uam.orgstructure.application;
+package com.heuristiq.identity.orgstructure.application;
 
 import java.time.Clock;
 import java.time.LocalDate;
@@ -21,24 +21,24 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import com.heuristiq.uam.orgstructure.domain.ChangeType;
-import com.heuristiq.uam.orgstructure.domain.DepartmentFileSource;
-import com.heuristiq.uam.orgstructure.domain.DepartmentImportAudit;
-import com.heuristiq.uam.orgstructure.domain.DepartmentImportConstants;
-import com.heuristiq.uam.orgstructure.domain.DepartmentImportModels.DepartmentBatch;
-import com.heuristiq.uam.orgstructure.domain.DepartmentImportModels.DepartmentFile;
-import com.heuristiq.uam.orgstructure.domain.DepartmentImportModels.DepartmentReference;
-import com.heuristiq.uam.orgstructure.domain.DepartmentImportModels.DepartmentRow;
-import com.heuristiq.uam.orgstructure.domain.DepartmentImportModels.DepartmentRowInput;
-import com.heuristiq.uam.orgstructure.domain.DepartmentImportModels.StagedDepartmentRow;
-import com.heuristiq.uam.orgstructure.domain.DepartmentImportModels.UnitState;
-import com.heuristiq.uam.orgstructure.domain.DepartmentImportStore;
-import com.heuristiq.uam.orgstructure.domain.DepartmentRowValidator;
-import com.heuristiq.uam.orgstructure.domain.ImportLimits;
-import com.heuristiq.uam.orgstructure.domain.Models.Change;
-import com.heuristiq.uam.orgstructure.domain.OrgStructureConstants;
-import com.heuristiq.uam.orgstructure.domain.OrgStructureException;
-import com.heuristiq.uam.orgstructure.domain.OrgStructureStore;
+import com.heuristiq.identity.orgstructure.domain.ChangeType;
+import com.heuristiq.identity.orgstructure.domain.DepartmentFileSource;
+import com.heuristiq.identity.orgstructure.domain.DepartmentImportAudit;
+import com.heuristiq.identity.orgstructure.domain.DepartmentImportConstants;
+import com.heuristiq.identity.orgstructure.domain.DepartmentImportModels.DepartmentBatch;
+import com.heuristiq.identity.orgstructure.domain.DepartmentImportModels.DepartmentFile;
+import com.heuristiq.identity.orgstructure.domain.DepartmentImportModels.DepartmentReference;
+import com.heuristiq.identity.orgstructure.domain.DepartmentImportModels.DepartmentRow;
+import com.heuristiq.identity.orgstructure.domain.DepartmentImportModels.DepartmentRowInput;
+import com.heuristiq.identity.orgstructure.domain.DepartmentImportModels.StagedDepartmentRow;
+import com.heuristiq.identity.orgstructure.domain.DepartmentImportModels.UnitState;
+import com.heuristiq.identity.orgstructure.domain.DepartmentImportStore;
+import com.heuristiq.identity.orgstructure.domain.DepartmentRowValidator;
+import com.heuristiq.identity.orgstructure.domain.ImportLimits;
+import com.heuristiq.identity.orgstructure.domain.Models.Change;
+import com.heuristiq.identity.orgstructure.domain.OrgStructureConstants;
+import com.heuristiq.identity.orgstructure.domain.OrgStructureException;
+import com.heuristiq.identity.orgstructure.domain.OrgStructureStore;
 
 /**
  * Bulk department import. An upload is validated in full and staged without touching the live organization; only a confirmed batch

@@ -1,4 +1,4 @@
-package com.heuristiq.uam.orgstructure.application;
+package com.heuristiq.identity.orgstructure.application;
 
 import java.time.Clock;
 import java.time.LocalDate;
@@ -21,24 +21,24 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import com.heuristiq.uam.orgstructure.domain.ChangeType;
-import com.heuristiq.uam.orgstructure.domain.EmployeeStore;
-import com.heuristiq.uam.orgstructure.domain.ImportFileSource;
-import com.heuristiq.uam.orgstructure.domain.ImportFlags;
-import com.heuristiq.uam.orgstructure.domain.ImportLimits;
-import com.heuristiq.uam.orgstructure.domain.ImportModels.ImportBatch;
-import com.heuristiq.uam.orgstructure.domain.ImportModels.ImportReference;
-import com.heuristiq.uam.orgstructure.domain.ImportModels.ImportRow;
-import com.heuristiq.uam.orgstructure.domain.ImportModels.ImportRowInput;
-import com.heuristiq.uam.orgstructure.domain.ImportModels.StagedRow;
-import com.heuristiq.uam.orgstructure.domain.ImportModels.UnitRef;
-import com.heuristiq.uam.orgstructure.domain.ImportRowValidator;
-import com.heuristiq.uam.orgstructure.domain.ImportStore;
-import com.heuristiq.uam.orgstructure.domain.Models.Change;
-import com.heuristiq.uam.orgstructure.domain.Models.Employee;
-import com.heuristiq.uam.orgstructure.domain.OrgStructureConstants;
-import com.heuristiq.uam.orgstructure.domain.OrgStructureException;
-import com.heuristiq.uam.orgstructure.domain.OrgStructureStore;
+import com.heuristiq.identity.orgstructure.domain.ChangeType;
+import com.heuristiq.identity.orgstructure.domain.EmployeeStore;
+import com.heuristiq.identity.orgstructure.domain.ImportFileSource;
+import com.heuristiq.identity.orgstructure.domain.ImportFlags;
+import com.heuristiq.identity.orgstructure.domain.ImportLimits;
+import com.heuristiq.identity.orgstructure.domain.ImportModels.ImportBatch;
+import com.heuristiq.identity.orgstructure.domain.ImportModels.ImportReference;
+import com.heuristiq.identity.orgstructure.domain.ImportModels.ImportRow;
+import com.heuristiq.identity.orgstructure.domain.ImportModels.ImportRowInput;
+import com.heuristiq.identity.orgstructure.domain.ImportModels.StagedRow;
+import com.heuristiq.identity.orgstructure.domain.ImportModels.UnitRef;
+import com.heuristiq.identity.orgstructure.domain.ImportRowValidator;
+import com.heuristiq.identity.orgstructure.domain.ImportStore;
+import com.heuristiq.identity.orgstructure.domain.Models.Change;
+import com.heuristiq.identity.orgstructure.domain.Models.Employee;
+import com.heuristiq.identity.orgstructure.domain.OrgStructureConstants;
+import com.heuristiq.identity.orgstructure.domain.OrgStructureException;
+import com.heuristiq.identity.orgstructure.domain.OrgStructureStore;
 
 /**
  * Bulk employee import. An upload is validated in full and staged without touching the live

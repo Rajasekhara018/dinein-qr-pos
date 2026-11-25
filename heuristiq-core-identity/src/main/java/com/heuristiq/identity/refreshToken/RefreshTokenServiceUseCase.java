@@ -1,6 +1,6 @@
-package com.heuristiq.uam.refreshToken;
+package com.heuristiq.identity.refreshToken;
 
-import com.heuristiq.uam.enums.UamEnums.PrincipalType;
+import com.heuristiq.identity.enums.UamEnums.PrincipalType;
 
 import java.time.LocalDateTime;
 import java.util.List;

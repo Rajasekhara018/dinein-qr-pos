@@ -1,4 +1,4 @@
-package com.heuristiq.uam.organization.admin;
+package com.heuristiq.identity.organization.admin;
 
 /**
  * What was set up for an organization's administrator. The one-time password is present only when this call created the

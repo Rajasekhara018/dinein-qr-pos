@@ -1,9 +1,9 @@
-package com.heuristiq.uam.organization.legalprofile.adapter.in;
+package com.heuristiq.identity.organization.legalprofile.adapter.in;
 
-import com.heuristiq.uam.organization.OrgWideConstants;
-import com.heuristiq.uam.organization.legalprofile.domain.LegalProfileException;
-import com.heuristiq.uam.security.TenantContext;
-import com.heuristiq.uam.security.TenantGuard;
+import com.heuristiq.identity.organization.OrgWideConstants;
+import com.heuristiq.identity.organization.legalprofile.domain.LegalProfileException;
+import com.heuristiq.identity.security.TenantContext;
+import com.heuristiq.identity.security.TenantGuard;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 

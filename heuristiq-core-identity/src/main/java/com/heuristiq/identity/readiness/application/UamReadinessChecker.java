@@ -1,4 +1,4 @@
-package com.heuristiq.uam.readiness.application;
+package com.heuristiq.identity.readiness.application;
 
 import java.util.List;
 import java.util.Map;
@@ -8,14 +8,14 @@ import java.util.function.Supplier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.heuristiq.uam.readiness.domain.ReadinessCheck;
-import com.heuristiq.uam.readiness.domain.ReadinessCheckIds;
-import com.heuristiq.uam.readiness.domain.ReadinessConstants;
-import com.heuristiq.uam.readiness.domain.ReadinessMessageKeys;
-import com.heuristiq.uam.readiness.domain.ReadinessSource;
-import com.heuristiq.uam.readiness.domain.ReadinessStatus;
-import com.heuristiq.uam.readiness.domain.UamReadinessFactsPort;
-import com.heuristiq.uam.readiness.domain.UamReadinessFactsPort.ApplicationFacts;
+import com.heuristiq.identity.readiness.domain.ReadinessCheck;
+import com.heuristiq.identity.readiness.domain.ReadinessCheckIds;
+import com.heuristiq.identity.readiness.domain.ReadinessConstants;
+import com.heuristiq.identity.readiness.domain.ReadinessMessageKeys;
+import com.heuristiq.identity.readiness.domain.ReadinessSource;
+import com.heuristiq.identity.readiness.domain.ReadinessStatus;
+import com.heuristiq.identity.readiness.domain.UamReadinessFactsPort;
+import com.heuristiq.identity.readiness.domain.UamReadinessFactsPort.ApplicationFacts;
 
 /**
  * Rider_UAM's own readiness checks for one application in one organization, computed from UAM data. A check whose data

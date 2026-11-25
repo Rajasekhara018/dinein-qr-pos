@@ -1,6 +1,6 @@
-package com.heuristiq.uam.role.repository.jpa;
+package com.heuristiq.identity.role.repository.jpa;
 
-import com.heuristiq.uam.role.persistance.jpa.UamRoleEntity;
+import com.heuristiq.identity.role.persistance.jpa.UamRoleEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

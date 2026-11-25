@@ -1,14 +1,14 @@
-package com.heuristiq.uam.cache;
+package com.heuristiq.identity.cache;
 
-import com.heuristiq.uam.organization.membership.TenantMembership;
-import com.heuristiq.uam.organization.membership.repository.TenantMembershipRepository;
-import com.heuristiq.uam.organization.repository.TenantRepository;
-import com.heuristiq.uam.organization.subscription.TenantApplication;
-import com.heuristiq.uam.organization.subscription.repository.TenantApplicationRepository;
-import com.heuristiq.uam.permissions.PermissionRepository;
-import com.heuristiq.uam.role.repository.UamRoleRepository;
-import com.heuristiq.uam.users.UamUser;
-import com.heuristiq.uam.users.repository.UamUserRepository;
+import com.heuristiq.identity.organization.membership.TenantMembership;
+import com.heuristiq.identity.organization.membership.repository.TenantMembershipRepository;
+import com.heuristiq.identity.organization.repository.TenantRepository;
+import com.heuristiq.identity.organization.subscription.TenantApplication;
+import com.heuristiq.identity.organization.subscription.repository.TenantApplicationRepository;
+import com.heuristiq.identity.permissions.PermissionRepository;
+import com.heuristiq.identity.role.repository.UamRoleRepository;
+import com.heuristiq.identity.users.UamUser;
+import com.heuristiq.identity.users.repository.UamUserRepository;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.config.BeanPostProcessor;

@@ -1,4 +1,4 @@
-package com.heuristiq.uam.google;
+package com.heuristiq.identity.google;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;

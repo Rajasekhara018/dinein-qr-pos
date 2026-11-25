@@ -1,6 +1,6 @@
-package com.heuristiq.uam.session.repository.jpa;
+package com.heuristiq.identity.session.repository.jpa;
 
-import com.heuristiq.uam.session.persistence.jpa.UserSessionEntity;
+import com.heuristiq.identity.session.persistence.jpa.UserSessionEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

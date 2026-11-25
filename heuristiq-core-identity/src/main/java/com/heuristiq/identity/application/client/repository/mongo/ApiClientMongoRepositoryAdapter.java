@@ -1,9 +1,9 @@
-package com.heuristiq.uam.application.client.repository.mongo;
+package com.heuristiq.identity.application.client.repository.mongo;
 
-import com.heuristiq.uam.application.client.ApiClient;
-import com.heuristiq.uam.application.client.persistence.mongo.ApiClientDocument;
-import com.heuristiq.uam.application.client.repository.ApiClientRepository;
-import com.heuristiq.uam.enums.UamEnums.ApiClientType;
+import com.heuristiq.identity.application.client.ApiClient;
+import com.heuristiq.identity.application.client.persistence.mongo.ApiClientDocument;
+import com.heuristiq.identity.application.client.repository.ApiClientRepository;
+import com.heuristiq.identity.enums.UamEnums.ApiClientType;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;

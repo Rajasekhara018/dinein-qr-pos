@@ -1,12 +1,12 @@
-package com.heuristiq.uam.orgstructure.domain;
+package com.heuristiq.identity.orgstructure.domain;
 
 import java.util.List;
 import java.util.Optional;
 
-import com.heuristiq.uam.orgstructure.domain.RoleRuleImportModels.RoleRuleBatch;
-import com.heuristiq.uam.orgstructure.domain.RoleRuleImportModels.RoleRuleReference;
-import com.heuristiq.uam.orgstructure.domain.RoleRuleImportModels.RoleRuleRow;
-import com.heuristiq.uam.orgstructure.domain.RoleRuleImportModels.StagedRoleRuleRow;
+import com.heuristiq.identity.orgstructure.domain.RoleRuleImportModels.RoleRuleBatch;
+import com.heuristiq.identity.orgstructure.domain.RoleRuleImportModels.RoleRuleReference;
+import com.heuristiq.identity.orgstructure.domain.RoleRuleImportModels.RoleRuleRow;
+import com.heuristiq.identity.orgstructure.domain.RoleRuleImportModels.StagedRoleRuleRow;
 
 /**
  * Port to staged roles files: the batch, its rows and the departments, ladders and positions a file is checked against. Every method

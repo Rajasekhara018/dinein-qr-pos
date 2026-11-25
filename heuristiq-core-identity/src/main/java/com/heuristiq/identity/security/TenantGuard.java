@@ -1,7 +1,7 @@
-package com.heuristiq.uam.security;
+package com.heuristiq.identity.security;
 
-import com.heuristiq.uam.common.UamCommonConstants;
-import com.heuristiq.uam.common.UamException;
+import com.heuristiq.identity.common.UamCommonConstants;
+import com.heuristiq.identity.common.UamException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 

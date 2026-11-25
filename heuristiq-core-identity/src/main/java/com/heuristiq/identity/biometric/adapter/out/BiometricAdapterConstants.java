@@ -1,4 +1,4 @@
-package com.heuristiq.uam.biometric.adapter.out;
+package com.heuristiq.identity.biometric.adapter.out;
 
 /**
  * Fixed values of the biometric stores: SQL of the PostgreSQL tables (migration V43), and the MongoDB collections (same

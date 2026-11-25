@@ -1,4 +1,4 @@
-package com.heuristiq.uam.readiness.adapter.out;
+package com.heuristiq.identity.readiness.adapter.out;
 
 import java.util.Collection;
 import java.util.List;
@@ -7,15 +7,15 @@ import java.util.Locale;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.util.StringUtils;
 
-import com.heuristiq.uam.common.UamCommonConstants;
-import com.heuristiq.uam.enums.UamEnums.UserStatus;
-import com.heuristiq.uam.organization.membership.TenantMembershipStatus;
-import com.heuristiq.uam.organization.membership.repository.TenantMembershipRepository;
-import com.heuristiq.uam.readiness.application.port.AlertRecipient;
-import com.heuristiq.uam.readiness.application.port.AlertRecipientDirectory;
-import com.heuristiq.uam.users.UamUser;
-import com.heuristiq.uam.users.repository.UamUserRepository;
-import com.heuristiq.uam.users.repository.UamUserSearchCriteria;
+import com.heuristiq.identity.common.UamCommonConstants;
+import com.heuristiq.identity.enums.UamEnums.UserStatus;
+import com.heuristiq.identity.organization.membership.TenantMembershipStatus;
+import com.heuristiq.identity.organization.membership.repository.TenantMembershipRepository;
+import com.heuristiq.identity.readiness.application.port.AlertRecipient;
+import com.heuristiq.identity.readiness.application.port.AlertRecipientDirectory;
+import com.heuristiq.identity.users.UamUser;
+import com.heuristiq.identity.users.repository.UamUserRepository;
+import com.heuristiq.identity.users.repository.UamUserSearchCriteria;
 
 /**
  * Finds alert recipients in UAM: ACTIVE SUPER_ADMIN accounts (one bounded page) and, for an organization's owner team, the

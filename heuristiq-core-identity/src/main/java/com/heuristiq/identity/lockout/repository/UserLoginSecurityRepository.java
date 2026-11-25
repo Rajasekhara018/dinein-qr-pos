@@ -1,6 +1,6 @@
-package com.heuristiq.uam.lockout.repository;
+package com.heuristiq.identity.lockout.repository;
 
-import com.heuristiq.uam.lockout.UserLoginSecurity;
+import com.heuristiq.identity.lockout.UserLoginSecurity;
 
 import java.util.Optional;
 

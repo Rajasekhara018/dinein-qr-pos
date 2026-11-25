@@ -1,4 +1,4 @@
-package com.heuristiq.uam.config;
+package com.heuristiq.identity.config;
 
 import com.mongodb.MongoClientSettings;
 import org.springframework.beans.factory.annotation.Value;

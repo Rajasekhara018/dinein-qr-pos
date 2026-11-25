@@ -1,4 +1,4 @@
-package com.heuristiq.uam.orgstructure.adapter.out;
+package com.heuristiq.identity.orgstructure.adapter.out;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -9,12 +9,12 @@ import org.slf4j.MDC;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
-import com.heuristiq.uam.audit.AuditLog;
-import com.heuristiq.uam.audit.AuditLogServiceUseCase;
-import com.heuristiq.uam.common.UamCommonConstants;
-import com.heuristiq.uam.enums.UamEnums.AuditAction;
-import com.heuristiq.uam.enums.UamEnums.AuditStatus;
-import com.heuristiq.uam.orgstructure.domain.RoleRuleImportAudit;
+import com.heuristiq.identity.audit.AuditLog;
+import com.heuristiq.identity.audit.AuditLogServiceUseCase;
+import com.heuristiq.identity.common.UamCommonConstants;
+import com.heuristiq.identity.enums.UamEnums.AuditAction;
+import com.heuristiq.identity.enums.UamEnums.AuditStatus;
+import com.heuristiq.identity.orgstructure.domain.RoleRuleImportAudit;
 
 /** Writes the roles import domain audit events to UAM's audit log. A failed write is logged and never fails the import. */
 @Component

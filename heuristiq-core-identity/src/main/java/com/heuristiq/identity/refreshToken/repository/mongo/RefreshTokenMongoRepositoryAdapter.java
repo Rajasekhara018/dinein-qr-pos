@@ -1,14 +1,14 @@
-package com.heuristiq.uam.refreshToken.repository.mongo;
+package com.heuristiq.identity.refreshToken.repository.mongo;
 
-import com.heuristiq.uam.refreshToken.RefreshToken;
-import com.heuristiq.uam.refreshToken.RefreshTokenConstants;
+import com.heuristiq.identity.refreshToken.RefreshToken;
+import com.heuristiq.identity.refreshToken.RefreshTokenConstants;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import java.time.LocalDateTime;
-import com.heuristiq.uam.refreshToken.persistance.mongo.RefreshTokenDocument;
-import com.heuristiq.uam.refreshToken.RefreshTokenRepository;
+import com.heuristiq.identity.refreshToken.persistance.mongo.RefreshTokenDocument;
+import com.heuristiq.identity.refreshToken.RefreshTokenRepository;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Repository;
 

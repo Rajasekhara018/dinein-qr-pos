@@ -1,14 +1,14 @@
-package com.heuristiq.uam.orgstructure.domain;
+package com.heuristiq.identity.orgstructure.domain;
 
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
-import com.heuristiq.uam.orgstructure.domain.DepartmentImportModels.DepartmentBatch;
-import com.heuristiq.uam.orgstructure.domain.DepartmentImportModels.DepartmentReference;
-import com.heuristiq.uam.orgstructure.domain.DepartmentImportModels.DepartmentRow;
-import com.heuristiq.uam.orgstructure.domain.DepartmentImportModels.StagedDepartmentRow;
-import com.heuristiq.uam.orgstructure.domain.DepartmentImportModels.UnitState;
+import com.heuristiq.identity.orgstructure.domain.DepartmentImportModels.DepartmentBatch;
+import com.heuristiq.identity.orgstructure.domain.DepartmentImportModels.DepartmentReference;
+import com.heuristiq.identity.orgstructure.domain.DepartmentImportModels.DepartmentRow;
+import com.heuristiq.identity.orgstructure.domain.DepartmentImportModels.StagedDepartmentRow;
+import com.heuristiq.identity.orgstructure.domain.DepartmentImportModels.UnitState;
 
 /**
  * Port to staged department files: the batch, its rows and the departments a file is checked against. Every method that reads or

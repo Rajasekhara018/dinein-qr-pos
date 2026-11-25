@@ -1,11 +1,11 @@
-package com.heuristiq.uam.securitypolicy;
+package com.heuristiq.identity.securitypolicy;
 
-import com.heuristiq.uam.common.UamException;
-import com.heuristiq.uam.feature.management.ManagementPageSupport;
-import com.heuristiq.uam.helper.AuditInfo;
-import com.heuristiq.uam.security.TenantGuard;
-import com.heuristiq.uam.securitypolicy.repository.SecurityPolicyRepository;
-import com.heuristiq.uam.common.PageResult;
+import com.heuristiq.identity.common.UamException;
+import com.heuristiq.identity.feature.management.ManagementPageSupport;
+import com.heuristiq.identity.helper.AuditInfo;
+import com.heuristiq.identity.security.TenantGuard;
+import com.heuristiq.identity.securitypolicy.repository.SecurityPolicyRepository;
+import com.heuristiq.identity.common.PageResult;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -20,7 +20,7 @@ public class SecurityPolicyService implements SecurityPolicyServiceUseCase {
     @org.springframework.beans.factory.annotation.Autowired
     private EffectiveSecurityPolicyResolver resolver;
     @org.springframework.beans.factory.annotation.Autowired
-    private com.heuristiq.uam.audit.AuditLogServiceUseCase audit;
+    private com.heuristiq.identity.audit.AuditLogServiceUseCase audit;
     @org.springframework.beans.factory.annotation.Autowired
     private com.fasterxml.jackson.databind.ObjectMapper mapper;
 
@@ -139,11 +139,11 @@ public class SecurityPolicyService implements SecurityPolicyServiceUseCase {
     private void recordChange(SecurityPolicy policy, java.util.Map<String, Object> before, String operation) {
         if (audit == null) return;
         var actor = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication();
-        audit.record(new com.heuristiq.uam.audit.AuditLogServiceUseCase.RecordInput(com.heuristiq.uam.audit.AuditLog.builder()
+        audit.record(new com.heuristiq.identity.audit.AuditLogServiceUseCase.RecordInput(com.heuristiq.identity.audit.AuditLog.builder()
                 .tenantId(policy.getTenantId()).applicationId(policy.getApplicationId())
                 .userId(actor == null ? null : actor.getName()).entityType("SECURITY_POLICY").entityId(policy.getId())
-                .action(com.heuristiq.uam.enums.UamEnums.AuditAction.valueOf(operation))
-                .status(com.heuristiq.uam.enums.UamEnums.AuditStatus.SUCCESS)
+                .action(com.heuristiq.identity.enums.UamEnums.AuditAction.valueOf(operation))
+                .status(com.heuristiq.identity.enums.UamEnums.AuditStatus.SUCCESS)
                 .oldValue(before).newValue("DELETE".equals(operation) ? null : snapshot(policy))
                 .remarks("Security policy " + operation + "; version=" + policy.getVersion())
                 .createdAt(LocalDateTime.now()).build()));

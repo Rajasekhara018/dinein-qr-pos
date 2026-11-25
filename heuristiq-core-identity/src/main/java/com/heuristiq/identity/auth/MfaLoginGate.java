@@ -1,10 +1,10 @@
-package com.heuristiq.uam.auth;
+package com.heuristiq.identity.auth;
 
-import com.heuristiq.uam.common.UamException;
-import com.heuristiq.uam.lockout.LoginAttemptServiceUseCase;
-import com.heuristiq.uam.mfa.UserMfa;
-import com.heuristiq.uam.mfa.UserMfaServiceUseCase;
-import com.heuristiq.uam.users.UamUser;
+import com.heuristiq.identity.common.UamException;
+import com.heuristiq.identity.lockout.LoginAttemptServiceUseCase;
+import com.heuristiq.identity.mfa.UserMfa;
+import com.heuristiq.identity.mfa.UserMfaServiceUseCase;
+import com.heuristiq.identity.users.UamUser;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -20,7 +20,7 @@ import java.util.Optional;
 @Component
 public class MfaLoginGate {
     @org.springframework.beans.factory.annotation.Autowired
-    private com.heuristiq.uam.securitypolicy.SecurityPolicyEnforcer policyEnforcer;
+    private com.heuristiq.identity.securitypolicy.SecurityPolicyEnforcer policyEnforcer;
     private final UserMfaServiceUseCase userMfaService;
     private final LoginAttemptServiceUseCase loginAttemptService;
 

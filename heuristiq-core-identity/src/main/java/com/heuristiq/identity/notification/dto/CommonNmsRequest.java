@@ -1,4 +1,4 @@
-package com.heuristiq.uam.notification.dto;
+package com.heuristiq.identity.notification.dto;
 
 public record CommonNmsRequest(
         String messageID,

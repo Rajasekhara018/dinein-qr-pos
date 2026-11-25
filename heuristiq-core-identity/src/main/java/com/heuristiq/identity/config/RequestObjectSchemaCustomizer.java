@@ -1,4 +1,4 @@
-package com.heuristiq.uam.config;
+package com.heuristiq.identity.config;
 
 import java.util.LinkedHashMap;
 
@@ -6,7 +6,7 @@ import org.springdoc.core.customizers.GlobalOperationComponentsCustomizer;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 
-import com.heuristiq.uam.common.RequestObjectType;
+import com.heuristiq.identity.common.RequestObjectType;
 
 import io.swagger.v3.core.converter.AnnotatedType;
 import io.swagger.v3.core.converter.ModelConverters;

@@ -1,4 +1,4 @@
-package com.heuristiq.uam.session;
+package com.heuristiq.identity.session;
 
 import java.util.List;
 

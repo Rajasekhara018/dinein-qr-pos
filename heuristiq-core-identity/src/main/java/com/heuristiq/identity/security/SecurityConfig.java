@@ -1,6 +1,6 @@
-package com.heuristiq.uam.security;
+package com.heuristiq.identity.security;
 
-import com.heuristiq.uam.config.UamProperties;
+import com.heuristiq.identity.config.UamProperties;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -40,7 +40,7 @@ public class SecurityConfig {
                         // These matchers used to be unprefixed because server.servlet.context-path
                         // (/api/v1/uam) stripped that prefix before Spring Security ever saw the
                         // path. Versioning moved to a per-@RestController prefix instead (see
-                        // com.heuristiq.uam.config.ApiVersionConfig's javadoc) — the incoming request
+                        // com.heuristiq.identity.config.ApiVersionConfig's javadoc) — the incoming request
                         // path Security matches against now includes /api/v1/uam, so every matcher
                         // here must too, or these routes silently fall through to
                         // .anyRequest().authenticated() (breaking login/register/OTP and the docs

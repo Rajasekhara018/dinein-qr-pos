@@ -1,6 +1,6 @@
-package com.heuristiq.uam.biometric.adapter.in;
+package com.heuristiq.identity.biometric.adapter.in;
 
-import com.heuristiq.uam.biometric.application.BiometricUseCase;
+import com.heuristiq.identity.biometric.application.BiometricUseCase;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.Instant;
 

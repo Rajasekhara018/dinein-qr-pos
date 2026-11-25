@@ -1,4 +1,4 @@
-package com.heuristiq.uam.role;
+package com.heuristiq.identity.role;
 
 /** Fixed values of the role rules. */
 public final class RoleConstants {

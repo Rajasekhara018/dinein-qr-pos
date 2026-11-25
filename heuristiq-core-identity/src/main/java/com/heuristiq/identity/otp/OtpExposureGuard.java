@@ -1,4 +1,4 @@
-package com.heuristiq.uam.otp;
+package com.heuristiq.identity.otp;
 
 import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;

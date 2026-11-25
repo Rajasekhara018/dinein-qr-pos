@@ -1,4 +1,4 @@
-package com.heuristiq.uam.orgstructure.adapter.out;
+package com.heuristiq.identity.orgstructure.adapter.out;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -7,10 +7,10 @@ import java.util.Set;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
-import com.heuristiq.uam.orgstructure.domain.OrgStructureStore;
-import com.heuristiq.uam.search.SearchIndexEnricher;
-import com.heuristiq.uam.search.SearchIndexable;
-import com.heuristiq.uam.users.UamUser;
+import com.heuristiq.identity.orgstructure.domain.OrgStructureStore;
+import com.heuristiq.identity.search.SearchIndexEnricher;
+import com.heuristiq.identity.search.SearchIndexable;
+import com.heuristiq.identity.users.UamUser;
 
 /**
  * Puts the department a user belongs to into their search entry (as a comma-separated list of department ids), so the

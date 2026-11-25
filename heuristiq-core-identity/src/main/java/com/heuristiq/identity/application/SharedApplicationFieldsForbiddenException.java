@@ -1,8 +1,8 @@
-package com.heuristiq.uam.application;
+package com.heuristiq.identity.application;
 
 import org.springframework.http.HttpStatus;
 
-import com.heuristiq.uam.common.UamException;
+import com.heuristiq.identity.common.UamException;
 
 /**
  * An organization administrator tried to change the name or description of an application. Those two fields live on the

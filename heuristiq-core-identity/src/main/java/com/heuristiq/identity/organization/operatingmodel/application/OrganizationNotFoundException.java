@@ -1,4 +1,4 @@
-package com.heuristiq.uam.organization.operatingmodel.application;
+package com.heuristiq.identity.organization.operatingmodel.application;
 
 /** The organization asked for does not exist (or the caller may not see it). */
 public class OrganizationNotFoundException extends RuntimeException {

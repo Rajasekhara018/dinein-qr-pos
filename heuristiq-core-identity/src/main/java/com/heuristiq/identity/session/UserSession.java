@@ -1,11 +1,11 @@
-package com.heuristiq.uam.session;
+package com.heuristiq.identity.session;
 
 import java.time.LocalDateTime;
 import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.heuristiq.uam.enums.UamEnums.AuthProvider;
-import com.heuristiq.uam.enums.UamEnums.LogoutReason;
+import com.heuristiq.identity.enums.UamEnums.AuthProvider;
+import com.heuristiq.identity.enums.UamEnums.LogoutReason;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

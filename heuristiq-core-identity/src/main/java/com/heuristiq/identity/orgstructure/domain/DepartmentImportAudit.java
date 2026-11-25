@@ -1,4 +1,4 @@
-package com.heuristiq.uam.orgstructure.domain;
+package com.heuristiq.identity.orgstructure.domain;
 
 /** Port to the audit trail: one domain event for every department import that ends (applied or failed). */
 public interface DepartmentImportAudit {

@@ -1,6 +1,6 @@
-package com.heuristiq.uam.organization;
+package com.heuristiq.identity.organization;
 
-import com.heuristiq.uam.common.UamException;
+import com.heuristiq.identity.common.UamException;
 
 import java.time.DateTimeException;
 import java.time.ZoneId;

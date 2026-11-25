@@ -1,4 +1,4 @@
-package com.heuristiq.uam.readiness.config;
+package com.heuristiq.identity.readiness.config;
 
 import java.time.Duration;
 import java.util.Map;
@@ -11,7 +11,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.validation.annotation.Validated;
 
-import com.heuristiq.uam.readiness.adapter.out.ReadinessAuthMode;
+import com.heuristiq.identity.readiness.adapter.out.ReadinessAuthMode;
 
 /**
  * Settings of the readiness combiner ({@code railcab.uam.readiness.*}).

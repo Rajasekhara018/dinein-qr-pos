@@ -1,4 +1,4 @@
-package com.heuristiq.uam.orgstructure.domain;
+package com.heuristiq.identity.orgstructure.domain;
 
 /**
  * Limits of the bulk import, supplied from configuration at wiring time so the application layer

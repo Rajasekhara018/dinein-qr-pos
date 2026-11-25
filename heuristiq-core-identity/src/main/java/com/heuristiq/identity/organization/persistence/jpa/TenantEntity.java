@@ -1,15 +1,15 @@
-package com.heuristiq.uam.organization.persistence.jpa;
+package com.heuristiq.identity.organization.persistence.jpa;
 
 import java.util.Map;
 
 import org.hibernate.annotations.UuidGenerator;
 
-import com.heuristiq.uam.enums.UamEnums.LanguageEnum;
-import com.heuristiq.uam.enums.UamEnums.TenantStatus;
-import com.heuristiq.uam.enums.UamEnums.TenantType;
-import com.heuristiq.uam.helper.AuditInfo;
-import com.heuristiq.uam.helper.RUpload;
-import com.heuristiq.uam.util.JsonMapAttributeConverter;
+import com.heuristiq.identity.enums.UamEnums.LanguageEnum;
+import com.heuristiq.identity.enums.UamEnums.TenantStatus;
+import com.heuristiq.identity.enums.UamEnums.TenantType;
+import com.heuristiq.identity.helper.AuditInfo;
+import com.heuristiq.identity.helper.RUpload;
+import com.heuristiq.identity.util.JsonMapAttributeConverter;
 
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.AttributeOverrides;

@@ -1,4 +1,4 @@
-package com.heuristiq.uam.users;
+package com.heuristiq.identity.users;
 
 /** Fixed values of the user management feature. */
 public final class UamUserConstants {

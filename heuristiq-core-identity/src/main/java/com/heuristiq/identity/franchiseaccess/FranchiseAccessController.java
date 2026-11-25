@@ -1,4 +1,4 @@
-package com.heuristiq.uam.franchiseaccess;
+package com.heuristiq.identity.franchiseaccess;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.ResponseEntity;
@@ -11,22 +11,22 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.heuristiq.uam.common.CommonResponseObject;
-import com.heuristiq.uam.franchiseaccess.FranchiseAccessModels.ActiveResponse;
-import com.heuristiq.uam.franchiseaccess.FranchiseAccessModels.AddMemberRequest;
-import com.heuristiq.uam.franchiseaccess.FranchiseAccessModels.AddRolesRequest;
-import com.heuristiq.uam.franchiseaccess.FranchiseAccessModels.ApplicationCodesResponse;
-import com.heuristiq.uam.franchiseaccess.FranchiseAccessModels.CreateLoginRequest;
-import com.heuristiq.uam.franchiseaccess.FranchiseAccessModels.CreateLoginResponse;
-import com.heuristiq.uam.franchiseaccess.FranchiseAccessModels.EmptyResponse;
-import com.heuristiq.uam.franchiseaccess.FranchiseAccessModels.EnsureRoleRequest;
-import com.heuristiq.uam.franchiseaccess.FranchiseAccessModels.ExistsResponse;
-import com.heuristiq.uam.franchiseaccess.FranchiseAccessModels.GrantRequest;
-import com.heuristiq.uam.franchiseaccess.FranchiseAccessModels.InUseResponse;
-import com.heuristiq.uam.franchiseaccess.FranchiseAccessModels.PrivilegeResponse;
-import com.heuristiq.uam.franchiseaccess.FranchiseAccessModels.RoleCodesResponse;
-import com.heuristiq.uam.franchiseaccess.FranchiseAccessModels.SubscribeRequest;
-import com.heuristiq.uam.franchiseaccess.FranchiseAccessModels.SupportEmailResponse;
+import com.heuristiq.identity.common.CommonResponseObject;
+import com.heuristiq.identity.franchiseaccess.FranchiseAccessModels.ActiveResponse;
+import com.heuristiq.identity.franchiseaccess.FranchiseAccessModels.AddMemberRequest;
+import com.heuristiq.identity.franchiseaccess.FranchiseAccessModels.AddRolesRequest;
+import com.heuristiq.identity.franchiseaccess.FranchiseAccessModels.ApplicationCodesResponse;
+import com.heuristiq.identity.franchiseaccess.FranchiseAccessModels.CreateLoginRequest;
+import com.heuristiq.identity.franchiseaccess.FranchiseAccessModels.CreateLoginResponse;
+import com.heuristiq.identity.franchiseaccess.FranchiseAccessModels.EmptyResponse;
+import com.heuristiq.identity.franchiseaccess.FranchiseAccessModels.EnsureRoleRequest;
+import com.heuristiq.identity.franchiseaccess.FranchiseAccessModels.ExistsResponse;
+import com.heuristiq.identity.franchiseaccess.FranchiseAccessModels.GrantRequest;
+import com.heuristiq.identity.franchiseaccess.FranchiseAccessModels.InUseResponse;
+import com.heuristiq.identity.franchiseaccess.FranchiseAccessModels.PrivilegeResponse;
+import com.heuristiq.identity.franchiseaccess.FranchiseAccessModels.RoleCodesResponse;
+import com.heuristiq.identity.franchiseaccess.FranchiseAccessModels.SubscribeRequest;
+import com.heuristiq.identity.franchiseaccess.FranchiseAccessModels.SupportEmailResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

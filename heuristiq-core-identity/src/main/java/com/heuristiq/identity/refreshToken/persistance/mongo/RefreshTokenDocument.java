@@ -1,4 +1,4 @@
-package com.heuristiq.uam.refreshToken.persistance.mongo;
+package com.heuristiq.identity.refreshToken.persistance.mongo;
 
 import java.time.LocalDateTime;
 
@@ -9,9 +9,9 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.heuristiq.uam.enums.UamEnums.PrincipalType;
-import com.heuristiq.uam.helper.AuditInfo;
-import com.heuristiq.uam.util.ImmutableAfterCreate;
+import com.heuristiq.identity.enums.UamEnums.PrincipalType;
+import com.heuristiq.identity.helper.AuditInfo;
+import com.heuristiq.identity.util.ImmutableAfterCreate;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;

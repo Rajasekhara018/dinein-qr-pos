@@ -1,4 +1,4 @@
-package com.heuristiq.uam.application.client.persistence.mongo;
+package com.heuristiq.identity.application.client.persistence.mongo;
 
 import java.util.Set;
 
@@ -8,11 +8,11 @@ import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.heuristiq.uam.enums.UamEnums.ApiClientType;
-import com.heuristiq.uam.enums.UamEnums.ClientAuthenticationMethod;
-import com.heuristiq.uam.enums.UamEnums.GrantType;
-import com.heuristiq.uam.helper.AuditInfo;
-import com.heuristiq.uam.util.ImmutableAfterCreate;
+import com.heuristiq.identity.enums.UamEnums.ApiClientType;
+import com.heuristiq.identity.enums.UamEnums.ClientAuthenticationMethod;
+import com.heuristiq.identity.enums.UamEnums.GrantType;
+import com.heuristiq.identity.helper.AuditInfo;
+import com.heuristiq.identity.util.ImmutableAfterCreate;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;

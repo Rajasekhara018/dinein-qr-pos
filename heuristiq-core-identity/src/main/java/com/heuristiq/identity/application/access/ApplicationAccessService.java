@@ -1,4 +1,4 @@
-package com.heuristiq.uam.application.access;
+package com.heuristiq.identity.application.access;
 
 import java.time.Clock;
 import java.time.LocalDateTime;
@@ -12,12 +12,12 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import com.heuristiq.uam.application.Application;
-import com.heuristiq.uam.application.access.repository.ApplicationAccessRepository;
-import com.heuristiq.uam.application.repository.ApplicationRepository;
-import com.heuristiq.uam.common.UamException;
-import com.heuristiq.uam.users.UamUser;
-import com.heuristiq.uam.users.repository.UamUserRepository;
+import com.heuristiq.identity.application.Application;
+import com.heuristiq.identity.application.access.repository.ApplicationAccessRepository;
+import com.heuristiq.identity.application.repository.ApplicationRepository;
+import com.heuristiq.identity.common.UamException;
+import com.heuristiq.identity.users.UamUser;
+import com.heuristiq.identity.users.repository.UamUserRepository;
 
 @Service
 public class ApplicationAccessService implements ApplicationAccessServiceUseCase {
@@ -25,7 +25,7 @@ public class ApplicationAccessService implements ApplicationAccessServiceUseCase
     private final ApplicationRepository applicationRepository;
     private final UamUserRepository userRepository;
     private final Clock clock;
-    private com.heuristiq.uam.role.repository.UamRoleRepository roleRepository;
+    private com.heuristiq.identity.role.repository.UamRoleRepository roleRepository;
 
     @Autowired
     public ApplicationAccessService(ApplicationAccessRepository accessRepository,
@@ -110,13 +110,13 @@ public class ApplicationAccessService implements ApplicationAccessServiceUseCase
 
     /** Optional: lets an organization's administrator role open every registered application. */
     @org.springframework.beans.factory.annotation.Autowired(required = false)
-    public void setRoleRepository(com.heuristiq.uam.role.repository.UamRoleRepository roleRepository) {
+    public void setRoleRepository(com.heuristiq.identity.role.repository.UamRoleRepository roleRepository) {
         this.roleRepository = roleRepository;
     }
 
     /** True for the administrator role an organization owns (its code ends with _ADMIN and it belongs to an organization). */
     private boolean isOrganizationAdminRole(String roleCode) {
-        return roleRepository != null && roleCode.endsWith(com.heuristiq.uam.organization.admin.OrganizationAdminConstants.ADMIN_ROLE_SUFFIX)
+        return roleRepository != null && roleCode.endsWith(com.heuristiq.identity.organization.admin.OrganizationAdminConstants.ADMIN_ROLE_SUFFIX)
                 && roleRepository.findByCodeIgnoreCase(roleCode).filter(r -> StringUtils.hasText(r.getTenantId())).isPresent();
     }
 

@@ -1,4 +1,4 @@
-package com.heuristiq.uam.orgstructure.domain;
+package com.heuristiq.identity.orgstructure.domain;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,9 +7,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import com.heuristiq.uam.orgstructure.domain.RoleRuleImportModels.RoleRuleReference;
-import com.heuristiq.uam.orgstructure.domain.RoleRuleImportModels.RoleRuleRow;
-import com.heuristiq.uam.orgstructure.domain.RoleRuleImportModels.RoleRuleRowInput;
+import com.heuristiq.identity.orgstructure.domain.RoleRuleImportModels.RoleRuleReference;
+import com.heuristiq.identity.orgstructure.domain.RoleRuleImportModels.RoleRuleRow;
+import com.heuristiq.identity.orgstructure.domain.RoleRuleImportModels.RoleRuleRowInput;
 
 /**
  * Checks every row of a roles file on its own, against the organization and against the rest of the file. Pure logic: it reads nothing

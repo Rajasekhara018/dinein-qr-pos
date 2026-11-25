@@ -1,9 +1,9 @@
-package com.heuristiq.uam.orgstructure.application;
+package com.heuristiq.identity.orgstructure.application;
 
 import java.util.List;
 
-import com.heuristiq.uam.orgstructure.domain.RoleRuleImportModels.RoleRuleBatch;
-import com.heuristiq.uam.orgstructure.domain.RoleRuleImportModels.RoleRuleRow;
+import com.heuristiq.identity.orgstructure.domain.RoleRuleImportModels.RoleRuleBatch;
+import com.heuristiq.identity.orgstructure.domain.RoleRuleImportModels.RoleRuleRow;
 
 /** Use cases of the bulk roles import: stage and validate a file, review it, then confirm or cancel. */
 public interface RoleRuleImportUseCase {

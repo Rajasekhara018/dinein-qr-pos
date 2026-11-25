@@ -1,26 +1,26 @@
-package com.heuristiq.uam.readiness.domain;
+package com.heuristiq.identity.readiness.domain;
 
-import static com.heuristiq.uam.readiness.domain.ReadinessCheckIds.DMS_DOCUMENT_TYPES_CONFIGURED;
-import static com.heuristiq.uam.readiness.domain.ReadinessCheckIds.NMS_TEMPLATES_EXIST;
-import static com.heuristiq.uam.readiness.domain.ReadinessCheckIds.ONBOARDING_REVIEW_PROCESS_AVAILABLE;
-import static com.heuristiq.uam.readiness.domain.ReadinessCheckIds.ONBOARDING_SCHEMA_PUBLISHED;
-import static com.heuristiq.uam.readiness.domain.ReadinessCheckIds.ONBOARDING_TYPE_ACTIVE;
-import static com.heuristiq.uam.readiness.domain.ReadinessCheckIds.REPORTS_CONFIGURATION_EXISTS;
-import static com.heuristiq.uam.readiness.domain.ReadinessCheckIds.REPORTS_CONNECTION_TESTED;
-import static com.heuristiq.uam.readiness.domain.ReadinessCheckIds.REPORTS_CUSTOM_FIELDS_EXIST;
-import static com.heuristiq.uam.readiness.domain.ReadinessCheckIds.REPORTS_FORMATS_CONFIGURED;
-import static com.heuristiq.uam.readiness.domain.ReadinessCheckIds.REPORTS_SYSTEM_CONFIGURATION_EXISTS;
-import static com.heuristiq.uam.readiness.domain.ReadinessCheckIds.REPORTS_TEMPLATE_EXISTS;
-import static com.heuristiq.uam.readiness.domain.ReadinessCheckIds.UAM_APPLICATION_ACTIVE;
-import static com.heuristiq.uam.readiness.domain.ReadinessCheckIds.UAM_APPLICATION_IN_ORGANIZATION;
-import static com.heuristiq.uam.readiness.domain.ReadinessCheckIds.WALLET_APP_CAN_CONSUME;
-import static com.heuristiq.uam.readiness.domain.ReadinessCheckIds.WALLET_APP_CAN_ISSUE;
-import static com.heuristiq.uam.readiness.domain.ReadinessCheckIds.WALLET_APP_ENABLED;
-import static com.heuristiq.uam.readiness.domain.ReadinessCheckIds.WALLET_APP_REGISTERED;
-import static com.heuristiq.uam.readiness.domain.ReadinessCheckIds.WALLET_SYSTEM_ACCOUNTS_READY;
-import static com.heuristiq.uam.readiness.domain.ReadinessCheckIds.WALLET_TREASURY_CONFIGURED;
-import static com.heuristiq.uam.readiness.domain.ReadinessSeverity.BLOCK;
-import static com.heuristiq.uam.readiness.domain.ReadinessSeverity.WARN;
+import static com.heuristiq.identity.readiness.domain.ReadinessCheckIds.DMS_DOCUMENT_TYPES_CONFIGURED;
+import static com.heuristiq.identity.readiness.domain.ReadinessCheckIds.NMS_TEMPLATES_EXIST;
+import static com.heuristiq.identity.readiness.domain.ReadinessCheckIds.ONBOARDING_REVIEW_PROCESS_AVAILABLE;
+import static com.heuristiq.identity.readiness.domain.ReadinessCheckIds.ONBOARDING_SCHEMA_PUBLISHED;
+import static com.heuristiq.identity.readiness.domain.ReadinessCheckIds.ONBOARDING_TYPE_ACTIVE;
+import static com.heuristiq.identity.readiness.domain.ReadinessCheckIds.REPORTS_CONFIGURATION_EXISTS;
+import static com.heuristiq.identity.readiness.domain.ReadinessCheckIds.REPORTS_CONNECTION_TESTED;
+import static com.heuristiq.identity.readiness.domain.ReadinessCheckIds.REPORTS_CUSTOM_FIELDS_EXIST;
+import static com.heuristiq.identity.readiness.domain.ReadinessCheckIds.REPORTS_FORMATS_CONFIGURED;
+import static com.heuristiq.identity.readiness.domain.ReadinessCheckIds.REPORTS_SYSTEM_CONFIGURATION_EXISTS;
+import static com.heuristiq.identity.readiness.domain.ReadinessCheckIds.REPORTS_TEMPLATE_EXISTS;
+import static com.heuristiq.identity.readiness.domain.ReadinessCheckIds.UAM_APPLICATION_ACTIVE;
+import static com.heuristiq.identity.readiness.domain.ReadinessCheckIds.UAM_APPLICATION_IN_ORGANIZATION;
+import static com.heuristiq.identity.readiness.domain.ReadinessCheckIds.WALLET_APP_CAN_CONSUME;
+import static com.heuristiq.identity.readiness.domain.ReadinessCheckIds.WALLET_APP_CAN_ISSUE;
+import static com.heuristiq.identity.readiness.domain.ReadinessCheckIds.WALLET_APP_ENABLED;
+import static com.heuristiq.identity.readiness.domain.ReadinessCheckIds.WALLET_APP_REGISTERED;
+import static com.heuristiq.identity.readiness.domain.ReadinessCheckIds.WALLET_SYSTEM_ACCOUNTS_READY;
+import static com.heuristiq.identity.readiness.domain.ReadinessCheckIds.WALLET_TREASURY_CONFIGURED;
+import static com.heuristiq.identity.readiness.domain.ReadinessSeverity.BLOCK;
+import static com.heuristiq.identity.readiness.domain.ReadinessSeverity.WARN;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,7 +33,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.heuristiq.uam.application.catalogue.ApplicationCatalogue;
+import com.heuristiq.identity.application.catalogue.ApplicationCatalogue;
 
 /**
  * THE readiness profile of every catalogue application: the one place to edit which checks count for which application, in

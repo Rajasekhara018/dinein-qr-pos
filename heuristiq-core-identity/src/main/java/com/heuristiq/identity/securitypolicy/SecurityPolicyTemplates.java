@@ -1,4 +1,4 @@
-package com.heuristiq.uam.securitypolicy;
+package com.heuristiq.identity.securitypolicy;
 
 import java.util.List;
 import java.util.Map;

@@ -1,4 +1,4 @@
-package com.heuristiq.uam.metrics;
+package com.heuristiq.identity.metrics;
 
 /** Closed set of values for the {@code channel} metric tag of the OTP metrics. */
 public enum OtpChannel {

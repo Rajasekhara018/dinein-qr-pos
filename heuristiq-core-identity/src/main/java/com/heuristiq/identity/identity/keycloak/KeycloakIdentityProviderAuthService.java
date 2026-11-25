@@ -1,14 +1,14 @@
-package com.heuristiq.uam.identity.keycloak;
+package com.heuristiq.identity.identity.keycloak;
 
-import com.heuristiq.uam.identity.IdentityProviderConstants;
-import com.heuristiq.uam.config.UamProperties;
-import com.heuristiq.uam.dto.ExternalUserInfo;
-import com.heuristiq.uam.dto.ProviderLoginRequest;
-import com.heuristiq.uam.dto.ProviderRefreshRequest;
-import com.heuristiq.uam.dto.ProviderTokenResponse;
-import com.heuristiq.uam.identity.IdentityProviderAuthService;
-import com.heuristiq.uam.identity.IdentityProviderType;
-import com.heuristiq.uam.identity.ProviderAuthException;
+import com.heuristiq.identity.identity.IdentityProviderConstants;
+import com.heuristiq.identity.config.UamProperties;
+import com.heuristiq.identity.dto.ExternalUserInfo;
+import com.heuristiq.identity.dto.ProviderLoginRequest;
+import com.heuristiq.identity.dto.ProviderRefreshRequest;
+import com.heuristiq.identity.dto.ProviderTokenResponse;
+import com.heuristiq.identity.identity.IdentityProviderAuthService;
+import com.heuristiq.identity.identity.IdentityProviderType;
+import com.heuristiq.identity.identity.ProviderAuthException;
 import io.github.resilience4j.bulkhead.annotation.Bulkhead;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;

@@ -1,6 +1,6 @@
-package com.heuristiq.uam.lockout.repository.mongo;
+package com.heuristiq.identity.lockout.repository.mongo;
 
-import com.heuristiq.uam.lockout.persistence.mongo.UserLoginSecurityDocument;
+import com.heuristiq.identity.lockout.persistence.mongo.UserLoginSecurityDocument;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.Optional;

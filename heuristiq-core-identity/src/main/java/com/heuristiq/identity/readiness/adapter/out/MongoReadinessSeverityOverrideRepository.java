@@ -1,4 +1,4 @@
-package com.heuristiq.uam.readiness.adapter.out;
+package com.heuristiq.identity.readiness.adapter.out;
 
 import java.time.Instant;
 import java.util.Date;
@@ -15,8 +15,8 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 
-import com.heuristiq.uam.readiness.application.port.ReadinessSeverityOverrideRepository;
-import com.heuristiq.uam.readiness.domain.ReadinessSeverity;
+import com.heuristiq.identity.readiness.application.port.ReadinessSeverityOverrideRepository;
+import com.heuristiq.identity.readiness.domain.ReadinessSeverity;
 
 /**
  * MongoDB store of severity overrides (collection {@code readiness_severity_overrides}, same shape as the PostgreSQL table).

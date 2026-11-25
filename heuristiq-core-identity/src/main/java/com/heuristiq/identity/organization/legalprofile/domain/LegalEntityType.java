@@ -1,4 +1,4 @@
-package com.heuristiq.uam.organization.legalprofile.domain;
+package com.heuristiq.identity.organization.legalprofile.domain;
 
 /** The legal form of an organization. */
 public enum LegalEntityType {

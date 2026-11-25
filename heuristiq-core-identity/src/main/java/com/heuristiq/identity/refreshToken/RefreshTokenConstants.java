@@ -1,9 +1,9 @@
-package com.heuristiq.uam.refreshToken;
+package com.heuristiq.identity.refreshToken;
 
 /**
  * Fixed values of refresh-token rotation: revocation reasons stored on a token, the error code a failed refresh
  * returns, and the bounds of the reuse-grace walk. Durations that may differ per deployment live in
- * {@link com.heuristiq.uam.refreshToken.config.RefreshTokenProperties}, not here.
+ * {@link com.heuristiq.identity.refreshToken.config.RefreshTokenProperties}, not here.
  */
 public final class RefreshTokenConstants {
 

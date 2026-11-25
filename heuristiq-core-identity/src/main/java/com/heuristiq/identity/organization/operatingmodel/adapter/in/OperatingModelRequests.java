@@ -1,6 +1,6 @@
-package com.heuristiq.uam.organization.operatingmodel.adapter.in;
+package com.heuristiq.identity.organization.operatingmodel.adapter.in;
 
-import com.heuristiq.uam.organization.operatingmodel.domain.OperatingModel;
+import com.heuristiq.identity.organization.operatingmodel.domain.OperatingModel;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;

@@ -1,4 +1,4 @@
-package com.heuristiq.uam.orgstructure.domain;
+package com.heuristiq.identity.orgstructure.domain;
 
 /** Fixed values of the organization-structure feature (statuses, line types, paging limits). */
 public final class OrgStructureConstants {

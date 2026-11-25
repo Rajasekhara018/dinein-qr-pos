@@ -1,7 +1,7 @@
-package com.heuristiq.uam.application.client.repository.jpa;
+package com.heuristiq.identity.application.client.repository.jpa;
 
-import com.heuristiq.uam.application.client.persistence.jpa.ApiClientEntity;
-import com.heuristiq.uam.enums.UamEnums.ApiClientType;
+import com.heuristiq.identity.application.client.persistence.jpa.ApiClientEntity;
+import com.heuristiq.identity.enums.UamEnums.ApiClientType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

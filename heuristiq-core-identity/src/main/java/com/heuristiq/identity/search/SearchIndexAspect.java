@@ -1,4 +1,4 @@
-package com.heuristiq.uam.search;
+package com.heuristiq.identity.search;
 
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.annotation.AfterReturning;
@@ -51,7 +51,7 @@ public class SearchIndexAspect {
      * A deleted record leaves the search index too. Without this a deleted role or user stayed searchable (the lists in the web
      * apps read the index), showing records the database no longer has.
      */
-    @org.aspectj.lang.annotation.AfterReturning("execution(* com.heuristiq.uam..*Repository.delete(..)) && args(deleted)")
+    @org.aspectj.lang.annotation.AfterReturning("execution(* com.heuristiq.identity..*Repository.delete(..)) && args(deleted)")
     public void afterRepositoryDelete(Object deleted) {
         if (!(deleted instanceof SearchIndexable indexable)) return;
         String model = indexable.getSearchModel();
@@ -63,7 +63,7 @@ public class SearchIndexAspect {
         }
     }
 
-    @AfterReturning(pointcut = "execution(* com.heuristiq.uam..*Repository.save(..))", returning = "result")
+    @AfterReturning(pointcut = "execution(* com.heuristiq.identity..*Repository.save(..))", returning = "result")
     public void afterRepositorySave(Object result) {
         if (result != null && !(result instanceof SearchIndexable) && enrichers.stream().anyMatch(e -> e.followsUp(result))) {
             Object saved = result;

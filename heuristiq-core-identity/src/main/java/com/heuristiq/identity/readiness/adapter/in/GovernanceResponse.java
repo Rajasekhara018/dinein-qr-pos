@@ -1,10 +1,10 @@
-package com.heuristiq.uam.readiness.adapter.in;
+package com.heuristiq.identity.readiness.adapter.in;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.heuristiq.uam.readiness.application.ReadinessGovernanceService;
-import com.heuristiq.uam.readiness.application.port.OwnerCandidate;
+import com.heuristiq.identity.readiness.application.ReadinessGovernanceService;
+import com.heuristiq.identity.readiness.application.port.OwnerCandidate;
 
 /**
  * Governance state as the API returns it.

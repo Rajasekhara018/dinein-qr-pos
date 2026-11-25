@@ -1,7 +1,7 @@
-package com.heuristiq.uam.biometric.application.port;
+package com.heuristiq.identity.biometric.application.port;
 
-import com.heuristiq.uam.biometric.domain.BiometricCredential;
-import com.heuristiq.uam.biometric.domain.BiometricRevocationReason;
+import com.heuristiq.identity.biometric.domain.BiometricCredential;
+import com.heuristiq.identity.biometric.domain.BiometricRevocationReason;
 
 /**
  * Domain audit of biometric sign-in (central audit service). Entries carry ids, the installation, application, platform

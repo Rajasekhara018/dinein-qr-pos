@@ -1,4 +1,4 @@
-package com.heuristiq.uam.bootstrap;
+package com.heuristiq.identity.bootstrap;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.core.io.ClassPathResource;
@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
-import com.heuristiq.uam.application.catalogue.ApplicationCatalogue;
+import com.heuristiq.identity.application.catalogue.ApplicationCatalogue;
 
 /**
  * Reads the full permission catalog from the classpath JSON resource so it can be seeded into

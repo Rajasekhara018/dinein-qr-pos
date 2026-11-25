@@ -1,4 +1,4 @@
-package com.heuristiq.uam.security;
+package com.heuristiq.identity.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;

@@ -1,13 +1,13 @@
-package com.heuristiq.uam.application;
+package com.heuristiq.identity.application;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import com.heuristiq.uam.common.UamException;
-import com.heuristiq.uam.organization.DefaultOrganizationResolver;
-import com.heuristiq.uam.security.TenantContext;
-import com.heuristiq.uam.security.TenantGuard;
+import com.heuristiq.identity.common.UamException;
+import com.heuristiq.identity.organization.DefaultOrganizationResolver;
+import com.heuristiq.identity.security.TenantContext;
+import com.heuristiq.identity.security.TenantGuard;
 
 /**
  * The organization a request works in: the token's {@code tenantId} claim. A signed-in caller whose token carries no

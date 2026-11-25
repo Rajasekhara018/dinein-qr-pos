@@ -1,8 +1,8 @@
-package com.heuristiq.uam.orgstructure.domain;
+package com.heuristiq.identity.orgstructure.domain;
 
 import java.util.List;
 
-import com.heuristiq.uam.orgstructure.domain.ImportModels.ImportRowInput;
+import com.heuristiq.identity.orgstructure.domain.ImportModels.ImportRowInput;
 
 /**
  * Port to wherever uploaded import files live (the document store). The user uploads the file there; the

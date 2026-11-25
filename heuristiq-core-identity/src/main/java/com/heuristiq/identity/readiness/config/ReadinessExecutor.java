@@ -1,4 +1,4 @@
-package com.heuristiq.uam.readiness.config;
+package com.heuristiq.identity.readiness.config;
 
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutorService;

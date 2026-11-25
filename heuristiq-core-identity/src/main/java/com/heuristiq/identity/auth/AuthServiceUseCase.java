@@ -1,14 +1,14 @@
-package com.heuristiq.uam.auth;
+package com.heuristiq.identity.auth;
 
-import com.heuristiq.uam.users.UamUser;
-import com.heuristiq.uam.dto.LoginRequest;
-import com.heuristiq.uam.dto.LoginResponse;
+import com.heuristiq.identity.users.UamUser;
+import com.heuristiq.identity.dto.LoginRequest;
+import com.heuristiq.identity.dto.LoginResponse;
 
 public interface AuthServiceUseCase {
 
     /**
      * Result is either a {@link LoginResponse} (success) or a
-     * {@link com.heuristiq.uam.dto.MfaChallengeRequiredResponse} (password correct, account has 2FA
+     * {@link com.heuristiq.identity.dto.MfaChallengeRequiredResponse} (password correct, account has 2FA
      * enabled, caller must resubmit with {@code totpCode}).
      */
     record LoginInput(LoginRequest request) {}

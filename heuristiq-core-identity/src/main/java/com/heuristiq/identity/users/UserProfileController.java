@@ -1,13 +1,13 @@
-package com.heuristiq.uam.users;
+package com.heuristiq.identity.users;
 
-import com.heuristiq.uam.common.CommonRequestMapper;
-import com.heuristiq.uam.common.CommonRequestObject;
-import com.heuristiq.uam.common.CommonResponseObject;
-import com.heuristiq.uam.common.RequestObjectType;
-import com.heuristiq.uam.common.UamException;
-import com.heuristiq.uam.dto.ChangePasswordRequest;
-import com.heuristiq.uam.dto.UpdateMyProfileRequest;
-import com.heuristiq.uam.usercredentials.UserCredentialServiceUseCase;
+import com.heuristiq.identity.common.CommonRequestMapper;
+import com.heuristiq.identity.common.CommonRequestObject;
+import com.heuristiq.identity.common.CommonResponseObject;
+import com.heuristiq.identity.common.RequestObjectType;
+import com.heuristiq.identity.common.UamException;
+import com.heuristiq.identity.dto.ChangePasswordRequest;
+import com.heuristiq.identity.dto.UpdateMyProfileRequest;
+import com.heuristiq.identity.usercredentials.UserCredentialServiceUseCase;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;

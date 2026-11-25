@@ -1,6 +1,6 @@
-package com.heuristiq.uam.organization.repository.mongo;
+package com.heuristiq.identity.organization.repository.mongo;
 
-import com.heuristiq.uam.organization.persistence.mongo.TenantDocument;
+import com.heuristiq.identity.organization.persistence.mongo.TenantDocument;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.Optional;

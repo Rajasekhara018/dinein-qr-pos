@@ -1,4 +1,4 @@
-package com.heuristiq.uam.orgstructure.config;
+package com.heuristiq.identity.orgstructure.config;
 
 import java.time.Clock;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -16,9 +16,9 @@ import org.springframework.context.annotation.Configuration;
 
 import org.springframework.util.StringUtils;
 
-import com.heuristiq.uam.organization.DefaultOrganizationResolver;
-import com.heuristiq.uam.orgstructure.adapter.in.CallerContext;
-import com.heuristiq.uam.orgstructure.domain.ImportLimits;
+import com.heuristiq.identity.organization.DefaultOrganizationResolver;
+import com.heuristiq.identity.orgstructure.adapter.in.CallerContext;
+import com.heuristiq.identity.orgstructure.domain.ImportLimits;
 
 /** Wiring for the organization-structure feature, which runs only in PostgreSQL persistence mode. */
 @Configuration
@@ -34,9 +34,9 @@ public class OrgStructureConfig {
     }
 
     @Bean
-    com.heuristiq.uam.orgstructure.application.DataScopeResolver dataScopeResolver(
-            com.heuristiq.uam.orgstructure.domain.DataScopeSource source, com.heuristiq.uam.orgstructure.domain.OrgStructureStore structure) {
-        return new com.heuristiq.uam.orgstructure.application.DataScopeResolver(source, structure);
+    com.heuristiq.identity.orgstructure.application.DataScopeResolver dataScopeResolver(
+            com.heuristiq.identity.orgstructure.domain.DataScopeSource source, com.heuristiq.identity.orgstructure.domain.OrgStructureStore structure) {
+        return new com.heuristiq.identity.orgstructure.application.DataScopeResolver(source, structure);
     }
 
     @Bean

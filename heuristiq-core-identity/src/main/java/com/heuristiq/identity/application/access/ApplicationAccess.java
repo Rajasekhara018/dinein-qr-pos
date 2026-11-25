@@ -1,4 +1,4 @@
-package com.heuristiq.uam.application.access;
+package com.heuristiq.identity.application.access;
 
 import java.time.LocalDateTime;
 

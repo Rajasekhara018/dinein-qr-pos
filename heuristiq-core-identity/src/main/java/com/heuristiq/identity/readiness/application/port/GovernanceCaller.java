@@ -1,4 +1,4 @@
-package com.heuristiq.uam.readiness.application.port;
+package com.heuristiq.identity.readiness.application.port;
 
 /** Who is calling the current request, always from the token. */
 public interface GovernanceCaller {

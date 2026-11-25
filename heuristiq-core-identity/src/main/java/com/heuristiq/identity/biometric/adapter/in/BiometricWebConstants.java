@@ -1,4 +1,4 @@
-package com.heuristiq.uam.biometric.adapter.in;
+package com.heuristiq.identity.biometric.adapter.in;
 
 /** Paths, headers and request attributes of the biometric sign-in endpoints. */
 final class BiometricWebConstants {

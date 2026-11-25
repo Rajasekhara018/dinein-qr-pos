@@ -1,8 +1,8 @@
-package com.heuristiq.uam.users.repository.mongo;
+package com.heuristiq.identity.users.repository.mongo;
 
-import com.heuristiq.uam.helper.PhoneIdentity;
-import com.heuristiq.uam.users.UserPhoneConstants;
-import com.heuristiq.uam.users.persistence.mongo.UamUserDocument;
+import com.heuristiq.identity.helper.PhoneIdentity;
+import com.heuristiq.identity.users.UserPhoneConstants;
+import com.heuristiq.identity.users.persistence.mongo.UamUserDocument;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.ApplicationArguments;

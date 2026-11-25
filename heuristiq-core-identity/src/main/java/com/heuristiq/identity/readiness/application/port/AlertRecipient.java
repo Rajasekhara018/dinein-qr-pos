@@ -1,4 +1,4 @@
-package com.heuristiq.uam.readiness.application.port;
+package com.heuristiq.identity.readiness.application.port;
 
 /**
  * Someone an alert may be sent to.

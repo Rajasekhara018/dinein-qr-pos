@@ -1,8 +1,8 @@
-package com.heuristiq.uam.securitypolicy;
+package com.heuristiq.identity.securitypolicy;
 
-import com.heuristiq.uam.application.access.ApplicationAccessServiceUseCase;
-import com.heuristiq.uam.common.UamCommonConstants;
-import com.heuristiq.uam.users.UamUser;
+import com.heuristiq.identity.application.access.ApplicationAccessServiceUseCase;
+import com.heuristiq.identity.common.UamCommonConstants;
+import com.heuristiq.identity.users.UamUser;
 import org.springframework.stereotype.Component;
 import java.security.SecureRandom;
 import java.util.*;

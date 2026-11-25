@@ -1,8 +1,8 @@
-package com.heuristiq.uam.session;
+package com.heuristiq.identity.session;
 
-import com.heuristiq.uam.common.CommonResponseObject;
-import com.heuristiq.uam.common.OperationResult;
-import com.heuristiq.uam.common.UamException;
+import com.heuristiq.identity.common.CommonResponseObject;
+import com.heuristiq.identity.common.OperationResult;
+import com.heuristiq.identity.common.UamException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * Self-service session access — see {@link com.heuristiq.uam.users.UserProfileController}'s javadoc for the pattern.
+ * Self-service session access — see {@link com.heuristiq.identity.users.UserProfileController}'s javadoc for the pattern.
  * {@code UserSessionService#revoke} takes a raw session id with no ownership check, so
  * the single-session revoke below verifies {@code session.getUserId()} against the caller before
  * acting, to stop one user from revoking another user's session by guessing/enumerating ids.

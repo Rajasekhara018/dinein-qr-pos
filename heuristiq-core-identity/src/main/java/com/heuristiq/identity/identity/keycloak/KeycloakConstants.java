@@ -1,4 +1,4 @@
-package com.heuristiq.uam.identity.keycloak;
+package com.heuristiq.identity.identity.keycloak;
 
 /** Keycloak wire contract used by the Keycloak adapters: endpoint paths, admin client, attributes and naming. */
 final class KeycloakConstants {

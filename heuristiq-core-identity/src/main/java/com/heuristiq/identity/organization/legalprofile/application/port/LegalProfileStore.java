@@ -1,7 +1,7 @@
-package com.heuristiq.uam.organization.legalprofile.application.port;
+package com.heuristiq.identity.organization.legalprofile.application.port;
 
-import com.heuristiq.uam.organization.legalprofile.domain.LegalProfile;
-import com.heuristiq.uam.organization.legalprofile.domain.StoredLegalProfile;
+import com.heuristiq.identity.organization.legalprofile.domain.LegalProfile;
+import com.heuristiq.identity.organization.legalprofile.domain.StoredLegalProfile;
 import java.time.Instant;
 import java.util.Optional;
 

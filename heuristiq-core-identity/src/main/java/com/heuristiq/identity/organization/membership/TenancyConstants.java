@@ -1,6 +1,6 @@
-package com.heuristiq.uam.organization.membership;
+package com.heuristiq.identity.organization.membership;
 
-import com.heuristiq.uam.common.UamCommonConstants;
+import com.heuristiq.identity.common.UamCommonConstants;
 
 /** Fixed values of organization membership at sign-in. */
 public final class TenancyConstants {

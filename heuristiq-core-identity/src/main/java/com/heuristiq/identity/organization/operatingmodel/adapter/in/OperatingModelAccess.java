@@ -1,9 +1,9 @@
-package com.heuristiq.uam.organization.operatingmodel.adapter.in;
+package com.heuristiq.identity.organization.operatingmodel.adapter.in;
 
-import com.heuristiq.uam.organization.operatingmodel.application.OrganizationNotFoundException;
-import com.heuristiq.uam.organization.operatingmodel.domain.OperatingModelConstants;
-import com.heuristiq.uam.security.TenantContext;
-import com.heuristiq.uam.security.TenantGuard;
+import com.heuristiq.identity.organization.operatingmodel.application.OrganizationNotFoundException;
+import com.heuristiq.identity.organization.operatingmodel.domain.OperatingModelConstants;
+import com.heuristiq.identity.security.TenantContext;
+import com.heuristiq.identity.security.TenantGuard;
 
 /**
  * Who may reach an organization's operating model: a SUPER_ADMIN reaches every organization; any other signed-in person only

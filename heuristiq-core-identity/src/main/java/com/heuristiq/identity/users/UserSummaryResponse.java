@@ -1,6 +1,6 @@
-package com.heuristiq.uam.users;
+package com.heuristiq.identity.users;
 
-import com.heuristiq.uam.helper.RPhoneNumber;
+import com.heuristiq.identity.helper.RPhoneNumber;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 /**

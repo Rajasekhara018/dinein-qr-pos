@@ -1,24 +1,24 @@
-package com.heuristiq.uam.google;
+package com.heuristiq.identity.google;
 
 import org.springframework.http.HttpHeaders;
-import com.heuristiq.uam.auth.AuthConstants;
-import com.heuristiq.uam.auth.ClientIpResolver;
-import com.heuristiq.uam.auth.LoginSessionService;
-import com.heuristiq.uam.auth.MfaLoginGate;
-import com.heuristiq.uam.dto.MfaChallengeRequiredResponse;
-import com.heuristiq.uam.mfa.UserMfa;
-import com.heuristiq.uam.users.UamUser;
-import com.heuristiq.uam.usercredentials.UserCredential;
-import com.heuristiq.uam.auth.SelfServiceRoleGrant;
-import com.heuristiq.uam.enums.UamEnums;
-import com.heuristiq.uam.enums.UamEnums.AuthProvider;
-import com.heuristiq.uam.helper.AuditInfo;
-import com.heuristiq.uam.helper.RName;
-import com.heuristiq.uam.helper.RUpload;
-import com.heuristiq.uam.identity.IdentityProviderSyncService;
-import com.heuristiq.uam.users.NewUamUserBuilder;
-import com.heuristiq.uam.users.repository.UamUserRepository;
-import com.heuristiq.uam.usercredentials.UserCredentialRepository;
+import com.heuristiq.identity.auth.AuthConstants;
+import com.heuristiq.identity.auth.ClientIpResolver;
+import com.heuristiq.identity.auth.LoginSessionService;
+import com.heuristiq.identity.auth.MfaLoginGate;
+import com.heuristiq.identity.dto.MfaChallengeRequiredResponse;
+import com.heuristiq.identity.mfa.UserMfa;
+import com.heuristiq.identity.users.UamUser;
+import com.heuristiq.identity.usercredentials.UserCredential;
+import com.heuristiq.identity.auth.SelfServiceRoleGrant;
+import com.heuristiq.identity.enums.UamEnums;
+import com.heuristiq.identity.enums.UamEnums.AuthProvider;
+import com.heuristiq.identity.helper.AuditInfo;
+import com.heuristiq.identity.helper.RName;
+import com.heuristiq.identity.helper.RUpload;
+import com.heuristiq.identity.identity.IdentityProviderSyncService;
+import com.heuristiq.identity.users.NewUamUserBuilder;
+import com.heuristiq.identity.users.repository.UamUserRepository;
+import com.heuristiq.identity.usercredentials.UserCredentialRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -33,7 +33,7 @@ import java.util.Optional;
 @Service
 public class UamGoogleAuthService implements UamGoogleAuthServiceUseCase {
     @org.springframework.beans.factory.annotation.Autowired
-    private com.heuristiq.uam.securitypolicy.SecurityPolicyRegistration policyRegistration;
+    private com.heuristiq.identity.securitypolicy.SecurityPolicyRegistration policyRegistration;
     private final UamUserRepository userRepository;
     private final UserCredentialRepository userCredentialRepository;
     private final GoogleIdentityTokenVerifier tokenVerifier;
@@ -79,7 +79,7 @@ public class UamGoogleAuthService implements UamGoogleAuthServiceUseCase {
                     .orElseGet(() -> {
                         requireExistingAccountWhenApplicationNamed();
                         // The type comes from the request body: never create a staff account from it.
-                        com.heuristiq.uam.auth.PublicAccountTypes.requireSignInProvisionable(userType);
+                        com.heuristiq.identity.auth.PublicAccountTypes.requireSignInProvisionable(userType);
                         return createGoogleUser(identity, userType);
                     });
             userCredentialRepository.findByUserIdAndProvider(user.getId(), AuthProvider.GOOGLE)
@@ -110,7 +110,7 @@ public class UamGoogleAuthService implements UamGoogleAuthServiceUseCase {
         user.setAudit(audit);
 
         // The Google token is verified: a back-office account is refused by a customer app before anything is saved or granted.
-        com.heuristiq.uam.auth.CustomerSignInGate.requireCustomerAppAccount(user, userType);
+        com.heuristiq.identity.auth.CustomerSignInGate.requireCustomerAppAccount(user, userType);
 
         // Users with MFA enrolled need their authenticator code too; checked before the profile update is saved.
         Optional<UserMfa> mfa = mfaLoginGate.requiredFor(user);

@@ -1,6 +1,6 @@
-package com.heuristiq.uam.otp.repository.jpa;
+package com.heuristiq.identity.otp.repository.jpa;
 
-import com.heuristiq.uam.otp.persistence.jpa.OtpChallengeEntity;
+import com.heuristiq.identity.otp.persistence.jpa.OtpChallengeEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

@@ -1,4 +1,4 @@
-package com.heuristiq.uam.orgstructure.adapter.out;
+package com.heuristiq.identity.orgstructure.adapter.out;
 
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 

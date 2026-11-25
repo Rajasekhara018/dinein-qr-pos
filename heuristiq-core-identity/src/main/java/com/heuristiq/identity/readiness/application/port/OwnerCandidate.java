@@ -1,4 +1,4 @@
-package com.heuristiq.uam.readiness.application.port;
+package com.heuristiq.identity.readiness.application.port;
 
 /**
  * A department head who may be chosen as an owner.

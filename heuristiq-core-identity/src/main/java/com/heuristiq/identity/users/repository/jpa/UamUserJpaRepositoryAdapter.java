@@ -1,11 +1,11 @@
-package com.heuristiq.uam.users.repository.jpa;
+package com.heuristiq.identity.users.repository.jpa;
 
-import com.heuristiq.uam.helper.PhoneIdentity;
-import com.heuristiq.uam.users.UamUser;
-import com.heuristiq.uam.users.repository.PhoneDuplicates;
-import com.heuristiq.uam.users.persistence.jpa.UamUserEntity;
-import com.heuristiq.uam.users.repository.UamUserRepository;
-import com.heuristiq.uam.users.repository.UamUserSearchCriteria;
+import com.heuristiq.identity.helper.PhoneIdentity;
+import com.heuristiq.identity.users.UamUser;
+import com.heuristiq.identity.users.repository.PhoneDuplicates;
+import com.heuristiq.identity.users.persistence.jpa.UamUserEntity;
+import com.heuristiq.identity.users.repository.UamUserRepository;
+import com.heuristiq.identity.users.repository.UamUserSearchCriteria;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.Expression;
 import jakarta.persistence.criteria.Predicate;

@@ -1,4 +1,4 @@
-package com.heuristiq.uam.selfregister;
+package com.heuristiq.identity.selfregister;
 
 import java.security.SecureRandom;
 import java.time.Duration;
@@ -11,13 +11,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import com.heuristiq.uam.common.UamException;
-import com.heuristiq.uam.notification.NmsNotificationService;
-import com.heuristiq.uam.otp.OtpChallengeManager;
-import com.heuristiq.uam.otp.OtpConstants;
-import com.heuristiq.uam.otp.UamOtpAuthServiceUseCase;
-import com.heuristiq.uam.enums.UamEnums;
-import com.heuristiq.uam.users.repository.UamUserRepository;
+import com.heuristiq.identity.common.UamException;
+import com.heuristiq.identity.notification.NmsNotificationService;
+import com.heuristiq.identity.otp.OtpChallengeManager;
+import com.heuristiq.identity.otp.OtpConstants;
+import com.heuristiq.identity.otp.UamOtpAuthServiceUseCase;
+import com.heuristiq.identity.enums.UamEnums;
+import com.heuristiq.identity.users.repository.UamUserRepository;
 
 /**
  * Implements {@link SelfRegisterUseCase} on top of the platform's OTP rules ({@link OtpChallengeManager}: salted hashing,
@@ -31,7 +31,7 @@ import com.heuristiq.uam.users.repository.UamUserRepository;
 @Service
 public class SelfRegisterService implements SelfRegisterUseCase {
     @org.springframework.beans.factory.annotation.Autowired
-    private com.heuristiq.uam.securitypolicy.SecurityPolicyRegistration policyRegistration;
+    private com.heuristiq.identity.securitypolicy.SecurityPolicyRegistration policyRegistration;
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(SelfRegisterService.class);
 
     private final UamUserRepository users;

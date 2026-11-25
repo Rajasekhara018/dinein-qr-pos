@@ -1,4 +1,4 @@
-package com.heuristiq.uam.orgstructure.adapter.in;
+package com.heuristiq.identity.orgstructure.adapter.in;
 
 import java.util.List;
 
@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.heuristiq.uam.common.CommonResponseObject;
-import com.heuristiq.uam.orgstructure.application.OrgStructureUseCase;
+import com.heuristiq.identity.common.CommonResponseObject;
+import com.heuristiq.identity.orgstructure.application.OrgStructureUseCase;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -27,12 +27,12 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Tag(name = "Organization directory (internal)", description = "Service-to-service lookups of departments and their people.")
 public class InternalOrgDirectoryController {
     private final OrgStructureUseCase structure;
-    private final com.heuristiq.uam.organization.membership.TenantMembershipServiceUseCase memberships;
-    private final com.heuristiq.uam.users.repository.UamUserRepository users;
+    private final com.heuristiq.identity.organization.membership.TenantMembershipServiceUseCase memberships;
+    private final com.heuristiq.identity.users.repository.UamUserRepository users;
 
     public InternalOrgDirectoryController(OrgStructureUseCase structure,
-                                          com.heuristiq.uam.organization.membership.TenantMembershipServiceUseCase memberships,
-                                          com.heuristiq.uam.users.repository.UamUserRepository users) {
+                                          com.heuristiq.identity.organization.membership.TenantMembershipServiceUseCase memberships,
+                                          com.heuristiq.identity.users.repository.UamUserRepository users) {
         this.structure = structure;
         this.memberships = memberships;
         this.users = users;
@@ -88,7 +88,7 @@ public class InternalOrgDirectoryController {
     public ResponseEntity<CommonResponseObject> tenantsOf(@RequestParam String ids) {
         java.util.Map<String, String> tenants = new java.util.LinkedHashMap<>();
         java.util.Arrays.stream(ids.split(",")).map(String::trim).filter(id -> !id.isEmpty()).distinct().limit(100)
-                .forEach(id -> users.findById(id).map(com.heuristiq.uam.users.UamUser::getTenantId)
+                .forEach(id -> users.findById(id).map(com.heuristiq.identity.users.UamUser::getTenantId)
                         .filter(t -> t != null && !t.isBlank()).ifPresent(t -> tenants.put(id, t)));
         return ResponseEntity.ok(CommonResponseObject.success(tenants));
     }

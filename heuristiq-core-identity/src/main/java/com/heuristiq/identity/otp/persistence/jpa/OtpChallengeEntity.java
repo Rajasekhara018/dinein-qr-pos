@@ -1,6 +1,6 @@
-package com.heuristiq.uam.otp.persistence.jpa;
+package com.heuristiq.identity.otp.persistence.jpa;
 
-import com.heuristiq.uam.otp.OtpChallenge;
+import com.heuristiq.identity.otp.OtpChallenge;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;

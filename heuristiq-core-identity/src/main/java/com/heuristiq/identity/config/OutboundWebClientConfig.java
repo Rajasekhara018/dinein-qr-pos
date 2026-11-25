@@ -1,4 +1,4 @@
-package com.heuristiq.uam.config;
+package com.heuristiq.identity.config;
 
 import io.netty.channel.ChannelOption;
 import reactor.netty.http.client.HttpClient;

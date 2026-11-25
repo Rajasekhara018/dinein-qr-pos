@@ -1,6 +1,6 @@
-package com.heuristiq.uam.userpreference;
+package com.heuristiq.identity.userpreference;
 
-import com.heuristiq.uam.userpreference.UserPreference;
+import com.heuristiq.identity.userpreference.UserPreference;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

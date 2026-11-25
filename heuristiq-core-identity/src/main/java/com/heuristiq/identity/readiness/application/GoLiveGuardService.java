@@ -1,4 +1,4 @@
-package com.heuristiq.uam.readiness.application;
+package com.heuristiq.identity.readiness.application;
 
 import java.util.List;
 import java.util.Map;
@@ -6,16 +6,16 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.heuristiq.uam.organization.subscription.GoLiveGuard;
-import com.heuristiq.uam.readiness.application.port.GovernanceAudit;
-import com.heuristiq.uam.readiness.application.port.GovernanceCaller;
-import com.heuristiq.uam.readiness.config.GovernanceProperties;
-import com.heuristiq.uam.readiness.domain.ApplicationReadiness;
-import com.heuristiq.uam.readiness.domain.GoLiveBlocker;
-import com.heuristiq.uam.readiness.domain.GoLiveRefusedException;
-import com.heuristiq.uam.readiness.domain.GoLiveRules;
-import com.heuristiq.uam.readiness.domain.GovernanceConstants;
-import com.heuristiq.uam.readiness.domain.ReadinessProfiles;
+import com.heuristiq.identity.organization.subscription.GoLiveGuard;
+import com.heuristiq.identity.readiness.application.port.GovernanceAudit;
+import com.heuristiq.identity.readiness.application.port.GovernanceCaller;
+import com.heuristiq.identity.readiness.config.GovernanceProperties;
+import com.heuristiq.identity.readiness.domain.ApplicationReadiness;
+import com.heuristiq.identity.readiness.domain.GoLiveBlocker;
+import com.heuristiq.identity.readiness.domain.GoLiveRefusedException;
+import com.heuristiq.identity.readiness.domain.GoLiveRules;
+import com.heuristiq.identity.readiness.domain.GovernanceConstants;
+import com.heuristiq.identity.readiness.domain.ReadinessProfiles;
 
 /**
  * Refuses to switch an application on for an organization while a BLOCK step fails or is UNKNOWN (typed 409 listing the

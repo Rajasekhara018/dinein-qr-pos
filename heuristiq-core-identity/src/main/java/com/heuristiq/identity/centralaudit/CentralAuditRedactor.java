@@ -1,10 +1,10 @@
-package com.heuristiq.uam.centralaudit;
+package com.heuristiq.identity.centralaudit;
 
-import static com.heuristiq.uam.centralaudit.CentralAuditConstants.MASK;
-import static com.heuristiq.uam.centralaudit.CentralAuditConstants.MAX_DETAIL_VALUE;
-import static com.heuristiq.uam.centralaudit.CentralAuditConstants.PHONE;
-import static com.heuristiq.uam.centralaudit.CentralAuditConstants.EMAIL;
-import static com.heuristiq.uam.centralaudit.CentralAuditConstants.SECRET_KEY;
+import static com.heuristiq.identity.centralaudit.CentralAuditConstants.MASK;
+import static com.heuristiq.identity.centralaudit.CentralAuditConstants.MAX_DETAIL_VALUE;
+import static com.heuristiq.identity.centralaudit.CentralAuditConstants.PHONE;
+import static com.heuristiq.identity.centralaudit.CentralAuditConstants.EMAIL;
+import static com.heuristiq.identity.centralaudit.CentralAuditConstants.SECRET_KEY;
 
 /**
  * Pure redaction applied to audit values before they are stored in the outbox: values under secret-looking keys are

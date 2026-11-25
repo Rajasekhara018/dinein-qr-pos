@@ -1,13 +1,13 @@
-package com.heuristiq.uam.bootstrap;
+package com.heuristiq.identity.bootstrap;
 
-import com.heuristiq.uam.application.Application;
-import com.heuristiq.uam.application.catalogue.ApplicationCatalogue;
-import com.heuristiq.uam.application.repository.ApplicationRepository;
-import com.heuristiq.uam.common.UamCommonConstants;
-import com.heuristiq.uam.helper.AuditInfo;
-import com.heuristiq.uam.permissions.Permission;
-import com.heuristiq.uam.permissions.PermissionRepository;
-import com.heuristiq.uam.role.repository.UamRoleRepository;
+import com.heuristiq.identity.application.Application;
+import com.heuristiq.identity.application.catalogue.ApplicationCatalogue;
+import com.heuristiq.identity.application.repository.ApplicationRepository;
+import com.heuristiq.identity.common.UamCommonConstants;
+import com.heuristiq.identity.helper.AuditInfo;
+import com.heuristiq.identity.permissions.Permission;
+import com.heuristiq.identity.permissions.PermissionRepository;
+import com.heuristiq.identity.role.repository.UamRoleRepository;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 

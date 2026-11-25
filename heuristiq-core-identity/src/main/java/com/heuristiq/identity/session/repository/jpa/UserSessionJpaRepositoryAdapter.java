@@ -1,8 +1,8 @@
-package com.heuristiq.uam.session.repository.jpa;
+package com.heuristiq.identity.session.repository.jpa;
 
-import com.heuristiq.uam.session.UserSession;
-import com.heuristiq.uam.session.persistence.jpa.UserSessionEntity;
-import com.heuristiq.uam.session.repository.UserSessionRepository;
+import com.heuristiq.identity.session.UserSession;
+import com.heuristiq.identity.session.persistence.jpa.UserSessionEntity;
+import com.heuristiq.identity.session.repository.UserSessionRepository;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Repository;
 

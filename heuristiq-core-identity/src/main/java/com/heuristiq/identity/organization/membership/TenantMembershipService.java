@@ -1,4 +1,4 @@
-package com.heuristiq.uam.organization.membership;
+package com.heuristiq.identity.organization.membership;
 
 import java.time.Clock;
 import java.time.LocalDateTime;
@@ -25,21 +25,21 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import com.heuristiq.uam.biometric.application.BiometricRevocationUseCase;
-import com.heuristiq.uam.biometric.application.BiometricRevocations;
-import com.heuristiq.uam.biometric.domain.BiometricRevocationReason;
-import com.heuristiq.uam.common.UamException;
-import com.heuristiq.uam.enums.UamEnums.TenantStatus;
-import com.heuristiq.uam.organization.PlatformOrganizationProperties;
-import com.heuristiq.uam.organization.Tenant;
-import com.heuristiq.uam.organization.membership.repository.TenantMembershipRepository;
-import com.heuristiq.uam.organization.repository.TenantRepository;
-import com.heuristiq.uam.security.TenantGuard;
-import com.heuristiq.uam.enums.UamEnums;
-import com.heuristiq.uam.util.UserTypeResolver;
-import com.heuristiq.uam.users.UamUser;
-import com.heuristiq.uam.users.repository.UamUserSearchCriteria;
-import com.heuristiq.uam.users.repository.UamUserRepository;
+import com.heuristiq.identity.biometric.application.BiometricRevocationUseCase;
+import com.heuristiq.identity.biometric.application.BiometricRevocations;
+import com.heuristiq.identity.biometric.domain.BiometricRevocationReason;
+import com.heuristiq.identity.common.UamException;
+import com.heuristiq.identity.enums.UamEnums.TenantStatus;
+import com.heuristiq.identity.organization.PlatformOrganizationProperties;
+import com.heuristiq.identity.organization.Tenant;
+import com.heuristiq.identity.organization.membership.repository.TenantMembershipRepository;
+import com.heuristiq.identity.organization.repository.TenantRepository;
+import com.heuristiq.identity.security.TenantGuard;
+import com.heuristiq.identity.enums.UamEnums;
+import com.heuristiq.identity.util.UserTypeResolver;
+import com.heuristiq.identity.users.UamUser;
+import com.heuristiq.identity.users.repository.UamUserSearchCriteria;
+import com.heuristiq.identity.users.repository.UamUserRepository;
 
 @Service
 public class TenantMembershipService implements TenantMembershipServiceUseCase {

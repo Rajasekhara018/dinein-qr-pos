@@ -1,4 +1,4 @@
-package com.heuristiq.uam.search;
+package com.heuristiq.identity.search;
 
 /** Fixed values for the search re-index. */
 final class SearchReindexConstants {

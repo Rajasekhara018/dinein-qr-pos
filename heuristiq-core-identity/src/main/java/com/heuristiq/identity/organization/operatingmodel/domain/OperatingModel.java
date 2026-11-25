@@ -1,4 +1,4 @@
-package com.heuristiq.uam.organization.operatingmodel.domain;
+package com.heuristiq.identity.organization.operatingmodel.domain;
 
 /** Who operates an organization's sales (see docs/OPERATING_MODEL_DESIGN.md). */
 public enum OperatingModel {

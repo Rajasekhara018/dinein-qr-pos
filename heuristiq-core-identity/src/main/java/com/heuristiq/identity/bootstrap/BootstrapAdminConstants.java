@@ -1,4 +1,4 @@
-package com.heuristiq.uam.bootstrap;
+package com.heuristiq.identity.bootstrap;
 
 /** Display name of the bootstrap super admin. */
 public final class BootstrapAdminConstants {

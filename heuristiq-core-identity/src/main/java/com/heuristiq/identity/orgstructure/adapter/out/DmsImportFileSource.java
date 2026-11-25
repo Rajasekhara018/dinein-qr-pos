@@ -1,4 +1,4 @@
-package com.heuristiq.uam.orgstructure.adapter.out;
+package com.heuristiq.identity.orgstructure.adapter.out;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
@@ -16,14 +16,14 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.heuristiq.resilient.Idempotency;
 import com.heuristiq.resilient.ResilientCaller;
-import com.heuristiq.uam.orgstructure.domain.DepartmentFileSource;
-import com.heuristiq.uam.orgstructure.domain.LadderFileSource;
-import com.heuristiq.uam.orgstructure.domain.RoleRuleFileSource;
-import com.heuristiq.uam.orgstructure.domain.RoleRuleImportModels.RoleRuleFile;
-import com.heuristiq.uam.orgstructure.domain.LadderImportModels.LadderFile;
-import com.heuristiq.uam.orgstructure.domain.DepartmentImportModels.DepartmentFile;
-import com.heuristiq.uam.orgstructure.domain.ImportFileSource;
-import com.heuristiq.uam.orgstructure.domain.OrgStructureException;
+import com.heuristiq.identity.orgstructure.domain.DepartmentFileSource;
+import com.heuristiq.identity.orgstructure.domain.LadderFileSource;
+import com.heuristiq.identity.orgstructure.domain.RoleRuleFileSource;
+import com.heuristiq.identity.orgstructure.domain.RoleRuleImportModels.RoleRuleFile;
+import com.heuristiq.identity.orgstructure.domain.LadderImportModels.LadderFile;
+import com.heuristiq.identity.orgstructure.domain.DepartmentImportModels.DepartmentFile;
+import com.heuristiq.identity.orgstructure.domain.ImportFileSource;
+import com.heuristiq.identity.orgstructure.domain.OrgStructureException;
 
 /**
  * Reads an uploaded employee or department file out of Rider_DMS. The browser uploaded it there (so it was scanned and filed

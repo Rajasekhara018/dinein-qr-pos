@@ -1,6 +1,6 @@
-package com.heuristiq.uam.biometric.application;
+package com.heuristiq.identity.biometric.application;
 
-import com.heuristiq.uam.biometric.domain.BiometricRevocationReason;
+import com.heuristiq.identity.biometric.domain.BiometricRevocationReason;
 
 /**
  * The one entry point other UAM features call when an account's device credentials must stop working: password change or

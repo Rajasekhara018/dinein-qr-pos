@@ -1,4 +1,4 @@
-package com.heuristiq.uam.organization.operatingmodel.adapter.out;
+package com.heuristiq.identity.organization.operatingmodel.adapter.out;
 
 /** Fixed values of the operating-model schedule stores (SQL, collection and field names). */
 final class ScheduleAdapterConstants {

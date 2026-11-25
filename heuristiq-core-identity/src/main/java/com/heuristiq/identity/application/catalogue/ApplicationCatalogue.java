@@ -1,10 +1,10 @@
-package com.heuristiq.uam.application.catalogue;
+package com.heuristiq.identity.application.catalogue;
 
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 
-import com.heuristiq.uam.enums.UamEnums.ApplicationType;
+import com.heuristiq.identity.enums.UamEnums.ApplicationType;
 
 /**
  * The closed list of applications an organization can create. Adding an application to the platform is a code change

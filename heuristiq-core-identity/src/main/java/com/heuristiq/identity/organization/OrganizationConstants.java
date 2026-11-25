@@ -1,4 +1,4 @@
-package com.heuristiq.uam.organization;
+package com.heuristiq.identity.organization;
 
 /** Fixed values of organization settings. */
 public final class OrganizationConstants {

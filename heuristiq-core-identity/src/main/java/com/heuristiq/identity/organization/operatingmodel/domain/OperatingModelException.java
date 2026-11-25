@@ -1,4 +1,4 @@
-package com.heuristiq.uam.organization.operatingmodel.domain;
+package com.heuristiq.identity.organization.operatingmodel.domain;
 
 /** A refused operating-model change; the kind tells the web layer which answer to give. */
 public class OperatingModelException extends RuntimeException {

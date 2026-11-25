@@ -1,12 +1,12 @@
-package com.heuristiq.uam.users.repository.mongo;
+package com.heuristiq.identity.users.repository.mongo;
 
-import com.heuristiq.uam.helper.PhoneIdentity;
-import com.heuristiq.uam.users.UamUser;
-import com.heuristiq.uam.users.repository.PhoneDuplicates;
-import com.heuristiq.uam.users.UserPhoneConstants;
-import com.heuristiq.uam.users.persistence.mongo.UamUserDocument;
-import com.heuristiq.uam.users.repository.UamUserRepository;
-import com.heuristiq.uam.users.repository.UamUserSearchCriteria;
+import com.heuristiq.identity.helper.PhoneIdentity;
+import com.heuristiq.identity.users.UamUser;
+import com.heuristiq.identity.users.repository.PhoneDuplicates;
+import com.heuristiq.identity.users.UserPhoneConstants;
+import com.heuristiq.identity.users.persistence.mongo.UamUserDocument;
+import com.heuristiq.identity.users.repository.UamUserRepository;
+import com.heuristiq.identity.users.repository.UamUserSearchCriteria;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;

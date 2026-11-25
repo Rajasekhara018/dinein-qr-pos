@@ -1,4 +1,4 @@
-package com.heuristiq.uam.orgstructure.application;
+package com.heuristiq.identity.orgstructure.application;
 
 import java.time.Clock;
 import java.time.LocalDate;
@@ -21,24 +21,24 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import com.heuristiq.uam.orgstructure.domain.ChangeType;
-import com.heuristiq.uam.orgstructure.domain.ImportFlags;
-import com.heuristiq.uam.orgstructure.domain.ImportLimits;
-import com.heuristiq.uam.orgstructure.domain.LadderFileSource;
-import com.heuristiq.uam.orgstructure.domain.LadderImportAudit;
-import com.heuristiq.uam.orgstructure.domain.LadderImportModels.ExistingPosition;
-import com.heuristiq.uam.orgstructure.domain.LadderImportModels.LadderBatch;
-import com.heuristiq.uam.orgstructure.domain.LadderImportModels.LadderFile;
-import com.heuristiq.uam.orgstructure.domain.LadderImportModels.LadderReference;
-import com.heuristiq.uam.orgstructure.domain.LadderImportModels.LadderRow;
-import com.heuristiq.uam.orgstructure.domain.LadderImportModels.LadderRowInput;
-import com.heuristiq.uam.orgstructure.domain.LadderImportModels.StagedLadderRow;
-import com.heuristiq.uam.orgstructure.domain.LadderImportStore;
-import com.heuristiq.uam.orgstructure.domain.LadderRowValidator;
-import com.heuristiq.uam.orgstructure.domain.Models.Change;
-import com.heuristiq.uam.orgstructure.domain.OrgStructureConstants;
-import com.heuristiq.uam.orgstructure.domain.OrgStructureException;
-import com.heuristiq.uam.orgstructure.domain.OrgStructureStore;
+import com.heuristiq.identity.orgstructure.domain.ChangeType;
+import com.heuristiq.identity.orgstructure.domain.ImportFlags;
+import com.heuristiq.identity.orgstructure.domain.ImportLimits;
+import com.heuristiq.identity.orgstructure.domain.LadderFileSource;
+import com.heuristiq.identity.orgstructure.domain.LadderImportAudit;
+import com.heuristiq.identity.orgstructure.domain.LadderImportModels.ExistingPosition;
+import com.heuristiq.identity.orgstructure.domain.LadderImportModels.LadderBatch;
+import com.heuristiq.identity.orgstructure.domain.LadderImportModels.LadderFile;
+import com.heuristiq.identity.orgstructure.domain.LadderImportModels.LadderReference;
+import com.heuristiq.identity.orgstructure.domain.LadderImportModels.LadderRow;
+import com.heuristiq.identity.orgstructure.domain.LadderImportModels.LadderRowInput;
+import com.heuristiq.identity.orgstructure.domain.LadderImportModels.StagedLadderRow;
+import com.heuristiq.identity.orgstructure.domain.LadderImportStore;
+import com.heuristiq.identity.orgstructure.domain.LadderRowValidator;
+import com.heuristiq.identity.orgstructure.domain.Models.Change;
+import com.heuristiq.identity.orgstructure.domain.OrgStructureConstants;
+import com.heuristiq.identity.orgstructure.domain.OrgStructureException;
+import com.heuristiq.identity.orgstructure.domain.OrgStructureStore;
 
 /**
  * Bulk ladders and positions import. An upload is validated in full and staged without touching the live organization; only a confirmed

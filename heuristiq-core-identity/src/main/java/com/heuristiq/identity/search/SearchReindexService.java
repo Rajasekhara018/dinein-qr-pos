@@ -1,12 +1,12 @@
-package com.heuristiq.uam.search;
+package com.heuristiq.identity.search;
 
-import com.heuristiq.uam.application.client.repository.ApiClientRepository;
-import com.heuristiq.uam.application.repository.ApplicationRepository;
-import com.heuristiq.uam.common.UamException;
-import com.heuristiq.uam.organization.repository.TenantRepository;
-import com.heuristiq.uam.role.repository.UamRoleRepository;
-import com.heuristiq.uam.securitypolicy.repository.SecurityPolicyRepository;
-import com.heuristiq.uam.users.repository.UamUserRepository;
+import com.heuristiq.identity.application.client.repository.ApiClientRepository;
+import com.heuristiq.identity.application.repository.ApplicationRepository;
+import com.heuristiq.identity.common.UamException;
+import com.heuristiq.identity.organization.repository.TenantRepository;
+import com.heuristiq.identity.role.repository.UamRoleRepository;
+import com.heuristiq.identity.securitypolicy.repository.SecurityPolicyRepository;
+import com.heuristiq.identity.users.repository.UamUserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

@@ -1,6 +1,6 @@
-package com.heuristiq.uam.passwordsHistory.repository.mongo;
+package com.heuristiq.identity.passwordsHistory.repository.mongo;
 
-import com.heuristiq.uam.passwordsHistory.persistance.mongo.PasswordHistoryDocument;
+import com.heuristiq.identity.passwordsHistory.persistance.mongo.PasswordHistoryDocument;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;

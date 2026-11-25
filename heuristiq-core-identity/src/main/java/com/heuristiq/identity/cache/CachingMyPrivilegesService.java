@@ -1,10 +1,10 @@
-package com.heuristiq.uam.cache;
+package com.heuristiq.identity.cache;
 
-import com.heuristiq.uam.auth.MyPrivilegesService;
-import com.heuristiq.uam.auth.MyPrivilegesServiceUseCase;
-import com.heuristiq.uam.cache.UamCacheKeys.TenantUserKey;
-import com.heuristiq.uam.dto.MyPrivilegesResponse;
-import com.heuristiq.uam.security.TenantContext;
+import com.heuristiq.identity.auth.MyPrivilegesService;
+import com.heuristiq.identity.auth.MyPrivilegesServiceUseCase;
+import com.heuristiq.identity.cache.UamCacheKeys.TenantUserKey;
+import com.heuristiq.identity.dto.MyPrivilegesResponse;
+import com.heuristiq.identity.security.TenantContext;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 

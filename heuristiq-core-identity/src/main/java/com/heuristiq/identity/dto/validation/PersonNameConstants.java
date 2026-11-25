@@ -1,4 +1,4 @@
-package com.heuristiq.uam.dto.validation;
+package com.heuristiq.identity.dto.validation;
 
 import java.util.regex.Pattern;
 

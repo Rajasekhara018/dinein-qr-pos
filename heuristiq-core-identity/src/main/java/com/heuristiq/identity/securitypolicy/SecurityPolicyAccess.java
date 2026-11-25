@@ -1,9 +1,9 @@
-package com.heuristiq.uam.securitypolicy;
+package com.heuristiq.identity.securitypolicy;
 
-import com.heuristiq.uam.auth.MyPrivilegesServiceUseCase;
-import com.heuristiq.uam.common.UamException;
-import com.heuristiq.uam.security.TenantContext;
-import com.heuristiq.uam.security.TenantGuard;
+import com.heuristiq.identity.auth.MyPrivilegesServiceUseCase;
+import com.heuristiq.identity.common.UamException;
+import com.heuristiq.identity.security.TenantContext;
+import com.heuristiq.identity.security.TenantGuard;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;

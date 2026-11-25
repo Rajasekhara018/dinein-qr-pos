@@ -1,6 +1,6 @@
-package com.heuristiq.uam.organization.operatingmodel.application.port;
+package com.heuristiq.identity.organization.operatingmodel.application.port;
 
-import com.heuristiq.uam.organization.operatingmodel.domain.OperatingModelPeriod;
+import com.heuristiq.identity.organization.operatingmodel.domain.OperatingModelPeriod;
 import java.time.Instant;
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package com.heuristiq.uam.readiness.adapter.out;
+package com.heuristiq.identity.readiness.adapter.out;
 
 /** Wire values of the calls to the services' internal readiness endpoints. */
 public final class ReadinessAdapterConstants {

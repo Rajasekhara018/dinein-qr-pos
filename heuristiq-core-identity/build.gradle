@@ -50,7 +50,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-flyway'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'io.micrometer:micrometer-registry-prometheus'
-    // In-memory read caches (see com.heuristiq.uam.cache, docs/CACHING.md); version managed by the Boot BOM.
+    // In-memory read caches (see com.heuristiq.identity.cache, docs/CACHING.md); version managed by the Boot BOM.
     implementation 'com.github.ben-manes.caffeine:caffeine'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
     implementation 'org.keycloak:keycloak-admin-client:26.0.0'

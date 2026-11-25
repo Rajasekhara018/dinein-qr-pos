@@ -1,10 +1,10 @@
-package com.heuristiq.uam.refreshToken.repository.jpa;
+package com.heuristiq.identity.refreshToken.repository.jpa;
 
-import com.heuristiq.uam.refreshToken.RefreshToken;
-import com.heuristiq.uam.refreshToken.RefreshTokenConstants;
+import com.heuristiq.identity.refreshToken.RefreshToken;
+import com.heuristiq.identity.refreshToken.RefreshTokenConstants;
 import java.time.LocalDateTime;
-import com.heuristiq.uam.refreshToken.persistance.jpa.RefreshTokenEntity;
-import com.heuristiq.uam.refreshToken.RefreshTokenRepository;
+import com.heuristiq.identity.refreshToken.persistance.jpa.RefreshTokenEntity;
+import com.heuristiq.identity.refreshToken.RefreshTokenRepository;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Repository;
 

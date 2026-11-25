@@ -1,12 +1,12 @@
-package com.heuristiq.uam.orgstructure.application;
+package com.heuristiq.identity.orgstructure.application;
 
-import com.heuristiq.uam.common.UamCommonConstants;
+import com.heuristiq.identity.common.UamCommonConstants;
 import java.util.Collection;
 import java.util.Set;
 
-import com.heuristiq.uam.orgstructure.domain.DataScope;
-import com.heuristiq.uam.orgstructure.domain.DataScopeSource;
-import com.heuristiq.uam.orgstructure.domain.OrgStructureStore;
+import com.heuristiq.identity.orgstructure.domain.DataScope;
+import com.heuristiq.identity.orgstructure.domain.DataScopeSource;
+import com.heuristiq.identity.orgstructure.domain.OrgStructureStore;
 
 /**
  * Works out which departments a caller may see. An organization that has not chosen department scoping, a platform

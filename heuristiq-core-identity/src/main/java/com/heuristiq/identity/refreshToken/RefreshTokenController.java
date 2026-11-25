@@ -1,16 +1,16 @@
-package com.heuristiq.uam.refreshToken;
+package com.heuristiq.identity.refreshToken;
 
-import com.heuristiq.uam.common.CommonResponseObject;
-import com.heuristiq.uam.common.OperationResult;
-import com.heuristiq.uam.refreshToken.RefreshTokenService;
+import com.heuristiq.identity.common.CommonResponseObject;
+import com.heuristiq.identity.common.OperationResult;
+import com.heuristiq.identity.refreshToken.RefreshTokenService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import com.heuristiq.uam.biometric.application.BiometricRevocationUseCase;
-import com.heuristiq.uam.biometric.application.BiometricRevocations;
-import com.heuristiq.uam.biometric.domain.BiometricRevocationReason;
+import com.heuristiq.identity.biometric.application.BiometricRevocationUseCase;
+import com.heuristiq.identity.biometric.application.BiometricRevocations;
+import com.heuristiq.identity.biometric.domain.BiometricRevocationReason;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;

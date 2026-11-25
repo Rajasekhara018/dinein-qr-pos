@@ -1,4 +1,4 @@
-package com.heuristiq.uam.organization.operatingmodel.config;
+package com.heuristiq.identity.organization.operatingmodel.config;
 
 import jakarta.validation.constraints.NotBlank;
 import org.springframework.boot.context.properties.ConfigurationProperties;

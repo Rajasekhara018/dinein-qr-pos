@@ -1,4 +1,4 @@
-package com.heuristiq.uam.metrics;
+package com.heuristiq.identity.metrics;
 
 import com.heuristiq.resilient.ResilientCaller;
 import io.github.resilience4j.circuitbreaker.CircuitBreaker;

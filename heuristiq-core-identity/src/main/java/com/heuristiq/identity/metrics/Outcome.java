@@ -1,4 +1,4 @@
-package com.heuristiq.uam.metrics;
+package com.heuristiq.identity.metrics;
 
 /** Closed set of values for the {@code result} metric tag, so the tag can never grow without bound. */
 public enum Outcome {

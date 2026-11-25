@@ -1,4 +1,4 @@
-package com.heuristiq.uam.auth;
+package com.heuristiq.identity.auth;
 
 import jakarta.servlet.http.HttpServletRequest;
 

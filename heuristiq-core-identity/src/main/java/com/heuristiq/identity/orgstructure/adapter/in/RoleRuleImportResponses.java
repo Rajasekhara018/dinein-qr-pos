@@ -1,8 +1,8 @@
-package com.heuristiq.uam.orgstructure.adapter.in;
+package com.heuristiq.identity.orgstructure.adapter.in;
 
 import java.util.List;
 
-import com.heuristiq.uam.orgstructure.domain.RoleRuleImportModels.RoleRuleRow;
+import com.heuristiq.identity.orgstructure.domain.RoleRuleImportModels.RoleRuleRow;
 
 /** Response shapes of the roles import API. */
 final class RoleRuleImportResponses {

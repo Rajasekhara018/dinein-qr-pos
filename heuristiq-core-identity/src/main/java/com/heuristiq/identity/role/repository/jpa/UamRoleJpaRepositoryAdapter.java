@@ -1,8 +1,8 @@
-package com.heuristiq.uam.role.repository.jpa;
+package com.heuristiq.identity.role.repository.jpa;
 
-import com.heuristiq.uam.role.UamRole;
-import com.heuristiq.uam.role.persistance.jpa.UamRoleEntity;
-import com.heuristiq.uam.role.repository.UamRoleRepository;
+import com.heuristiq.identity.role.UamRole;
+import com.heuristiq.identity.role.persistance.jpa.UamRoleEntity;
+import com.heuristiq.identity.role.repository.UamRoleRepository;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

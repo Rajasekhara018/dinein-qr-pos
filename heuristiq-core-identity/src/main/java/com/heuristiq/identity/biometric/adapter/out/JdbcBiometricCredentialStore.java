@@ -1,14 +1,14 @@
-package com.heuristiq.uam.biometric.adapter.out;
+package com.heuristiq.identity.biometric.adapter.out;
 
-import static com.heuristiq.uam.biometric.adapter.out.BiometricAdapterConstants.*;
+import static com.heuristiq.identity.biometric.adapter.out.BiometricAdapterConstants.*;
 
-import com.heuristiq.uam.biometric.application.port.BiometricCredentialStore;
-import com.heuristiq.uam.biometric.domain.BiometricCredential;
-import com.heuristiq.uam.biometric.domain.BiometricCredentialStatus;
-import com.heuristiq.uam.biometric.domain.BiometricException;
-import com.heuristiq.uam.biometric.domain.BiometricKeyAlgorithm;
-import com.heuristiq.uam.biometric.domain.BiometricPlatform;
-import com.heuristiq.uam.biometric.domain.BiometricRevocationReason;
+import com.heuristiq.identity.biometric.application.port.BiometricCredentialStore;
+import com.heuristiq.identity.biometric.domain.BiometricCredential;
+import com.heuristiq.identity.biometric.domain.BiometricCredentialStatus;
+import com.heuristiq.identity.biometric.domain.BiometricException;
+import com.heuristiq.identity.biometric.domain.BiometricKeyAlgorithm;
+import com.heuristiq.identity.biometric.domain.BiometricPlatform;
+import com.heuristiq.identity.biometric.domain.BiometricRevocationReason;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;

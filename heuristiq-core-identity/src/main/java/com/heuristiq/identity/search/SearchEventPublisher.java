@@ -1,4 +1,4 @@
-package com.heuristiq.uam.search;
+package com.heuristiq.identity.search;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;

@@ -1,6 +1,6 @@
-package com.heuristiq.uam.auth;
+package com.heuristiq.identity.auth;
 
-import com.heuristiq.uam.common.UamCommonConstants;
+import com.heuristiq.identity.common.UamCommonConstants;
 
 /** Fixed values used when resolving a caller's privileges. */
 final class MyPrivilegesConstants {

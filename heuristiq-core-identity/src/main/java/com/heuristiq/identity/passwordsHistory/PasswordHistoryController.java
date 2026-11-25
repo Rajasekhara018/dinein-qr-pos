@@ -1,7 +1,7 @@
-package com.heuristiq.uam.passwordsHistory;
+package com.heuristiq.identity.passwordsHistory;
 
-import com.heuristiq.uam.common.CommonResponseObject;
-import com.heuristiq.uam.passwordsHistory.PasswordHistoryService;
+import com.heuristiq.identity.common.CommonResponseObject;
+import com.heuristiq.identity.passwordsHistory.PasswordHistoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

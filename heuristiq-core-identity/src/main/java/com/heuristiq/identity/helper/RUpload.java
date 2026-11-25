@@ -1,10 +1,10 @@
-package com.heuristiq.uam.helper;
+package com.heuristiq.identity.helper;
 import java.io.Serializable;
 
 import org.springframework.data.annotation.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.heuristiq.uam.enums.UamEnums.FileRetentionPolicyEnum;
+import com.heuristiq.identity.enums.UamEnums.FileRetentionPolicyEnum;
 
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.EnumType;

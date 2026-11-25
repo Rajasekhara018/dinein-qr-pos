@@ -1,7 +1,7 @@
-package com.heuristiq.uam.userpreference;
+package com.heuristiq.identity.userpreference;
 
-import com.heuristiq.uam.common.PageResult;
-import com.heuristiq.uam.dto.UpsertUserPreferenceRequest;
+import com.heuristiq.identity.common.PageResult;
+import com.heuristiq.identity.dto.UpsertUserPreferenceRequest;
 
 import java.util.List;
 

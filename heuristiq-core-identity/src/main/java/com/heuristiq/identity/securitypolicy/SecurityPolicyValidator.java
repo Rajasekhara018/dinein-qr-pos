@@ -1,10 +1,10 @@
-package com.heuristiq.uam.securitypolicy;
+package com.heuristiq.identity.securitypolicy;
 
-import com.heuristiq.uam.common.UamException;
-import com.heuristiq.uam.helper.AccountPolicy;
-import com.heuristiq.uam.helper.LoginPolicy;
-import com.heuristiq.uam.helper.PasswordPolicy;
-import com.heuristiq.uam.helper.SessionPolicy;
+import com.heuristiq.identity.common.UamException;
+import com.heuristiq.identity.helper.AccountPolicy;
+import com.heuristiq.identity.helper.LoginPolicy;
+import com.heuristiq.identity.helper.PasswordPolicy;
+import com.heuristiq.identity.helper.SessionPolicy;
 
 /**
  * Range checks of a security policy, so a form cannot save values that lock everyone out (no sign-in attempts allowed,

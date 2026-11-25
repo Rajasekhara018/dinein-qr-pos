@@ -1,4 +1,4 @@
-package com.heuristiq.uam.helper;
+package com.heuristiq.identity.helper;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

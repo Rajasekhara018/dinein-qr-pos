@@ -1,4 +1,4 @@
-package com.heuristiq.uam.readiness.application;
+package com.heuristiq.identity.readiness.application;
 
 import java.time.Clock;
 import java.time.LocalDateTime;
@@ -12,23 +12,23 @@ import java.util.Set;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.StringUtils;
 
-import com.heuristiq.uam.application.ApplicationConstants;
-import com.heuristiq.uam.application.SessionOrganizationResolver;
-import com.heuristiq.uam.common.UamException;
-import com.heuristiq.uam.organization.subscription.TenantApplication;
-import com.heuristiq.uam.organization.subscription.TenantApplicationServiceUseCase;
-import com.heuristiq.uam.organization.subscription.TenantApplicationServiceUseCase.GoLiveOverride;
-import com.heuristiq.uam.organization.subscription.TenantApplicationStatus;
-import com.heuristiq.uam.readiness.application.port.GovernanceAudit;
-import com.heuristiq.uam.readiness.application.port.GovernanceCaller;
-import com.heuristiq.uam.readiness.application.port.OwnerCandidate;
-import com.heuristiq.uam.readiness.application.port.OwnerCandidateDirectory;
-import com.heuristiq.uam.readiness.config.GovernanceProperties;
-import com.heuristiq.uam.readiness.domain.ApplicationReadiness;
-import com.heuristiq.uam.readiness.domain.GoLiveBlocker;
-import com.heuristiq.uam.readiness.domain.GoLiveRules;
-import com.heuristiq.uam.readiness.domain.GovernanceConstants;
-import com.heuristiq.uam.readiness.domain.ReadinessProfiles;
+import com.heuristiq.identity.application.ApplicationConstants;
+import com.heuristiq.identity.application.SessionOrganizationResolver;
+import com.heuristiq.identity.common.UamException;
+import com.heuristiq.identity.organization.subscription.TenantApplication;
+import com.heuristiq.identity.organization.subscription.TenantApplicationServiceUseCase;
+import com.heuristiq.identity.organization.subscription.TenantApplicationServiceUseCase.GoLiveOverride;
+import com.heuristiq.identity.organization.subscription.TenantApplicationStatus;
+import com.heuristiq.identity.readiness.application.port.GovernanceAudit;
+import com.heuristiq.identity.readiness.application.port.GovernanceCaller;
+import com.heuristiq.identity.readiness.application.port.OwnerCandidate;
+import com.heuristiq.identity.readiness.application.port.OwnerCandidateDirectory;
+import com.heuristiq.identity.readiness.config.GovernanceProperties;
+import com.heuristiq.identity.readiness.domain.ApplicationReadiness;
+import com.heuristiq.identity.readiness.domain.GoLiveBlocker;
+import com.heuristiq.identity.readiness.domain.GoLiveRules;
+import com.heuristiq.identity.readiness.domain.GovernanceConstants;
+import com.heuristiq.identity.readiness.domain.ReadinessProfiles;
 
 /**
  * The SUPER_ADMIN go-live override, the owner team of an application, and the governance state shown to the UI. The

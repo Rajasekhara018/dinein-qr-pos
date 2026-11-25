@@ -1,6 +1,6 @@
-package com.heuristiq.uam.securitypolicy.repository;
+package com.heuristiq.identity.securitypolicy.repository;
 
-import com.heuristiq.uam.securitypolicy.SecurityPolicy;
+import com.heuristiq.identity.securitypolicy.SecurityPolicy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

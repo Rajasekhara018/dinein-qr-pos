@@ -1,4 +1,4 @@
-package com.heuristiq.uam.common;
+package com.heuristiq.identity.common;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;

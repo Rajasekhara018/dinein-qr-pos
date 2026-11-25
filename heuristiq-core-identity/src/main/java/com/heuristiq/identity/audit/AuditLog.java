@@ -1,12 +1,12 @@
-package com.heuristiq.uam.audit;
+package com.heuristiq.identity.audit;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
-import com.heuristiq.uam.enums.UamEnums.AuditAction;
-import com.heuristiq.uam.enums.UamEnums.AuditStatus;
-import com.heuristiq.uam.helper.FieldChange;
+import com.heuristiq.identity.enums.UamEnums.AuditAction;
+import com.heuristiq.identity.enums.UamEnums.AuditStatus;
+import com.heuristiq.identity.helper.FieldChange;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

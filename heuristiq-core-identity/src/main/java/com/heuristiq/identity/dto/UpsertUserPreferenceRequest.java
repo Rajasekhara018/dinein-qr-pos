@@ -1,10 +1,10 @@
-package com.heuristiq.uam.dto;
+package com.heuristiq.identity.dto;
 
-import com.heuristiq.uam.helper.AccessibilityPreference;
-import com.heuristiq.uam.helper.DashboardPreference;
-import com.heuristiq.uam.helper.NotificationPreference;
-import com.heuristiq.uam.helper.RegionalPreference;
-import com.heuristiq.uam.helper.UiPreference;
+import com.heuristiq.identity.helper.AccessibilityPreference;
+import com.heuristiq.identity.helper.DashboardPreference;
+import com.heuristiq.identity.helper.NotificationPreference;
+import com.heuristiq.identity.helper.RegionalPreference;
+import com.heuristiq.identity.helper.UiPreference;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 

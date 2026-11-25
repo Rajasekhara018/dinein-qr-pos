@@ -1,4 +1,4 @@
-package com.heuristiq.uam.organization.subscription;
+package com.heuristiq.identity.organization.subscription;
 
 /**
  * Checked before an organization's application is switched on (port implemented by the readiness feature). Kept here so the
@@ -9,7 +9,7 @@ public interface GoLiveGuard {
     /**
      * Returns normally when the application may go live for the organization.
      *
-     * @throws com.heuristiq.uam.common.UamException a typed 409 listing the blocking steps when it may not
+     * @throws com.heuristiq.identity.common.UamException a typed 409 listing the blocking steps when it may not
      */
     void requireReady(String tenantId, String applicationCode);
 }

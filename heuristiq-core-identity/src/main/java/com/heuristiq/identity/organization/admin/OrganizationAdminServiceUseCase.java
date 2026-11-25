@@ -1,6 +1,6 @@
-package com.heuristiq.uam.organization.admin;
+package com.heuristiq.identity.organization.admin;
 
-import com.heuristiq.uam.organization.Tenant;
+import com.heuristiq.identity.organization.Tenant;
 
 /** Gives an organization its administrator: an account, the organization's admin role, and a membership. */
 public interface OrganizationAdminServiceUseCase {

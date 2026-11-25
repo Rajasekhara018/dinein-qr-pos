@@ -1,8 +1,8 @@
-package com.heuristiq.uam.organization;
+package com.heuristiq.identity.organization;
 
-import com.heuristiq.uam.role.UamRole;
-import com.heuristiq.uam.role.repository.UamRoleRepository;
-import com.heuristiq.uam.users.UamUser;
+import com.heuristiq.identity.role.UamRole;
+import com.heuristiq.identity.role.repository.UamRoleRepository;
+import com.heuristiq.identity.users.UamUser;
 import org.springframework.stereotype.Component;
 
 /**

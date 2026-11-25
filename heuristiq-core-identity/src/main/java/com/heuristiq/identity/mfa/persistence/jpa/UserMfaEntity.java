@@ -1,4 +1,4 @@
-package com.heuristiq.uam.mfa.persistence.jpa;
+package com.heuristiq.identity.mfa.persistence.jpa;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -7,9 +7,9 @@ import java.util.Map;
 import org.hibernate.annotations.UuidGenerator;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.heuristiq.uam.enums.UamEnums.MfaType;
-import com.heuristiq.uam.helper.RPhoneNumber;
-import com.heuristiq.uam.util.JsonMapAttributeConverter;
+import com.heuristiq.identity.enums.UamEnums.MfaType;
+import com.heuristiq.identity.helper.RPhoneNumber;
+import com.heuristiq.identity.util.JsonMapAttributeConverter;
 
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;

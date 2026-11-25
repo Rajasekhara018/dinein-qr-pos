@@ -1,6 +1,6 @@
-package com.heuristiq.uam.users.repository;
+package com.heuristiq.identity.users.repository;
 
-import com.heuristiq.uam.users.UamUser;
+import com.heuristiq.identity.users.UamUser;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -30,7 +30,7 @@ public interface UamUserRepository {
     /**
      * Finds the account owning the phone number {@code rawPhone} (E.164 or national form in the default region), matching
      * both accounts stored in the international form and legacy bare-number rows; see
-     * {@link com.heuristiq.uam.helper.PhoneIdentity}. Empty when blank or nothing matches.
+     * {@link com.heuristiq.identity.helper.PhoneIdentity}. Empty when blank or nothing matches.
      */
     Optional<UamUser> findByPhone(String rawPhone);
 

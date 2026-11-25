@@ -1,9 +1,9 @@
-package com.heuristiq.uam.orgstructure.domain;
+package com.heuristiq.identity.orgstructure.domain;
 
 import java.util.List;
 import java.util.Optional;
 
-import com.heuristiq.uam.orgstructure.domain.Models.Employee;
+import com.heuristiq.identity.orgstructure.domain.Models.Employee;
 
 /** Port to employee records (people in the organization, with or without a login). */
 public interface EmployeeStore {

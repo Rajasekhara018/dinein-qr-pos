@@ -1,8 +1,8 @@
-package com.heuristiq.uam.organization;
+package com.heuristiq.identity.organization;
 
-import com.heuristiq.uam.common.PageResult;
-import com.heuristiq.uam.enums.UamEnums.TenantStatus;
-import com.heuristiq.uam.enums.UamEnums.TenantType;
+import com.heuristiq.identity.common.PageResult;
+import com.heuristiq.identity.enums.UamEnums.TenantStatus;
+import com.heuristiq.identity.enums.UamEnums.TenantType;
 
 import java.util.List;
 

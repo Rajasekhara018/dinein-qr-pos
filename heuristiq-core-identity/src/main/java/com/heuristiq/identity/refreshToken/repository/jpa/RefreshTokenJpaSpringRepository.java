@@ -1,6 +1,6 @@
-package com.heuristiq.uam.refreshToken.repository.jpa;
+package com.heuristiq.identity.refreshToken.repository.jpa;
 
-import com.heuristiq.uam.refreshToken.persistance.jpa.RefreshTokenEntity;
+import com.heuristiq.identity.refreshToken.persistance.jpa.RefreshTokenEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

@@ -1,4 +1,4 @@
-package com.heuristiq.uam.orgstructure.application;
+package com.heuristiq.identity.orgstructure.application;
 
 import java.time.Clock;
 import java.time.LocalDate;
@@ -14,26 +14,26 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import com.heuristiq.uam.orgstructure.domain.ChangeSetStore;
-import com.heuristiq.uam.orgstructure.domain.ChangeType;
-import com.heuristiq.uam.orgstructure.domain.EmployeeStore;
-import com.heuristiq.uam.orgstructure.domain.ImportStore;
-import com.heuristiq.uam.orgstructure.domain.StructureSnapshotStore;
-import com.heuristiq.uam.orgstructure.domain.DataScope;
-import com.heuristiq.uam.orgstructure.domain.Models;
-import com.heuristiq.uam.orgstructure.domain.Models.Change;
-import com.heuristiq.uam.orgstructure.domain.Models.ChangeSet;
-import com.heuristiq.uam.orgstructure.domain.Models.DraftResult;
-import com.heuristiq.uam.orgstructure.domain.Models.Employee;
-import com.heuristiq.uam.orgstructure.domain.Models.LadderView;
-import com.heuristiq.uam.orgstructure.domain.Models.PersonView;
-import com.heuristiq.uam.orgstructure.domain.Models.PositionView;
-import com.heuristiq.uam.orgstructure.domain.Models.Severity;
-import com.heuristiq.uam.orgstructure.domain.Models.UnitView;
-import com.heuristiq.uam.orgstructure.domain.Models.ValidationIssue;
-import com.heuristiq.uam.orgstructure.domain.OrgStructureConstants;
-import com.heuristiq.uam.orgstructure.domain.OrgStructureException;
-import com.heuristiq.uam.orgstructure.domain.OrgStructureStore;
+import com.heuristiq.identity.orgstructure.domain.ChangeSetStore;
+import com.heuristiq.identity.orgstructure.domain.ChangeType;
+import com.heuristiq.identity.orgstructure.domain.EmployeeStore;
+import com.heuristiq.identity.orgstructure.domain.ImportStore;
+import com.heuristiq.identity.orgstructure.domain.StructureSnapshotStore;
+import com.heuristiq.identity.orgstructure.domain.DataScope;
+import com.heuristiq.identity.orgstructure.domain.Models;
+import com.heuristiq.identity.orgstructure.domain.Models.Change;
+import com.heuristiq.identity.orgstructure.domain.Models.ChangeSet;
+import com.heuristiq.identity.orgstructure.domain.Models.DraftResult;
+import com.heuristiq.identity.orgstructure.domain.Models.Employee;
+import com.heuristiq.identity.orgstructure.domain.Models.LadderView;
+import com.heuristiq.identity.orgstructure.domain.Models.PersonView;
+import com.heuristiq.identity.orgstructure.domain.Models.PositionView;
+import com.heuristiq.identity.orgstructure.domain.Models.Severity;
+import com.heuristiq.identity.orgstructure.domain.Models.UnitView;
+import com.heuristiq.identity.orgstructure.domain.Models.ValidationIssue;
+import com.heuristiq.identity.orgstructure.domain.OrgStructureConstants;
+import com.heuristiq.identity.orgstructure.domain.OrgStructureException;
+import com.heuristiq.identity.orgstructure.domain.OrgStructureStore;
 
 /**
  * Orchestrates the organization structure. Edits never touch the live tables directly: they are
@@ -169,25 +169,25 @@ public class OrgStructureService implements OrgStructureUseCase {
         this.events = events;
     }
 
-    private com.heuristiq.uam.orgstructure.domain.DepartmentImportStore departmentImports;
+    private com.heuristiq.identity.orgstructure.domain.DepartmentImportStore departmentImports;
 
     /**
      * Optional: lets a rollback see that a department import was applied after the publish (undoing the publish would then undo the
      * imported departments too). Not part of the constructor so the service is built exactly as before.
      */
     @org.springframework.beans.factory.annotation.Autowired(required = false)
-    public void setDepartmentImports(com.heuristiq.uam.orgstructure.domain.DepartmentImportStore departmentImports) {
+    public void setDepartmentImports(com.heuristiq.identity.orgstructure.domain.DepartmentImportStore departmentImports) {
         this.departmentImports = departmentImports;
     }
 
-    private com.heuristiq.uam.orgstructure.domain.LadderImportStore ladderImports;
+    private com.heuristiq.identity.orgstructure.domain.LadderImportStore ladderImports;
 
     /**
      * Optional, like {@link #setDepartmentImports}: lets a rollback see that a ladders import was applied after the publish (undoing
      * the publish would then undo the imported ladders and positions too).
      */
     @org.springframework.beans.factory.annotation.Autowired(required = false)
-    public void setLadderImports(com.heuristiq.uam.orgstructure.domain.LadderImportStore ladderImports) {
+    public void setLadderImports(com.heuristiq.identity.orgstructure.domain.LadderImportStore ladderImports) {
         this.ladderImports = ladderImports;
     }
 

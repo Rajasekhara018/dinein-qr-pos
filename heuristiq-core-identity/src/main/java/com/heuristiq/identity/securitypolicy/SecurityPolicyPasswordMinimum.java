@@ -1,9 +1,9 @@
-package com.heuristiq.uam.securitypolicy;
+package com.heuristiq.identity.securitypolicy;
 
-import com.heuristiq.uam.helper.PasswordPolicy;
-import com.heuristiq.uam.securitypolicy.repository.SecurityPolicyRepository;
-import com.heuristiq.uam.users.PasswordMinimumLookup;
-import com.heuristiq.uam.users.UamUserConstants;
+import com.heuristiq.identity.helper.PasswordPolicy;
+import com.heuristiq.identity.securitypolicy.repository.SecurityPolicyRepository;
+import com.heuristiq.identity.users.PasswordMinimumLookup;
+import com.heuristiq.identity.users.UamUserConstants;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;

@@ -1,19 +1,19 @@
-package com.heuristiq.uam.userpreference.persistance.jpa;
+package com.heuristiq.identity.userpreference.persistance.jpa;
 
 import java.time.LocalDateTime;
 
 import org.hibernate.annotations.UuidGenerator;
 
-import com.heuristiq.uam.helper.AccessibilityPreference;
-import com.heuristiq.uam.helper.DashboardPreference;
-import com.heuristiq.uam.helper.NotificationPreference;
-import com.heuristiq.uam.helper.RegionalPreference;
-import com.heuristiq.uam.helper.UiPreference;
-import com.heuristiq.uam.util.AccessibilityPreferenceAttributeConverter;
-import com.heuristiq.uam.util.DashboardPreferenceAttributeConverter;
-import com.heuristiq.uam.util.NotificationPreferenceAttributeConverter;
-import com.heuristiq.uam.util.RegionalPreferenceAttributeConverter;
-import com.heuristiq.uam.util.UiPreferenceAttributeConverter;
+import com.heuristiq.identity.helper.AccessibilityPreference;
+import com.heuristiq.identity.helper.DashboardPreference;
+import com.heuristiq.identity.helper.NotificationPreference;
+import com.heuristiq.identity.helper.RegionalPreference;
+import com.heuristiq.identity.helper.UiPreference;
+import com.heuristiq.identity.util.AccessibilityPreferenceAttributeConverter;
+import com.heuristiq.identity.util.DashboardPreferenceAttributeConverter;
+import com.heuristiq.identity.util.NotificationPreferenceAttributeConverter;
+import com.heuristiq.identity.util.RegionalPreferenceAttributeConverter;
+import com.heuristiq.identity.util.UiPreferenceAttributeConverter;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;

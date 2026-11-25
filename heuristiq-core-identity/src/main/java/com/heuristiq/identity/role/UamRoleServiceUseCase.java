@@ -1,7 +1,7 @@
-package com.heuristiq.uam.role;
+package com.heuristiq.identity.role;
 
-import com.heuristiq.uam.common.PageResult;
-import com.heuristiq.uam.dto.UpsertRoleRequest;
+import com.heuristiq.identity.common.PageResult;
+import com.heuristiq.identity.dto.UpsertRoleRequest;
 
 import java.util.List;
 import java.util.Set;

@@ -1,8 +1,8 @@
-package com.heuristiq.uam.userpreference.repository.mongo;
+package com.heuristiq.identity.userpreference.repository.mongo;
 
-import com.heuristiq.uam.userpreference.UserPreference;
-import com.heuristiq.uam.userpreference.persistance.mongo.UserPreferenceDocument;
-import com.heuristiq.uam.userpreference.UserPreferenceRepository;
+import com.heuristiq.identity.userpreference.UserPreference;
+import com.heuristiq.identity.userpreference.persistance.mongo.UserPreferenceDocument;
+import com.heuristiq.identity.userpreference.UserPreferenceRepository;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

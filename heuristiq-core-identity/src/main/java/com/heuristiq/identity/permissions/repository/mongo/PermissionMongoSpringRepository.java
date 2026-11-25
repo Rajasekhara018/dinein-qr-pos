@@ -1,6 +1,6 @@
-package com.heuristiq.uam.permissions.repository.mongo;
+package com.heuristiq.identity.permissions.repository.mongo;
 
-import com.heuristiq.uam.permissions.persistance.mongo.PermissionDocument;
+import com.heuristiq.identity.permissions.persistance.mongo.PermissionDocument;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.Collection;

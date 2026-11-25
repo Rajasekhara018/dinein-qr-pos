@@ -1,4 +1,4 @@
-package com.heuristiq.uam.orgstructure.domain;
+package com.heuristiq.identity.orgstructure.domain;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
@@ -11,10 +11,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import com.heuristiq.uam.orgstructure.domain.ImportModels.ImportReference;
-import com.heuristiq.uam.orgstructure.domain.ImportModels.ImportRow;
-import com.heuristiq.uam.orgstructure.domain.ImportModels.ImportRowInput;
-import com.heuristiq.uam.orgstructure.domain.ImportModels.UnitRef;
+import com.heuristiq.identity.orgstructure.domain.ImportModels.ImportReference;
+import com.heuristiq.identity.orgstructure.domain.ImportModels.ImportRow;
+import com.heuristiq.identity.orgstructure.domain.ImportModels.ImportRowInput;
+import com.heuristiq.identity.orgstructure.domain.ImportModels.UnitRef;
 
 /**
  * Checks every row of an import file against the organization as it is now and against the rest of

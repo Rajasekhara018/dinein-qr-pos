@@ -1,11 +1,11 @@
-package com.heuristiq.uam.userpreference;
+package com.heuristiq.identity.userpreference;
 
-import com.heuristiq.uam.common.UamException;
-import com.heuristiq.uam.helper.UiPreferenceRules;
-import com.heuristiq.uam.dto.UpsertUserPreferenceRequest;
-import com.heuristiq.uam.feature.management.ManagementPageSupport;
-import com.heuristiq.uam.security.TenantGuard;
-import com.heuristiq.uam.common.PageResult;
+import com.heuristiq.identity.common.UamException;
+import com.heuristiq.identity.helper.UiPreferenceRules;
+import com.heuristiq.identity.dto.UpsertUserPreferenceRequest;
+import com.heuristiq.identity.feature.management.ManagementPageSupport;
+import com.heuristiq.identity.security.TenantGuard;
+import com.heuristiq.identity.common.PageResult;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 

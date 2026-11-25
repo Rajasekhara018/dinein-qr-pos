@@ -1,12 +1,12 @@
-package com.heuristiq.uam.organization;
+package com.heuristiq.identity.organization;
 
 import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
-import com.heuristiq.uam.common.UamException;
-import com.heuristiq.uam.organization.repository.TenantRepository;
+import com.heuristiq.identity.common.UamException;
+import com.heuristiq.identity.organization.repository.TenantRepository;
 
 /**
  * The one place that answers "which organization is the default one": it is looked up by its code

@@ -1,15 +1,15 @@
-package com.heuristiq.uam.usercredentials;
+package com.heuristiq.identity.usercredentials;
 
-import com.heuristiq.uam.common.UamException;
-import com.heuristiq.uam.passwordsHistory.PasswordHistory;
-import com.heuristiq.uam.enums.UamEnums.AuthProvider;
-import com.heuristiq.uam.enums.UamEnums.PasswordChangeReason;
-import com.heuristiq.uam.helper.AuditInfo;
-import com.heuristiq.uam.passwordsHistory.PasswordHistoryRepository;
-import com.heuristiq.uam.security.PasswordService;
-import com.heuristiq.uam.biometric.application.BiometricRevocationUseCase;
-import com.heuristiq.uam.biometric.application.BiometricRevocations;
-import com.heuristiq.uam.biometric.domain.BiometricRevocationReason;
+import com.heuristiq.identity.common.UamException;
+import com.heuristiq.identity.passwordsHistory.PasswordHistory;
+import com.heuristiq.identity.enums.UamEnums.AuthProvider;
+import com.heuristiq.identity.enums.UamEnums.PasswordChangeReason;
+import com.heuristiq.identity.helper.AuditInfo;
+import com.heuristiq.identity.passwordsHistory.PasswordHistoryRepository;
+import com.heuristiq.identity.security.PasswordService;
+import com.heuristiq.identity.biometric.application.BiometricRevocationUseCase;
+import com.heuristiq.identity.biometric.application.BiometricRevocations;
+import com.heuristiq.identity.biometric.domain.BiometricRevocationReason;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 @Service
 public class UserCredentialService implements UserCredentialServiceUseCase {
     @org.springframework.beans.factory.annotation.Autowired
-    private com.heuristiq.uam.securitypolicy.SecurityPolicyEnforcer policyEnforcer;
+    private com.heuristiq.identity.securitypolicy.SecurityPolicyEnforcer policyEnforcer;
     private final UserCredentialRepository credentialRepository;
     private final PasswordHistoryRepository passwordHistoryRepository;
     private final PasswordService passwordService;

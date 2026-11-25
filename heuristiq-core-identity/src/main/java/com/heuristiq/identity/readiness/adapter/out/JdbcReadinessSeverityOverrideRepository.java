@@ -1,4 +1,4 @@
-package com.heuristiq.uam.readiness.adapter.out;
+package com.heuristiq.identity.readiness.adapter.out;
 
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -8,8 +8,8 @@ import java.util.Map;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import com.heuristiq.uam.readiness.application.port.ReadinessSeverityOverrideRepository;
-import com.heuristiq.uam.readiness.domain.ReadinessSeverity;
+import com.heuristiq.identity.readiness.application.port.ReadinessSeverityOverrideRepository;
+import com.heuristiq.identity.readiness.domain.ReadinessSeverity;
 
 /**
  * PostgreSQL store of severity overrides ({@code readiness_severity_overrides}, migration V18). Every statement filters on

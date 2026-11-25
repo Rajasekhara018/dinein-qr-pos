@@ -1,6 +1,6 @@
-package com.heuristiq.uam.passwordsHistory.repository.jpa;
+package com.heuristiq.identity.passwordsHistory.repository.jpa;
 
-import com.heuristiq.uam.passwordsHistory.persistance.jpa.PasswordHistoryEntity;
+import com.heuristiq.identity.passwordsHistory.persistance.jpa.PasswordHistoryEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

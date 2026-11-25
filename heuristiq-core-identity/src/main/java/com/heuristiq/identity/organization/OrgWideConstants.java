@@ -1,4 +1,4 @@
-package com.heuristiq.uam.organization;
+package com.heuristiq.identity.organization;
 
 /** The token claim that marks a caller who may look across organizations, and the privilege that grants it. */
 public final class OrgWideConstants {

@@ -1,4 +1,4 @@
-package com.heuristiq.uam.selfregister;
+package com.heuristiq.identity.selfregister;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;

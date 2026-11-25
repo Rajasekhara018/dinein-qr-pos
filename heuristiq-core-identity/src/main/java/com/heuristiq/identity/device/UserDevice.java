@@ -1,10 +1,10 @@
-package com.heuristiq.uam.device;
+package com.heuristiq.identity.device;
 
 import java.time.LocalDateTime;
 import java.util.Map;
 
-import com.heuristiq.uam.enums.UamEnums.DeviceType;
-import com.heuristiq.uam.enums.UamEnums.Platform;
+import com.heuristiq.identity.enums.UamEnums.DeviceType;
+import com.heuristiq.identity.enums.UamEnums.Platform;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

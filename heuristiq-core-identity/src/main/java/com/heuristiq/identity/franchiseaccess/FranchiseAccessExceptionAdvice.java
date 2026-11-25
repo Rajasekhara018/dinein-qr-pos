@@ -1,4 +1,4 @@
-package com.heuristiq.uam.franchiseaccess;
+package com.heuristiq.identity.franchiseaccess;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.Ordered;
@@ -8,9 +8,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import com.heuristiq.uam.common.CommonResponseObject;
-import com.heuristiq.uam.common.UamException;
-import com.heuristiq.uam.orgstructure.domain.OrgStructureException;
+import com.heuristiq.identity.common.CommonResponseObject;
+import com.heuristiq.identity.common.UamException;
+import com.heuristiq.identity.orgstructure.domain.OrgStructureException;
 
 /**
  * Answers the franchise service with the UAM message and a status it can act on: a rule broken by existing data (email taken,

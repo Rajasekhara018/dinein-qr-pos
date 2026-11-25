@@ -1,6 +1,6 @@
-package com.heuristiq.uam.securitypolicy.repository.mongo;
+package com.heuristiq.identity.securitypolicy.repository.mongo;
 
-import com.heuristiq.uam.securitypolicy.persistence.mongo.SecurityPolicyDocument;
+import com.heuristiq.identity.securitypolicy.persistence.mongo.SecurityPolicyDocument;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.Optional;

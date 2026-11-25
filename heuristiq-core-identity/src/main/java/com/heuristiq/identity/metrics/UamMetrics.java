@@ -1,6 +1,6 @@
-package com.heuristiq.uam.metrics;
+package com.heuristiq.identity.metrics;
 
-import com.heuristiq.uam.common.UamException;
+import com.heuristiq.identity.common.UamException;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Timer;

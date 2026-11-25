@@ -1,6 +1,6 @@
-package com.heuristiq.uam.userpreference.repository.jpa;
+package com.heuristiq.identity.userpreference.repository.jpa;
 
-import com.heuristiq.uam.userpreference.persistance.jpa.UserPreferenceEntity;
+import com.heuristiq.identity.userpreference.persistance.jpa.UserPreferenceEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

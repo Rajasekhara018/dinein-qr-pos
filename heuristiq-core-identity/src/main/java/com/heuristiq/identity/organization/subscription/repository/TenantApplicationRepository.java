@@ -1,9 +1,9 @@
-package com.heuristiq.uam.organization.subscription.repository;
+package com.heuristiq.identity.organization.subscription.repository;
 
 import java.util.List;
 import java.util.Optional;
 
-import com.heuristiq.uam.organization.subscription.TenantApplication;
+import com.heuristiq.identity.organization.subscription.TenantApplication;
 
 /** Port for organization-application subscriptions; one adapter per persistence backend (Postgres / Mongo). */
 public interface TenantApplicationRepository {

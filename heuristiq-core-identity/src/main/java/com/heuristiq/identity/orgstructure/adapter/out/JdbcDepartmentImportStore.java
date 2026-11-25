@@ -1,6 +1,6 @@
-package com.heuristiq.uam.orgstructure.adapter.out;
+package com.heuristiq.identity.orgstructure.adapter.out;
 
-import static com.heuristiq.uam.orgstructure.adapter.out.SqlParams.forTenant;
+import static com.heuristiq.identity.orgstructure.adapter.out.SqlParams.forTenant;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -22,16 +22,16 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 
-import com.heuristiq.uam.orgstructure.domain.DepartmentImportModels.DepartmentBatch;
-import com.heuristiq.uam.orgstructure.domain.DepartmentImportModels.DepartmentReference;
-import com.heuristiq.uam.orgstructure.domain.DepartmentImportModels.DepartmentRow;
-import com.heuristiq.uam.orgstructure.domain.DepartmentImportModels.DepartmentRowInput;
-import com.heuristiq.uam.orgstructure.domain.DepartmentImportModels.ExistingUnit;
-import com.heuristiq.uam.orgstructure.domain.DepartmentImportModels.StagedDepartmentRow;
-import com.heuristiq.uam.orgstructure.domain.DepartmentImportModels.UnitState;
-import com.heuristiq.uam.orgstructure.domain.DepartmentImportStore;
-import com.heuristiq.uam.orgstructure.domain.DepartmentRowValidator;
-import com.heuristiq.uam.orgstructure.domain.OrgStructureConstants;
+import com.heuristiq.identity.orgstructure.domain.DepartmentImportModels.DepartmentBatch;
+import com.heuristiq.identity.orgstructure.domain.DepartmentImportModels.DepartmentReference;
+import com.heuristiq.identity.orgstructure.domain.DepartmentImportModels.DepartmentRow;
+import com.heuristiq.identity.orgstructure.domain.DepartmentImportModels.DepartmentRowInput;
+import com.heuristiq.identity.orgstructure.domain.DepartmentImportModels.ExistingUnit;
+import com.heuristiq.identity.orgstructure.domain.DepartmentImportModels.StagedDepartmentRow;
+import com.heuristiq.identity.orgstructure.domain.DepartmentImportModels.UnitState;
+import com.heuristiq.identity.orgstructure.domain.DepartmentImportStore;
+import com.heuristiq.identity.orgstructure.domain.DepartmentRowValidator;
+import com.heuristiq.identity.orgstructure.domain.OrgStructureConstants;
 
 /**
  * PostgreSQL implementation of {@link DepartmentImportStore}. Rows are written in batches so a large file stays cheap, and every

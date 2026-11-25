@@ -1,9 +1,9 @@
-package com.heuristiq.uam.organization.legalprofile.adapter.out;
+package com.heuristiq.identity.organization.legalprofile.adapter.out;
 
-import com.heuristiq.uam.organization.Tenant;
-import com.heuristiq.uam.organization.legalprofile.application.port.LegalOrganizationDirectory;
-import com.heuristiq.uam.organization.legalprofile.domain.LegalProfileException;
-import com.heuristiq.uam.organization.repository.TenantRepository;
+import com.heuristiq.identity.organization.Tenant;
+import com.heuristiq.identity.organization.legalprofile.application.port.LegalOrganizationDirectory;
+import com.heuristiq.identity.organization.legalprofile.domain.LegalProfileException;
+import com.heuristiq.identity.organization.repository.TenantRepository;
 import java.util.Optional;
 
 /**

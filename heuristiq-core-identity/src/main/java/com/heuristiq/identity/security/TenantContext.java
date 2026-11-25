@@ -1,4 +1,4 @@
-package com.heuristiq.uam.security;
+package com.heuristiq.identity.security;
 
 /**
  * Holds the tenant of the currently authenticated caller for the duration of a request.

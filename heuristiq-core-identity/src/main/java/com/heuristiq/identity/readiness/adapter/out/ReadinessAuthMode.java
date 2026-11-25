@@ -1,4 +1,4 @@
-package com.heuristiq.uam.readiness.adapter.out;
+package com.heuristiq.identity.readiness.adapter.out;
 
 /** How a service's internal readiness endpoint wants the caller to prove it is a backend service. */
 public enum ReadinessAuthMode {

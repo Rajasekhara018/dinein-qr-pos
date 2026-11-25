@@ -1,4 +1,4 @@
-package com.heuristiq.uam.organization.subscription.persistence.jpa;
+package com.heuristiq.identity.organization.subscription.persistence.jpa;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.hibernate.annotations.UuidGenerator;
 
-import com.heuristiq.uam.organization.subscription.TenantApplicationStatus;
+import com.heuristiq.identity.organization.subscription.TenantApplicationStatus;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;

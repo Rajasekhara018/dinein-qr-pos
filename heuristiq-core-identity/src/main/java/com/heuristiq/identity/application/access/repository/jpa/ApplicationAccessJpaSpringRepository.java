@@ -1,4 +1,4 @@
-package com.heuristiq.uam.application.access.repository.jpa;
+package com.heuristiq.identity.application.access.repository.jpa;
 
 import java.util.Collection;
 import java.util.List;
@@ -6,8 +6,8 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.heuristiq.uam.application.access.AccessSubjectType;
-import com.heuristiq.uam.application.access.persistence.jpa.ApplicationAccessEntity;
+import com.heuristiq.identity.application.access.AccessSubjectType;
+import com.heuristiq.identity.application.access.persistence.jpa.ApplicationAccessEntity;
 
 interface ApplicationAccessJpaSpringRepository extends JpaRepository<ApplicationAccessEntity, String> {
     Optional<ApplicationAccessEntity> findByApplicationCodeAndSubjectTypeAndSubjectId(

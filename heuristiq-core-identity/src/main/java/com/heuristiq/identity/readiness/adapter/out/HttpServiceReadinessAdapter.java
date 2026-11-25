@@ -1,4 +1,4 @@
-package com.heuristiq.uam.readiness.adapter.out;
+package com.heuristiq.identity.readiness.adapter.out;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -14,10 +14,10 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import com.heuristiq.resilient.DownstreamUnavailableException;
 import com.heuristiq.resilient.Idempotency;
 import com.heuristiq.resilient.ResilientCaller;
-import com.heuristiq.uam.readiness.domain.ReadinessConstants;
-import com.heuristiq.uam.readiness.domain.ReadinessSource;
-import com.heuristiq.uam.readiness.domain.ServiceReadinessPort;
-import com.heuristiq.uam.readiness.domain.ServiceReport;
+import com.heuristiq.identity.readiness.domain.ReadinessConstants;
+import com.heuristiq.identity.readiness.domain.ReadinessSource;
+import com.heuristiq.identity.readiness.domain.ServiceReadinessPort;
+import com.heuristiq.identity.readiness.domain.ServiceReport;
 
 /**
  * Calls each service's internal readiness endpoint ({@code GET <base><path>?applicationCode=&tenantId=}) through its own

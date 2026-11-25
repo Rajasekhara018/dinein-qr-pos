@@ -1,15 +1,15 @@
-package com.heuristiq.uam.registration;
+package com.heuristiq.identity.registration;
 
-import com.heuristiq.uam.common.UamException;
-import com.heuristiq.uam.dto.IdentityRegisterRequest;
-import com.heuristiq.uam.dto.RegistrationResponse;
-import com.heuristiq.uam.enums.UamEnums;
-import com.heuristiq.uam.helper.RName;
-import com.heuristiq.uam.helper.PhoneIdentity;
-import com.heuristiq.uam.notification.NmsNotificationService;
-import com.heuristiq.uam.users.NewUamUserBuilder;
-import com.heuristiq.uam.users.UamUser;
-import com.heuristiq.uam.users.repository.UamUserRepository;
+import com.heuristiq.identity.common.UamException;
+import com.heuristiq.identity.dto.IdentityRegisterRequest;
+import com.heuristiq.identity.dto.RegistrationResponse;
+import com.heuristiq.identity.enums.UamEnums;
+import com.heuristiq.identity.helper.RName;
+import com.heuristiq.identity.helper.PhoneIdentity;
+import com.heuristiq.identity.notification.NmsNotificationService;
+import com.heuristiq.identity.users.NewUamUserBuilder;
+import com.heuristiq.identity.users.UamUser;
+import com.heuristiq.identity.users.repository.UamUserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -19,7 +19,7 @@ import java.util.Objects;
 @Service
 public class UserRegistrationService implements UserRegistrationServiceUseCase {
     @org.springframework.beans.factory.annotation.Autowired
-    private com.heuristiq.uam.securitypolicy.SecurityPolicyRegistration policyRegistration;
+    private com.heuristiq.identity.securitypolicy.SecurityPolicyRegistration policyRegistration;
 
     private final UamUserRepository userRepository;
     private final NmsNotificationService nmsNotificationService;

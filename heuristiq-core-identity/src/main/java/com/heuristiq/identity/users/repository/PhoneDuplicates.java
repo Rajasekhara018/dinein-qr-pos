@@ -1,7 +1,7 @@
-package com.heuristiq.uam.users.repository;
+package com.heuristiq.identity.users.repository;
 
-import com.heuristiq.uam.common.UamException;
-import com.heuristiq.uam.users.UserPhoneConstants;
+import com.heuristiq.identity.common.UamException;
+import com.heuristiq.identity.users.UserPhoneConstants;
 import org.springframework.dao.DataIntegrityViolationException;
 
 /** Turns the database's unique-phone violation into the application's conflict error (never a raw 500). */

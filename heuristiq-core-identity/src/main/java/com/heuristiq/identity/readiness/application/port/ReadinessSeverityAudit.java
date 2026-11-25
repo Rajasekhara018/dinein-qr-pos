@@ -1,4 +1,4 @@
-package com.heuristiq.uam.readiness.application.port;
+package com.heuristiq.identity.readiness.application.port;
 
 import java.util.Map;
 

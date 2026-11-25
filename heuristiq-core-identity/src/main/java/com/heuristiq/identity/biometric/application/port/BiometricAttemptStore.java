@@ -1,4 +1,4 @@
-package com.heuristiq.uam.biometric.application.port;
+package com.heuristiq.identity.biometric.application.port;
 
 import java.time.Duration;
 import java.time.Instant;

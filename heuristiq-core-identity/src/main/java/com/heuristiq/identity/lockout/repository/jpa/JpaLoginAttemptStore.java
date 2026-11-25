@@ -1,8 +1,8 @@
-package com.heuristiq.uam.lockout.repository.jpa;
+package com.heuristiq.identity.lockout.repository.jpa;
 
-import com.heuristiq.uam.lockout.LoginAttemptState;
-import com.heuristiq.uam.lockout.LoginAttemptStore;
-import com.heuristiq.uam.lockout.persistence.jpa.LoginAttemptEntity;
+import com.heuristiq.identity.lockout.LoginAttemptState;
+import com.heuristiq.identity.lockout.LoginAttemptStore;
+import com.heuristiq.identity.lockout.persistence.jpa.LoginAttemptEntity;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 

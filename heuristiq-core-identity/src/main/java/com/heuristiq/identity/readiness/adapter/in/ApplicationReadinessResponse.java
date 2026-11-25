@@ -1,12 +1,12 @@
-package com.heuristiq.uam.readiness.adapter.in;
+package com.heuristiq.identity.readiness.adapter.in;
 
 import java.util.List;
 import java.util.Map;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-import com.heuristiq.uam.readiness.domain.ApplicationReadiness;
-import com.heuristiq.uam.readiness.domain.ReadinessStep;
+import com.heuristiq.identity.readiness.domain.ApplicationReadiness;
+import com.heuristiq.identity.readiness.domain.ReadinessStep;
 
 /**
  * Wire shape of one application's readiness guide.

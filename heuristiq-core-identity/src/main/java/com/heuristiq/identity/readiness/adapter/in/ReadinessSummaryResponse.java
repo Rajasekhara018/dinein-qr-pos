@@ -1,8 +1,8 @@
-package com.heuristiq.uam.readiness.adapter.in;
+package com.heuristiq.identity.readiness.adapter.in;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-import com.heuristiq.uam.readiness.application.ReadinessSummary;
+import com.heuristiq.identity.readiness.application.ReadinessSummary;
 
 /**
  * Wire shape of one line of the readiness summary.

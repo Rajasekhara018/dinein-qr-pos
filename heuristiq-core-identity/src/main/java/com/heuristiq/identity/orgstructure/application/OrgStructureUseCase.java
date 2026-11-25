@@ -1,18 +1,18 @@
-package com.heuristiq.uam.orgstructure.application;
+package com.heuristiq.identity.orgstructure.application;
 
 import java.util.List;
 import java.util.Map;
 
-import com.heuristiq.uam.orgstructure.domain.ChangeType;
-import com.heuristiq.uam.orgstructure.domain.Models;
-import com.heuristiq.uam.orgstructure.domain.Models.Change;
-import com.heuristiq.uam.orgstructure.domain.Models.ChangeSet;
-import com.heuristiq.uam.orgstructure.domain.Models.DraftResult;
-import com.heuristiq.uam.orgstructure.domain.Models.Employee;
-import com.heuristiq.uam.orgstructure.domain.Models.LadderView;
-import com.heuristiq.uam.orgstructure.domain.Models.PersonView;
-import com.heuristiq.uam.orgstructure.domain.Models.PositionView;
-import com.heuristiq.uam.orgstructure.domain.Models.UnitView;
+import com.heuristiq.identity.orgstructure.domain.ChangeType;
+import com.heuristiq.identity.orgstructure.domain.Models;
+import com.heuristiq.identity.orgstructure.domain.Models.Change;
+import com.heuristiq.identity.orgstructure.domain.Models.ChangeSet;
+import com.heuristiq.identity.orgstructure.domain.Models.DraftResult;
+import com.heuristiq.identity.orgstructure.domain.Models.Employee;
+import com.heuristiq.identity.orgstructure.domain.Models.LadderView;
+import com.heuristiq.identity.orgstructure.domain.Models.PersonView;
+import com.heuristiq.identity.orgstructure.domain.Models.PositionView;
+import com.heuristiq.identity.orgstructure.domain.Models.UnitView;
 
 /** Use cases of the organization structure: draft editing, preview, publish, and reading the live tree. */
 public interface OrgStructureUseCase {
@@ -49,15 +49,15 @@ public interface OrgStructureUseCase {
     List<UnitView> children(String tenantId, String parentId);
 
     /** As {@link #children(String, String)}, showing only what the caller's scope allows. */
-    List<UnitView> children(String tenantId, String parentId, com.heuristiq.uam.orgstructure.domain.DataScope scope);
+    List<UnitView> children(String tenantId, String parentId, com.heuristiq.identity.orgstructure.domain.DataScope scope);
 
     List<UnitView> searchUnits(String tenantId, String query, int limit);
 
-    List<UnitView> searchUnits(String tenantId, String query, int limit, com.heuristiq.uam.orgstructure.domain.DataScope scope);
+    List<UnitView> searchUnits(String tenantId, String query, int limit, com.heuristiq.identity.orgstructure.domain.DataScope scope);
 
     List<PersonView> people(String tenantId, String unitId, String afterEmployeeId, int limit);
 
-    List<PersonView> people(String tenantId, String unitId, String afterEmployeeId, int limit, com.heuristiq.uam.orgstructure.domain.DataScope scope);
+    List<PersonView> people(String tenantId, String unitId, String afterEmployeeId, int limit, com.heuristiq.identity.orgstructure.domain.DataScope scope);
 
     /** A department by its code, with the user accounts of everyone in it and in the departments below it; not found when there is none. */
     Models.DepartmentMembers departmentMembers(String tenantId, String code);
@@ -86,5 +86,5 @@ public interface OrgStructureUseCase {
 
     List<Employee> listEmployees(String tenantId, String search, String afterId, int limit);
 
-    List<Employee> listEmployees(String tenantId, String search, String afterId, int limit, com.heuristiq.uam.orgstructure.domain.DataScope scope);
+    List<Employee> listEmployees(String tenantId, String search, String afterId, int limit, com.heuristiq.identity.orgstructure.domain.DataScope scope);
 }

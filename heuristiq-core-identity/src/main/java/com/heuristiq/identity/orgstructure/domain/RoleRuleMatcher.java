@@ -1,11 +1,11 @@
-package com.heuristiq.uam.orgstructure.domain;
+package com.heuristiq.identity.orgstructure.domain;
 
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.TreeSet;
 
-import com.heuristiq.uam.orgstructure.domain.LoginModels.RoleRule;
+import com.heuristiq.identity.orgstructure.domain.LoginModels.RoleRule;
 
 /** Decides which roles the rules give an employee. Pure logic: it reads nothing and changes nothing. */
 public final class RoleRuleMatcher {

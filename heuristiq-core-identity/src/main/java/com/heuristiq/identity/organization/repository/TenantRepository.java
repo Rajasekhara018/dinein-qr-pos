@@ -1,8 +1,8 @@
-package com.heuristiq.uam.organization.repository;
+package com.heuristiq.identity.organization.repository;
 
-import com.heuristiq.uam.enums.UamEnums.TenantStatus;
-import com.heuristiq.uam.enums.UamEnums.TenantType;
-import com.heuristiq.uam.organization.Tenant;
+import com.heuristiq.identity.enums.UamEnums.TenantStatus;
+import com.heuristiq.identity.enums.UamEnums.TenantType;
+import com.heuristiq.identity.organization.Tenant;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;

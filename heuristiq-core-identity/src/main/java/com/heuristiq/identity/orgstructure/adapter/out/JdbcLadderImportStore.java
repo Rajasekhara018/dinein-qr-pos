@@ -1,6 +1,6 @@
-package com.heuristiq.uam.orgstructure.adapter.out;
+package com.heuristiq.identity.orgstructure.adapter.out;
 
-import static com.heuristiq.uam.orgstructure.adapter.out.SqlParams.forTenant;
+import static com.heuristiq.identity.orgstructure.adapter.out.SqlParams.forTenant;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -22,15 +22,15 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 
-import com.heuristiq.uam.orgstructure.domain.LadderImportModels.ExistingPosition;
-import com.heuristiq.uam.orgstructure.domain.LadderImportModels.LadderBatch;
-import com.heuristiq.uam.orgstructure.domain.LadderImportModels.LadderReference;
-import com.heuristiq.uam.orgstructure.domain.LadderImportModels.LadderRow;
-import com.heuristiq.uam.orgstructure.domain.LadderImportModels.LadderRowInput;
-import com.heuristiq.uam.orgstructure.domain.LadderImportModels.StagedLadderRow;
-import com.heuristiq.uam.orgstructure.domain.LadderImportStore;
-import com.heuristiq.uam.orgstructure.domain.LadderRowValidator;
-import com.heuristiq.uam.orgstructure.domain.OrgStructureConstants;
+import com.heuristiq.identity.orgstructure.domain.LadderImportModels.ExistingPosition;
+import com.heuristiq.identity.orgstructure.domain.LadderImportModels.LadderBatch;
+import com.heuristiq.identity.orgstructure.domain.LadderImportModels.LadderReference;
+import com.heuristiq.identity.orgstructure.domain.LadderImportModels.LadderRow;
+import com.heuristiq.identity.orgstructure.domain.LadderImportModels.LadderRowInput;
+import com.heuristiq.identity.orgstructure.domain.LadderImportModels.StagedLadderRow;
+import com.heuristiq.identity.orgstructure.domain.LadderImportStore;
+import com.heuristiq.identity.orgstructure.domain.LadderRowValidator;
+import com.heuristiq.identity.orgstructure.domain.OrgStructureConstants;
 
 /**
  * PostgreSQL implementation of {@link LadderImportStore}. Rows are written in batches so a large file stays cheap, and every statement

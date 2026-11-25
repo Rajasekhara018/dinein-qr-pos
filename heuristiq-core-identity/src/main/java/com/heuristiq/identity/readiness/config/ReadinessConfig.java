@@ -1,4 +1,4 @@
-package com.heuristiq.uam.readiness.config;
+package com.heuristiq.identity.readiness.config;
 
 import java.time.Clock;
 import java.util.EnumMap;
@@ -19,26 +19,26 @@ import org.springframework.web.reactive.function.client.WebClient;
 import com.github.benmanes.caffeine.cache.Ticker;
 import com.heuristiq.resilient.ResilienceProfile;
 import com.heuristiq.resilient.ResilientCaller;
-import com.heuristiq.uam.application.SessionOrganizationResolver;
-import com.heuristiq.uam.application.repository.ApplicationRepository;
-import com.heuristiq.uam.config.UamProperties;
-import com.heuristiq.uam.organization.subscription.TenantApplicationServiceUseCase;
-import com.heuristiq.uam.readiness.adapter.out.HttpServiceReadinessAdapter;
-import com.heuristiq.uam.readiness.adapter.out.JdbcReadinessSeverityOverrideRepository;
-import com.heuristiq.uam.readiness.adapter.out.MongoReadinessSeverityOverrideRepository;
-import com.heuristiq.uam.readiness.adapter.out.ReadinessAdapterConstants;
-import com.heuristiq.uam.readiness.adapter.out.ServiceJwtMinter;
-import com.heuristiq.uam.readiness.adapter.out.UamReadinessFactsAdapter;
-import com.heuristiq.uam.readiness.application.ApplicationReadinessService;
-import com.heuristiq.uam.readiness.application.ApplicationReadinessUseCase;
-import com.heuristiq.uam.readiness.application.ReadinessCache;
-import com.heuristiq.uam.readiness.application.ServiceReportCollector;
-import com.heuristiq.uam.readiness.application.port.ReadinessSeverityOverrideRepository;
-import com.heuristiq.uam.readiness.application.UamReadinessChecker;
-import com.heuristiq.uam.readiness.domain.ReadinessEvaluator;
-import com.heuristiq.uam.readiness.domain.ReadinessSource;
-import com.heuristiq.uam.readiness.domain.ServiceReadinessPort;
-import com.heuristiq.uam.readiness.domain.UamReadinessFactsPort;
+import com.heuristiq.identity.application.SessionOrganizationResolver;
+import com.heuristiq.identity.application.repository.ApplicationRepository;
+import com.heuristiq.identity.config.UamProperties;
+import com.heuristiq.identity.organization.subscription.TenantApplicationServiceUseCase;
+import com.heuristiq.identity.readiness.adapter.out.HttpServiceReadinessAdapter;
+import com.heuristiq.identity.readiness.adapter.out.JdbcReadinessSeverityOverrideRepository;
+import com.heuristiq.identity.readiness.adapter.out.MongoReadinessSeverityOverrideRepository;
+import com.heuristiq.identity.readiness.adapter.out.ReadinessAdapterConstants;
+import com.heuristiq.identity.readiness.adapter.out.ServiceJwtMinter;
+import com.heuristiq.identity.readiness.adapter.out.UamReadinessFactsAdapter;
+import com.heuristiq.identity.readiness.application.ApplicationReadinessService;
+import com.heuristiq.identity.readiness.application.ApplicationReadinessUseCase;
+import com.heuristiq.identity.readiness.application.ReadinessCache;
+import com.heuristiq.identity.readiness.application.ServiceReportCollector;
+import com.heuristiq.identity.readiness.application.port.ReadinessSeverityOverrideRepository;
+import com.heuristiq.identity.readiness.application.UamReadinessChecker;
+import com.heuristiq.identity.readiness.domain.ReadinessEvaluator;
+import com.heuristiq.identity.readiness.domain.ReadinessSource;
+import com.heuristiq.identity.readiness.domain.ServiceReadinessPort;
+import com.heuristiq.identity.readiness.domain.UamReadinessFactsPort;
 
 /**
  * Wiring of the readiness combiner: one WebClient and one {@link ResilientCaller} (own circuit breaker, bulkhead and retry)

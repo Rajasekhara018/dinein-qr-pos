@@ -1,11 +1,11 @@
-package com.heuristiq.uam.securitypolicy;
+package com.heuristiq.identity.securitypolicy;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.heuristiq.uam.application.repository.ApplicationRepository;
-import com.heuristiq.uam.common.UamException;
-import com.heuristiq.uam.config.UamProperties;
-import com.heuristiq.uam.securitypolicy.repository.SecurityPolicyRepository;
+import com.heuristiq.identity.application.repository.ApplicationRepository;
+import com.heuristiq.identity.common.UamException;
+import com.heuristiq.identity.config.UamProperties;
+import com.heuristiq.identity.securitypolicy.repository.SecurityPolicyRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 

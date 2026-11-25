@@ -1,7 +1,7 @@
-package com.heuristiq.uam.organization.operatingmodel.adapter.in;
+package com.heuristiq.identity.organization.operatingmodel.adapter.in;
 
-import com.heuristiq.uam.common.CommonResponseObject;
-import com.heuristiq.uam.organization.operatingmodel.application.OperatingModelUseCase;
+import com.heuristiq.identity.common.CommonResponseObject;
+import com.heuristiq.identity.organization.operatingmodel.application.OperatingModelUseCase;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

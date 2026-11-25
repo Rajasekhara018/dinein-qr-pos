@@ -1,16 +1,16 @@
-package com.heuristiq.uam.organization.legalprofile.adapter.out;
+package com.heuristiq.identity.organization.legalprofile.adapter.out;
 
-import static com.heuristiq.uam.organization.legalprofile.adapter.out.LegalProfileAdapterConstants.*;
+import static com.heuristiq.identity.organization.legalprofile.adapter.out.LegalProfileAdapterConstants.*;
 
-import com.heuristiq.uam.organization.legalprofile.application.port.LegalProfileStore;
-import com.heuristiq.uam.organization.legalprofile.domain.AddressKind;
-import com.heuristiq.uam.organization.legalprofile.domain.LegalAddress;
-import com.heuristiq.uam.organization.legalprofile.domain.LegalEntityType;
-import com.heuristiq.uam.organization.legalprofile.domain.LegalProfile;
-import com.heuristiq.uam.organization.legalprofile.domain.LegalProfileException;
-import com.heuristiq.uam.organization.legalprofile.domain.StoredLegalProfile;
-import com.heuristiq.uam.organization.legalprofile.domain.TaxId;
-import com.heuristiq.uam.organization.legalprofile.domain.TaxIdType;
+import com.heuristiq.identity.organization.legalprofile.application.port.LegalProfileStore;
+import com.heuristiq.identity.organization.legalprofile.domain.AddressKind;
+import com.heuristiq.identity.organization.legalprofile.domain.LegalAddress;
+import com.heuristiq.identity.organization.legalprofile.domain.LegalEntityType;
+import com.heuristiq.identity.organization.legalprofile.domain.LegalProfile;
+import com.heuristiq.identity.organization.legalprofile.domain.LegalProfileException;
+import com.heuristiq.identity.organization.legalprofile.domain.StoredLegalProfile;
+import com.heuristiq.identity.organization.legalprofile.domain.TaxId;
+import com.heuristiq.identity.organization.legalprofile.domain.TaxIdType;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.List;

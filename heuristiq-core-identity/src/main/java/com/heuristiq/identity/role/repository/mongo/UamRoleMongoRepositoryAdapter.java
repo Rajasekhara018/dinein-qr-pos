@@ -1,8 +1,8 @@
-package com.heuristiq.uam.role.repository.mongo;
+package com.heuristiq.identity.role.repository.mongo;
 
-import com.heuristiq.uam.role.UamRole;
-import com.heuristiq.uam.role.persistance.mongo.UamRoleDocument;
-import com.heuristiq.uam.role.repository.UamRoleRepository;
+import com.heuristiq.identity.role.UamRole;
+import com.heuristiq.identity.role.persistance.mongo.UamRoleDocument;
+import com.heuristiq.identity.role.repository.UamRoleRepository;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;

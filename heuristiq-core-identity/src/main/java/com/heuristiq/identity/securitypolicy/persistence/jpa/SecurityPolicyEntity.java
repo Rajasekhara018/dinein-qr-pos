@@ -1,22 +1,22 @@
-package com.heuristiq.uam.securitypolicy.persistence.jpa;
+package com.heuristiq.identity.securitypolicy.persistence.jpa;
 
 import java.time.LocalDateTime;
 
 import org.hibernate.annotations.UuidGenerator;
 
-import com.heuristiq.uam.helper.AccountPolicy;
-import com.heuristiq.uam.helper.ApiSecurityPolicy;
-import com.heuristiq.uam.helper.AuditInfo;
-import com.heuristiq.uam.helper.LoginPolicy;
-import com.heuristiq.uam.helper.MfaPolicy;
-import com.heuristiq.uam.helper.PasswordPolicy;
-import com.heuristiq.uam.helper.SessionPolicy;
-import com.heuristiq.uam.util.AccountPolicyAttributeConverter;
-import com.heuristiq.uam.util.ApiSecurityPolicyAttributeConverter;
-import com.heuristiq.uam.util.LoginPolicyAttributeConverter;
-import com.heuristiq.uam.util.MfaPolicyAttributeConverter;
-import com.heuristiq.uam.util.PasswordPolicyAttributeConverter;
-import com.heuristiq.uam.util.SessionPolicyAttributeConverter;
+import com.heuristiq.identity.helper.AccountPolicy;
+import com.heuristiq.identity.helper.ApiSecurityPolicy;
+import com.heuristiq.identity.helper.AuditInfo;
+import com.heuristiq.identity.helper.LoginPolicy;
+import com.heuristiq.identity.helper.MfaPolicy;
+import com.heuristiq.identity.helper.PasswordPolicy;
+import com.heuristiq.identity.helper.SessionPolicy;
+import com.heuristiq.identity.util.AccountPolicyAttributeConverter;
+import com.heuristiq.identity.util.ApiSecurityPolicyAttributeConverter;
+import com.heuristiq.identity.util.LoginPolicyAttributeConverter;
+import com.heuristiq.identity.util.MfaPolicyAttributeConverter;
+import com.heuristiq.identity.util.PasswordPolicyAttributeConverter;
+import com.heuristiq.identity.util.SessionPolicyAttributeConverter;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;

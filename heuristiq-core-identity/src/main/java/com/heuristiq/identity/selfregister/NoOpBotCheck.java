@@ -1,4 +1,4 @@
-package com.heuristiq.uam.selfregister;
+package com.heuristiq.identity.selfregister;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;

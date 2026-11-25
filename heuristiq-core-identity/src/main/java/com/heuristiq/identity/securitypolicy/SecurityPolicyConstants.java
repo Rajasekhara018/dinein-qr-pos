@@ -1,4 +1,4 @@
-package com.heuristiq.uam.securitypolicy;
+package com.heuristiq.identity.securitypolicy;
 
 /** Fixed limits of the values a security policy may hold. */
 public final class SecurityPolicyConstants {

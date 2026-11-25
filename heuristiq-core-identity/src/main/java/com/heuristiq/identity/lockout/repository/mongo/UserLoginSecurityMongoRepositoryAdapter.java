@@ -1,8 +1,8 @@
-package com.heuristiq.uam.lockout.repository.mongo;
+package com.heuristiq.identity.lockout.repository.mongo;
 
-import com.heuristiq.uam.lockout.UserLoginSecurity;
-import com.heuristiq.uam.lockout.persistence.mongo.UserLoginSecurityDocument;
-import com.heuristiq.uam.lockout.repository.UserLoginSecurityRepository;
+import com.heuristiq.identity.lockout.UserLoginSecurity;
+import com.heuristiq.identity.lockout.persistence.mongo.UserLoginSecurityDocument;
+import com.heuristiq.identity.lockout.repository.UserLoginSecurityRepository;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Repository;
 

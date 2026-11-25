@@ -1,6 +1,6 @@
-package com.heuristiq.uam.passwordsHistory;
+package com.heuristiq.identity.passwordsHistory;
 
-import com.heuristiq.uam.common.PageResult;
+import com.heuristiq.identity.common.PageResult;
 
 public interface PasswordHistoryServiceUseCase {
 

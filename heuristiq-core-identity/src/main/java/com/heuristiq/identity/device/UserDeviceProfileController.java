@@ -1,9 +1,9 @@
-package com.heuristiq.uam.device;
+package com.heuristiq.identity.device;
 
 import org.springframework.http.HttpHeaders;
-import com.heuristiq.uam.common.CommonResponseObject;
-import com.heuristiq.uam.common.OperationResult;
-import com.heuristiq.uam.common.UamException;
+import com.heuristiq.identity.common.CommonResponseObject;
+import com.heuristiq.identity.common.OperationResult;
+import com.heuristiq.identity.common.UamException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * Self-service device access — see {@link com.heuristiq.uam.users.UserProfileController}'s javadoc for the pattern.
+ * Self-service device access — see {@link com.heuristiq.identity.users.UserProfileController}'s javadoc for the pattern.
  * {@link UserDeviceService}'s id-based methods (get/delete/trust/block) have no ownership check,
  * so every action here verifies {@code device.getUserId()} against the caller first.
  */

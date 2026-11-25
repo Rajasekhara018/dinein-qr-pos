@@ -1,4 +1,4 @@
-package com.heuristiq.uam.organization;
+package com.heuristiq.identity.organization;
 
 /** How much of an organization a person sees (an organization setting). */
 public enum DataScopeMode {

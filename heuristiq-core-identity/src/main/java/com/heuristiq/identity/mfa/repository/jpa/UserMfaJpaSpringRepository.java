@@ -1,7 +1,7 @@
-package com.heuristiq.uam.mfa.repository.jpa;
+package com.heuristiq.identity.mfa.repository.jpa;
 
-import com.heuristiq.uam.mfa.persistence.jpa.UserMfaEntity;
-import com.heuristiq.uam.enums.UamEnums.MfaType;
+import com.heuristiq.identity.mfa.persistence.jpa.UserMfaEntity;
+import com.heuristiq.identity.enums.UamEnums.MfaType;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

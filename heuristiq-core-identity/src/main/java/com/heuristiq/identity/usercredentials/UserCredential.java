@@ -1,10 +1,10 @@
-package com.heuristiq.uam.usercredentials;
+package com.heuristiq.identity.usercredentials;
 
 import java.time.LocalDateTime;
 import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.heuristiq.uam.enums.UamEnums.AuthProvider;
+import com.heuristiq.identity.enums.UamEnums.AuthProvider;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -1,4 +1,4 @@
-package com.heuristiq.uam.util;
+package com.heuristiq.identity.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;

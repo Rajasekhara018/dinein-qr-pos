@@ -1,4 +1,4 @@
-package com.heuristiq.uam.enums;
+package com.heuristiq.identity.enums;
 
 public class UamEnums {
 

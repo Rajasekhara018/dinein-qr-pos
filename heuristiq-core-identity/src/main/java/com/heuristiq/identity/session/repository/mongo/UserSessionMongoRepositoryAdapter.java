@@ -1,8 +1,8 @@
-package com.heuristiq.uam.session.repository.mongo;
+package com.heuristiq.identity.session.repository.mongo;
 
-import com.heuristiq.uam.session.UserSession;
-import com.heuristiq.uam.session.persistence.mongo.UserSessionDocument;
-import com.heuristiq.uam.session.repository.UserSessionRepository;
+import com.heuristiq.identity.session.UserSession;
+import com.heuristiq.identity.session.persistence.mongo.UserSessionDocument;
+import com.heuristiq.identity.session.repository.UserSessionRepository;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Repository;
 

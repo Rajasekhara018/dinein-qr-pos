@@ -1,16 +1,16 @@
-package com.heuristiq.uam.auth;
+package com.heuristiq.identity.auth;
 
-import com.heuristiq.uam.common.UamException;
-import com.heuristiq.uam.dto.MyPrivilegesResponse;
-import com.heuristiq.uam.permissions.Permission;
-import com.heuristiq.uam.permissions.PermissionRepository;
-import com.heuristiq.uam.role.UamRole;
-import com.heuristiq.uam.role.repository.UamRoleRepository;
-import com.heuristiq.uam.users.UamUser;
-import com.heuristiq.uam.users.repository.UamUserRepository;
+import com.heuristiq.identity.common.UamException;
+import com.heuristiq.identity.dto.MyPrivilegesResponse;
+import com.heuristiq.identity.permissions.Permission;
+import com.heuristiq.identity.permissions.PermissionRepository;
+import com.heuristiq.identity.role.UamRole;
+import com.heuristiq.identity.role.repository.UamRoleRepository;
+import com.heuristiq.identity.users.UamUser;
+import com.heuristiq.identity.users.repository.UamUserRepository;
 import org.springframework.stereotype.Service;
 
-import com.heuristiq.uam.security.SecurityConstants;
+import com.heuristiq.identity.security.SecurityConstants;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -84,8 +84,8 @@ public class MyPrivilegesService implements MyPrivilegesServiceUseCase {
         if (permission.getAttributes() == null) {
             return null;
         }
-        Object version = permission.getAttributes().get(com.heuristiq.uam.common.UamCommonConstants.PERMISSION_CATALOG_VERSION_ATTRIBUTE);
-        if (!(version instanceof Number catalogNumber) || catalogNumber.doubleValue() != com.heuristiq.uam.common.UamCommonConstants.PERMISSION_CATALOG_VERSION) {
+        Object version = permission.getAttributes().get(com.heuristiq.identity.common.UamCommonConstants.PERMISSION_CATALOG_VERSION_ATTRIBUTE);
+        if (!(version instanceof Number catalogNumber) || catalogNumber.doubleValue() != com.heuristiq.identity.common.UamCommonConstants.PERMISSION_CATALOG_VERSION) {
             return null;
         }
         Object value = permission.getAttributes().get(MyPrivilegesConstants.PRIVILEGE_ID_ATTRIBUTE);

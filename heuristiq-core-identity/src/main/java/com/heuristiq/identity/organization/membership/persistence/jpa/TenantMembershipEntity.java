@@ -1,10 +1,10 @@
-package com.heuristiq.uam.organization.membership.persistence.jpa;
+package com.heuristiq.identity.organization.membership.persistence.jpa;
 
 import java.time.LocalDateTime;
 
 import org.hibernate.annotations.UuidGenerator;
 
-import com.heuristiq.uam.organization.membership.TenantMembershipStatus;
+import com.heuristiq.identity.organization.membership.TenantMembershipStatus;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

@@ -1,6 +1,6 @@
-package com.heuristiq.uam.organization.legalprofile.adapter.in;
+package com.heuristiq.identity.organization.legalprofile.adapter.in;
 
-import com.heuristiq.uam.organization.legalprofile.domain.LegalProfileDraft;
+import com.heuristiq.identity.organization.legalprofile.domain.LegalProfileDraft;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 

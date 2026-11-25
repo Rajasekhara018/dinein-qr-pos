@@ -1,28 +1,28 @@
-package com.heuristiq.uam.otp;
+package com.heuristiq.identity.otp;
 
-import com.heuristiq.uam.auth.CustomerSignInGate;
+import com.heuristiq.identity.auth.CustomerSignInGate;
 
-import com.heuristiq.uam.common.UamCommonConstants;
+import com.heuristiq.identity.common.UamCommonConstants;
 import org.springframework.http.HttpHeaders;
-import com.heuristiq.uam.helper.PhoneIdentity;
-import com.heuristiq.uam.auth.ClientIpResolver;
-import com.heuristiq.uam.auth.LoginSessionService;
-import com.heuristiq.uam.auth.MfaLoginGate;
-import com.heuristiq.uam.auth.SelfServiceRoleGrant;
-import com.heuristiq.uam.common.UamException;
-import com.heuristiq.uam.users.UamUser;
-import com.heuristiq.uam.dto.LoginResponse;
-import com.heuristiq.uam.dto.LoginResult;
-import com.heuristiq.uam.dto.MfaChallengeRequiredResponse;
-import com.heuristiq.uam.metrics.OtpChannel;
-import com.heuristiq.uam.metrics.Outcome;
-import com.heuristiq.uam.metrics.UamMetrics;
-import com.heuristiq.uam.mfa.UserMfa;
-import com.heuristiq.uam.dto.OtpSentResponse;
-import com.heuristiq.uam.enums.UamEnums;
-import com.heuristiq.uam.notification.NmsNotificationService;
-import com.heuristiq.uam.users.repository.UamUserRepository;
-import com.heuristiq.uam.usercredentials.UserCredentialServiceUseCase;
+import com.heuristiq.identity.helper.PhoneIdentity;
+import com.heuristiq.identity.auth.ClientIpResolver;
+import com.heuristiq.identity.auth.LoginSessionService;
+import com.heuristiq.identity.auth.MfaLoginGate;
+import com.heuristiq.identity.auth.SelfServiceRoleGrant;
+import com.heuristiq.identity.common.UamException;
+import com.heuristiq.identity.users.UamUser;
+import com.heuristiq.identity.dto.LoginResponse;
+import com.heuristiq.identity.dto.LoginResult;
+import com.heuristiq.identity.dto.MfaChallengeRequiredResponse;
+import com.heuristiq.identity.metrics.OtpChannel;
+import com.heuristiq.identity.metrics.Outcome;
+import com.heuristiq.identity.metrics.UamMetrics;
+import com.heuristiq.identity.mfa.UserMfa;
+import com.heuristiq.identity.dto.OtpSentResponse;
+import com.heuristiq.identity.enums.UamEnums;
+import com.heuristiq.identity.notification.NmsNotificationService;
+import com.heuristiq.identity.users.repository.UamUserRepository;
+import com.heuristiq.identity.usercredentials.UserCredentialServiceUseCase;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -36,7 +36,7 @@ public class UamOtpAuthService implements UamOtpAuthServiceUseCase {
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(UamOtpAuthService.class);
 
     @org.springframework.beans.factory.annotation.Autowired
-    private com.heuristiq.uam.usercredentials.UserCredentialRepository verificationCredentials;
+    private com.heuristiq.identity.usercredentials.UserCredentialRepository verificationCredentials;
 
     private final UamUserRepository userRepository;
     private final LoginSessionService loginSessionService;
@@ -238,7 +238,7 @@ public class UamOtpAuthService implements UamOtpAuthServiceUseCase {
         if (verificationCredentials == null) return;
         var now = java.time.LocalDateTime.now();
         var credential = verificationCredentials.findByUserIdAndProvider(user.getId(), UamEnums.AuthProvider.LOCAL)
-                .orElseGet(() -> com.heuristiq.uam.usercredentials.UserCredential.builder().userId(user.getId())
+                .orElseGet(() -> com.heuristiq.identity.usercredentials.UserCredential.builder().userId(user.getId())
                         .provider(UamEnums.AuthProvider.LOCAL).primaryCredential(true).createdAt(now).build());
         String channel = key.split(":", 3)[1];
         if ("EMAIL".equals(channel)) credential.setEmailVerified(true);

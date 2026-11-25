@@ -1,4 +1,4 @@
-package com.heuristiq.uam.organization;
+package com.heuristiq.identity.organization;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -13,15 +13,15 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import com.heuristiq.uam.application.ApplicationServiceUseCase;
-import com.heuristiq.uam.enums.UamEnums.TenantStatus;
-import com.heuristiq.uam.enums.UamEnums.TenantType;
-import com.heuristiq.uam.helper.AuditInfo;
-import com.heuristiq.uam.organization.membership.TenantMembershipServiceUseCase;
-import com.heuristiq.uam.organization.repository.TenantRepository;
-import com.heuristiq.uam.organization.subscription.TenantApplicationServiceUseCase;
-import com.heuristiq.uam.users.UamUser;
-import com.heuristiq.uam.users.repository.UamUserRepository;
+import com.heuristiq.identity.application.ApplicationServiceUseCase;
+import com.heuristiq.identity.enums.UamEnums.TenantStatus;
+import com.heuristiq.identity.enums.UamEnums.TenantType;
+import com.heuristiq.identity.helper.AuditInfo;
+import com.heuristiq.identity.organization.membership.TenantMembershipServiceUseCase;
+import com.heuristiq.identity.organization.repository.TenantRepository;
+import com.heuristiq.identity.organization.subscription.TenantApplicationServiceUseCase;
+import com.heuristiq.identity.users.UamUser;
+import com.heuristiq.identity.users.repository.UamUserRepository;
 
 /**
  * Makes sure the platform organization ({@link PlatformOrganizationProperties}) exists, owns the bootstrap super admin, and

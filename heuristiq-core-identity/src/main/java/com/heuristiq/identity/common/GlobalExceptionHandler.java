@@ -1,7 +1,7 @@
-package com.heuristiq.uam.common;
+package com.heuristiq.identity.common;
 
-import com.heuristiq.uam.google.GoogleAuthException;
-import com.heuristiq.uam.identity.ProviderAuthException;
+import com.heuristiq.identity.google.GoogleAuthException;
+import com.heuristiq.identity.identity.ProviderAuthException;
 import jakarta.validation.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,21 +21,21 @@ public class GlobalExceptionHandler {
      * Go-live refused (409): the body lists the application and every blocking step with its status, message key, params and
      * fix route, under errorCode GO_LIVE_BLOCKED, so Rider_Web can show the steps in the user's language.
      */
-    @ExceptionHandler(com.heuristiq.uam.readiness.domain.GoLiveRefusedException.class)
-    public ResponseEntity<CommonResponseObject> handleGoLiveRefused(com.heuristiq.uam.readiness.domain.GoLiveRefusedException ex) {
+    @ExceptionHandler(com.heuristiq.identity.readiness.domain.GoLiveRefusedException.class)
+    public ResponseEntity<CommonResponseObject> handleGoLiveRefused(com.heuristiq.identity.readiness.domain.GoLiveRefusedException ex) {
         java.util.Map<String, Object> body = new java.util.LinkedHashMap<>();
         body.put("applicationCode", ex.getApplicationCode());
-        body.put("messageKey", com.heuristiq.uam.readiness.domain.GovernanceConstants.KEY_GO_LIVE_REFUSED);
+        body.put("messageKey", com.heuristiq.identity.readiness.domain.GovernanceConstants.KEY_GO_LIVE_REFUSED);
         body.put("blockers", ex.getBlockers());
         CommonResponseObject response = new CommonResponseObject(false, ex.getMessage(), body,
-                com.heuristiq.uam.readiness.domain.GovernanceConstants.ERROR_GO_LIVE_BLOCKED, java.time.Instant.now());
+                com.heuristiq.identity.readiness.domain.GovernanceConstants.ERROR_GO_LIVE_BLOCKED, java.time.Instant.now());
         return ResponseEntity.status(ex.getStatus()).body(response);
     }
 
     /** A refused severity change: 409 READINESS_SEVERITY_LOCKED, 404 READINESS_STEP_NOT_FOUND or 400 READINESS_SEVERITY_INVALID. */
-    @ExceptionHandler(com.heuristiq.uam.readiness.domain.ReadinessSeverityException.class)
+    @ExceptionHandler(com.heuristiq.identity.readiness.domain.ReadinessSeverityException.class)
     public ResponseEntity<CommonResponseObject> handleReadinessSeverity(
-            com.heuristiq.uam.readiness.domain.ReadinessSeverityException ex) {
+            com.heuristiq.identity.readiness.domain.ReadinessSeverityException ex) {
         java.util.Map<String, Object> body = new java.util.LinkedHashMap<>();
         body.put("messageKey", ex.getMessageKey());
         body.put("stepId", ex.getStepId());

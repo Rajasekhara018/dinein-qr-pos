@@ -1,4 +1,4 @@
-package com.heuristiq.uam.time;
+package com.heuristiq.identity.time;
 
 /**
  * Fixed names and defaults for the legacy time zone setting. The zone itself is configuration

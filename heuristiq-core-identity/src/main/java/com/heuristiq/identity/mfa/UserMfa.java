@@ -1,12 +1,12 @@
-package com.heuristiq.uam.mfa;
+package com.heuristiq.identity.mfa;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.heuristiq.uam.enums.UamEnums.MfaType;
-import com.heuristiq.uam.helper.RPhoneNumber;
+import com.heuristiq.identity.enums.UamEnums.MfaType;
+import com.heuristiq.identity.helper.RPhoneNumber;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

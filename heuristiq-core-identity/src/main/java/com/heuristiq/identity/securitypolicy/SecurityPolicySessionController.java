@@ -1,8 +1,8 @@
-package com.heuristiq.uam.securitypolicy;
+package com.heuristiq.identity.securitypolicy;
 
-import com.heuristiq.uam.common.CommonResponseObject;
-import com.heuristiq.uam.common.UamException;
-import com.heuristiq.uam.security.TenantGuard;
+import com.heuristiq.identity.common.CommonResponseObject;
+import com.heuristiq.identity.common.UamException;
+import com.heuristiq.identity.security.TenantGuard;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;

@@ -1,10 +1,10 @@
-package com.heuristiq.uam.application.client;
+package com.heuristiq.identity.application.client;
 
-import com.heuristiq.uam.common.UamException;
-import com.heuristiq.uam.organization.Tenant;
-import com.heuristiq.uam.organization.repository.TenantRepository;
-import com.heuristiq.uam.security.TenantContext;
-import com.heuristiq.uam.security.TenantGuard;
+import com.heuristiq.identity.common.UamException;
+import com.heuristiq.identity.organization.Tenant;
+import com.heuristiq.identity.organization.repository.TenantRepository;
+import com.heuristiq.identity.security.TenantContext;
+import com.heuristiq.identity.security.TenantGuard;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;

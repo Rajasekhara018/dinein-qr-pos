@@ -1,4 +1,4 @@
-package com.heuristiq.uam.lockout.persistence.jpa;
+package com.heuristiq.identity.lockout.persistence.jpa;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

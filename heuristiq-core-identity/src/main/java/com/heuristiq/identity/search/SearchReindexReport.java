@@ -1,4 +1,4 @@
-package com.heuristiq.uam.search;
+package com.heuristiq.identity.search;
 
 import java.time.Instant;
 import java.util.Map;

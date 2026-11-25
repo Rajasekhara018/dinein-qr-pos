@@ -1,4 +1,4 @@
-package com.heuristiq.uam.readiness.domain;
+package com.heuristiq.identity.readiness.domain;
 
 /**
  * Overall readiness of one application for one organization. The rules are in {@link ReadinessEvaluator}.

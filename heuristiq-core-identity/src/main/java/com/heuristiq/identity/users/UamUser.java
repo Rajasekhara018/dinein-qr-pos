@@ -1,4 +1,4 @@
-package com.heuristiq.uam.users;
+package com.heuristiq.identity.users;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
@@ -6,14 +6,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import com.heuristiq.uam.enums.UamEnums.Gender;
-import com.heuristiq.uam.enums.UamEnums.LanguageEnum;
-import com.heuristiq.uam.enums.UamEnums.UserStatus;
-import com.heuristiq.uam.helper.AuditInfo;
-import com.heuristiq.uam.helper.RName;
-import com.heuristiq.uam.helper.RPhoneNumber;
-import com.heuristiq.uam.helper.RUpload;
-import com.heuristiq.uam.search.SearchIndexable;
+import com.heuristiq.identity.enums.UamEnums.Gender;
+import com.heuristiq.identity.enums.UamEnums.LanguageEnum;
+import com.heuristiq.identity.enums.UamEnums.UserStatus;
+import com.heuristiq.identity.helper.AuditInfo;
+import com.heuristiq.identity.helper.RName;
+import com.heuristiq.identity.helper.RPhoneNumber;
+import com.heuristiq.identity.helper.RUpload;
+import com.heuristiq.identity.search.SearchIndexable;
 
 import java.time.LocalDate;
 import java.util.HashMap;

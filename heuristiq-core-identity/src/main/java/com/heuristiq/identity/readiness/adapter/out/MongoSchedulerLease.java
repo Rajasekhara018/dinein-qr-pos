@@ -1,4 +1,4 @@
-package com.heuristiq.uam.readiness.adapter.out;
+package com.heuristiq.identity.readiness.adapter.out;
 
 import java.time.Clock;
 import java.time.Duration;
@@ -14,7 +14,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 
-import com.heuristiq.uam.readiness.application.port.SchedulerLease;
+import com.heuristiq.identity.readiness.application.port.SchedulerLease;
 
 /**
  * MongoDB lease in the {@code scheduler_locks} collection. One upsert on {@code _id = name} that only matches when the lease

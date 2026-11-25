@@ -1,6 +1,6 @@
-package com.heuristiq.uam.permissions.repository.jpa;
+package com.heuristiq.identity.permissions.repository.jpa;
 
-import com.heuristiq.uam.permissions.persistance.jpa.PermissionEntity;
+import com.heuristiq.identity.permissions.persistance.jpa.PermissionEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Collection;

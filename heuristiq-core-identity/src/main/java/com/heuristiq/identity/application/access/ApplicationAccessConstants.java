@@ -1,8 +1,8 @@
-package com.heuristiq.uam.application.access;
+package com.heuristiq.identity.application.access;
 
 import java.util.Set;
-import com.heuristiq.uam.enums.UamEnums;
-import com.heuristiq.uam.common.UamCommonConstants;
+import com.heuristiq.identity.enums.UamEnums;
+import com.heuristiq.identity.common.UamCommonConstants;
 
 /** Fixed values of the application-access feature. */
 final class ApplicationAccessConstants {
@@ -24,7 +24,7 @@ final class ApplicationAccessConstants {
 
     /** Back-office account types that are never created through application onboarding. */
     /** The back-office account types (one list, kept in AuthConstants): never put through onboarding. */
-    static final Set<UamEnums.UserType> PRIVILEGED_TYPES = com.heuristiq.uam.auth.AuthConstants.BACK_OFFICE_USER_TYPES;
+    static final Set<UamEnums.UserType> PRIVILEGED_TYPES = com.heuristiq.identity.auth.AuthConstants.BACK_OFFICE_USER_TYPES;
 
     /** Provisioning into an organization that does not exist (404). Argument: the organization id. */
     static final String MSG_ORGANIZATION_NOT_FOUND = "Organization not found: %s";

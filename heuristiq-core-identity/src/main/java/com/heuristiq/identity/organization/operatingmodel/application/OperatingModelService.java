@@ -1,13 +1,13 @@
-package com.heuristiq.uam.organization.operatingmodel.application;
+package com.heuristiq.identity.organization.operatingmodel.application;
 
-import static com.heuristiq.uam.organization.operatingmodel.domain.OperatingModelConstants.ERROR_ORGANIZATION_NOT_FOUND;
+import static com.heuristiq.identity.organization.operatingmodel.domain.OperatingModelConstants.ERROR_ORGANIZATION_NOT_FOUND;
 
-import com.heuristiq.uam.organization.operatingmodel.application.port.OperatingModelAudit;
-import com.heuristiq.uam.organization.operatingmodel.application.port.OperatingModelScheduleStore;
-import com.heuristiq.uam.organization.operatingmodel.application.port.OrganizationDirectory;
-import com.heuristiq.uam.organization.operatingmodel.application.port.OrganizationDirectory.Organization;
-import com.heuristiq.uam.organization.operatingmodel.domain.OperatingModelPeriod;
-import com.heuristiq.uam.organization.operatingmodel.domain.OperatingModelSchedule;
+import com.heuristiq.identity.organization.operatingmodel.application.port.OperatingModelAudit;
+import com.heuristiq.identity.organization.operatingmodel.application.port.OperatingModelScheduleStore;
+import com.heuristiq.identity.organization.operatingmodel.application.port.OrganizationDirectory;
+import com.heuristiq.identity.organization.operatingmodel.application.port.OrganizationDirectory.Organization;
+import com.heuristiq.identity.organization.operatingmodel.domain.OperatingModelPeriod;
+import com.heuristiq.identity.organization.operatingmodel.domain.OperatingModelSchedule;
 import java.time.Clock;
 import java.time.DateTimeException;
 import java.time.LocalDate;

@@ -1,4 +1,4 @@
-package com.heuristiq.uam.passwordsHistory.persistance.mongo;
+package com.heuristiq.identity.passwordsHistory.persistance.mongo;
 
 import java.time.LocalDateTime;
 
@@ -9,8 +9,8 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.heuristiq.uam.enums.UamEnums.PasswordChangeReason;
-import com.heuristiq.uam.helper.AuditInfo;
+import com.heuristiq.identity.enums.UamEnums.PasswordChangeReason;
+import com.heuristiq.identity.helper.AuditInfo;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;

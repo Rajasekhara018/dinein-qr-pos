@@ -1,6 +1,6 @@
-package com.heuristiq.uam.biometric.application;
+package com.heuristiq.identity.biometric.application;
 
-import com.heuristiq.uam.dto.LoginResponse;
+import com.heuristiq.identity.dto.LoginResponse;
 import java.time.Instant;
 import java.util.List;
 
@@ -42,7 +42,7 @@ public interface BiometricUseCase {
     /**
      * Enrols (or re-enrols, replacing the previous key of) this installation.
      *
-     * @throws com.heuristiq.uam.biometric.domain.BiometricException REAUTH_REQUIRED without a recent interactive sign-in or a
+     * @throws com.heuristiq.identity.biometric.domain.BiometricException REAUTH_REQUIRED without a recent interactive sign-in or a
      *                                                             correct current password; INVALID_REQUEST for a bad key etc.
      */
     EnrolResult enrol(EnrolCommand command);
@@ -53,7 +53,7 @@ public interface BiometricUseCase {
     /**
      * Revokes one of the caller's devices.
      *
-     * @throws com.heuristiq.uam.biometric.domain.BiometricException NOT_FOUND when it is not one of the caller's
+     * @throws com.heuristiq.identity.biometric.domain.BiometricException NOT_FOUND when it is not one of the caller's
      */
     void revokeMine(String userId, String credentialId);
 
@@ -67,7 +67,7 @@ public interface BiometricUseCase {
      * Signs in with a device signature over a challenge.
      *
      * @return the same answer a password sign-in gives
-     * @throws com.heuristiq.uam.biometric.domain.BiometricException SIGNIN_INVALID, CREDENTIAL_REVOKED or TOO_MANY_ATTEMPTS
+     * @throws com.heuristiq.identity.biometric.domain.BiometricException SIGNIN_INVALID, CREDENTIAL_REVOKED or TOO_MANY_ATTEMPTS
      */
     LoginResponse verify(VerifyCommand command);
 }

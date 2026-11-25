@@ -1,10 +1,10 @@
-package com.heuristiq.uam.bootstrap;
+package com.heuristiq.identity.bootstrap;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.heuristiq.uam.enums.UamEnums.ModuleCategory;
-import com.heuristiq.uam.enums.UamEnums.PermissionAction;
-import com.heuristiq.uam.enums.UamEnums.ResourceType;
+import com.heuristiq.identity.enums.UamEnums.ModuleCategory;
+import com.heuristiq.identity.enums.UamEnums.PermissionAction;
+import com.heuristiq.identity.enums.UamEnums.ResourceType;
 
 /**
  * One entry in {@code privilege.json} — deserialized by {@link PermissionCatalogLoader}.

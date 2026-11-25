@@ -1,4 +1,4 @@
-package com.heuristiq.uam.orgstructure.domain;
+package com.heuristiq.identity.orgstructure.domain;
 
 /**
  * Port to the "structure as it was before a publish" snapshot that makes the last publish undoable. A snapshot is taken

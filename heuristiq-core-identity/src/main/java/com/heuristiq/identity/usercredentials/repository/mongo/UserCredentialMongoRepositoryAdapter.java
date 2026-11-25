@@ -1,9 +1,9 @@
-package com.heuristiq.uam.usercredentials.repository.mongo;
+package com.heuristiq.identity.usercredentials.repository.mongo;
 
-import com.heuristiq.uam.usercredentials.UserCredential;
-import com.heuristiq.uam.enums.UamEnums.AuthProvider;
-import com.heuristiq.uam.usercredentials.persistance.mongo.UserCredentialDocument;
-import com.heuristiq.uam.usercredentials.UserCredentialRepository;
+import com.heuristiq.identity.usercredentials.UserCredential;
+import com.heuristiq.identity.enums.UamEnums.AuthProvider;
+import com.heuristiq.identity.usercredentials.persistance.mongo.UserCredentialDocument;
+import com.heuristiq.identity.usercredentials.UserCredentialRepository;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Repository;
 

@@ -1,4 +1,4 @@
-package com.heuristiq.uam.application.access;
+package com.heuristiq.identity.application.access;
 
 import java.util.HashMap;
 import java.util.List;
@@ -10,11 +10,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 
-import com.heuristiq.uam.search.SearchEventPublisher;
-import com.heuristiq.uam.search.SearchIndexEnricher;
-import com.heuristiq.uam.search.SearchIndexable;
-import com.heuristiq.uam.users.UamUser;
-import com.heuristiq.uam.users.repository.UamUserRepository;
+import com.heuristiq.identity.search.SearchEventPublisher;
+import com.heuristiq.identity.search.SearchIndexEnricher;
+import com.heuristiq.identity.search.SearchIndexable;
+import com.heuristiq.identity.users.UamUser;
+import com.heuristiq.identity.users.repository.UamUserRepository;
 
 import lombok.extern.slf4j.Slf4j;
 

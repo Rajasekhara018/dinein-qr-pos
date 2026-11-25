@@ -1,8 +1,8 @@
-package com.heuristiq.uam.otp.repository.jpa;
+package com.heuristiq.identity.otp.repository.jpa;
 
-import com.heuristiq.uam.otp.OtpChallenge;
-import com.heuristiq.uam.otp.OtpStore;
-import com.heuristiq.uam.otp.persistence.jpa.OtpChallengeEntity;
+import com.heuristiq.identity.otp.OtpChallenge;
+import com.heuristiq.identity.otp.OtpStore;
+import com.heuristiq.identity.otp.persistence.jpa.OtpChallengeEntity;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.OptimisticLockingFailureException;

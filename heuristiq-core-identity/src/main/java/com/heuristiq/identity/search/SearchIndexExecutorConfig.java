@@ -1,4 +1,4 @@
-package com.heuristiq.uam.search;
+package com.heuristiq.identity.search;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

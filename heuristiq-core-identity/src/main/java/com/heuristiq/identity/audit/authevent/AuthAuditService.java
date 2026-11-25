@@ -1,6 +1,6 @@
-package com.heuristiq.uam.audit.authevent;
+package com.heuristiq.identity.audit.authevent;
 
-import com.heuristiq.uam.users.UamUser;
+import com.heuristiq.identity.users.UamUser;
 import io.micrometer.core.instrument.MeterRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,4 +1,4 @@
-package com.heuristiq.uam.device;
+package com.heuristiq.identity.device;
 
 /** Fixed values of the device feature: fingerprint fallback and the stored location metadata. */
 public final class DeviceConstants {

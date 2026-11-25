@@ -1,14 +1,14 @@
-package com.heuristiq.uam.orgstructure.domain;
+package com.heuristiq.identity.orgstructure.domain;
 
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
-import com.heuristiq.uam.orgstructure.domain.LadderImportModels.ExistingPosition;
-import com.heuristiq.uam.orgstructure.domain.LadderImportModels.LadderBatch;
-import com.heuristiq.uam.orgstructure.domain.LadderImportModels.LadderReference;
-import com.heuristiq.uam.orgstructure.domain.LadderImportModels.LadderRow;
-import com.heuristiq.uam.orgstructure.domain.LadderImportModels.StagedLadderRow;
+import com.heuristiq.identity.orgstructure.domain.LadderImportModels.ExistingPosition;
+import com.heuristiq.identity.orgstructure.domain.LadderImportModels.LadderBatch;
+import com.heuristiq.identity.orgstructure.domain.LadderImportModels.LadderReference;
+import com.heuristiq.identity.orgstructure.domain.LadderImportModels.LadderRow;
+import com.heuristiq.identity.orgstructure.domain.LadderImportModels.StagedLadderRow;
 
 /**
  * Port to staged ladders files: the batch, its rows and the ladders and positions a file is checked against. Every method that reads

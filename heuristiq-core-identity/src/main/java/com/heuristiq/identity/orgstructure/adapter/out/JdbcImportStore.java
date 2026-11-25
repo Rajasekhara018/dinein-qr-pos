@@ -1,6 +1,6 @@
-package com.heuristiq.uam.orgstructure.adapter.out;
+package com.heuristiq.identity.orgstructure.adapter.out;
 
-import static com.heuristiq.uam.orgstructure.adapter.out.SqlParams.forTenant;
+import static com.heuristiq.identity.orgstructure.adapter.out.SqlParams.forTenant;
 
 import java.sql.Timestamp;
 import java.time.Clock;
@@ -22,14 +22,14 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 
-import com.heuristiq.uam.orgstructure.domain.ImportModels.ImportBatch;
-import com.heuristiq.uam.orgstructure.domain.ImportModels.ImportReference;
-import com.heuristiq.uam.orgstructure.domain.ImportModels.ImportRow;
-import com.heuristiq.uam.orgstructure.domain.ImportModels.ImportRowInput;
-import com.heuristiq.uam.orgstructure.domain.ImportModels.StagedRow;
-import com.heuristiq.uam.orgstructure.domain.ImportModels.UnitRef;
-import com.heuristiq.uam.orgstructure.domain.ImportStore;
-import com.heuristiq.uam.orgstructure.domain.OrgStructureConstants;
+import com.heuristiq.identity.orgstructure.domain.ImportModels.ImportBatch;
+import com.heuristiq.identity.orgstructure.domain.ImportModels.ImportReference;
+import com.heuristiq.identity.orgstructure.domain.ImportModels.ImportRow;
+import com.heuristiq.identity.orgstructure.domain.ImportModels.ImportRowInput;
+import com.heuristiq.identity.orgstructure.domain.ImportModels.StagedRow;
+import com.heuristiq.identity.orgstructure.domain.ImportModels.UnitRef;
+import com.heuristiq.identity.orgstructure.domain.ImportStore;
+import com.heuristiq.identity.orgstructure.domain.OrgStructureConstants;
 
 /** PostgreSQL implementation of {@link ImportStore}. Rows are written in batches so a 100k-row file stays cheap. */
 @Repository

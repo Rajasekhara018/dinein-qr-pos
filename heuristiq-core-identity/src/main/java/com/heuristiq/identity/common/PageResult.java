@@ -1,4 +1,4 @@
-package com.heuristiq.uam.common;
+package com.heuristiq.identity.common;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import org.springframework.data.domain.Page;

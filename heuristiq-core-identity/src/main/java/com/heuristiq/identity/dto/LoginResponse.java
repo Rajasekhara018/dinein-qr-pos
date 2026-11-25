@@ -1,11 +1,11 @@
-package com.heuristiq.uam.dto;
+package com.heuristiq.identity.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.heuristiq.uam.enums.UamEnums;
-import com.heuristiq.uam.helper.IanaTimeZone;
-import com.heuristiq.uam.organization.Tenant;
-import com.heuristiq.uam.users.UamUser;
-import com.heuristiq.uam.util.UserTypeResolver;
+import com.heuristiq.identity.enums.UamEnums;
+import com.heuristiq.identity.helper.IanaTimeZone;
+import com.heuristiq.identity.organization.Tenant;
+import com.heuristiq.identity.users.UamUser;
+import com.heuristiq.identity.util.UserTypeResolver;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.List;

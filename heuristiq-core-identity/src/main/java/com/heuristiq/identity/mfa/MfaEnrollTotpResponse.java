@@ -1,4 +1,4 @@
-package com.heuristiq.uam.mfa;
+package com.heuristiq.identity.mfa;
 
 /**
  * {@code secret} and {@code qrCodeImageBase64} are only ever returned here, at enrollment time —

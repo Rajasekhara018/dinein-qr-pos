@@ -1,4 +1,4 @@
-package com.heuristiq.uam.readiness.config;
+package com.heuristiq.identity.readiness.config;
 
 import java.time.Duration;
 

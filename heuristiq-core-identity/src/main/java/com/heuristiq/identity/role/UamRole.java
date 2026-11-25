@@ -1,4 +1,4 @@
-package com.heuristiq.uam.role;
+package com.heuristiq.identity.role;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
@@ -6,9 +6,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import com.heuristiq.uam.enums.UamEnums.AssignmentType;
-import com.heuristiq.uam.helper.AuditInfo;
-import com.heuristiq.uam.search.SearchIndexable;
+import com.heuristiq.identity.enums.UamEnums.AssignmentType;
+import com.heuristiq.identity.helper.AuditInfo;
+import com.heuristiq.identity.search.SearchIndexable;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;

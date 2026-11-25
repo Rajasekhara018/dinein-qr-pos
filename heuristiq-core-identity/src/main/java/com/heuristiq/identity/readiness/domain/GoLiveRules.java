@@ -1,4 +1,4 @@
-package com.heuristiq.uam.readiness.domain;
+package com.heuristiq.identity.readiness.domain;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;

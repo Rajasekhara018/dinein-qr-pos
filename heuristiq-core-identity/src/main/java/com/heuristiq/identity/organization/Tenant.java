@@ -1,16 +1,16 @@
-package com.heuristiq.uam.organization;
+package com.heuristiq.identity.organization;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.heuristiq.uam.enums.UamEnums.LanguageEnum;
-import com.heuristiq.uam.enums.UamEnums.TenantStatus;
-import com.heuristiq.uam.enums.UamEnums.TenantType;
-import com.heuristiq.uam.helper.AuditInfo;
-import com.heuristiq.uam.helper.RUpload;
-import com.heuristiq.uam.search.SearchIndexable;
+import com.heuristiq.identity.enums.UamEnums.LanguageEnum;
+import com.heuristiq.identity.enums.UamEnums.TenantStatus;
+import com.heuristiq.identity.enums.UamEnums.TenantType;
+import com.heuristiq.identity.helper.AuditInfo;
+import com.heuristiq.identity.helper.RUpload;
+import com.heuristiq.identity.search.SearchIndexable;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

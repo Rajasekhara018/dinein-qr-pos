@@ -1,8 +1,8 @@
-package com.heuristiq.uam.device.repository.jpa;
+package com.heuristiq.identity.device.repository.jpa;
 
-import com.heuristiq.uam.device.UserDevice;
-import com.heuristiq.uam.device.persistence.jpa.UserDeviceEntity;
-import com.heuristiq.uam.device.repository.UserDeviceRepository;
+import com.heuristiq.identity.device.UserDevice;
+import com.heuristiq.identity.device.persistence.jpa.UserDeviceEntity;
+import com.heuristiq.identity.device.repository.UserDeviceRepository;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Repository;
 

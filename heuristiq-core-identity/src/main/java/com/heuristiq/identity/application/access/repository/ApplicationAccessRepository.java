@@ -1,11 +1,11 @@
-package com.heuristiq.uam.application.access.repository;
+package com.heuristiq.identity.application.access.repository;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-import com.heuristiq.uam.application.access.AccessSubjectType;
-import com.heuristiq.uam.application.access.ApplicationAccess;
+import com.heuristiq.identity.application.access.AccessSubjectType;
+import com.heuristiq.identity.application.access.ApplicationAccess;
 
 /** Port for application-access grants; one adapter per persistence backend (Postgres / Mongo). */
 public interface ApplicationAccessRepository {

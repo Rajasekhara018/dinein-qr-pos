@@ -1,6 +1,6 @@
-package com.heuristiq.uam.users.repository;
+package com.heuristiq.identity.users.repository;
 
-import com.heuristiq.uam.enums.UamEnums.UserStatus;
+import com.heuristiq.identity.enums.UamEnums.UserStatus;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;

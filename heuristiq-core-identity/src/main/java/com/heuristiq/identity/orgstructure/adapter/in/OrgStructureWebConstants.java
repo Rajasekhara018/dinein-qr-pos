@@ -1,4 +1,4 @@
-package com.heuristiq.uam.orgstructure.adapter.in;
+package com.heuristiq.identity.orgstructure.adapter.in;
 
 /** HTTP-facing fixed values of the org structure controllers: base path and request headers. */
 final class OrgStructureWebConstants {

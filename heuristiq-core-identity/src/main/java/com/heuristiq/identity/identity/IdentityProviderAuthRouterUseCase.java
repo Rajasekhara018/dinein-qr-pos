@@ -1,8 +1,8 @@
-package com.heuristiq.uam.identity;
+package com.heuristiq.identity.identity;
 
-import com.heuristiq.uam.dto.LoginResponse;
-import com.heuristiq.uam.dto.ProviderLoginRequest;
-import com.heuristiq.uam.dto.ProviderRefreshRequest;
+import com.heuristiq.identity.dto.LoginResponse;
+import com.heuristiq.identity.dto.ProviderLoginRequest;
+import com.heuristiq.identity.dto.ProviderRefreshRequest;
 
 public interface IdentityProviderAuthRouterUseCase {
 

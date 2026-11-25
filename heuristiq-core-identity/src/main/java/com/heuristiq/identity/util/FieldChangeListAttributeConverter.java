@@ -1,8 +1,8 @@
-package com.heuristiq.uam.util;
+package com.heuristiq.identity.util;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.heuristiq.uam.helper.FieldChange;
+import com.heuristiq.identity.helper.FieldChange;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 import org.springframework.util.StringUtils;

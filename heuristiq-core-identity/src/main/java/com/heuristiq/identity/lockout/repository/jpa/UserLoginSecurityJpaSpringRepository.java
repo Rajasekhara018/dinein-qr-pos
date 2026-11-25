@@ -1,6 +1,6 @@
-package com.heuristiq.uam.lockout.repository.jpa;
+package com.heuristiq.identity.lockout.repository.jpa;
 
-import com.heuristiq.uam.lockout.persistence.jpa.UserLoginSecurityEntity;
+import com.heuristiq.identity.lockout.persistence.jpa.UserLoginSecurityEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

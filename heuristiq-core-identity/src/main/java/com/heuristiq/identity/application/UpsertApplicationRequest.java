@@ -1,7 +1,7 @@
-package com.heuristiq.uam.application;
+package com.heuristiq.identity.application;
 
-import com.heuristiq.uam.enums.UamEnums.ApplicationType;
-import com.heuristiq.uam.enums.UamEnums.AuthenticationMode;
+import com.heuristiq.identity.enums.UamEnums.ApplicationType;
+import com.heuristiq.identity.enums.UamEnums.AuthenticationMode;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

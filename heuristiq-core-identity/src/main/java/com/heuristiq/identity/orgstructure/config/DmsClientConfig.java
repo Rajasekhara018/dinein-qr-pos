@@ -1,6 +1,6 @@
-package com.heuristiq.uam.orgstructure.config;
+package com.heuristiq.identity.orgstructure.config;
 
-import com.heuristiq.uam.orgstructure.adapter.out.OrgStructureAdapterConstants;
+import com.heuristiq.identity.orgstructure.adapter.out.OrgStructureAdapterConstants;
 import java.time.Duration;
 
 import org.springframework.beans.factory.annotation.Qualifier;

@@ -1,8 +1,8 @@
-package com.heuristiq.uam.securitypolicy.repository.jpa;
+package com.heuristiq.identity.securitypolicy.repository.jpa;
 
-import com.heuristiq.uam.securitypolicy.SecurityPolicy;
-import com.heuristiq.uam.securitypolicy.persistence.jpa.SecurityPolicyEntity;
-import com.heuristiq.uam.securitypolicy.repository.SecurityPolicyRepository;
+import com.heuristiq.identity.securitypolicy.SecurityPolicy;
+import com.heuristiq.identity.securitypolicy.persistence.jpa.SecurityPolicyEntity;
+import com.heuristiq.identity.securitypolicy.repository.SecurityPolicyRepository;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

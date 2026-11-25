@@ -1,7 +1,7 @@
-package com.heuristiq.uam.application.repository;
+package com.heuristiq.identity.application.repository;
 
-import com.heuristiq.uam.application.Application;
-import com.heuristiq.uam.enums.UamEnums.ApplicationType;
+import com.heuristiq.identity.application.Application;
+import com.heuristiq.identity.enums.UamEnums.ApplicationType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;

@@ -1,9 +1,9 @@
-package com.heuristiq.uam.identity;
+package com.heuristiq.identity.identity;
 
-import com.heuristiq.uam.dto.ExternalUserInfo;
-import com.heuristiq.uam.dto.ProviderLoginRequest;
-import com.heuristiq.uam.dto.ProviderRefreshRequest;
-import com.heuristiq.uam.dto.ProviderTokenResponse;
+import com.heuristiq.identity.dto.ExternalUserInfo;
+import com.heuristiq.identity.dto.ProviderLoginRequest;
+import com.heuristiq.identity.dto.ProviderRefreshRequest;
+import com.heuristiq.identity.dto.ProviderTokenResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 

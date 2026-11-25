@@ -1,13 +1,13 @@
-package com.heuristiq.uam.application;
+package com.heuristiq.identity.application;
 
-import com.heuristiq.uam.common.PageResult;
-import com.heuristiq.uam.enums.UamEnums.ApplicationType;
+import com.heuristiq.identity.common.PageResult;
+import com.heuristiq.identity.enums.UamEnums.ApplicationType;
 
 import java.util.List;
 
 /**
  * Applications of the session organization. An application's code must be in the
- * {@link com.heuristiq.uam.application.catalogue.ApplicationCatalogue}; creating one links it to the session organization
+ * {@link com.heuristiq.identity.application.catalogue.ApplicationCatalogue}; creating one links it to the session organization
  * (tenant_applications), and every read, change and removal only sees the applications linked to that organization.
  */
 public interface ApplicationServiceUseCase {

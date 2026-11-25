@@ -1,7 +1,7 @@
-package com.heuristiq.uam.organization.operatingmodel.adapter.out;
+package com.heuristiq.identity.organization.operatingmodel.adapter.out;
 
-import com.heuristiq.uam.organization.operatingmodel.application.port.OrganizationDirectory;
-import com.heuristiq.uam.organization.repository.TenantRepository;
+import com.heuristiq.identity.organization.operatingmodel.application.port.OrganizationDirectory;
+import com.heuristiq.identity.organization.repository.TenantRepository;
 import java.util.Optional;
 
 /**

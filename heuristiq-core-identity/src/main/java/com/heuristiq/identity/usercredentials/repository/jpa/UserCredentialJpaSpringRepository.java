@@ -1,7 +1,7 @@
-package com.heuristiq.uam.usercredentials.repository.jpa;
+package com.heuristiq.identity.usercredentials.repository.jpa;
 
-import com.heuristiq.uam.usercredentials.persistance.jpa.UserCredentialEntity;
-import com.heuristiq.uam.enums.UamEnums.AuthProvider;
+import com.heuristiq.identity.usercredentials.persistance.jpa.UserCredentialEntity;
+import com.heuristiq.identity.enums.UamEnums.AuthProvider;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

@@ -1,6 +1,6 @@
-package com.heuristiq.uam.session.repository;
+package com.heuristiq.identity.session.repository;
 
-import com.heuristiq.uam.session.UserSession;
+import com.heuristiq.identity.session.UserSession;
 
 import java.util.List;
 import java.util.Optional;

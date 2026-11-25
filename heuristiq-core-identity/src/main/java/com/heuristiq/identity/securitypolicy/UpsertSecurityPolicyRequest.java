@@ -1,11 +1,11 @@
-package com.heuristiq.uam.securitypolicy;
+package com.heuristiq.identity.securitypolicy;
 
-import com.heuristiq.uam.helper.AccountPolicy;
-import com.heuristiq.uam.helper.ApiSecurityPolicy;
-import com.heuristiq.uam.helper.LoginPolicy;
-import com.heuristiq.uam.helper.MfaPolicy;
-import com.heuristiq.uam.helper.PasswordPolicy;
-import com.heuristiq.uam.helper.SessionPolicy;
+import com.heuristiq.identity.helper.AccountPolicy;
+import com.heuristiq.identity.helper.ApiSecurityPolicy;
+import com.heuristiq.identity.helper.LoginPolicy;
+import com.heuristiq.identity.helper.MfaPolicy;
+import com.heuristiq.identity.helper.PasswordPolicy;
+import com.heuristiq.identity.helper.SessionPolicy;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 

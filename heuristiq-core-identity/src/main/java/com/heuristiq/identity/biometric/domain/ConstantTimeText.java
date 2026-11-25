@@ -1,4 +1,4 @@
-package com.heuristiq.uam.biometric.domain;
+package com.heuristiq.identity.biometric.domain;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;

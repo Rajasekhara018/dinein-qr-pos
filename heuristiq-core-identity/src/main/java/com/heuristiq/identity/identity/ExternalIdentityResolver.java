@@ -1,13 +1,13 @@
-package com.heuristiq.uam.identity;
+package com.heuristiq.identity.identity;
 
-import com.heuristiq.uam.common.UamCommonConstants;
-import com.heuristiq.uam.common.UamException;
-import com.heuristiq.uam.users.NewUamUserBuilder;
-import com.heuristiq.uam.users.UamUser;
-import com.heuristiq.uam.dto.ExternalUserInfo;
-import com.heuristiq.uam.enums.UamEnums;
-import com.heuristiq.uam.helper.RName;
-import com.heuristiq.uam.users.repository.UamUserRepository;
+import com.heuristiq.identity.common.UamCommonConstants;
+import com.heuristiq.identity.common.UamException;
+import com.heuristiq.identity.users.NewUamUserBuilder;
+import com.heuristiq.identity.users.UamUser;
+import com.heuristiq.identity.dto.ExternalUserInfo;
+import com.heuristiq.identity.enums.UamEnums;
+import com.heuristiq.identity.helper.RName;
+import com.heuristiq.identity.users.repository.UamUserRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -21,7 +21,7 @@ import java.util.List;
 @Component
 public class ExternalIdentityResolver {
     @org.springframework.beans.factory.annotation.Autowired
-    private com.heuristiq.uam.securitypolicy.SecurityPolicyRegistration policyRegistration;
+    private com.heuristiq.identity.securitypolicy.SecurityPolicyRegistration policyRegistration;
 
     private final UamUserRepository userRepository;
 
@@ -37,7 +37,7 @@ public class ExternalIdentityResolver {
                 .orElseGet(() -> {
                     UamEnums.UserType type = defaultUserType != null ? defaultUserType : UamEnums.UserType.OPS;
                     // The requested type comes from the request body: never create a staff account from it.
-                    com.heuristiq.uam.auth.PublicAccountTypes.requireSignInProvisionable(type);
+                    com.heuristiq.identity.auth.PublicAccountTypes.requireSignInProvisionable(type);
                     return createUser(info, type);
                 });
 

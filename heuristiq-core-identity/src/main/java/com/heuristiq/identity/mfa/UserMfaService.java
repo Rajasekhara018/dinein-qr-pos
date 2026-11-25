@@ -1,10 +1,10 @@
-package com.heuristiq.uam.mfa;
+package com.heuristiq.identity.mfa;
 
-import com.heuristiq.uam.common.UamException;
-import com.heuristiq.uam.users.UamUser;
-import com.heuristiq.uam.enums.UamEnums.MfaType;
-import com.heuristiq.uam.mfa.repository.UserMfaRepository;
-import com.heuristiq.uam.users.repository.UamUserRepository;
+import com.heuristiq.identity.common.UamException;
+import com.heuristiq.identity.users.UamUser;
+import com.heuristiq.identity.enums.UamEnums.MfaType;
+import com.heuristiq.identity.mfa.repository.UserMfaRepository;
+import com.heuristiq.identity.users.repository.UamUserRepository;
 import dev.samstevens.totp.code.CodeVerifier;
 import dev.samstevens.totp.code.DefaultCodeGenerator;
 import dev.samstevens.totp.code.DefaultCodeVerifier;
@@ -26,7 +26,7 @@ import java.util.Optional;
 @Service
 public class UserMfaService implements UserMfaServiceUseCase {
     @org.springframework.beans.factory.annotation.Autowired
-    private com.heuristiq.uam.securitypolicy.SecurityPolicyEnforcer policyEnforcer;
+    private com.heuristiq.identity.securitypolicy.SecurityPolicyEnforcer policyEnforcer;
     private static final String ISSUER = "RailCab";
 
     private final UserMfaRepository mfaRepository;

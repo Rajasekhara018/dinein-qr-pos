@@ -1,4 +1,4 @@
-package com.heuristiq.uam.readiness.application;
+package com.heuristiq.identity.readiness.application;
 
 import java.time.Clock;
 import java.util.LinkedHashMap;
@@ -6,19 +6,19 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import com.heuristiq.uam.application.ApplicationConstants;
-import com.heuristiq.uam.common.UamException;
-import com.heuristiq.uam.readiness.application.port.GovernanceCaller;
-import com.heuristiq.uam.readiness.application.port.ReadinessSeverityAudit;
-import com.heuristiq.uam.readiness.application.port.ReadinessSeverityOverrideRepository;
-import com.heuristiq.uam.readiness.domain.ApplicationReadiness;
-import com.heuristiq.uam.readiness.domain.ReadinessProfiles;
-import com.heuristiq.uam.readiness.domain.ReadinessSeverity;
-import com.heuristiq.uam.readiness.domain.ReadinessSeverityConstants;
-import com.heuristiq.uam.readiness.domain.ReadinessSeverityException;
-import com.heuristiq.uam.readiness.domain.ReadinessSeverityRules;
-import com.heuristiq.uam.readiness.domain.ReadinessStepDefinition;
-import com.heuristiq.uam.readiness.domain.UamReadinessFactsPort;
+import com.heuristiq.identity.application.ApplicationConstants;
+import com.heuristiq.identity.common.UamException;
+import com.heuristiq.identity.readiness.application.port.GovernanceCaller;
+import com.heuristiq.identity.readiness.application.port.ReadinessSeverityAudit;
+import com.heuristiq.identity.readiness.application.port.ReadinessSeverityOverrideRepository;
+import com.heuristiq.identity.readiness.domain.ApplicationReadiness;
+import com.heuristiq.identity.readiness.domain.ReadinessProfiles;
+import com.heuristiq.identity.readiness.domain.ReadinessSeverity;
+import com.heuristiq.identity.readiness.domain.ReadinessSeverityConstants;
+import com.heuristiq.identity.readiness.domain.ReadinessSeverityException;
+import com.heuristiq.identity.readiness.domain.ReadinessSeverityRules;
+import com.heuristiq.identity.readiness.domain.ReadinessStepDefinition;
+import com.heuristiq.identity.readiness.domain.UamReadinessFactsPort;
 
 /**
  * Applies {@link ReadinessSeverityRules} to the session organization's overrides of one application: reads them, computes the

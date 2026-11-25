@@ -1,9 +1,9 @@
-package com.heuristiq.uam.application.repository.mongo;
+package com.heuristiq.identity.application.repository.mongo;
 
-import com.heuristiq.uam.application.Application;
-import com.heuristiq.uam.application.persistence.mongo.ApplicationDocument;
-import com.heuristiq.uam.application.repository.ApplicationRepository;
-import com.heuristiq.uam.enums.UamEnums.ApplicationType;
+import com.heuristiq.identity.application.Application;
+import com.heuristiq.identity.application.persistence.mongo.ApplicationDocument;
+import com.heuristiq.identity.application.repository.ApplicationRepository;
+import com.heuristiq.identity.enums.UamEnums.ApplicationType;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;

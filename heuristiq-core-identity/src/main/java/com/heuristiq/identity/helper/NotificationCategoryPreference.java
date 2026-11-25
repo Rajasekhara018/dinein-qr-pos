@@ -1,9 +1,9 @@
-package com.heuristiq.uam.helper;
+package com.heuristiq.identity.helper;
 
 import java.util.List;
 
-import com.heuristiq.uam.enums.UamEnums.NotificationCategory;
-import com.heuristiq.uam.enums.UamEnums.NotificationChannel;
+import com.heuristiq.identity.enums.UamEnums.NotificationCategory;
+import com.heuristiq.identity.enums.UamEnums.NotificationChannel;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -1,9 +1,9 @@
-package com.heuristiq.uam.orgstructure.application;
+package com.heuristiq.identity.orgstructure.application;
 
 import java.util.List;
 
-import com.heuristiq.uam.orgstructure.domain.DepartmentImportModels.DepartmentRow;
-import com.heuristiq.uam.orgstructure.domain.DepartmentImportModels.DepartmentBatch;
+import com.heuristiq.identity.orgstructure.domain.DepartmentImportModels.DepartmentRow;
+import com.heuristiq.identity.orgstructure.domain.DepartmentImportModels.DepartmentBatch;
 
 /** Use cases of the bulk department import: stage and validate a file, review it, then confirm or cancel. */
 public interface DepartmentImportUseCase {

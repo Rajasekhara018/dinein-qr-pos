@@ -1,4 +1,4 @@
-package com.heuristiq.uam.organization.subscription.repository.mongo;
+package com.heuristiq.identity.organization.subscription.repository.mongo;
 
 import java.util.List;
 import java.util.Optional;
@@ -6,9 +6,9 @@ import java.util.Optional;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Repository;
 
-import com.heuristiq.uam.organization.subscription.TenantApplication;
-import com.heuristiq.uam.organization.subscription.persistence.mongo.TenantApplicationDocument;
-import com.heuristiq.uam.organization.subscription.repository.TenantApplicationRepository;
+import com.heuristiq.identity.organization.subscription.TenantApplication;
+import com.heuristiq.identity.organization.subscription.persistence.mongo.TenantApplicationDocument;
+import com.heuristiq.identity.organization.subscription.repository.TenantApplicationRepository;
 
 @Repository
 @ConditionalOnProperty(prefix = "railcab.uam.persistence", name = "type", havingValue = "mongo", matchIfMissing = true)

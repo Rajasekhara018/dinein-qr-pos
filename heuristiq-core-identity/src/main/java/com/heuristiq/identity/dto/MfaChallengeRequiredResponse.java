@@ -1,6 +1,6 @@
-package com.heuristiq.uam.dto;
+package com.heuristiq.identity.dto;
 
-import com.heuristiq.uam.enums.UamEnums.MfaType;
+import com.heuristiq.identity.enums.UamEnums.MfaType;
 
 /**
  * Returned by {@code AuthService.login()} in place of {@link LoginResponse} when the password was

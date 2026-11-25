@@ -1,38 +1,38 @@
-package com.heuristiq.uam.auth;
+package com.heuristiq.identity.auth;
 
-import com.heuristiq.uam.common.UamCommonConstants;
-import com.heuristiq.uam.application.access.ApplicationAccessServiceUseCase;
-import com.heuristiq.uam.audit.authevent.AuthAuditService;
-import com.heuristiq.uam.common.UamException;
-import com.heuristiq.uam.config.UamProperties;
-import com.heuristiq.uam.device.UserAgentParser;
-import com.heuristiq.uam.device.UserAgentParser.ParsedUserAgent;
-import com.heuristiq.uam.device.UserDevice;
-import com.heuristiq.uam.device.repository.UserDeviceRepository;
-import com.heuristiq.uam.refreshToken.RefreshToken;
-import com.heuristiq.uam.organization.OrgWideAccess;
-import com.heuristiq.uam.organization.Tenant;
-import com.heuristiq.uam.organization.repository.TenantRepository;
-import com.heuristiq.uam.organization.membership.TenancyConstants;
-import com.heuristiq.uam.organization.membership.TenantMembershipServiceUseCase;
-import com.heuristiq.uam.organization.subscription.TenantApplicationServiceUseCase;
-import com.heuristiq.uam.usercredentials.UserCredentialServiceUseCase;
-import com.heuristiq.uam.users.UamUser;
-import com.heuristiq.uam.dto.LoginResponse;
-import com.heuristiq.uam.enums.UamEnums;
-import com.heuristiq.uam.users.repository.UamUserRepository;
-import com.heuristiq.uam.security.JwtService;
-import com.heuristiq.uam.security.SessionAccess;
-import com.heuristiq.uam.refreshToken.RefreshTokenServiceUseCase;
-import com.heuristiq.uam.session.UserSession;
-import com.heuristiq.uam.session.repository.UserSessionRepository;
+import com.heuristiq.identity.common.UamCommonConstants;
+import com.heuristiq.identity.application.access.ApplicationAccessServiceUseCase;
+import com.heuristiq.identity.audit.authevent.AuthAuditService;
+import com.heuristiq.identity.common.UamException;
+import com.heuristiq.identity.config.UamProperties;
+import com.heuristiq.identity.device.UserAgentParser;
+import com.heuristiq.identity.device.UserAgentParser.ParsedUserAgent;
+import com.heuristiq.identity.device.UserDevice;
+import com.heuristiq.identity.device.repository.UserDeviceRepository;
+import com.heuristiq.identity.refreshToken.RefreshToken;
+import com.heuristiq.identity.organization.OrgWideAccess;
+import com.heuristiq.identity.organization.Tenant;
+import com.heuristiq.identity.organization.repository.TenantRepository;
+import com.heuristiq.identity.organization.membership.TenancyConstants;
+import com.heuristiq.identity.organization.membership.TenantMembershipServiceUseCase;
+import com.heuristiq.identity.organization.subscription.TenantApplicationServiceUseCase;
+import com.heuristiq.identity.usercredentials.UserCredentialServiceUseCase;
+import com.heuristiq.identity.users.UamUser;
+import com.heuristiq.identity.dto.LoginResponse;
+import com.heuristiq.identity.enums.UamEnums;
+import com.heuristiq.identity.users.repository.UamUserRepository;
+import com.heuristiq.identity.security.JwtService;
+import com.heuristiq.identity.security.SessionAccess;
+import com.heuristiq.identity.refreshToken.RefreshTokenServiceUseCase;
+import com.heuristiq.identity.session.UserSession;
+import com.heuristiq.identity.session.repository.UserSessionRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import com.heuristiq.uam.refreshToken.RefreshTokenFailures;
-import com.heuristiq.uam.refreshToken.RefreshTokenHashing;
+import com.heuristiq.identity.refreshToken.RefreshTokenFailures;
+import com.heuristiq.identity.refreshToken.RefreshTokenHashing;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.OptimisticLockingFailureException;
@@ -54,11 +54,11 @@ import java.util.UUID;
 @Service
 public class LoginSessionService {
     @org.springframework.beans.factory.annotation.Autowired
-    private org.springframework.beans.factory.ObjectProvider<com.heuristiq.uam.securitypolicy.SecurityPolicyEnrollmentService> enrollment;
+    private org.springframework.beans.factory.ObjectProvider<com.heuristiq.identity.securitypolicy.SecurityPolicyEnrollmentService> enrollment;
     @org.springframework.beans.factory.annotation.Autowired
-    private com.heuristiq.uam.securitypolicy.SecurityPolicyEnforcer policyEnforcer;
+    private com.heuristiq.identity.securitypolicy.SecurityPolicyEnforcer policyEnforcer;
     @org.springframework.beans.factory.annotation.Autowired
-    private com.heuristiq.uam.securitypolicy.EffectiveSecurityPolicyResolver policyResolver;
+    private com.heuristiq.identity.securitypolicy.EffectiveSecurityPolicyResolver policyResolver;
     private static final Logger log = LoggerFactory.getLogger(LoginSessionService.class);
     private static final SecureRandom SECURE_RANDOM = new SecureRandom();
 
@@ -155,7 +155,7 @@ public class LoginSessionService {
                 policyEnforcer.requireLogin(user, effectivePolicy, mfaVerified);
             } catch (UamException required) {
                 if ("MFA_ENROLLMENT_REQUIRED".equals(required.getErrorCode()) && enrollment != null)
-                    throw new com.heuristiq.uam.securitypolicy.SecurityPolicyEnrollmentRequired(enrollment.getObject().challenge(user));
+                    throw new com.heuristiq.identity.securitypolicy.SecurityPolicyEnrollmentRequired(enrollment.getObject().challenge(user));
                 throw required;
             }
             policyEnforcer.requireSessionSlot(user.getId(), effectivePolicy);
@@ -397,7 +397,7 @@ public class LoginSessionService {
 
     private UserSession createSession(UamUser user, String deviceId, String ip, String userAgent, boolean mfaVerified,
                                       ParsedUserAgent ua, String refreshTokenHash,
-                                      com.heuristiq.uam.securitypolicy.EffectiveSecurityPolicy effective, String authMethod) {
+                                      com.heuristiq.identity.securitypolicy.EffectiveSecurityPolicy effective, String authMethod) {
         LocalDateTime now = LocalDateTime.now();
         return sessionRepository.save(UserSession.builder()
                 .sessionId(UUID.randomUUID().toString())
@@ -439,6 +439,6 @@ public class LoginSessionService {
     // version bump changes the fingerprint too (looks like a "new" device) -- acceptable for now,
     // a real fingerprint would need a client-supplied device id instead.
     private String fingerprint(String userAgent) {
-        return com.heuristiq.uam.device.DeviceFingerprint.of(userAgent);
+        return com.heuristiq.identity.device.DeviceFingerprint.of(userAgent);
     }
 }

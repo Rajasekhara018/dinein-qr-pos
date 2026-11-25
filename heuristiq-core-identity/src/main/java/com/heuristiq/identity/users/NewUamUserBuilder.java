@@ -1,10 +1,10 @@
-package com.heuristiq.uam.users;
+package com.heuristiq.identity.users;
 
-import com.heuristiq.uam.enums.UamEnums;
-import com.heuristiq.uam.helper.AuditInfo;
-import com.heuristiq.uam.helper.RName;
-import com.heuristiq.uam.helper.RPhoneNumber;
-import com.heuristiq.uam.helper.RUpload;
+import com.heuristiq.identity.enums.UamEnums;
+import com.heuristiq.identity.helper.AuditInfo;
+import com.heuristiq.identity.helper.RName;
+import com.heuristiq.identity.helper.RPhoneNumber;
+import com.heuristiq.identity.helper.RUpload;
 
 import java.time.LocalDateTime;
 import java.util.List;

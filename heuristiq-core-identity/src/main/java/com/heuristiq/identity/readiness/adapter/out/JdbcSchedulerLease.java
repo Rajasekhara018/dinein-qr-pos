@@ -1,4 +1,4 @@
-package com.heuristiq.uam.readiness.adapter.out;
+package com.heuristiq.identity.readiness.adapter.out;
 
 import java.net.InetAddress;
 import java.time.Duration;
@@ -8,7 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-import com.heuristiq.uam.readiness.application.port.SchedulerLease;
+import com.heuristiq.identity.readiness.application.port.SchedulerLease;
 
 /**
  * PostgreSQL lease in the {@code scheduler_locks} table (migration V17). Check-and-take is one atomic

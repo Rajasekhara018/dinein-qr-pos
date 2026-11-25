@@ -1,4 +1,4 @@
-package com.heuristiq.uam.session.persistence.mongo;
+package com.heuristiq.identity.session.persistence.mongo;
 
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -11,9 +11,9 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.heuristiq.uam.enums.UamEnums.AuthProvider;
-import com.heuristiq.uam.enums.UamEnums.LogoutReason;
-import com.heuristiq.uam.util.ImmutableAfterCreate;
+import com.heuristiq.identity.enums.UamEnums.AuthProvider;
+import com.heuristiq.identity.enums.UamEnums.LogoutReason;
+import com.heuristiq.identity.util.ImmutableAfterCreate;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;

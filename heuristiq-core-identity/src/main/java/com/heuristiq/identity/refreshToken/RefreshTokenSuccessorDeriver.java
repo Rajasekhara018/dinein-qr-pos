@@ -1,6 +1,6 @@
-package com.heuristiq.uam.refreshToken;
+package com.heuristiq.identity.refreshToken;
 
-import com.heuristiq.uam.config.UamProperties;
+import com.heuristiq.identity.config.UamProperties;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 

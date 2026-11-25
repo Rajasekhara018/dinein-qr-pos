@@ -1,6 +1,6 @@
-package com.heuristiq.uam.readiness.adapter.in;
+package com.heuristiq.identity.readiness.adapter.in;
 
-import com.heuristiq.uam.application.ApplicationConstants;
+import com.heuristiq.identity.application.ApplicationConstants;
 
 /** Paths and parameters of the readiness endpoints. */
 public final class ReadinessWebConstants {

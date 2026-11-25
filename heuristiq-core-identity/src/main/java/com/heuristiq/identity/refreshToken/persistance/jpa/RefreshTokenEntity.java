@@ -1,12 +1,12 @@
-package com.heuristiq.uam.refreshToken.persistance.jpa;
+package com.heuristiq.identity.refreshToken.persistance.jpa;
 
 import java.time.LocalDateTime;
 
 import org.hibernate.annotations.UuidGenerator;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.heuristiq.uam.enums.UamEnums.PrincipalType;
-import com.heuristiq.uam.helper.AuditInfo;
+import com.heuristiq.identity.enums.UamEnums.PrincipalType;
+import com.heuristiq.identity.helper.AuditInfo;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;

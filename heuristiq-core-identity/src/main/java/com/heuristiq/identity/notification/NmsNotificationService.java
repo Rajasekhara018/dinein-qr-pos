@@ -1,6 +1,6 @@
-package com.heuristiq.uam.notification;
+package com.heuristiq.identity.notification;
 
-import com.heuristiq.uam.common.UamCommonConstants;
+import com.heuristiq.identity.common.UamCommonConstants;
 import com.heuristiq.resilient.CorrelationIdPropagation;
 import com.heuristiq.resilient.DownstreamUnavailableException;
 import com.heuristiq.resilient.Idempotency;
@@ -12,8 +12,8 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import com.heuristiq.uam.notification.dto.CommonNmsRequest;
-import com.heuristiq.uam.notification.dto.NmsNotificationRequest;
+import com.heuristiq.identity.notification.dto.CommonNmsRequest;
+import com.heuristiq.identity.notification.dto.NmsNotificationRequest;
 
 import java.util.HashMap;
 import java.util.List;

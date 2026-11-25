@@ -1,4 +1,4 @@
-package com.heuristiq.uam.otp;
+package com.heuristiq.identity.otp;
 
 import java.time.Duration;
 import java.util.Set;

@@ -1,4 +1,4 @@
-package com.heuristiq.uam.readiness.domain;
+package com.heuristiq.identity.readiness.domain;
 
 /** How much a failing step matters, decided by Rider_UAM's readiness profile (never by the service reporting it). */
 public enum ReadinessSeverity {

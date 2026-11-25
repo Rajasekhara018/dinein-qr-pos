@@ -1,11 +1,11 @@
-package com.heuristiq.uam.organization.admin;
+package com.heuristiq.identity.organization.admin;
 
 import java.util.Locale;
 
 import org.springframework.stereotype.Component;
 
-import com.heuristiq.uam.organization.Tenant;
-import com.heuristiq.uam.role.repository.UamRoleRepository;
+import com.heuristiq.identity.organization.Tenant;
+import com.heuristiq.identity.role.repository.UamRoleRepository;
 
 import lombok.extern.slf4j.Slf4j;
 

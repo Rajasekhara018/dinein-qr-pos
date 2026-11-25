@@ -1,6 +1,6 @@
-package com.heuristiq.uam.organization.admin;
+package com.heuristiq.identity.organization.admin;
 
-import com.heuristiq.uam.common.UamCommonConstants;
+import com.heuristiq.identity.common.UamCommonConstants;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -13,29 +13,29 @@ import java.util.Set;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import com.heuristiq.uam.helper.AuditInfo;
-import com.heuristiq.uam.common.UamException;
-import com.heuristiq.uam.dto.IdentityRegisterRequest;
-import com.heuristiq.uam.enums.UamEnums;
-import com.heuristiq.uam.application.access.AccessSubjectType;
-import com.heuristiq.uam.application.access.ApplicationAccessServiceUseCase;
-import com.heuristiq.uam.application.access.GrantApplicationAccessRequest;
-import com.heuristiq.uam.bootstrap.PermissionCatalogEntry;
-import com.heuristiq.uam.bootstrap.PermissionCatalogLoader;
-import com.heuristiq.uam.identity.IdentityProviderSyncService;
-import com.heuristiq.uam.notification.NmsNotificationService;
-import com.heuristiq.uam.organization.Tenant;
-import com.heuristiq.uam.organization.membership.AddMemberRequest;
-import com.heuristiq.uam.organization.membership.TenantMembershipServiceUseCase;
-import com.heuristiq.uam.organization.repository.TenantRepository;
-import com.heuristiq.uam.organization.subscription.TenantApplicationStatus;
-import com.heuristiq.uam.organization.subscription.repository.TenantApplicationRepository;
-import com.heuristiq.uam.registration.UserRegistrationServiceUseCase;
-import com.heuristiq.uam.role.UamRole;
-import com.heuristiq.uam.role.repository.UamRoleRepository;
-import com.heuristiq.uam.usercredentials.UserCredentialServiceUseCase;
-import com.heuristiq.uam.users.UamUser;
-import com.heuristiq.uam.users.repository.UamUserRepository;
+import com.heuristiq.identity.helper.AuditInfo;
+import com.heuristiq.identity.common.UamException;
+import com.heuristiq.identity.dto.IdentityRegisterRequest;
+import com.heuristiq.identity.enums.UamEnums;
+import com.heuristiq.identity.application.access.AccessSubjectType;
+import com.heuristiq.identity.application.access.ApplicationAccessServiceUseCase;
+import com.heuristiq.identity.application.access.GrantApplicationAccessRequest;
+import com.heuristiq.identity.bootstrap.PermissionCatalogEntry;
+import com.heuristiq.identity.bootstrap.PermissionCatalogLoader;
+import com.heuristiq.identity.identity.IdentityProviderSyncService;
+import com.heuristiq.identity.notification.NmsNotificationService;
+import com.heuristiq.identity.organization.Tenant;
+import com.heuristiq.identity.organization.membership.AddMemberRequest;
+import com.heuristiq.identity.organization.membership.TenantMembershipServiceUseCase;
+import com.heuristiq.identity.organization.repository.TenantRepository;
+import com.heuristiq.identity.organization.subscription.TenantApplicationStatus;
+import com.heuristiq.identity.organization.subscription.repository.TenantApplicationRepository;
+import com.heuristiq.identity.registration.UserRegistrationServiceUseCase;
+import com.heuristiq.identity.role.UamRole;
+import com.heuristiq.identity.role.repository.UamRoleRepository;
+import com.heuristiq.identity.usercredentials.UserCredentialServiceUseCase;
+import com.heuristiq.identity.users.UamUser;
+import com.heuristiq.identity.users.repository.UamUserRepository;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -43,7 +43,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class OrganizationAdminService implements OrganizationAdminServiceUseCase {
     @org.springframework.beans.factory.annotation.Autowired
-    private com.heuristiq.uam.securitypolicy.SecurityPolicyPasswordGenerator policyPasswords;
+    private com.heuristiq.identity.securitypolicy.SecurityPolicyPasswordGenerator policyPasswords;
     private final TenantRepository tenants;
     private final UamRoleRepository roles;
     private final UamUserRepository users;

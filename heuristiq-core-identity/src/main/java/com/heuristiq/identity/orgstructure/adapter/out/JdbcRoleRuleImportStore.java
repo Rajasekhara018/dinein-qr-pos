@@ -1,6 +1,6 @@
-package com.heuristiq.uam.orgstructure.adapter.out;
+package com.heuristiq.identity.orgstructure.adapter.out;
 
-import static com.heuristiq.uam.orgstructure.adapter.out.SqlParams.forTenant;
+import static com.heuristiq.identity.orgstructure.adapter.out.SqlParams.forTenant;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -23,14 +23,14 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 
-import com.heuristiq.uam.orgstructure.domain.LadderRowValidator;
-import com.heuristiq.uam.orgstructure.domain.OrgStructureConstants;
-import com.heuristiq.uam.orgstructure.domain.RoleRuleImportModels.RoleRuleBatch;
-import com.heuristiq.uam.orgstructure.domain.RoleRuleImportModels.RoleRuleReference;
-import com.heuristiq.uam.orgstructure.domain.RoleRuleImportModels.RoleRuleRow;
-import com.heuristiq.uam.orgstructure.domain.RoleRuleImportModels.RoleRuleRowInput;
-import com.heuristiq.uam.orgstructure.domain.RoleRuleImportModels.StagedRoleRuleRow;
-import com.heuristiq.uam.orgstructure.domain.RoleRuleImportStore;
+import com.heuristiq.identity.orgstructure.domain.LadderRowValidator;
+import com.heuristiq.identity.orgstructure.domain.OrgStructureConstants;
+import com.heuristiq.identity.orgstructure.domain.RoleRuleImportModels.RoleRuleBatch;
+import com.heuristiq.identity.orgstructure.domain.RoleRuleImportModels.RoleRuleReference;
+import com.heuristiq.identity.orgstructure.domain.RoleRuleImportModels.RoleRuleRow;
+import com.heuristiq.identity.orgstructure.domain.RoleRuleImportModels.RoleRuleRowInput;
+import com.heuristiq.identity.orgstructure.domain.RoleRuleImportModels.StagedRoleRuleRow;
+import com.heuristiq.identity.orgstructure.domain.RoleRuleImportStore;
 
 /**
  * PostgreSQL implementation of {@link RoleRuleImportStore}. Rows are written in batches so a large file stays cheap, and every statement

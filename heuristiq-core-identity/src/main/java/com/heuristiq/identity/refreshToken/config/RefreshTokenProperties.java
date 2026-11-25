@@ -1,4 +1,4 @@
-package com.heuristiq.uam.refreshToken.config;
+package com.heuristiq.identity.refreshToken.config;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;

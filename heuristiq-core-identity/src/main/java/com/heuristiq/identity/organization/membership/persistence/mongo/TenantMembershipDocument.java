@@ -1,4 +1,4 @@
-package com.heuristiq.uam.organization.membership.persistence.mongo;
+package com.heuristiq.identity.organization.membership.persistence.mongo;
 
 import java.time.LocalDateTime;
 
@@ -7,7 +7,7 @@ import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.heuristiq.uam.organization.membership.TenantMembershipStatus;
+import com.heuristiq.identity.organization.membership.TenantMembershipStatus;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;

@@ -1,4 +1,4 @@
-package com.heuristiq.uam.mfa;
+package com.heuristiq.identity.mfa;
 
 import java.util.List;
 

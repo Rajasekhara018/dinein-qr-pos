@@ -1,6 +1,6 @@
-package com.heuristiq.uam.organization.operatingmodel.domain;
+package com.heuristiq.identity.organization.operatingmodel.domain;
 
-import static com.heuristiq.uam.organization.operatingmodel.domain.OperatingModelConstants.*;
+import static com.heuristiq.identity.organization.operatingmodel.domain.OperatingModelConstants.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;

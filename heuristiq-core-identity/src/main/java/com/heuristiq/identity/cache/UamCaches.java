@@ -1,11 +1,11 @@
-package com.heuristiq.uam.cache;
+package com.heuristiq.identity.cache;
 
 import com.github.benmanes.caffeine.cache.Ticker;
-import com.heuristiq.uam.cache.UamCacheKeys.TenantLookupKey;
-import com.heuristiq.uam.cache.UamCacheKeys.TenantUserKey;
-import com.heuristiq.uam.dto.MyPrivilegesResponse;
-import com.heuristiq.uam.organization.Tenant;
-import com.heuristiq.uam.organization.membership.OrganizationView;
+import com.heuristiq.identity.cache.UamCacheKeys.TenantLookupKey;
+import com.heuristiq.identity.cache.UamCacheKeys.TenantUserKey;
+import com.heuristiq.identity.dto.MyPrivilegesResponse;
+import com.heuristiq.identity.organization.Tenant;
+import com.heuristiq.identity.organization.membership.OrganizationView;
 import io.micrometer.core.instrument.MeterRegistry;
 
 import java.util.List;

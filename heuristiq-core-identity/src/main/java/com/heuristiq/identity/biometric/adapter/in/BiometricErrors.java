@@ -1,8 +1,8 @@
-package com.heuristiq.uam.biometric.adapter.in;
+package com.heuristiq.identity.biometric.adapter.in;
 
-import com.heuristiq.uam.biometric.domain.BiometricConstants;
-import com.heuristiq.uam.biometric.domain.BiometricException;
-import com.heuristiq.uam.common.UamException;
+import com.heuristiq.identity.biometric.domain.BiometricConstants;
+import com.heuristiq.identity.biometric.domain.BiometricException;
+import com.heuristiq.identity.common.UamException;
 import java.util.function.Supplier;
 import org.springframework.http.HttpStatus;
 

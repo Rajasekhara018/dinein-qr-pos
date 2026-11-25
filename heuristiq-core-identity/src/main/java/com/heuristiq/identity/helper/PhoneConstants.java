@@ -1,4 +1,4 @@
-package com.heuristiq.uam.helper;
+package com.heuristiq.identity.helper;
 
 /** Fixed values used when reading and validating phone numbers. */
 final class PhoneConstants {

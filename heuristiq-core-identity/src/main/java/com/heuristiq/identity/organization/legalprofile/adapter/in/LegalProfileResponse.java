@@ -1,7 +1,7 @@
-package com.heuristiq.uam.organization.legalprofile.adapter.in;
+package com.heuristiq.identity.organization.legalprofile.adapter.in;
 
-import com.heuristiq.uam.organization.legalprofile.application.LegalProfileUseCase.LegalProfileView;
-import com.heuristiq.uam.organization.legalprofile.domain.LegalProfile;
+import com.heuristiq.identity.organization.legalprofile.application.LegalProfileUseCase.LegalProfileView;
+import com.heuristiq.identity.organization.legalprofile.domain.LegalProfile;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.Instant;
 import java.util.List;

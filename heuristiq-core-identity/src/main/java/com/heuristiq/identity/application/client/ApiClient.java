@@ -1,4 +1,4 @@
-package com.heuristiq.uam.application.client;
+package com.heuristiq.identity.application.client;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -6,11 +6,11 @@ import java.util.Objects;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.heuristiq.uam.enums.UamEnums.ApiClientType;
-import com.heuristiq.uam.enums.UamEnums.ClientAuthenticationMethod;
-import com.heuristiq.uam.enums.UamEnums.GrantType;
-import com.heuristiq.uam.helper.AuditInfo;
-import com.heuristiq.uam.search.SearchIndexable;
+import com.heuristiq.identity.enums.UamEnums.ApiClientType;
+import com.heuristiq.identity.enums.UamEnums.ClientAuthenticationMethod;
+import com.heuristiq.identity.enums.UamEnums.GrantType;
+import com.heuristiq.identity.helper.AuditInfo;
+import com.heuristiq.identity.search.SearchIndexable;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -1,9 +1,9 @@
-package com.heuristiq.uam.device;
+package com.heuristiq.identity.device;
 
-import com.heuristiq.uam.common.UamException;
-import com.heuristiq.uam.device.repository.UserDeviceRepository;
-import com.heuristiq.uam.session.UserSession;
-import com.heuristiq.uam.session.repository.UserSessionRepository;
+import com.heuristiq.identity.common.UamException;
+import com.heuristiq.identity.device.repository.UserDeviceRepository;
+import com.heuristiq.identity.session.UserSession;
+import com.heuristiq.identity.session.repository.UserSessionRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;

@@ -1,4 +1,4 @@
-package com.heuristiq.uam.organization.legalprofile.application.port;
+package com.heuristiq.identity.organization.legalprofile.application.port;
 
 import java.util.Map;
 

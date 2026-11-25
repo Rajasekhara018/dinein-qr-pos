@@ -1,6 +1,6 @@
-package com.heuristiq.uam.orgstructure.adapter.out;
+package com.heuristiq.identity.orgstructure.adapter.out;
 
-import static com.heuristiq.uam.orgstructure.adapter.out.SqlParams.forTenant;
+import static com.heuristiq.identity.orgstructure.adapter.out.SqlParams.forTenant;
 
 import java.sql.Timestamp;
 import java.time.Clock;
@@ -16,11 +16,11 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import com.heuristiq.uam.orgstructure.domain.LoginModels.Candidate;
-import com.heuristiq.uam.orgstructure.domain.LoginModels.RoleRule;
-import com.heuristiq.uam.orgstructure.domain.OrgStructureConstants;
-import com.heuristiq.uam.orgstructure.domain.OrgStructureException;
-import com.heuristiq.uam.orgstructure.domain.RoleRuleStore;
+import com.heuristiq.identity.orgstructure.domain.LoginModels.Candidate;
+import com.heuristiq.identity.orgstructure.domain.LoginModels.RoleRule;
+import com.heuristiq.identity.orgstructure.domain.OrgStructureConstants;
+import com.heuristiq.identity.orgstructure.domain.OrgStructureException;
+import com.heuristiq.identity.orgstructure.domain.RoleRuleStore;
 
 /** PostgreSQL implementation of {@link RoleRuleStore}. */
 @Repository

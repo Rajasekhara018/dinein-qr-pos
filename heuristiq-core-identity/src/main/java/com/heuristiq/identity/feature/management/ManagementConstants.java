@@ -1,4 +1,4 @@
-package com.heuristiq.uam.feature.management;
+package com.heuristiq.identity.feature.management;
 
 /** Fixed values of the management list endpoints. */
 public final class ManagementConstants {

@@ -1,8 +1,8 @@
-package com.heuristiq.uam.permissions.repository.jpa;
+package com.heuristiq.identity.permissions.repository.jpa;
 
-import com.heuristiq.uam.permissions.Permission;
-import com.heuristiq.uam.permissions.persistance.jpa.PermissionEntity;
-import com.heuristiq.uam.permissions.PermissionRepository;
+import com.heuristiq.identity.permissions.Permission;
+import com.heuristiq.identity.permissions.persistance.jpa.PermissionEntity;
+import com.heuristiq.identity.permissions.PermissionRepository;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

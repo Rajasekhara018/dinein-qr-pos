@@ -1,11 +1,11 @@
-package com.heuristiq.uam.orgstructure.domain;
+package com.heuristiq.identity.orgstructure.domain;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import com.heuristiq.uam.orgstructure.domain.Models.Change;
-import com.heuristiq.uam.orgstructure.domain.Models.ChangeSet;
+import com.heuristiq.identity.orgstructure.domain.Models.Change;
+import com.heuristiq.identity.orgstructure.domain.Models.ChangeSet;
 
 /** Port to stored drafts and their ordered operations. */
 public interface ChangeSetStore {

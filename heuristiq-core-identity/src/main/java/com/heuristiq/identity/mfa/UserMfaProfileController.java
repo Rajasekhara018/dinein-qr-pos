@@ -1,11 +1,11 @@
-package com.heuristiq.uam.mfa;
+package com.heuristiq.identity.mfa;
 
-import com.heuristiq.uam.common.CommonRequestMapper;
-import com.heuristiq.uam.common.CommonRequestObject;
-import com.heuristiq.uam.common.CommonResponseObject;
-import com.heuristiq.uam.common.OperationResult;
-import com.heuristiq.uam.common.RequestObjectType;
-import com.heuristiq.uam.common.UamException;
+import com.heuristiq.identity.common.CommonRequestMapper;
+import com.heuristiq.identity.common.CommonRequestObject;
+import com.heuristiq.identity.common.CommonResponseObject;
+import com.heuristiq.identity.common.OperationResult;
+import com.heuristiq.identity.common.RequestObjectType;
+import com.heuristiq.identity.common.UamException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * Self-service MFA access — see {@link com.heuristiq.uam.users.UserProfileController}'s javadoc for the pattern.
+ * Self-service MFA access — see {@link com.heuristiq.identity.users.UserProfileController}'s javadoc for the pattern.
  * {@link UserMfaService}'s id-based methods (get/delete/disable/verifyEnrollment) have no
  * ownership check, so every action here verifies {@code mfa.getUserId()} against the caller first.
  */

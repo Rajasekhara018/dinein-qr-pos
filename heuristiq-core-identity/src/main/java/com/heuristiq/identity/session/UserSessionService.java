@@ -1,11 +1,11 @@
-package com.heuristiq.uam.session;
+package com.heuristiq.identity.session;
 
-import com.heuristiq.uam.common.UamException;
-import com.heuristiq.uam.enums.UamEnums.LogoutReason;
-import com.heuristiq.uam.session.repository.UserSessionRepository;
-import com.heuristiq.uam.biometric.application.BiometricRevocationUseCase;
-import com.heuristiq.uam.biometric.application.BiometricRevocations;
-import com.heuristiq.uam.biometric.domain.BiometricRevocationReason;
+import com.heuristiq.identity.common.UamException;
+import com.heuristiq.identity.enums.UamEnums.LogoutReason;
+import com.heuristiq.identity.session.repository.UserSessionRepository;
+import com.heuristiq.identity.biometric.application.BiometricRevocationUseCase;
+import com.heuristiq.identity.biometric.application.BiometricRevocations;
+import com.heuristiq.identity.biometric.domain.BiometricRevocationReason;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

@@ -1,14 +1,14 @@
-package com.heuristiq.uam.biometric.adapter.out;
+package com.heuristiq.identity.biometric.adapter.out;
 
-import com.heuristiq.uam.audit.AuditLog;
-import com.heuristiq.uam.audit.AuditLogServiceUseCase;
-import com.heuristiq.uam.biometric.application.port.BiometricAudit;
-import com.heuristiq.uam.biometric.domain.BiometricConstants;
-import com.heuristiq.uam.biometric.domain.BiometricCredential;
-import com.heuristiq.uam.biometric.domain.BiometricRevocationReason;
-import com.heuristiq.uam.common.UamCommonConstants;
-import com.heuristiq.uam.enums.UamEnums.AuditAction;
-import com.heuristiq.uam.enums.UamEnums.AuditStatus;
+import com.heuristiq.identity.audit.AuditLog;
+import com.heuristiq.identity.audit.AuditLogServiceUseCase;
+import com.heuristiq.identity.biometric.application.port.BiometricAudit;
+import com.heuristiq.identity.biometric.domain.BiometricConstants;
+import com.heuristiq.identity.biometric.domain.BiometricCredential;
+import com.heuristiq.identity.biometric.domain.BiometricRevocationReason;
+import com.heuristiq.identity.common.UamCommonConstants;
+import com.heuristiq.identity.enums.UamEnums.AuditAction;
+import com.heuristiq.identity.enums.UamEnums.AuditStatus;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import org.slf4j.Logger;

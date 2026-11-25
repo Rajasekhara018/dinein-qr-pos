@@ -1,4 +1,4 @@
-package com.heuristiq.uam.otp;
+package com.heuristiq.identity.otp;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.dao.DuplicateKeyException;

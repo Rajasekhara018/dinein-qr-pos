@@ -1,4 +1,4 @@
-package com.heuristiq.uam.security;
+package com.heuristiq.identity.security;
 
 import java.util.List;
 

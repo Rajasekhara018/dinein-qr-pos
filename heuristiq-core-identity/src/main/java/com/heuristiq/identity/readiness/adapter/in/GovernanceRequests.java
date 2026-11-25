@@ -1,4 +1,4 @@
-package com.heuristiq.uam.readiness.adapter.in;
+package com.heuristiq.identity.readiness.adapter.in;
 
 import java.util.List;
 

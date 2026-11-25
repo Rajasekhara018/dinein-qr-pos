@@ -1,9 +1,9 @@
-package com.heuristiq.uam.biometric.adapter.out;
+package com.heuristiq.identity.biometric.adapter.out;
 
-import static com.heuristiq.uam.biometric.adapter.out.BiometricAdapterConstants.*;
+import static com.heuristiq.identity.biometric.adapter.out.BiometricAdapterConstants.*;
 
-import com.heuristiq.uam.biometric.application.port.BiometricChallengeStore;
-import com.heuristiq.uam.biometric.domain.BiometricChallenge;
+import com.heuristiq.identity.biometric.application.port.BiometricChallengeStore;
+import com.heuristiq.identity.biometric.domain.BiometricChallenge;
 import java.time.Instant;
 import java.util.Date;
 import java.util.Optional;

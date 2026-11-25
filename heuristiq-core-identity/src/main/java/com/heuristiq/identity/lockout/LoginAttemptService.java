@@ -1,4 +1,4 @@
-package com.heuristiq.uam.lockout;
+package com.heuristiq.identity.lockout;
 
 import io.micrometer.core.instrument.MeterRegistry;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,7 +10,7 @@ import java.time.Instant;
 @Service
 public class LoginAttemptService implements LoginAttemptServiceUseCase {
     @org.springframework.beans.factory.annotation.Autowired
-    private com.heuristiq.uam.securitypolicy.SecurityPolicyEnforcer policyEnforcer;
+    private com.heuristiq.identity.securitypolicy.SecurityPolicyEnforcer policyEnforcer;
     private final LoginAttemptStore store;
     private final MeterRegistry meterRegistry;
     private final int maxFailures;

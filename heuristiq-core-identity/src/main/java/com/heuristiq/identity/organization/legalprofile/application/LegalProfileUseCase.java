@@ -1,7 +1,7 @@
-package com.heuristiq.uam.organization.legalprofile.application;
+package com.heuristiq.identity.organization.legalprofile.application;
 
-import com.heuristiq.uam.organization.legalprofile.domain.LegalProfile;
-import com.heuristiq.uam.organization.legalprofile.domain.LegalProfileDraft;
+import com.heuristiq.identity.organization.legalprofile.domain.LegalProfile;
+import com.heuristiq.identity.organization.legalprofile.domain.LegalProfileDraft;
 import java.time.Instant;
 
 /** Reads and replaces an organization's legal profile (legal entity, tax ids, addresses). */

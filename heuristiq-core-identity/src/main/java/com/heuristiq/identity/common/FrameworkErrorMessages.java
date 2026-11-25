@@ -1,4 +1,4 @@
-package com.heuristiq.uam.common;
+package com.heuristiq.identity.common;
 
 /**
  * Plain-language messages for errors that Spring raises itself before or around a controller (no such path, wrong HTTP method,

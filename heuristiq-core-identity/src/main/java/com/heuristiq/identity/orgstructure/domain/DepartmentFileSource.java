@@ -1,6 +1,6 @@
-package com.heuristiq.uam.orgstructure.domain;
+package com.heuristiq.identity.orgstructure.domain;
 
-import com.heuristiq.uam.orgstructure.domain.DepartmentImportModels.DepartmentFile;
+import com.heuristiq.identity.orgstructure.domain.DepartmentImportModels.DepartmentFile;
 
 /**
  * Port to wherever uploaded import files live (the document store), for a department file. The user uploads the file there; the

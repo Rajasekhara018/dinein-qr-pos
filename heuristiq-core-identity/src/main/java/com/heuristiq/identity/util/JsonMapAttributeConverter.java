@@ -1,4 +1,4 @@
-package com.heuristiq.uam.util;
+package com.heuristiq.identity.util;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;

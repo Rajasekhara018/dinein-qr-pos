@@ -1,6 +1,6 @@
-package com.heuristiq.uam.application.catalogue;
+package com.heuristiq.identity.application.catalogue;
 
-import com.heuristiq.uam.enums.UamEnums.ApplicationType;
+import com.heuristiq.identity.enums.UamEnums.ApplicationType;
 
 /**
  * One application the platform knows about. An organization may only create applications whose code is in the

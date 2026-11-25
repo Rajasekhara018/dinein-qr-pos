@@ -1,12 +1,12 @@
-package com.heuristiq.uam.organization.operatingmodel.adapter.out;
+package com.heuristiq.identity.organization.operatingmodel.adapter.out;
 
-import static com.heuristiq.uam.organization.operatingmodel.adapter.out.ScheduleAdapterConstants.*;
+import static com.heuristiq.identity.organization.operatingmodel.adapter.out.ScheduleAdapterConstants.*;
 
-import com.heuristiq.uam.organization.operatingmodel.application.port.OperatingModelScheduleStore;
-import com.heuristiq.uam.organization.operatingmodel.domain.OperatingModel;
-import com.heuristiq.uam.organization.operatingmodel.domain.OperatingModelConstants;
-import com.heuristiq.uam.organization.operatingmodel.domain.OperatingModelException;
-import com.heuristiq.uam.organization.operatingmodel.domain.OperatingModelPeriod;
+import com.heuristiq.identity.organization.operatingmodel.application.port.OperatingModelScheduleStore;
+import com.heuristiq.identity.organization.operatingmodel.domain.OperatingModel;
+import com.heuristiq.identity.organization.operatingmodel.domain.OperatingModelConstants;
+import com.heuristiq.identity.organization.operatingmodel.domain.OperatingModelException;
+import com.heuristiq.identity.organization.operatingmodel.domain.OperatingModelPeriod;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.Instant;

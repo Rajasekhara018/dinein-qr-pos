@@ -1,13 +1,13 @@
-package com.heuristiq.uam.cache;
+package com.heuristiq.identity.cache;
 
-import com.heuristiq.uam.cache.UamCacheKeys.TenantUserKey;
-import com.heuristiq.uam.organization.membership.MemberView;
-import com.heuristiq.uam.organization.membership.OrganizationView;
-import com.heuristiq.uam.organization.membership.TenantMembership;
-import com.heuristiq.uam.organization.membership.TenantMembershipService;
-import com.heuristiq.uam.organization.membership.TenantMembershipServiceUseCase;
-import com.heuristiq.uam.security.TenantContext;
-import com.heuristiq.uam.users.UamUser;
+import com.heuristiq.identity.cache.UamCacheKeys.TenantUserKey;
+import com.heuristiq.identity.organization.membership.MemberView;
+import com.heuristiq.identity.organization.membership.OrganizationView;
+import com.heuristiq.identity.organization.membership.TenantMembership;
+import com.heuristiq.identity.organization.membership.TenantMembershipService;
+import com.heuristiq.identity.organization.membership.TenantMembershipServiceUseCase;
+import com.heuristiq.identity.security.TenantContext;
+import com.heuristiq.identity.users.UamUser;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;

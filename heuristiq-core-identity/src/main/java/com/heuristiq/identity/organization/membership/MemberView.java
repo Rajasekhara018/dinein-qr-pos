@@ -1,6 +1,6 @@
-package com.heuristiq.uam.organization.membership;
+package com.heuristiq.identity.organization.membership;
 
-import com.heuristiq.uam.enums.UamEnums;
+import com.heuristiq.identity.enums.UamEnums;
 
 /**
  * A membership together with who the member is, as the members list shows it. {@code userType} is the account's type as UAM

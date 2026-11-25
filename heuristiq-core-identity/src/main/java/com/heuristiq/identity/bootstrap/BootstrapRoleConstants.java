@@ -1,4 +1,4 @@
-package com.heuristiq.uam.bootstrap;
+package com.heuristiq.identity.bootstrap;
 
 import java.util.List;
 import java.util.Map;

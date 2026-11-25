@@ -1,4 +1,4 @@
-package com.heuristiq.uam.application.catalogue;
+package com.heuristiq.identity.application.catalogue;
 
 import java.util.List;
 import java.util.Locale;

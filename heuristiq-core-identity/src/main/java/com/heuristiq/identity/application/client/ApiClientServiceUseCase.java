@@ -1,7 +1,7 @@
-package com.heuristiq.uam.application.client;
+package com.heuristiq.identity.application.client;
 
-import com.heuristiq.uam.common.PageResult;
-import com.heuristiq.uam.enums.UamEnums.ApiClientType;
+import com.heuristiq.identity.common.PageResult;
+import com.heuristiq.identity.enums.UamEnums.ApiClientType;
 
 import java.util.List;
 

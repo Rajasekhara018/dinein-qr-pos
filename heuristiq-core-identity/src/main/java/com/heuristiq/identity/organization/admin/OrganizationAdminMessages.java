@@ -1,4 +1,4 @@
-package com.heuristiq.uam.organization.admin;
+package com.heuristiq.identity.organization.admin;
 
 /** The wording of what an organization's first administrator is told. */
 final class OrganizationAdminMessages {

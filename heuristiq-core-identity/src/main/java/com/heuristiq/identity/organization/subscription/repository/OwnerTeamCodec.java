@@ -1,4 +1,4 @@
-package com.heuristiq.uam.organization.subscription.repository;
+package com.heuristiq.identity.organization.subscription.repository;
 
 import java.util.Arrays;
 import java.util.List;

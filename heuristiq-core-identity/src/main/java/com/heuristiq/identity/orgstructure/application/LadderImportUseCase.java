@@ -1,9 +1,9 @@
-package com.heuristiq.uam.orgstructure.application;
+package com.heuristiq.identity.orgstructure.application;
 
 import java.util.List;
 
-import com.heuristiq.uam.orgstructure.domain.LadderImportModels.LadderBatch;
-import com.heuristiq.uam.orgstructure.domain.LadderImportModels.LadderRow;
+import com.heuristiq.identity.orgstructure.domain.LadderImportModels.LadderBatch;
+import com.heuristiq.identity.orgstructure.domain.LadderImportModels.LadderRow;
 
 /** Use cases of the bulk ladders and positions import: stage and validate a file, review it, then confirm or cancel. */
 public interface LadderImportUseCase {

@@ -1,6 +1,6 @@
-package com.heuristiq.uam.dto;
+package com.heuristiq.identity.dto;
 
-import com.heuristiq.uam.enums.UamEnums;
+import com.heuristiq.identity.enums.UamEnums;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
@@ -9,8 +9,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
  * endpoint. Which mechanism runs is decided by which fields the caller populates, checked in
  * this order:
  * <ol>
- *   <li>{@code idToken} present -> Google sign-in ({@link com.heuristiq.uam.google.UamGoogleAuthService})</li>
- *   <li>{@code providerType} present -> external IdP login ({@link com.heuristiq.uam.identity.IdentityProviderAuthRouter})</li>
+ *   <li>{@code idToken} present -> Google sign-in ({@link com.heuristiq.identity.google.UamGoogleAuthService})</li>
+ *   <li>{@code providerType} present -> external IdP login ({@link com.heuristiq.identity.identity.IdentityProviderAuthRouter})</li>
  *   <li>otherwise -> local username/password (+ optional {@code totpCode} for the 2FA resubmit)</li>
  * </ol>
  * {@code userType} only matters the first time this identity is seen (deciding the role assigned

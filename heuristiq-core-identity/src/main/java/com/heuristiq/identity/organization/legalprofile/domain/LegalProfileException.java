@@ -1,4 +1,4 @@
-package com.heuristiq.uam.organization.legalprofile.domain;
+package com.heuristiq.identity.organization.legalprofile.domain;
 
 /**
  * A refused legal-profile read or change. The message is a translatable message key; {@link #field()} names the offending

@@ -1,4 +1,4 @@
-package com.heuristiq.uam.identity;
+package com.heuristiq.identity.identity;
 
 public interface IdentityProviderSyncAdapter extends IdentityProviderSyncService {
     IdentityProviderType providerType();

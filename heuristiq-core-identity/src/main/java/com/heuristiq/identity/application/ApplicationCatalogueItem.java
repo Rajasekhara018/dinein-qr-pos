@@ -1,7 +1,7 @@
-package com.heuristiq.uam.application;
+package com.heuristiq.identity.application;
 
-import com.heuristiq.uam.application.catalogue.ApplicationCatalogueEntry;
-import com.heuristiq.uam.enums.UamEnums.ApplicationType;
+import com.heuristiq.identity.application.catalogue.ApplicationCatalogueEntry;
+import com.heuristiq.identity.enums.UamEnums.ApplicationType;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 

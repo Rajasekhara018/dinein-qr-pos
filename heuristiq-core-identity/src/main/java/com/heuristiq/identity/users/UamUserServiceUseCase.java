@@ -1,9 +1,9 @@
-package com.heuristiq.uam.users;
+package com.heuristiq.identity.users;
 
-import com.heuristiq.uam.dto.UpdateMyProfileRequest;
-import com.heuristiq.uam.dto.UpsertUserRequest;
-import com.heuristiq.uam.enums.UamEnums;
-import com.heuristiq.uam.common.PageResult;
+import com.heuristiq.identity.dto.UpdateMyProfileRequest;
+import com.heuristiq.identity.dto.UpsertUserRequest;
+import com.heuristiq.identity.enums.UamEnums;
+import com.heuristiq.identity.common.PageResult;
 
 import java.util.Collection;
 import java.util.List;

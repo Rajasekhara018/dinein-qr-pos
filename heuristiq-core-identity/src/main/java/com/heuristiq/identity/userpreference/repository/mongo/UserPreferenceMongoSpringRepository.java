@@ -1,6 +1,6 @@
-package com.heuristiq.uam.userpreference.repository.mongo;
+package com.heuristiq.identity.userpreference.repository.mongo;
 
-import com.heuristiq.uam.userpreference.persistance.mongo.UserPreferenceDocument;
+import com.heuristiq.identity.userpreference.persistance.mongo.UserPreferenceDocument;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.Optional;

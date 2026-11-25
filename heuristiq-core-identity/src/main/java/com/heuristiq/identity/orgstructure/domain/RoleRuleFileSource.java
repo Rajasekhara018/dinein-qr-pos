@@ -1,6 +1,6 @@
-package com.heuristiq.uam.orgstructure.domain;
+package com.heuristiq.identity.orgstructure.domain;
 
-import com.heuristiq.uam.orgstructure.domain.RoleRuleImportModels.RoleRuleFile;
+import com.heuristiq.identity.orgstructure.domain.RoleRuleImportModels.RoleRuleFile;
 
 /**
  * Port to wherever uploaded import files live (the document store), for a roles file. The user uploads the file there; the import only

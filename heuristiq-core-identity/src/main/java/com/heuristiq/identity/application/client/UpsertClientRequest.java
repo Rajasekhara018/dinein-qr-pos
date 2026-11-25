@@ -1,8 +1,8 @@
-package com.heuristiq.uam.application.client;
+package com.heuristiq.identity.application.client;
 
-import com.heuristiq.uam.enums.UamEnums.ApiClientType;
-import com.heuristiq.uam.enums.UamEnums.ClientAuthenticationMethod;
-import com.heuristiq.uam.enums.UamEnums.GrantType;
+import com.heuristiq.identity.enums.UamEnums.ApiClientType;
+import com.heuristiq.identity.enums.UamEnums.ClientAuthenticationMethod;
+import com.heuristiq.identity.enums.UamEnums.GrantType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 

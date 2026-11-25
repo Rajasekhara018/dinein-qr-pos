@@ -1,4 +1,4 @@
-package com.heuristiq.uam.refreshToken.repository.jpa;
+package com.heuristiq.identity.refreshToken.repository.jpa;
 
 /** JPQL of the conditional refresh-token updates; kept apart so a migration test can run the exact statements. */
 public final class RefreshTokenJpaQueries {

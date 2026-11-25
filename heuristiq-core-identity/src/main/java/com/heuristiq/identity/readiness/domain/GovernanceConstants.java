@@ -1,4 +1,4 @@
-package com.heuristiq.uam.readiness.domain;
+package com.heuristiq.identity.readiness.domain;
 
 /** Fixed values of the go-live guard, override, owner team and readiness alerts. */
 public final class GovernanceConstants {

@@ -1,9 +1,9 @@
-package com.heuristiq.uam.helper;
+package com.heuristiq.identity.helper;
 
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import com.heuristiq.uam.common.UamException;
+import com.heuristiq.identity.common.UamException;
 
 /**
  * Checks the free-text UI choices a user sends before they are stored, so a client cannot save text the web apps would later

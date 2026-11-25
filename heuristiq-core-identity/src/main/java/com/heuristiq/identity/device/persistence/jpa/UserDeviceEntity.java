@@ -1,13 +1,13 @@
-package com.heuristiq.uam.device.persistence.jpa;
+package com.heuristiq.identity.device.persistence.jpa;
 
 import java.time.LocalDateTime;
 import java.util.Map;
 
 import org.hibernate.annotations.UuidGenerator;
 
-import com.heuristiq.uam.enums.UamEnums.DeviceType;
-import com.heuristiq.uam.enums.UamEnums.Platform;
-import com.heuristiq.uam.util.JsonMapAttributeConverter;
+import com.heuristiq.identity.enums.UamEnums.DeviceType;
+import com.heuristiq.identity.enums.UamEnums.Platform;
+import com.heuristiq.identity.util.JsonMapAttributeConverter;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;

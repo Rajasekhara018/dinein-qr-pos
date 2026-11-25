@@ -1,14 +1,14 @@
-package com.heuristiq.uam.organization.legalprofile.config;
+package com.heuristiq.identity.organization.legalprofile.config;
 
-import com.heuristiq.uam.audit.AuditLogServiceUseCase;
-import com.heuristiq.uam.organization.legalprofile.adapter.out.AuditLogLegalProfileAudit;
-import com.heuristiq.uam.organization.legalprofile.adapter.out.JdbcLegalProfileStore;
-import com.heuristiq.uam.organization.legalprofile.adapter.out.MongoLegalProfileStore;
-import com.heuristiq.uam.organization.legalprofile.adapter.out.TenantLegalOrganizationDirectory;
-import com.heuristiq.uam.organization.legalprofile.application.LegalProfileService;
-import com.heuristiq.uam.organization.legalprofile.application.LegalProfileUseCase;
-import com.heuristiq.uam.organization.legalprofile.application.port.LegalProfileStore;
-import com.heuristiq.uam.organization.repository.TenantRepository;
+import com.heuristiq.identity.audit.AuditLogServiceUseCase;
+import com.heuristiq.identity.organization.legalprofile.adapter.out.AuditLogLegalProfileAudit;
+import com.heuristiq.identity.organization.legalprofile.adapter.out.JdbcLegalProfileStore;
+import com.heuristiq.identity.organization.legalprofile.adapter.out.MongoLegalProfileStore;
+import com.heuristiq.identity.organization.legalprofile.adapter.out.TenantLegalOrganizationDirectory;
+import com.heuristiq.identity.organization.legalprofile.application.LegalProfileService;
+import com.heuristiq.identity.organization.legalprofile.application.LegalProfileUseCase;
+import com.heuristiq.identity.organization.legalprofile.application.port.LegalProfileStore;
+import com.heuristiq.identity.organization.repository.TenantRepository;
 import java.time.Clock;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;

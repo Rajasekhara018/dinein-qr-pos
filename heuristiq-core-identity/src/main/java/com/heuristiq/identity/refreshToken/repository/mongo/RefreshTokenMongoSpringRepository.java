@@ -1,6 +1,6 @@
-package com.heuristiq.uam.refreshToken.repository.mongo;
+package com.heuristiq.identity.refreshToken.repository.mongo;
 
-import com.heuristiq.uam.refreshToken.persistance.mongo.RefreshTokenDocument;
+import com.heuristiq.identity.refreshToken.persistance.mongo.RefreshTokenDocument;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.List;

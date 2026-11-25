@@ -1,4 +1,4 @@
-package com.heuristiq.uam.biometric.adapter.in;
+package com.heuristiq.identity.biometric.adapter.in;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;

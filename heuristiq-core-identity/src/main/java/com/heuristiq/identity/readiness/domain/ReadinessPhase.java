@@ -1,4 +1,4 @@
-package com.heuristiq.uam.readiness.domain;
+package com.heuristiq.identity.readiness.domain;
 
 /** Phases of the guided setup path, in the order they are shown and worked through (declaration order matters). */
 public enum ReadinessPhase {

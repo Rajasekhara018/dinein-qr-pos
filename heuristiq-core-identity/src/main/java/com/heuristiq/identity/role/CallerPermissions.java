@@ -1,4 +1,4 @@
-package com.heuristiq.uam.role;
+package com.heuristiq.identity.role;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -7,8 +7,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import com.heuristiq.uam.role.repository.UamRoleRepository;
-import com.heuristiq.uam.security.SecurityConstants;
+import com.heuristiq.identity.role.repository.UamRoleRepository;
+import com.heuristiq.identity.security.SecurityConstants;
 
 /**
  * The privileges the signed-in caller holds, read from the roles on their token. Used wherever a caller hands out access (roles

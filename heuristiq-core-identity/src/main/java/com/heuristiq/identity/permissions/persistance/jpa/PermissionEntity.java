@@ -1,14 +1,14 @@
-package com.heuristiq.uam.permissions.persistance.jpa;
+package com.heuristiq.identity.permissions.persistance.jpa;
 
 import java.util.Map;
 
 import org.hibernate.annotations.UuidGenerator;
 
-import com.heuristiq.uam.enums.UamEnums.ModuleCategory;
-import com.heuristiq.uam.enums.UamEnums.PermissionAction;
-import com.heuristiq.uam.enums.UamEnums.ResourceType;
-import com.heuristiq.uam.helper.AuditInfo;
-import com.heuristiq.uam.util.JsonMapAttributeConverter;
+import com.heuristiq.identity.enums.UamEnums.ModuleCategory;
+import com.heuristiq.identity.enums.UamEnums.PermissionAction;
+import com.heuristiq.identity.enums.UamEnums.ResourceType;
+import com.heuristiq.identity.helper.AuditInfo;
+import com.heuristiq.identity.util.JsonMapAttributeConverter;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;

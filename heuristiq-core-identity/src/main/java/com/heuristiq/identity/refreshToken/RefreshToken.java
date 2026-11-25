@@ -1,10 +1,10 @@
-package com.heuristiq.uam.refreshToken;
+package com.heuristiq.identity.refreshToken;
 
 import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.heuristiq.uam.enums.UamEnums.PrincipalType;
-import com.heuristiq.uam.helper.AuditInfo;
+import com.heuristiq.identity.enums.UamEnums.PrincipalType;
+import com.heuristiq.identity.helper.AuditInfo;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

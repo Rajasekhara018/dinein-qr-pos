@@ -1,4 +1,4 @@
-package com.heuristiq.uam.readiness.domain;
+package com.heuristiq.identity.readiness.domain;
 
 /** Fixed values of the per-organization step severity (Required / Recommended) feature. */
 public final class ReadinessSeverityConstants {
