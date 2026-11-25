@@ -41,6 +41,14 @@ public final class PosConstants {
     public static final String ERROR_LANGUAGE_INVALID = "pos.language.invalid";
     public static final String ERROR_PHONE_INVALID = "pos.phone.invalid";
     public static final String ERROR_EMAIL_INVALID = "pos.email.invalid";
+    public static final String ERROR_ORGANIZATION_NOT_FOUND = "pos.organization.notFound";
+    public static final String ERROR_LEGAL_ENTITY_NOT_FOUND = "pos.legalEntity.notFound";
+    public static final String ERROR_BRANCH_NOT_FOUND = "pos.branch.notFound";
+    public static final String ERROR_COUNTRY_LOCKED = "pos.legalEntity.countryLocked";
+    public static final String ERROR_BRANCH_LEGAL_ENTITY_LOCKED = "pos.branch.legalEntityLocked";
+    public static final String ERROR_BRANCH_CODE_TAKEN = "pos.branch.codeTaken";
+    public static final String ERROR_STALE_VERSION = "pos.staleVersion";
+    public static final String ERROR_STAFF_NOT_MEMBER = "pos.staff.notMember";
 
     /** Field names, used as the field path of a refusal. */
     public static final String FIELD_COUNTRY = "country";
@@ -63,6 +71,8 @@ public final class PosConstants {
     public static final String FIELD_LANGUAGES = "languages";
     public static final String FIELD_PHONE = "phone";
     public static final String FIELD_EMAIL = "email";
+    public static final String FIELD_VERSION = "version";
+    public static final String FIELD_USER_IDS = "userIds";
 
     private PosConstants() {
     }
