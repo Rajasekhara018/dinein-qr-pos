@@ -6,6 +6,7 @@ import com.heuristiq.identity.organization.admin.OrganizationAdminConstants;
 import com.heuristiq.identity.organization.repository.TenantRepository;
 import com.heuristiq.identity.pos.application.PosCaller;
 import com.heuristiq.identity.security.TenantContext;
+import com.heuristiq.identity.users.repository.UamUserRepository;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -26,8 +27,10 @@ class PosCallers {
     private static final String ROLE_PREFIX = "ROLE_";
 
     private final TenantRepository tenants;
+    private final UamUserRepository users;
 
-    PosCallers(TenantRepository tenants) {
+    PosCallers(TenantRepository tenants, UamUserRepository users) {
+        this.users = users;
         this.tenants = tenants;
     }
 
@@ -51,11 +54,19 @@ class PosCallers {
                 && authentication.getAuthorities().stream().anyMatch(a -> authority.equals(a.getAuthority()));
     }
 
+    /** Roles are user-level, so POS_RESTAURANT_ADMIN counts only in the user's home tenant; unknown user or tenant fails closed. */
+    private boolean isHomeTenant(Authentication authentication, String sessionTenant) {
+        if (sessionTenant == null || authentication.getName() == null) {
+            return false;
+        }
+        return users.findById(authentication.getName()).map(u -> sessionTenant.equals(u.getTenantId())).orElse(false);
+    }
+
     private boolean isAdminOf(Authentication authentication, String sessionTenant) {
         if (authentication == null) {
             return false;
         }
-        if (hasAuthority(authentication, ROLE_PREFIX + RESTAURANT_ADMIN_ROLE)) {
+        if (hasAuthority(authentication, ROLE_PREFIX + RESTAURANT_ADMIN_ROLE) && isHomeTenant(authentication, sessionTenant)) {
             return true;
         }
         if (sessionTenant == null) {

@@ -23,6 +23,8 @@ import com.heuristiq.identity.pos.domain.LegalEntityDraft;
 import com.heuristiq.identity.pos.domain.PosAddress;
 import com.heuristiq.identity.pos.support.InMemoryPosStores;
 import com.heuristiq.identity.security.TenantContext;
+import com.heuristiq.identity.users.UamUser;
+import com.heuristiq.identity.users.repository.UamUserRepository;
 import jakarta.validation.Validation;
 import java.time.Clock;
 import java.time.Instant;
@@ -92,7 +94,10 @@ class PosControllersTest {
 
         CommonRequestMapper mapper = new CommonRequestMapper(JsonMapper.builder().findAndAddModules().build(),
                 Validation.buildDefaultValidatorFactory().getValidator());
-        PosCallers callers = new PosCallers(tenants);
+        UamUserRepository users = mock(UamUserRepository.class);
+        when(users.findById(any())).thenReturn(Optional.empty());
+        when(users.findById("rest-admin")).thenReturn(Optional.of(UamUser.builder().id("rest-admin").tenantId("t1").build()));
+        PosCallers callers = new PosCallers(tenants, users);
         mvc = MockMvcBuilders.standaloneSetup(new LegalEntityController(service, mapper, callers),
                 new BranchController(service, mapper, callers), new BranchStaffController(service, mapper, callers))
                 .setControllerAdvice(new GlobalExceptionHandler()).build();
@@ -181,6 +186,14 @@ class PosControllersTest {
         mvc.perform(get(T1 + "/branches/" + branchB + "/staff"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.responseObject.userIds.length()").value(2));
+    }
+
+    @Test
+    void restaurantAdminOfAnotherHomeTenantCannotCreateBranchHere() throws Exception {
+        signInAs("rest-admin", "t2", "ROLE_POS_RESTAURANT_ADMIN");
+
+        mvc.perform(post(T2 + "/branches").contentType(MediaType.APPLICATION_JSON).content(branchBody("blr-9", "null")))
+                .andExpect(status().isNotFound());
     }
 
     @Test

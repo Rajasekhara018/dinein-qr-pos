@@ -11,6 +11,8 @@ import com.heuristiq.identity.organization.Tenant;
 import com.heuristiq.identity.organization.repository.TenantRepository;
 import com.heuristiq.identity.pos.application.PosCaller;
 import com.heuristiq.identity.security.TenantContext;
+import com.heuristiq.identity.users.UamUser;
+import com.heuristiq.identity.users.repository.UamUserRepository;
 import java.util.Arrays;
 import java.util.Optional;
 import org.junit.jupiter.api.AfterEach;
@@ -30,7 +32,10 @@ class PosCallersTest {
         TenantRepository tenants = mock(TenantRepository.class);
         when(tenants.findById(any())).thenReturn(Optional.empty());
         when(tenants.findById("t1")).thenReturn(Optional.of(Tenant.builder().id("t1").code("ACME").build()));
-        callers = new PosCallers(tenants);
+        UamUserRepository users = mock(UamUserRepository.class);
+        when(users.findById(any())).thenReturn(Optional.empty());
+        when(users.findById("u1")).thenReturn(Optional.of(UamUser.builder().id("u1").tenantId("t1").build()));
+        callers = new PosCallers(tenants, users);
     }
 
     @AfterEach
@@ -68,9 +73,12 @@ class PosCallersTest {
     }
 
     @Test
-    void restaurantAdminRoleIsTenantWide() {
+    void restaurantAdminRoleIsTenantWideOnlyInHomeTenant() {
         TenantContext.set("t1");
         assertThat(callers.current(auth("ROLE_POS_RESTAURANT_ADMIN"), "t1").tenantWide()).isTrue();
+        TenantContext.set("t2");
+        assertThat(callers.current(auth("ROLE_POS_RESTAURANT_ADMIN"), "t2")).isEqualTo(new PosCaller("u1", "t2", false));
+        assertThat(callers.current(auth("ROLE_POS_RESTAURANT_ADMIN"), "t2").tenantWide()).isFalse();
     }
 
     @Test
