@@ -69,6 +69,12 @@ public final class SecurityConstants {
      */
     public static final String FRANCHISE_IDS_CLAIM = "franchiseIds";
 
+    /**
+     * JWT claim: the ids of the POS branches the account is assigned to, in the session's organization. Left out for an
+     * account assigned to no branch (and whenever the POS module is not running), so an ordinary token is unchanged.
+     */
+    public static final String BRANCH_IDS_CLAIM = "branchIds";
+
     /** JWT claim: the ids of the franchises the account owns (a subset of {@link #FRANCHISE_IDS_CLAIM}); left out when none. */
     public static final String OWNED_FRANCHISE_IDS_CLAIM = "ownedFranchiseIds";
 

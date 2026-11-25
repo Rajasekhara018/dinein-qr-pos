@@ -8,6 +8,8 @@ import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
+import com.heuristiq.identity.enums.UamEnums.ApplicationType;
+
 /** The original catalogue codes remain stable; additional product groups have explicit privilege prefixes. */
 class ApplicationCatalogueTest {
 
@@ -19,12 +21,25 @@ class ApplicationCatalogueTest {
 
     @Test
     void additionalBusinessProductsHaveTheirOwnPrivilegeGroups() {
-        assertThat(ApplicationCatalogue.codes()).hasSize(7);
+        assertThat(ApplicationCatalogue.codes()).hasSize(8);
         assertThat(ApplicationCatalogue.find("TRAIN_BOOKING_APP")).get().extracting(ApplicationCatalogueEntry::privilegePrefix).isEqualTo("TRAIN");
         assertThat(ApplicationCatalogue.find("FRANCHISE_MANAGEMENT_APP")).get().extracting(ApplicationCatalogueEntry::privilegePrefix).isEqualTo("FRANCHISE");
         assertThat(ApplicationCatalogue.find("BEST_PURCHASE_APP")).get().extracting(ApplicationCatalogueEntry::privilegePrefix).isEqualTo("IMS");
         assertThat(ApplicationCatalogue.contains("INVENTORY_APP")).isFalse();
         assertThat(ApplicationCatalogue.contains("ECOMMERCE_APP")).isFalse();
+    }
+
+    @Test
+    void posApplicationIsInTheCatalogue() {
+        ApplicationCatalogueEntry pos = ApplicationCatalogue.find("dinein_pos_app").orElseThrow();
+
+        assertThat(pos.code()).isEqualTo(ApplicationCatalogue.DINEIN_POS_APP).isEqualTo("DINEIN_POS_APP");
+        assertThat(pos.name()).isEqualTo("DineIn POS & Kiosk");
+        assertThat(pos.description()).isEqualTo("Restaurant POS, kiosk, QR ordering and kitchen display.");
+        assertThat(pos.type()).isEqualTo(ApplicationType.WEB);
+        assertThat(pos.displayOrder()).isEqualTo(80);
+        assertThat(pos.iconHint()).isEqualTo("point_of_sale");
+        assertThat(pos.privilegePrefix()).isEqualTo("DINEIN");
     }
 
     @Test

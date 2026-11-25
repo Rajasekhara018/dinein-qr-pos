@@ -125,6 +125,9 @@ public final class ReadinessProfiles {
                     List.of(WALLET_APP_REGISTERED, WALLET_APP_ENABLED, ONBOARDING_TYPE_ACTIVE, ONBOARDING_SCHEMA_PUBLISHED,
                             ONBOARDING_REVIEW_PROCESS_AVAILABLE, NMS_TEMPLATES_EXIST, DMS_DOCUMENT_TYPES_CONFIGURED),
                     ALL_REPORTS),
+            // Only the UAM checks block go-live for now; the DineIn services and their checks arrive with the ordering plan.
+            ApplicationCatalogue.DINEIN_POS_APP, severities(List.of(),
+                    concat(ALL_REPORTS, List.of(NMS_TEMPLATES_EXIST, DMS_DOCUMENT_TYPES_CONFIGURED))),
             ApplicationCatalogue.CENTRALISED_WALLET_APP, severities(
                     List.of(WALLET_APP_REGISTERED, WALLET_APP_ENABLED,
                             WALLET_TREASURY_CONFIGURED, WALLET_SYSTEM_ACCOUNTS_READY),

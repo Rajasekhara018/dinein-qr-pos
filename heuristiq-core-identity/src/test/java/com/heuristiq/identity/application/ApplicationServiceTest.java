@@ -443,7 +443,7 @@ class ApplicationServiceTest {
 
         assertThat(items).extracting(ApplicationCatalogueItem::code).containsExactly("PASUPU_KUMKUMA_MATRIMONY_APP",
                 "BESTRIDE_RIDER_APP", "FOOD_DELIVER_APP", "BEST_PURCHASE_APP", "CENTRALISED_WALLET_APP",
-                "TRAIN_BOOKING_APP", "FRANCHISE_MANAGEMENT_APP");
+                "TRAIN_BOOKING_APP", "FRANCHISE_MANAGEMENT_APP", "DINEIN_POS_APP");
         assertThat(items).filteredOn(ApplicationCatalogueItem::created).extracting(ApplicationCatalogueItem::code)
                 .containsExactly("FOOD_DELIVER_APP");
         assertThat(items.get(0).iconHint()).isEqualTo("favorite");

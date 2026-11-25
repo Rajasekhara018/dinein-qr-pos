@@ -4,6 +4,7 @@ import com.heuristiq.identity.config.UamProperties;
 import com.heuristiq.identity.organization.operatingmodel.application.OperatingModelUseCase;
 import com.heuristiq.identity.organization.operatingmodel.application.OrganizationNotFoundException;
 import com.heuristiq.identity.organization.operatingmodel.domain.OperatingModel;
+import com.heuristiq.identity.pos.application.PosOrganizationUseCase;
 import com.heuristiq.identity.users.UamUser;
 import com.heuristiq.identity.util.UserTypeResolver;
 import io.jsonwebtoken.Claims;
@@ -36,23 +37,50 @@ public class JwtService {
     /** The organization's operating model, read in-process (no HTTP call); used only when claims-by-model is switched on. */
     private final ObjectProvider<OperatingModelUseCase> operatingModels;
 
+    /**
+     * The POS organization model, read in-process; there is no bean when the persistence type is not postgres (POS has no
+     * Mongo store), and then no token carries the {@code branchIds} claim.
+     */
+    private final ObjectProvider<PosOrganizationUseCase> posOrganization;
+
     /** A service for an organization that has no franchises. */
     public JwtService(UamProperties properties) {
-        this(properties, null, null);
+        this(properties, null, null, null);
     }
 
     /** A service that decides the franchise lookup by role prefixes only (the operating model is not available). */
     public JwtService(UamProperties properties, ObjectProvider<FranchiseClaims> franchiseClaims) {
-        this(properties, franchiseClaims, null);
+        this(properties, franchiseClaims, null, null);
+    }
+
+    /** A service without the POS organization model (no {@code branchIds} claim). */
+    public JwtService(UamProperties properties, ObjectProvider<FranchiseClaims> franchiseClaims,
+                      ObjectProvider<OperatingModelUseCase> operatingModels) {
+        this(properties, franchiseClaims, operatingModels, null);
     }
 
     @Autowired
     public JwtService(UamProperties properties, ObjectProvider<FranchiseClaims> franchiseClaims,
-                      ObjectProvider<OperatingModelUseCase> operatingModels) {
+                      ObjectProvider<OperatingModelUseCase> operatingModels,
+                      ObjectProvider<PosOrganizationUseCase> posOrganization) {
         this.properties = properties;
         this.key = Keys.hmacShaKeyFor(properties.getAuth().getJwtSecret().getBytes(StandardCharsets.UTF_8));
         this.franchiseClaims = franchiseClaims;
         this.operatingModels = operatingModels;
+        this.posOrganization = posOrganization;
+    }
+
+    /**
+     * The POS branches the person is assigned to in the session's organization, looked up for everyone when the POS module
+     * runs. A failure of the lookup is thrown (no token is issued), never read as "no branch".
+     */
+    private List<String> branchIdsOf(UamUser user, String tenantId) {
+        PosOrganizationUseCase pos = posOrganization == null ? null : posOrganization.getIfAvailable();
+        if (pos == null || user.getId() == null || tenantId == null) {
+            return List.of();
+        }
+        List<String> branches = pos.branchIdsOf(tenantId, user.getId());
+        return branches == null ? List.of() : branches;
     }
 
     /** True when the user holds a role that can place a person in a franchise: a configured prefix itself or prefix + "_" + suffix (case-insensitive). */
@@ -122,6 +150,12 @@ public class JwtService {
      * @param tenantId the session's organization
      */
     public SessionAccess sessionAccess(UamUser user, String tenantId) {
+        SessionAccess access = franchiseAccess(user, tenantId);
+        List<String> branches = branchIdsOf(user, tenantId);
+        return branches.isEmpty() ? access : access.withBranchIds(branches);
+    }
+
+    private SessionAccess franchiseAccess(UamUser user, String tenantId) {
         List<String> roles = user.getRoles() == null ? List.of() : user.getRoles();
         FranchiseClaims claims = franchiseClaims == null ? null : franchiseClaims.getIfAvailable();
         if (claims == null || user.getId() == null || tenantId == null || !lookupNeeded(tenantId, roles)) {
@@ -206,6 +240,10 @@ public class JwtService {
         if (!franchises.isEmpty()) {
             builder.claim(SecurityConstants.FRANCHISE_IDS_CLAIM, franchises);
             addFranchiseRoleClaims(builder, user, tenantId);
+        }
+        // A POS staff member's branches; left out when empty, so the token of anyone outside POS is unchanged.
+        if (!access.branchIds().isEmpty()) {
+            builder.claim(SecurityConstants.BRANCH_IDS_CLAIM, access.branchIds());
         }
         return builder
                 .issuer(properties.getAuth().getIssuer())

@@ -33,6 +33,9 @@ public final class ApplicationCatalogue {
     public static final String TRAIN_BOOKING_APP = "TRAIN_BOOKING_APP";
     public static final String FRANCHISE_MANAGEMENT_APP = "FRANCHISE_MANAGEMENT_APP";
 
+    /** The DineIn restaurant product: POS, kiosk, QR ordering and kitchen display. */
+    public static final String DINEIN_POS_APP = "DINEIN_POS_APP";
+
     /** Every catalogue entry, in display order. */
     public static final List<ApplicationCatalogueEntry> ENTRIES = List.of(
             new ApplicationCatalogueEntry(PASUPU_KUMKUMA_MATRIMONY_APP, PASUPU_KUMKUMA_MATRIMONY_NAME,
@@ -50,7 +53,9 @@ public final class ApplicationCatalogue {
             new ApplicationCatalogueEntry(TRAIN_BOOKING_APP, "Train Booking",
                     "Train search, booking, tickets and refunds.", ApplicationType.MOBILE, 60, "train", "TRAIN"),
             new ApplicationCatalogueEntry(FRANCHISE_MANAGEMENT_APP, "Franchise Management",
-                    "Franchises, agents, plans, commissions and onboarding.", ApplicationType.WEB, 70, "storefront", "FRANCHISE"));
+                    "Franchises, agents, plans, commissions and onboarding.", ApplicationType.WEB, 70, "storefront", "FRANCHISE"),
+            new ApplicationCatalogueEntry(DINEIN_POS_APP, "DineIn POS & Kiosk",
+                    "Restaurant POS, kiosk, QR ordering and kitchen display.", ApplicationType.WEB, 80, "point_of_sale", "DINEIN"));
 
     private ApplicationCatalogue() {
     }
